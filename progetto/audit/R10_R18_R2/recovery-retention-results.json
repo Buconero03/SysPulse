@@ -1,0 +1,237 @@
+[
+  {
+    "test": "exact R17 baseline and R18 source/test ledger",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "all prior files retained",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "no source or C# test outside authorized delta",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "Guardian MemoryAgent profiler and all other baseline collectors retained byte for byte",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "legacy external capture source and fixtures retained byte for byte",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "all native source guards",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "new markup names unique and handlers connected",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "both real tables read-only copied and virtualized",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "buttons wrap without fixed height and report text selectable",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "native capture replaces external installation pane and initial cache remains selected",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "native pane lazy activation follows visibility",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "all R17 UI assertions preserved",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "new UI fixtures cover lazy selection copies pending work late results unavailable state",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "all copy calls keep owner and text",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "standard Windows pipeline includes source gate independent native suite and WPF suite",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "all prior Windows build and test stages retained verbatim and in order",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "real C# type checking with explicit field stubs matches current sources and all six assemblies",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "portable evidence matches all current compiled inputs",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "executed portable CompatibleCaptureTests",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "executed portable NativeCaptureTests",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "executed portable NativeNetworkTests",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "executed portable WindowsComponentTests",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "executed portable SystemProcessTests",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "executed portable NetworkDeviceTests",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject row cap",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject snap length",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject duration",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject BSS count",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject SSID size",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject metadata bound",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject payload bound",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject source pointer bound",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject stream release",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject callback root",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject WLAN release",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject loss status",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject BOOLEAN ABI",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject late publication",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject raw IPLEVEL",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject unique raw interface",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject raw poll budget",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject raw buffer bound",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject raw socket disposal",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject raw loss unknown",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "reject retained diagnostics bound",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "all project and XAML XML parse",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  },
+  {
+    "test": "current edited C# syntax corresponds to exact source bytes",
+    "status": "PASS",
+    "kind": "source/XML/mutation or portable evidence correlation; not Windows runtime"
+  }
+]

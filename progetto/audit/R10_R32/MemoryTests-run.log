@@ -1,0 +1,24 @@
+Memory tests: it-IT (sample: 26,0 MiB)
+PASS private resident takes precedence over total resident
+PASS fallback clearly labelled total resident
+PASS protected or unavailable process does not become zero
+PASS zero genuinely sampled
+Memory tests: en-US (sample: 26.0 MiB)
+PASS private resident takes precedence over total resident
+PASS fallback clearly labelled total resident
+PASS protected or unavailable process does not become zero
+PASS zero genuinely sampled
+Memory semantics tests complete (it-IT + en-US).
+PASS memory guide existing counters and missing values [it-IT]
+PASS memory guide existing counters and missing values [en-US]
+PASS memory trend 25s, +25 MiB
+PASS one-sample trend insufficient
+PASS missing sample is not zero
+PASS virtual region totals distinct from physical RAM
+PASS memory question: measured vs inferred, no invented internal objects
+PASS RAM term boundary does not match programma
+PASS QueryWorkingSetEx valid/shared page-flag interpretation
+PASS allocation report labels sampled working set versus committed space (it-IT/en-US)
+PASS RAM dashboard levels, colors and evidence limits
+PASS R7 memory threshold boundaries and counter comparison limits
+

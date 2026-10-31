@@ -1,0 +1,369 @@
+file,line,before_or_after,changed_text
+src/ProcessLens.App/CopyTestVisibility.cs,see patch,after,"[assembly: InternalsVisibleTo(""ProcessLens.NewTaskUiTests"")]"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                <ColumnDefinition Width=""Auto""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"            <Border Grid.Column=""1"" Style=""{StaticResource PanelStyle}"" Padding=""12,9"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"            <Button x:Name=""NewTaskButton"" Grid.Column=""1"" Content=""Esegui nuova attività"" Margin=""12,0,12,0"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                    Style=""{StaticResource ActionButtonStyle}"" VerticalAlignment=""Center"" Click=""NewTask_Click""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"            <Border Grid.Column=""2"" Style=""{StaticResource PanelStyle}"" Padding=""12,9"">"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    private NewTaskWindow? _newTaskWindow;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"    private void NewTask_Click(object sender, RoutedEventArgs e)"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        if (_newTaskWindow is not null) { _newTaskWindow.Activate(); return; }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        var dialog = new NewTaskWindow { Owner = this };
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        _newTaskWindow = dialog;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"        dialog.TaskStarted += result => ShowProcessNotice(""Nuova attività"", result.Message);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"        dialog.Closed += (_, _) => { if (ReferenceEquals(_newTaskWindow, dialog)) _newTaskWindow = null; };"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        dialog.ShowDialog();
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,using System.Windows;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,using System.Windows.Controls;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,using System.Windows.Media;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,using Microsoft.Win32;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,using ProcessLens.Core;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,using ProcessLens.Windows;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,namespace ProcessLens.App;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,// Created on demand; constructing the dialog never starts a process.
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,public sealed class NewTaskWindow : Window
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,{
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    private readonly INewTaskLauncher _launcher;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"    private bool _busy, _closed;"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    internal TextBox ProgramBox { get; } = Input();
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    internal TextBox ArgumentsBox { get; } = Input();
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    internal TextBox DirectoryBox { get; } = Input();
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"    internal SelectableText StatusText { get; } = new() { Text = """", TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 10, 0, 0) };"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"    internal Button RunButton { get; } = Action(""Esegui"");"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"    private readonly Button _cancel = Action(""Annulla""), _browse = Action(""Sfoglia…"");"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    public event Action<NewTaskResult>? TaskStarted;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    public NewTaskWindow() : this(new WindowsNewTaskLauncher()) { }
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    internal NewTaskWindow(INewTaskLauncher launcher)
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    {
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        _launcher = launcher;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        Title = ""Esegui nuova attività"";"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        Width = 650; Height = 510; MinWidth = 480; MinHeight = 420;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        WindowStartupLocation = WindowStartupLocation.CenterOwner;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        FontFamily = new FontFamily(""Segoe UI""); Background = Brushes.White;"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        var body = new StackPanel { Margin = new Thickness(20) };
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        body.Children.Add(new TextBlock { Text = Title, FontSize = 21, FontWeight = FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        body.Children.Add(Note(""Scegli il programma da avviare. Inserisci le opzioni nel campo Argomenti."", 6));"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        body.Children.Add(Label(""Programma""));"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        var program = new Grid(); program.ColumnDefinitions.Add(new ColumnDefinition());
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        program.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        program.Children.Add(ProgramBox); Grid.SetColumn(_browse, 1); program.Children.Add(_browse);"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        _browse.Margin = new Thickness(8, 0, 0, 0); body.Children.Add(program);"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        ProgramBox.ToolTip = ""Nome, per esempio notepad.exe, oppure percorso completo del programma."";"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        body.Children.Add(Label(""Argomenti (facoltativi)"")); body.Children.Add(ArgumentsBox);"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        ArgumentsBox.ToolTip = ""Argomenti esatti, comprese le virgolette dei percorsi con spazi. Non aggiungere qui il nome del programma."";"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        body.Children.Add(Label(""Cartella iniziale (facoltativa)"")); body.Children.Add(DirectoryBox);"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        DirectoryBox.ToolTip = ""Cartella di lavoro del programma. Se vuota, usa la cartella corrente di ProcessLens."";"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        body.Children.Add(Note(""Privilegi: quelli di ProcessLens, quindi amministratore nell’avvio normale."", 12));"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        body.Children.Add(Note(""Per comandi di shell o script, scegli cmd.exe, powershell.exe o l’interprete necessario. Nessuna cronologia dei comandi salvata da questa finestra."", 6));"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        body.Children.Add(StatusText);
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        var actions = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, 16, 0, 0) };"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        RunButton.IsDefault = true; _cancel.IsCancel = true;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        actions.Children.Add(RunButton); actions.Children.Add(_cancel); body.Children.Add(actions);
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        RunButton.Click += async (_, _) => await RunAsync();"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        _cancel.Click += (_, _) => Close();"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        _browse.Click += (_, _) => Browse();"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        Loaded += (_, _) => ProgramBox.Focus();"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        Closing += (_, e) => { if (_busy) e.Cancel = true; };"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        Closed += (_, _) => { _closed = true; ProgramBox.Clear(); ArgumentsBox.Clear(); DirectoryBox.Clear(); };"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    }
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"    private static TextBox Input() => new() { MinHeight = 36, Padding = new Thickness(8, 6, 8, 6), TextWrapping = TextWrapping.Wrap, AcceptsReturn = false, MaxLength = 32760 };"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"    private static TextBlock Label(string text) => new() { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 13, 0, 5), FontWeight = FontWeights.SemiBold };"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"    private static TextBlock Note(string text, int margin) => new() { Text = text, TextWrapping = TextWrapping.Wrap, Foreground = Brushes.DimGray, Margin = new Thickness(0, margin, 0, 0) };"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    private static Button Action(string text) => new() {
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        Content = new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, TextAlignment = TextAlignment.Center },"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        MinHeight = 36, MinWidth = 88, Padding = new Thickness(12, 7, 12, 7), Margin = new Thickness(8, 0, 0, 0)"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    };
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    private void Browse()
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    {
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        var picker = new OpenFileDialog { Title = ""Scegli il programma"", Filter = ""Programmi (*.exe;*.com)|*.exe;*.com"", CheckFileExists = true, Multiselect = false };"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        if (picker.ShowDialog(this) == true) ProgramBox.Text = picker.FileName;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    }
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    internal async Task RunAsync()
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    {
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        if (_busy || _closed) return;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        if (!NewTaskRequest.TryCreate(ProgramBox.Text, ArgumentsBox.Text, DirectoryBox.Text, out var request, out var error))"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        { StatusText.Text = error; return; }
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,"        _busy = true; Toggle(false); StatusText.Text = ""Avvio in corso…"";"
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        NewTaskResult result;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        try { result = await Task.Run(() => _launcher.Start(request!)); }
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        catch (Exception ex) { result = WindowsNewTaskLauncher.Failure(ex); }
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        finally { _busy = false; if (!_closed) Toggle(true); }
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        if (_closed) return;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        StatusText.Text = result.Message;
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,        if (result.Started && result.Pid is > 0) { TaskStarted?.Invoke(result); Close(); }
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    }
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    private void Toggle(bool enabled)
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,    { ProgramBox.IsEnabled = ArgumentsBox.IsEnabled = DirectoryBox.IsEnabled = _browse.IsEnabled = RunButton.IsEnabled = _cancel.IsEnabled = enabled; }
+src/ProcessLens.App/NewTaskWindow.cs,see patch,after,}
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,before,    <InformationalVersion>0.19.16-R10-R22-system-coverage-candidate</InformationalVersion>
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,after,    <InformationalVersion>0.19.16-R10-R23-new-task-candidate</InformationalVersion>
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,namespace ProcessLens.Core;
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"public sealed record NewTaskRequest(string Program, string Arguments, string WorkingDirectory)"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,{
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,    // Fields remain separate: no shell is added and arguments are not re-tokenized or expanded.
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"    public static bool TryCreate(string program, string arguments, string directory,"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        out NewTaskRequest? request, out string error, bool expandEnvironment = true)"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,    {
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        request = null; error = """";"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,        program = program.Trim(); directory = directory.Trim();
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,        if (expandEnvironment)
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,        { program = Environment.ExpandEnvironmentVariables(program); directory = Environment.ExpandEnvironmentVariables(directory); }
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        if (program.Length >= 2 && program[0] == '""' && program[^1] == '""') program = program[1..^1];"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        if (directory.Length >= 2 && directory[0] == '""' && directory[^1] == '""') directory = directory[1..^1];"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        if (string.IsNullOrWhiteSpace(program)) { error = ""Inserisci il programma da avviare.""; return false; }"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        if (program.Any(char.IsControl) || program.Contains('""') || directory.Any(char.IsControl) || directory.Contains('""') ||"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,            arguments.Any(c => char.IsControl(c) && c != '\t'))
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        { error = ""I campi contengono caratteri non validi o interruzioni di riga.""; return false; }"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        string name = program.Replace('\\', '/').Split('/')[^1];"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,        string extension = System.IO.Path.GetExtension(name);
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        if (program.Contains(""://"", StringComparison.Ordinal) || name.Length == 0 ||"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"            (extension.Length > 0 && !extension.Equals("".exe"", StringComparison.OrdinalIgnoreCase) &&"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"                !extension.Equals("".com"", StringComparison.OrdinalIgnoreCase)))"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        { error = ""Scegli un eseguibile (.exe o .com). Per uno script usa il relativo interprete e il campo Argomenti.""; return false; }"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,        if ((long)program.Length + arguments.Length + 4 > 32767 || directory.Length > 32760)
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        { error = ""Programma, argomenti o cartella oltre il limite di lunghezza.""; return false; }"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        request = new(program, arguments, directory); return true;"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,    }
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,}
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"public sealed record NewTaskResult(bool Started, int? Pid, string Message);"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,public interface INewTaskLauncher { NewTaskResult Start(NewTaskRequest request); }
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,using System.ComponentModel;
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,using System.Diagnostics;
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,using ProcessLens.Core;
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,namespace ProcessLens.Windows;
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"// Invoked only by the explicit Run action. No command history, shell wrapper, monitoring or child termination."
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,public sealed class WindowsNewTaskLauncher : INewTaskLauncher
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,{
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,    internal static ProcessStartInfo CreateStartInfo(NewTaskRequest request) => new()
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,    {
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"        FileName = request.Program, Arguments = request.Arguments, WorkingDirectory = request.WorkingDirectory,"
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"        UseShellExecute = false, ErrorDialog = false, CreateNoWindow = false"
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,    };
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,    public NewTaskResult Start(NewTaskRequest request)
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,    {
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,        // Revalidate public inputs; do not rely on the UI being the sole caller.
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"        if (!NewTaskRequest.TryCreate(request.Program, request.Arguments, request.WorkingDirectory, out var validated, out string error, expandEnvironment: false))"
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"            return new(false, null, error);"
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,        if (validated!.WorkingDirectory.Length > 0 && !Directory.Exists(validated.WorkingDirectory))
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"            return new(false, null, ""Cartella iniziale non trovata o non accessibile."");"
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,        try
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,        {
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,            using var process = Process.Start(CreateStartInfo(validated));
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"            return process is null ? new(false, null, ""Avvio non confermato da Windows."")"
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"                : new(true, process.Id, $""Attività avviata · PID {process.Id}."");"
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,        }
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,        catch (Exception ex) when (ex is Win32Exception or InvalidOperationException or ArgumentException or IOException or UnauthorizedAccessException)
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,        { return Failure(ex); }
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,    }
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,    public static NewTaskResult Failure(Exception error)
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,    {
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"        // Raw exception messages can contain the command line: retain the error code, not those arguments."
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,        int? code = (error as Win32Exception)?.NativeErrorCode;
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,        string message = code switch {
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"            2 or 3 => ""Programma o percorso non trovato."","
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"            5 => ""Accesso negato al programma."","
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"            193 or 216 => ""Formato del programma non compatibile con Windows o con questa architettura."","
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"            740 => ""Il programma richiede privilegi di amministratore."","
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"            1223 => ""Avvio annullato."","
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"            _ => ""Impossibile avviare il programma. Controlla programma, argomenti e cartella iniziale."""
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,        };
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"        if (code.HasValue) message += $"" Codice Windows: {code.Value}."";"
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,"        return new(false, null, message);"
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,    }
+src/ProcessLens.Windows/WindowsNewTaskLauncher.cs,see patch,after,}
+tests/ProcessLens.NewTaskTests/ProcessLens.NewTaskTests.csproj,see patch,after,"<Project Sdk=""Microsoft.NET.Sdk"">"
+tests/ProcessLens.NewTaskTests/ProcessLens.NewTaskTests.csproj,see patch,after, <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+tests/ProcessLens.NewTaskTests/ProcessLens.NewTaskTests.csproj,see patch,after," <ItemGroup><ProjectReference Include=""../../src/ProcessLens.Core/ProcessLens.Core.csproj""/>"
+tests/ProcessLens.NewTaskTests/ProcessLens.NewTaskTests.csproj,see patch,after," <Compile Include=""../../src/ProcessLens.Windows/WindowsNewTaskLauncher.cs"" Link=""WindowsNewTaskLauncher.cs""/></ItemGroup>"
+tests/ProcessLens.NewTaskTests/ProcessLens.NewTaskTests.csproj,see patch,after,</Project>
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,using System.ComponentModel;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,using System.Diagnostics;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,using System.Reflection;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,using System.Text;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,using System.Text.Json;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,using ProcessLens.Core;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,using ProcessLens.Windows;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"// Only an owned fixture child is launched; no system app, network probe, shell or elevated command."
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"if (args.Length > 0 && args[0] == ""--child"")"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,{
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    string output = args[1], release = args[2];"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    var deadline = Stopwatch.StartNew();
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    while (!File.Exists(release) && deadline.Elapsed < TimeSpan.FromSeconds(8)) Thread.Sleep(10);
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    if (!File.Exists(release)) return 3;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    File.WriteAllText(output + "".tmp"", JsonSerializer.Serialize(args.Skip(3).ToArray()));"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    File.Move(output + "".tmp"", output);"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    return 0;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,}
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"static void Check(bool ok, string label)"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"{ if (!ok) throw new Exception(""FAIL new task: "" + label); Console.WriteLine(""PASS new task: "" + label); }"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,static string Quote(string value)
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,{
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    var b = new StringBuilder(""\""""); int slash = 0;"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    foreach (char c in value)
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    {
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,        if (c == '\\') { slash++; continue; }
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"        if (c == '""') { b.Append('\\', 2 * slash + 1); b.Append(c); }"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"        else { b.Append('\\', slash); b.Append(c); }"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,        slash = 0;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    }
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    b.Append('\\', 2 * slash); return b.Append('""').ToString();"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,}
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"Check(NewTaskRequest.TryCreate(""notepad"", """", """", out var simple, out _) && simple!.Program == ""notepad"","
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    ""short executable names remain usable without an extension"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"const string raw = "" --flag=26,0  \""a b\"" --token=private & | > %USERNAME% "";"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"Check(NewTaskRequest.TryCreate("" \""C:\\Program Files\\tool.exe\"" "", raw, ""\""C:\\Data Files\"""", out var request, out _) &&"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    request!.Program == @""C:\Program Files\tool.exe"" && request.Arguments == raw && request.WorkingDirectory == @""C:\Data Files"","
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    ""quoted executable paths normalize without rewriting argument bytes"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,var info = WindowsNewTaskLauncher.CreateStartInfo(request!);
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,Check(info.FileName == request!.Program && info.Arguments == raw && info.WorkingDirectory == request.WorkingDirectory &&
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    !info.UseShellExecute && !info.RedirectStandardOutput && !info.CreateNoWindow && info.Verb.Length == 0,"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    ""executable and arguments stay separate without injected shell redirect or elevation verb"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"foreach (string bad in new[] { """", ""  "", ""bad\n.exe"", ""bad\0.exe"", ""a\""b.exe"", ""thing.ps1"", ""script.cmd"", ""https://example.invalid/a"", ""C:\\"" })"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    Check(!NewTaskRequest.TryCreate(bad, """", """", out _, out _), ""invalid program rejected before launch: "" + bad.Replace('\n', '?').Replace('\0', '?'));"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"Check(!NewTaskRequest.TryCreate(""tool.exe"", ""line1\r\nline2"", """", out _, out _) &&"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    !NewTaskRequest.TryCreate(""tool.exe"", """", ""bad\nfolder"", out _, out _), ""line breaks cannot split program argument or directory fields"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"Check(NewTaskRequest.TryCreate(""TOOL.COM"", ""\t/a"", """", out _, out _), ""COM executables and actual argument tabs are supported"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"Check(NewTaskRequest.TryCreate(""tool.exe"", new string('a', 32755), """", out _, out _) &&"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    !NewTaskRequest.TryCreate(""tool.exe"", new string('a', 32756), """", out _, out _), ""combined Windows command-line length has an exact upper boundary"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"string? previous = Environment.GetEnvironmentVariable(""PROCESSLENS_TEST_TOOL"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,try
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,{
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    Environment.SetEnvironmentVariable(""PROCESSLENS_TEST_TOOL"", @""C:\Tools\tool.exe"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    Check(NewTaskRequest.TryCreate(""%PROCESSLENS_TEST_TOOL%"", ""%PROCESSLENS_TEST_TOOL%"", """", out var env, out _) &&"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"        env!.Program == @""C:\Tools\tool.exe"" && env.Arguments == ""%PROCESSLENS_TEST_TOOL%"","
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"        ""environment variables expand in executable field only, not in arguments"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,}
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"finally { Environment.SetEnvironmentVariable(""PROCESSLENS_TEST_TOOL"", previous); }"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"foreach (int code in new[] { 2, 3, 5, 193, 216, 740, 1223, 999 })"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,{
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    var failure = WindowsNewTaskLauncher.Failure(new Win32Exception(code, ""TOP_SECRET --password=private""));"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    Check(!failure.Started && failure.Pid is null && failure.Message.Contains(code.ToString()) &&
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"        !failure.Message.Contains(""TOP_SECRET"") && !failure.Message.Contains(""password""), ""Windows error retained without command secrets: "" + code);"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,}
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"Check(!WindowsNewTaskLauncher.Failure(new InvalidOperationException(""TOP_SECRET"")).Message.Contains(""TOP_SECRET""),"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    ""unexpected launcher exceptions cannot expose argument text"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,var launcher = new WindowsNewTaskLauncher();
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"string temp = Path.Combine(Path.GetTempPath(), ""processlens owned task "" + Guid.NewGuid().ToString(""N""));"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,Directory.CreateDirectory(temp);
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,try
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,{
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    var missing = launcher.Start(new(""not-a-real-processlens-program.exe"", ""--password=TOP_SECRET"", Path.Combine(temp, ""missing"")));"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    Check(!missing.Started && missing.Pid is null && !missing.Message.Contains(""TOP_SECRET""), ""missing initial folder cannot launch or invent a PID"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    var invalid = launcher.Start(new(""wrong.ps1"", """", temp));"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    Check(!invalid.Started && invalid.Pid is null, ""public launcher revalidates requests independently of the UI"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    string host = Environment.ProcessPath ?? throw new Exception(""Fixture host unavailable"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    string[] expected = { ""alpha beta"", ""caffè 26,0"", ""a&b|c>"", ""$HOME"", ""%USERNAME%"", ""a\""b"", @""C:\tail\"" };"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    string output = Path.Combine(temp, ""child result.json""), release = Path.Combine(temp, ""allow child.txt"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    var childArgs = new List<string>();
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    if (Path.GetFileNameWithoutExtension(host).Equals(""dotnet"", StringComparison.OrdinalIgnoreCase)) childArgs.Add(Assembly.GetExecutingAssembly().Location);"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    childArgs.AddRange(new[] { ""--child"", output, release }); childArgs.AddRange(expected);"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    Check(NewTaskRequest.TryCreate(host, string.Join("" "", childArgs.Select(Quote)), temp, out var fixture, out _), ""owned fixture request can be represented without a shell"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    var started = launcher.Start(fixture!);
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    Check(started.Started && started.Pid is > 0 && !File.Exists(output), ""successful launch returns actual PID before the owned child is released"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    File.WriteAllText(release, ""go"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    var clock = Stopwatch.StartNew();
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    while (!File.Exists(output) && clock.Elapsed < TimeSpan.FromSeconds(8)) Thread.Sleep(10);
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    Check(File.Exists(output) && JsonSerializer.Deserialize<string[]>(File.ReadAllText(output))!.SequenceEqual(expected),"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"        ""real owned child survives parent handle disposal and receives exact quoted Unicode and metacharacter arguments"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    var absent = launcher.Start(new(Path.Combine(temp, ""missing.exe""), ""--password=TOP_SECRET"", temp));"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    Check(!absent.Started && absent.Pid is null && !absent.Message.Contains(""TOP_SECRET""), ""failed process creation has no false success or secret argument log"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,}
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"finally { Directory.Delete(temp, true); }"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"Console.WriteLine(""New task portable tests complete; owned fixture child only, no user program launched."");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,return 0;
+tests/ProcessLens.NewTaskUiTests/ProcessLens.NewTaskUiTests.csproj,see patch,after,"<Project Sdk=""Microsoft.NET.Sdk"">"
+tests/ProcessLens.NewTaskUiTests/ProcessLens.NewTaskUiTests.csproj,see patch,after, <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+tests/ProcessLens.NewTaskUiTests/ProcessLens.NewTaskUiTests.csproj,see patch,after," <ItemGroup><ProjectReference Include=""../../src/ProcessLens.App/ProcessLens.App.csproj""/></ItemGroup>"
+tests/ProcessLens.NewTaskUiTests/ProcessLens.NewTaskUiTests.csproj,see patch,after,</Project>
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,using System.Windows;
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,using System.Windows.Controls;
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,using System.Windows.Threading;
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,using ProcessLens.App;
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,using ProcessLens.Core;
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,internal static class Program
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,{
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"    static void Check(bool ok, string label)"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"    { if (!ok) throw new Exception(""FAIL new task UI: "" + label); Console.WriteLine(""PASS new task UI: "" + label); }"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,    static void Complete(Task task)
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,    {
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        var frame = new DispatcherFrame(); var dispatcher = Dispatcher.CurrentDispatcher;
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        bool timedOut = false; var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(10) };
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"        timer.Tick += (_, _) => { timedOut = true; frame.Continue = false; };"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"        task.ContinueWith(_ => dispatcher.BeginInvoke(new Action(() => frame.Continue = false)), TaskScheduler.Default);"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        timer.Start(); Dispatcher.PushFrame(frame); timer.Stop();
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"        if (timedOut) throw new Exception(""New task UI fixture timeout"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        task.GetAwaiter().GetResult();
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,    }
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,    [STAThread]
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,    public static void Main()
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,    {
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        _ = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        var previous = SynchronizationContext.Current;
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        try
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        {
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,            var launcher = new Fixture(); var window = new NewTaskWindow(launcher);
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Check(launcher.Calls == 0, ""construction does not start a program"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,            Complete(window.RunAsync());
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Check(launcher.Calls == 0 && window.StatusText.Text.Contains(""Inserisci""), ""empty input stays open without a launch"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            window.ProgramBox.Text = ""script.ps1""; Complete(window.RunAsync());"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Check(launcher.Calls == 0, ""validation fails before scheduling the launcher"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            window.ProgramBox.Text = @""C:\Program Files\tool.exe""; window.ArgumentsBox.Text = ""--token=TOP_SECRET"";"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,            launcher.Failure = true; Complete(window.RunAsync());
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Check(launcher.Calls == 1 && window.RunButton.IsEnabled && window.StatusText.Text == ""synthetic failed launch"","
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"                ""failed launch leaves editable inputs for correction and retry"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,            launcher.Failure = false; launcher.Throw = true; Complete(window.RunAsync());
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Check(!window.StatusText.Text.Contains(""TOP_SECRET"") && window.RunButton.IsEnabled,"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"                ""unexpected launcher error stays in dialog without leaking raw arguments"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,            launcher.Throw = false; launcher.Block = true; Task task = window.RunAsync();
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Check(launcher.Started.Wait(TimeSpan.FromSeconds(5)), ""fixture starts on worker thread"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Check(!window.RunButton.IsEnabled && !window.ProgramBox.IsEnabled && window.StatusText.Text.Contains(""corso""),"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"                ""pending launch disables duplicate submission and editing"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Complete(window.RunAsync()); Check(launcher.Calls == 3, ""second click while pending cannot launch a second program"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,            NewTaskResult? notice = null; window.TaskStarted += r => notice = r;
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,            launcher.Release.Set(); Complete(task);
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Check(notice is { Started: true, Pid: 4321 } && !notice.Message.Contains(""TOP_SECRET""),"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"                ""confirmed start reports PID through the UI event"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Check(window.ProgramBox.Text.Length == 0 && window.ArgumentsBox.Text.Length == 0 && window.DirectoryBox.Text.Length == 0,"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"                ""closing successful dialog releases typed command fields"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Complete(window.RunAsync()); Check(launcher.Calls == 3, ""closed dialog cannot launch again"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            var cancelled = new NewTaskWindow(launcher); cancelled.ProgramBox.Text = ""notepad.exe""; cancelled.Close();"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Complete(cancelled.RunAsync()); Check(launcher.Calls == 3, ""cancel before run never starts a program"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,            var main = new MainWindow();
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            var button = (Button)main.FindName(""NewTaskButton"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Check(button.Content.ToString() == ""Esegui nuova attività"" && button.Style is not null,"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"                ""main window exposes a styled new-task action"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,            main.Close(); Application.Current.Shutdown();
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,            launcher.Started.Dispose(); launcher.Release.Dispose();
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            Console.WriteLine(""New task WPF fixture complete; no real program, native launcher, clipboard or UAC used."");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        }
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        finally { SynchronizationContext.SetSynchronizationContext(previous); }
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,    }
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,    sealed class Fixture : INewTaskLauncher
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,    {
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"        public int Calls; public bool Failure, Throw, Block;"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"        public ManualResetEventSlim Started = new(false), Release = new(false);"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        public NewTaskResult Start(NewTaskRequest request)
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        {
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,            Interlocked.Increment(ref Calls);
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            if (Throw) throw new InvalidOperationException(""--token=TOP_SECRET"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            if (Failure) return new(false, null, ""synthetic failed launch"");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,            if (Block) { Started.Set(); if (!Release.Wait(TimeSpan.FromSeconds(5))) throw new TimeoutException(); }
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,"            return new(true, 4321, ""Attività avviata · PID 4321."");"
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,        }
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,    }
+tests/ProcessLens.NewTaskUiTests/Program.cs,see patch,after,}

@@ -1,0 +1,28 @@
+{
+  "baseline_sha256": "ff5e50322cd46997ad056b118b0abd76f27d88854bbdf8bbeac32db963053909",
+  "modified_files": [
+    "LEGGIMI.txt",
+    "progetto/audit/tools/check_wpf_path_r32r1.ps1",
+    "progetto/build-dashboard.ps1",
+    "progetto/src/ProcessLens.App/MainWindow.xaml",
+    "progetto/src/ProcessLens.App/MainWindow.xaml.cs",
+    "progetto/src/ProcessLens.App/ProcessLens.App.csproj",
+    "progetto/src/ProcessLens.App/TrayWindowController.cs",
+    "progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs",
+    "supporto/avvia.ps1"
+  ],
+  "new_files": [
+    "progetto/audit/tools/check_embedded_icon_r32r2.ps1",
+    "progetto/audit/tools/check_powershell_r32r2.py",
+    "progetto/audit/tools/package_embedded_icon_r32r2.py",
+    "progetto/audit/tools/test_launcher_r32r2.ps1",
+    "progetto/audit/tools/typecheck_wpf_sources_r32r2.py",
+    "progetto/src/ProcessLens.App/IconFile.cs",
+    "progetto/src/ProcessLens.App/ProcessLensIcon.cs",
+    "progetto/tests/ProcessLens.IconResourceTests/ProcessLens.IconResourceTests.csproj",
+    "progetto/tests/ProcessLens.IconResourceTests/Program.cs"
+  ],
+  "protected": "Core, Semantics, native process/network acquisition, Guardian, metrics, window policies and icon asset byte identical. Only optional application icon pipeline and declared test/build/version files changed",
+  "new_dependencies": 0,
+  "Windows_runtime_DPI_RAM": "NOT EXECUTED / NOT MEASURED"
+}

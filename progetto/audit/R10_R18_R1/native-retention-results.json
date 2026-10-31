@@ -1,0 +1,157 @@
+[
+  {
+    "test": "exact source and C# test ledger before and after hashes",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "existing R15 files retained",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "no production or C# test change outside native feature manifest",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "existing native collectors semantics Guardian profiler and RAM monitor unchanged",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "all native security evidence guards pass",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "cache and Wireshark safety guards retained",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "cache remains explicitly selected and native tab is third",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "new pane lazy and follows tab visibility without automatic acquisition",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "new XAML names unique and all handlers connected",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "event table copied read-only and virtualized",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "report selectable and wraps; action buttons have no fixed height",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "every previous network UI assertion preserved with dispatcher context",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "new UI regressions cover lazy acquisition results copying coalescing errors and late work",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "all clipboard calls retain owner and text",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "Windows build includes native source gate and independent portable suite",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "runtime evidence matches every compiled source",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "actual portable NativeNetworkTests assertions",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "actual portable WindowsComponentTests assertions",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "actual portable SystemProcessTests assertions",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "actual portable NetworkDeviceTests assertions",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "reject event cap",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "reject DTD prohibition",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "reject query release",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "reject event release",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "reject native timeout",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "reject render bound",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "reject audit BOOLEAN ABI",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "reject policy mutation",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "reject late publication",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "all XAML and project XML parse",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  },
+  {
+    "test": "current edited C# syntax evidence matches exact sources",
+    "status": "PASS",
+    "kind": "source/XML/mutation and portable evidence correlation only"
+  }
+]

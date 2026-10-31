@@ -1,0 +1,962 @@
+[
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "PressureText",
+    "text": "Lettura in corso",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "UsageText",
+    "text": "--%",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "UsedText",
+    "text": "Dati non ancora disponibili",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "AvailableText",
+    "text": "-- GiB",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "",
+    "text": "Memoria fisica libera subito utilizzabile",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "",
+    "text": "RAM fisica totale",
+    "style": "{StaticResource SelectableMemoryMetricLabel}"
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "TotalText",
+    "text": "-- GiB",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "CommitSummaryText",
+    "text": "Totale fisico rilevato da Windows",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "PressureExplanation",
+    "text": "Attendo i dati di Windows.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "CatAppsValueText",
+    "text": "-- MiB",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "CatAppsMetaText",
+    "text": "--% RAM · -- processi",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "CatDevValueText",
+    "text": "-- MiB",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "CatDevMetaText",
+    "text": "--% RAM · -- processi",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "CatWinValueText",
+    "text": "-- MiB",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "CatWinMetaText",
+    "text": "--% RAM · -- processi",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "CatBgValueText",
+    "text": "-- MiB",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "CatBgMetaText",
+    "text": "--% RAM · -- processi",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "CatKernelValueText",
+    "text": "-- GiB",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "CatKernelMetaText",
+    "text": "--% RAM fisica",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "",
+    "text": "È la differenza fra RAM fisica in uso e RAM privata residente raccolta dai processi. Può comprendere memoria condivisa, componenti di sistema e dati mancanti: questo valore non identifica né misura separatamente Kernel, driver o DLL. Non esiste qui un elenco di processi cui attribuire esattamente il residuo.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "RefreshStatus",
+    "text": "Lettura Windows in corso",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "AgentStatus",
+    "text": "Verifica configurazione agente...",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "AgentExplanation",
+    "text": "Avviso al raggiungimento dell'85%; nuovo avviso solo dopo il ritorno sotto l'80%.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "TableHeaderTitleText",
+    "text": "Chi consuma più RAM (Programmi raggruppati e Processi)",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "TopProcessesCaption",
+    "text": "Processi raggruppati per programma e ordinati per RAM privata esclusiva.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "name": "",
+    "text": "RAM privata: memoria fisica esclusiva del processo o gruppo (sommabile senza doppi conteggi). Condivisa: DLL di sistema/runtime in comune con altri programmi. Doppio clic: dettagli dei servizi SCM associati, oppure del processo. Il pulsante Ispeziona avvia l’analisi RAM. Le categorie sono classificazioni, non prove di un servizio SCM.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "StartedValue",
+    "text": "—",
+    "style": "{StaticResource SelectableGuardianNumber}"
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "ExitedValue",
+    "text": "—",
+    "style": "{StaticResource SelectableGuardianNumber}"
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "EtwValue",
+    "text": "—",
+    "style": "{StaticResource SelectableGuardianNumber}"
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "TotalValue",
+    "text": "—",
+    "style": "{StaticResource SelectableGuardianNumber}"
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "StorageValue",
+    "text": "—",
+    "style": "{StaticResource SelectableGuardianNumber}"
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "StatusText",
+    "text": "Seleziona Guardian per avviare la lettura dello storico.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "UpdatedText",
+    "text": "—",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "EventCountText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "",
+    "text": "Il PPID da solo non dimostra la parentela: Windows può riutilizzare i PID. Nessuna attribuzione è definitiva.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "LineageRootText",
+    "text": "Seleziona un PID dalla tabella dei generatori oppure inseriscilo qui.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "LineageStatusText",
+    "text": "Lettura manuale dallo storico; nessuna modifica ai processi.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "",
+    "text": "Le corrispondenze PID/orario sono indizi, non prove definitive di parentela. Timestamp con precisione di un secondo; PID riutilizzabili.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "LineageCoverageText",
+    "text": "I figli vengono caricati su richiesta; massimo 200 avvii per analisi.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "",
+    "text": "Campioni per nome, non riferiti a un solo PID o al suo padre. Bucket da 5 minuti: l'intervallo è approssimato. La RAM residente include memoria condivisa.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "HealthSummaryText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "LastEtwText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+    "name": "",
+    "text": "Assenza di avvisi non garantisce completezza ETW. Se SQLite è indisponibile, alcune perdite possono non risultare nelle diagnostiche.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Analisi basata su dati di Windows. La X riduce la finestra; per riaprirla usa la barra applicazioni o Mostra ProcessLens nell’icona.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ProcessCountText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "VisibleCountText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "SystemCpuText",
+    "text": "In attesa…",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "SystemCpuAverageText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "LogicalCpuText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "SelfResourcesText",
+    "text": "Risorse GUI: in attesa del primo campione…",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ListExplanationText",
+    "text": "I processi più recenti sono mostrati per primi. Seleziona un processo per analizzarlo.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "CurrentFilterText",
+    "text": "Vista: tutti i processi",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailFriendlyNameText",
+    "text": "Nessun processo selezionato",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailProcessIdentityText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DeepInspectionStatusText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailStartTimeText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailUptimeText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailOwnerText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailTypeText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailIdentityConfidenceText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailOwnershipConfidenceText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailRoleConfidenceText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Le associazioni e le funzioni suggerite derivano da regole; non sono una misura delle azioni compiute ora dal processo. Le regole e i punteggi sono nei dettagli tecnici.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailOriginSummaryText",
+    "text": "Seleziona un processo.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailOriginOperationText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailOriginChainText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailOriginCaveatText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Interroga il PID selezionato: ProcessLens risponde usando solo evidenze osservabili e segnala quando progresso o ETA non sono determinabili.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Passa il mouse su Analisi approfondita; seleziona una voce per ottenere la diagnosi.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ProcessQueryAnswerTitleText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ProcessQueryOverviewLabel",
+    "text": "QUADRO GENERALE",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ProcessQueryOverviewSourceText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ProcessQueryAnswerText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ProcessQueryConfidenceText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ProcessQueryEvidenceText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "PANORAMICA DEL REGISTRO",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ProcessQueryAuditOverviewText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ProcessQueryAuditLocationText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ProcessQueryAuditText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailWhatIsItText",
+    "text": "Seleziona un processo dalla lista.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailActivityText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailRoleText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailDetectionBasisText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Dati utilizzati per riconoscere il processo. Apri le sezioni per i dettagli.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Valori interni del classificatore e dati che hanno contribuito al risultato. Le misure di attività sono separate.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Contiene anche identificativi interni e metadati non riformattati. Consultalo soltanto quando servono informazioni di debug.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailEvidenceTechnicalText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailWhyRunningText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailRiskText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailCloseImpactText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Gli effetti dipendono dal processo e dal suo stato. ProcessLens non termina processi automaticamente.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailCpuText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailMemoryLabel",
+    "text": "RAM PRIVATA",
+    "style": "{StaticResource SelectableSectionLabel}"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailMemoryText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailProjectShortText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "RAM PRIVATA RESIDENTE",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailPrivateWorkingSetText",
+    "text": "N/D",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "RAM RESIDENTE TOTALE",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailWorkingSetText",
+    "text": "N/D",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "MEMORIA PRIVATA IMPEGNATA",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailPrivateCommitText",
+    "text": "N/D",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailMemoryExplanationText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailMemoryTrendText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Il commit privato non coincide necessariamente con la RAM usata. Per confrontare ProcessLens con un altro monitor, seleziona la stessa istanza del PID, lo stesso contatore e un intervallo comparabile.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "1 · RAM privata residente (Private Working Set)",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Sono pagine di memoria del processo che Windows mantiene attualmente nella RAM fisica e che non possono essere condivise con altri processi. Il valore cambia nel tempo: non comprende tutta la memoria privata impegnata e non descrive da solo il consumo di un'intera applicazione con più processi.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "2 · RAM residente totale (Working Set)",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Comprende le pagine residenti del processo, sia private sia condivisibili (per esempio pagine di DLL). Include già la RAM privata residente: non sommare le due cifre. Le pagine condivisibili possono apparire nei Working Set di più processi.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "3 · Memoria privata impegnata (Private Bytes / commit)",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "È la memoria virtuale privata per la quale Windows garantisce la disponibilità di memoria fisica o spazio di paging. Non indica quanta RAM fisica è occupata adesso e non significa che quella quantità sia scritta nel file di paging.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Esempio basato sul processo selezionato",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailMemoryGuideExampleText",
+    "text": "Seleziona un processo per vedere le misure.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Come interpretarle correttamente",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Un valore alto o in crescita non prova da solo una perdita di memoria (memory leak). Osserva l'andamento dello stesso PID nel tempo, controlla commit e disponibilità di RAM del sistema. Processi figli, memoria GPU e memoria del kernel possono richiedere valutazioni separate. N/D significa dato non disponibile, non zero.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Origine dei contatori Windows",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "API GetProcessMemoryInfo, struttura PROCESS_MEMORY_COUNTERS_EX2: PrivateWorkingSetSize, WorkingSetSize e PrivateUsage. Sono misure riferite al PID; ProcessLens non stima queste quantità a partire dalle regioni di memoria virtuale.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailCpuAverageText",
+    "text": "Media: -",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailCpuPeakText",
+    "text": "Picco: -",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailCpuCoreText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailCpuGroupText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailCpuTotalTimeText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "CPU: percentuale della capacità complessiva del computer (tutti i processori logici), non di un solo core. Campionamento temporale ogni circa 2 s; elenco processi aggiornato separatamente.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "CpuGraphScaleText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailRuntimeStateText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailNetworkStateText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailWindowStateText",
+    "text": "-",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "CPU, finestre e rete sono osservazioni Windows. L'analisi approfondita parte solo sul processo selezionato per mantenere ProcessLens leggero.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Apri solo la sezione che ti interessa. Le informazioni sono quelle raccolte da Windows e dal classificatore locale.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailExecutableText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "I parametri preceduti da -- sono disposti su righe distinte per la sola lettura. La riga originale non viene modificata.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailFormattedCommandLineText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailCommandLineText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "QUADRO GENERALE",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailEvidenceOverviewText",
+    "text": "Evidenze organizzate per argomento.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailEvidenceText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Snapshot dell’ultimo aggiornamento dei dettagli. I valori CPU aggiornati continuamente sono nel riquadro Analisi CPU.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "DetailTechnicalContextText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ServicesCountText",
+    "text": "Caricamento...",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ServiceScopeText",
+    "text": "Tutti i servizi SCM",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Dati del Service Control Manager: stato e configurazione reali, senza attribuire cause non provate.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ServiceDetailName",
+    "text": "Seleziona un servizio",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ServiceDetailIdentity",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ServiceDetailStatus",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ServiceDetailDescription",
+    "text": "Descrizione non disponibile.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Fonte: descrizione dichiarata dal servizio, se disponibile.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ServiceDetailWhy",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ServiceHistoryStatusText",
+    "text": "Seleziona un servizio per consultare gli eventi Windows.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ServiceHistoryExplanationText",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "{Binding WhenLabel, Mode=OneWay}",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "{Binding EventIdLabel, Mode=OneWay}",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "{Binding Title, Mode=OneWay}",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "{Binding Detail, Mode=OneWay}",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Le registrazioni SCM mostrano gli eventi del servizio, non identificano automaticamente l'app che ne ha richiesto l'avvio. I vecchi eventi possono non essere più presenti nel registro.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ServiceDetailHost",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "",
+    "text": "Usa l'arresto ordinato SCM: non termina forzatamente il processo ospitante.",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ServiceDetailDependencies",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ServiceDetailImpact",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ServiceDetailTechnical",
+    "text": "",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ProcessNoticeTitleText",
+    "text": "Processo chiuso",
+    "style": ""
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "name": "ProcessNoticeText",
+    "text": "",
+    "style": ""
+  }
+]

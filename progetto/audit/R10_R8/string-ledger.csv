@@ -1,0 +1,10 @@
+﻿before,after,scope,reason_limit
+No independent suite meter,ProcessLens.RamMonitor,Separate console,Private resident sum with explicit coverage; monitor excluded
+No parallel RAM log launcher,Avvia-ProcessLens-con-log-RAM.cmd / Avvia-solo-monitor-RAM.cmd,Explicit user launch,First use can build only meter; no installers or forced termination
+RAM macro-categories were passive borders,Clickable keyboard-accessible category cards,RAM dashboard,Values remain selectable; title/background navigates
+RAM table truncated to 80 before filter,Full returned process list before category filter,RAM dashboard call parameter,Existing native reader and contracts unchanged
+Double click always requested RAM anatomy,SCM service association or process details,RAM rows,Anatomy button remains explicit
+Service row single selection only,Double click or Enter opens read-only detailed window,Services,Exact service object; no service stop
+PID substring search for related services,Exact PID scope with creation/frame checks,SCM navigation,One service opens directly; multiple services remain an explicit list
+"Kernel, Driver e DLL Condivise",Memoria non attribuita ai PID,Residual card,Accounting remainder cannot identify these components
+No escape from service-host scope,Mostra tutti i servizi,Services,Clears explicit host scope and search

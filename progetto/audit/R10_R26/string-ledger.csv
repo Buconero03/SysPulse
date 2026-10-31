@@ -1,0 +1,409 @@
+file,line,before_or_after,changed_text
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,using System.Windows;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,using System.Windows.Controls;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,using System.Windows.Input;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,using System.Windows.Media;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,using System.Windows.Threading;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,namespace ProcessLens.App;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,// Protect automatic updates only. User input and explicit navigation cancel pending restoration.
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,internal sealed class AutomaticViewport
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,{
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    private readonly FrameworkElement _root;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    private readonly Func<ScrollViewer?> _viewer;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    private readonly ReadingPositionPolicy _policy = new();
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    private DispatcherOperation? _pending;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    private bool _automatic;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    private UIElement? _bringBoundary;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    private readonly RequestBringIntoViewEventHandler _bringHandler;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"    public AutomaticViewport(FrameworkElement root, Func<ScrollViewer?> viewer)"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        _root = root; _viewer = viewer;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"        _bringHandler = (_, e) => { if (_automatic) e.Handled = true; };"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"        root.PreviewMouseWheel += (_, _) => Cancel();"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"        root.PreviewMouseDown += (_, _) => Cancel();"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"        root.PreviewMouseMove += (_, e) => { if (e.LeftButton == MouseButtonState.Pressed) Cancel(); };"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"        root.PreviewKeyDown += (_, _) => Cancel();"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"        root.PreviewTouchDown += (_, _) => Cancel();"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"        root.Unloaded += (_, _) => Cancel();"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"        root.AddHandler(FrameworkElement.RequestBringIntoViewEvent, _bringHandler, true);"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"    internal bool HoldsOrder => ReadingPositionPolicy.HoldOrder(_viewer()?.VerticalOffset ?? 0,"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"        _root.IsMouseOver, _root.IsKeyboardFocusWithin);"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    internal void Cancel()
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        _policy.UserInput(); _automatic = false;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        _pending?.Abort(); _pending = null;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    internal IDisposable Begin()
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        // Nested updates share one outer capture.
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        if (_automatic) return new Completion(() => { });
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        var viewer = _viewer();
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        if (viewer is null || !viewer.IsLoaded || _root.IsMouseCaptureWithin) return new Completion(() => { });
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"        // Intercept BELOW ScrollViewer, before its class handler or the outer ListView handles the event."
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        var boundary = viewer.Content as UIElement;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"        if (!ReferenceEquals(boundary, _bringBoundary))"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"            _bringBoundary?.RemoveHandler(FrameworkElement.RequestBringIntoViewEvent, _bringHandler);"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,            _bringBoundary = boundary;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"            _bringBoundary?.AddHandler(FrameworkElement.RequestBringIntoViewEvent, _bringHandler, true);"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        long ticket = _policy.Capture();
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        double offset = viewer.VerticalOffset;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        var anchor = FindAnchor(viewer);
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        object? anchorData = _root is ListView ? anchor?.DataContext : null;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"        double y = anchor?.TranslatePoint(new Point(), viewer).Y ?? 0;"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        _automatic = true;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        return new Completion(() =>
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"            // TextBoxView can finish wrapping at Background; settle after that work, never before it."
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"            _pending = _root.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,            {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                _pending = null;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                if (!_policy.IsCurrent(ticket) || !viewer.IsLoaded) { _automatic = false; return; }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                try
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                    var current = anchor is not null && anchor.IsVisible && viewer.IsAncestorOf(anchor) &&
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"                        (anchorData is null || ReferenceEquals(anchor.DataContext, anchorData)) ? anchor : null;"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"                    if (current is null && anchorData is not null) current = FindDataAnchor(viewer, anchorData);"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                    double target = offset <= 0.5 ? 0 : current is null ? offset : ReadingPositionPolicy.AnchoredOffset(
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"                        viewer.VerticalOffset, y, current.TranslatePoint(new Point(), viewer).Y);"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                    viewer.ScrollToVerticalOffset(target);
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                finally { _automatic = false; }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,            }));
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        });
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"    private static FrameworkElement? FindDataAnchor(DependencyObject root, object data)"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"            var child = VisualTreeHelper.GetChild(root, i);"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,            if (child is FrameworkElement element && (element is ListViewItem || element is Expander) &&
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"                ReferenceEquals(element.DataContext, data)) return element;"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"            if (FindDataAnchor(child, data) is { } found) return found;"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        return null;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    private FrameworkElement? FindAnchor(ScrollViewer viewer)
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        // Realized visuals only: never create offscreen containers or force layout.
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        FrameworkElement? best = null; double bestY = double.MaxValue;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        void Visit(DependencyObject node)
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(node); i++)
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,            {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"                var child = VisualTreeHelper.GetChild(node, i);"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                if (child is FrameworkElement element && element.IsVisible && element.ActualHeight > 0 &&
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                    (_root is ListView ? element is ListViewItem || element is Expander : element is SelectableText && element.Name.Length > 0))
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,"                    double top = element.TranslatePoint(new Point(), viewer).Y;"
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                    if (top + element.ActualHeight > 0 && top < viewer.ActualHeight && Math.Abs(top) < bestY)
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                    { best = element; bestY = Math.Abs(top); }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,                Visit(child);
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,            }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        Visit(viewer); return best;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    private sealed class Completion(Action complete) : IDisposable
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    {
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        private Action? _complete = complete;
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,        public void Dispose() { var action = _complete; _complete = null; action?.Invoke(); }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,    }
+src/ProcessLens.App/AutomaticViewport.cs,see patch,after,}
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                              ScrollViewer.CanContentScroll=""True"" VirtualizingPanel.IsVirtualizing=""True"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                              ScrollViewer.CanContentScroll=""True"" VirtualizingPanel.ScrollUnit=""Pixel"" VirtualizingPanel.IsVirtualizing=""True"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                              ScrollViewer.CanContentScroll=""True"" VirtualizingPanel.IsVirtualizing=""True"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                              ScrollViewer.CanContentScroll=""True"" VirtualizingPanel.ScrollUnit=""Pixel"" VirtualizingPanel.IsVirtualizing=""True"""
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,using System.Collections.ObjectModel;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    private readonly ObservableCollection<ProcessRow> _visibleRows = new();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"    private AutomaticViewport? _listViewport, _detailViewport;"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    private bool? _groupedView;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,    public MainWindow()
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    public MainWindow() : this(true) { }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    internal MainWindow(bool startMonitoring)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"        _listViewport = new AutomaticViewport(ProcessList, () => FindVisualChild<ScrollViewer>(ProcessList));"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"        _detailViewport = new AutomaticViewport(ProcessDetailsScroll, () => ProcessDetailsScroll);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        ProcessList.ItemsSource = _visibleRows;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            if (!startMonitoring) return; // Visual fixtures never start native acquisition.
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            using var detailUpdate = _detailViewport?.Begin();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,                try { CollectionViewSource.GetDefaultView(ProcessList.ItemsSource).Refresh(); }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                try { RefreshLiveProcessOrder(); }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,        var scrollViewer = FindVisualChild<ScrollViewer>(ProcessList);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,        double previousVerticalOffset = preserveScroll ? scrollViewer?.VerticalOffset ?? 0 : 0;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        if (!preserveScroll) { _listViewport?.Cancel(); _detailViewport?.Cancel(); }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        using var listUpdate = preserveScroll ? _listViewport?.Begin() : null;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        using var detailUpdate = preserveScroll ? _detailViewport?.Begin() : null;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        bool holdOrder = preserveScroll && _listViewport?.HoldsOrder == true;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        var previousRows = _visibleRows.ToDictionary(x => x.Pid);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        for (int index = 0; index < _allRows.Count; index++)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            var next = _allRows[index];
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            if (previousRows.TryGetValue(next.Pid, out var old) && !ReferenceEquals(old, next) &&"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"                ProcessGrouping.IdentityMatches(old.Process, next.Process))"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            { old.UpdateFrom(next); _allRows[index] = old; }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        bool regroup = false;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        var previousGroups = _processGroups.ToDictionary(x => x.Key);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"            var group = new ProcessGroupRow(family.Key, title, members, family.Members.Count)"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,                { IsExpanded = _groupExpansion.GetValueOrDefault(family.Key) };
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            foreach (var member in members) member.Group = group;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            if (!previousGroups.TryGetValue(family.Key, out var group))"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"                group = new ProcessGroupRow(family.Key, title, members, family.Members.Count)"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                    { IsExpanded = _groupExpansion.GetValueOrDefault(family.Key) };
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            else group.UpdateMembers(title, members, family.Members.Count);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            foreach (var member in members)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"                if (!ReferenceEquals(member.Group, group) && _visibleRows.Contains(member)) regroup = true;"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                member.Group = group;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            ProcessList.ItemsSource = visible;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"            ProcessList.ItemTemplate = (DataTemplate)FindResource(grouped ? ""ProcessMemberTemplate"" : ""ProcessCardTemplate"");"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            var processView = CollectionViewSource.GetDefaultView(ProcessList.ItemsSource);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            processView.GroupDescriptions.Clear();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            if (grouped) processView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ProcessRow.Group)));
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"            if (_sortMode == ""CPU"")"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,                var cpuView = CollectionViewSource.GetDefaultView(ProcessList.ItemsSource);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,                using (cpuView.DeferRefresh())
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            if (_groupedView != grouped)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"                ProcessList.ItemTemplate = (DataTemplate)FindResource(grouped ? ""ProcessMemberTemplate"" : ""ProcessCardTemplate"");"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                var processView = CollectionViewSource.GetDefaultView(ProcessList.ItemsSource);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                using (processView.DeferRefresh())
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                    if (grouped) cpuView.SortDescriptions.Add(new SortDescription(""Group.CpuPercent"", ListSortDirection.Descending));"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                    cpuView.SortDescriptions.Add(new SortDescription(nameof(ProcessRow.CpuPercent), ListSortDirection.Descending));"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                    cpuView.SortDescriptions.Add(new SortDescription(nameof(ProcessRow.MemoryDisplayMb), ListSortDirection.Descending));"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                    processView.SortDescriptions.Clear();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                    processView.GroupDescriptions.Clear();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                    if (grouped) processView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ProcessRow.Group)));
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"            if (_sortMode == ""Memoria"")"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,                var memoryView = CollectionViewSource.GetDefaultView(ProcessList.ItemsSource);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,                using (memoryView.DeferRefresh())
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,                {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                    if (grouped) memoryView.SortDescriptions.Add(new SortDescription(""Group.MemoryDisplayMb"", ListSortDirection.Descending));"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                    memoryView.SortDescriptions.Add(new SortDescription(""Process.PrivateWorkingSetAvailable"", ListSortDirection.Descending));"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                    memoryView.SortDescriptions.Add(new SortDescription(nameof(ProcessRow.MemoryAvailable), ListSortDirection.Descending));"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                    memoryView.SortDescriptions.Add(new SortDescription(nameof(ProcessRow.MemoryDisplayMb), ListSortDirection.Descending));"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,                }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                _groupedView = grouped;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            bool orderChanged = SynchronizeVisibleRows(visible, holdOrder);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            if (grouped && (regroup || orderChanged)) CollectionViewSource.GetDefaultView(ProcessList.ItemsSource).Refresh();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,                if (grouped && item.Group is not null) item.Group.IsExpanded = true;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                if (grouped && item.Group is not null && (!preserveScroll || allowInitialSelection)) item.Group.IsExpanded = true;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,                ClearDetails();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                if (_currentDetailRow is not null || !preserveScroll) ClearDetails();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,        if (preserveScroll && scrollViewer is not null)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,        {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"            Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,                scrollViewer.ScrollToVerticalOffset(previousVerticalOffset);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            }));
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,        }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"    private bool SynchronizeVisibleRows(IReadOnlyList<ProcessRow> desired, bool holdOrder)"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        var ordered = holdOrder ? desired : OrderVisibleRows(desired).ToArray();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        var previous = _visibleRows.ToArray();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"        ReadingPositionPolicy.Synchronize(_visibleRows, ordered, holdOrder);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        return !previous.SequenceEqual(_visibleRows);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    private IEnumerable<ProcessRow> OrderVisibleRows(IEnumerable<ProcessRow> rows)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        var sorted = ApplySort(rows);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        if (GroupApplicationsCheckBox.IsChecked != true) return sorted;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        return _sortMode switch
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            ""CPU"" => sorted.OrderByDescending(x => x.Group?.CpuPercent ?? 0),"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            ""Memoria"" => sorted.OrderByDescending(x => x.Group?.MemoryDisplayMb ?? 0),"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            _ => sorted
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        };
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    internal void RefreshLiveProcessOrder()
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        // Update values without moving the targets beneath a reader or pointer.
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        if (_listViewport?.HoldsOrder == true) return;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        using var update = _listViewport?.Begin();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"        bool changed = SynchronizeVisibleRows(_visibleRows.ToArray(), holdOrder: false);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        if (changed && GroupApplicationsCheckBox.IsChecked == true)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            CollectionViewSource.GetDefaultView(ProcessList.ItemsSource).Refresh();
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,before,"    public string Title => totalMembers == Members.Count ? $""{name} ({Members.Count})"" : $""{name} ({Members.Count}/{totalMembers})"";"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,before,    public IReadOnlyList<ProcessRow> Members { get; } = members;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"    public string Title => _totalMembers == Members.Count ? $""{_name} ({Members.Count})"" : $""{_name} ({Members.Count}/{_totalMembers})"";"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    public IReadOnlyList<ProcessRow> Members { get; private set; } = members;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    private string _name = name;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    private int _totalMembers = totalMembers;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"    internal void UpdateMembers(string title, IReadOnlyList<ProcessRow> rows, int total)"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    {
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,        _name = title; _totalMembers = total; Members = rows;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,        Refresh();
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Title)));"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IconSource)));"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    }
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,before,    <InformationalVersion>0.19.16-R10-R25-groups-filter-ports-tray-candidate</InformationalVersion>
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,after,    <InformationalVersion>0.19.16-R10-R26-scroll-native-minimize-candidate</InformationalVersion>
+src/ProcessLens.App/ProcessRow.cs,see patch,before,    public ProcessInsight Insight { get; } = insight;
+src/ProcessLens.App/ProcessRow.cs,see patch,after,    public ProcessInsight Insight { get; private set; } = insight;
+src/ProcessLens.App/ProcessRow.cs,see patch,after,    internal void UpdateFrom(ProcessRow next)
+src/ProcessLens.App/ProcessRow.cs,see patch,after,    {
+src/ProcessLens.App/ProcessRow.cs,see patch,after,        Process = next.Process; Insight = next.Insight;
+src/ProcessLens.App/ProcessRow.cs,see patch,after,"        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));"
+src/ProcessLens.App/ProcessRow.cs,see patch,after,    }
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,using System.Collections.ObjectModel;
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,namespace ProcessLens.App;
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,// One ticket per pending layout operation; no timers or retained history.
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,internal sealed class ReadingPositionPolicy
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,{
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,    private long _revision;
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,    public long Capture() => ++_revision;
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,    public void UserInput() => ++_revision;
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,    public bool IsCurrent(long ticket) => ticket == _revision;
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,"    public static bool HoldOrder(double offset, bool pointerWithin, bool keyboardWithin) =>"
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,        offset > 0.5 || pointerWithin || keyboardWithin;
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,"    public static void Synchronize<T>(ObservableCollection<T> target, IReadOnlyList<T> desired, bool holdOrder) where T : class"
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,    {
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,        var wanted = desired.ToHashSet();
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,        for (int i = target.Count - 1; i >= 0; i--) if (!wanted.Contains(target[i])) target.RemoveAt(i);
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,        if (holdOrder)
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,        {
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,            var existing = target.ToHashSet();
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,            foreach (var item in desired) if (existing.Add(item)) target.Add(item);
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,            return;
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,        }
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,        for (int i = 0; i < desired.Count; i++)
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,        {
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,"            if (i < target.Count && ReferenceEquals(target[i], desired[i])) continue;"
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,            int current = target.IndexOf(desired[i]);
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,"            if (current < 0) target.Insert(i, desired[i]);"
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,"            else target.Move(current, i);"
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,        }
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,    }
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,"    public static double AnchoredOffset(double currentOffset, double previousY, double currentY) =>"
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,"        Math.Max(0, currentOffset + currentY - previousY);"
+src/ProcessLens.App/ReadingPositionPolicy.cs,see patch,after,}
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"        _actions = new(action => window.Dispatcher.BeginInvoke(action), Minimize, Restore);"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        _actions = new(action => window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, action), Minimize, Restore);"
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"        var action = WindowLifetimePolicy.Close(_exitRequested, _exitRequested || EnsureTray());"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        var action = WindowLifetimePolicy.Close(_exitRequested, _trayPresent);"
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        EnsureTray();
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        // Explorer registration must not delay minimizing the owned window.
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        SystemCommands.MinimizeWindow(_window);
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        _window.WindowState = WindowState.Minimized;
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"        _window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        ShowWindow(_hwnd, 6); // SW_MINIMIZE, owned HWND only; no duplicate queued system command."
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        if (!IsIconic(_hwnd)) _window.WindowState = WindowState.Minimized;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        _window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, new Action(() =>"
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"            if (!IsIconic(_hwnd)) ShowWindow(_hwnd, 6); // SW_MINIMIZE: act on this owned HWND only."
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"            AppDiagnostics.Record($""Riduzione verificata: HWND ridotto={IsIconic(_hwnd)}, WPF={_window.WindowState}."");"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,            bool iconic = IsIconic(_hwnd);
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"            AppDiagnostics.Record($""Riduzione verificata R26: HWND ridotto={iconic}, WPF={_window.WindowState}."");"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"            if (!iconic) AppDiagnostics.Record(""Riduzione non confermata da Windows; usare Esci per chiudere ProcessLens."");"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        if (WindowLifetimePolicy.IsMinimizeMessage(message, wParam.ToInt64(), _exitRequested))"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        {
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,            RequestMinimize(); handled = true; return IntPtr.Zero;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        }
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,"    public static bool IsMinimizeMessage(int message, long parameter, bool exiting) =>"
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,        !exiting && (message == 0x0010 || (message == 0x0112 && (parameter & 0xFFF0) == 0xF020));
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,before,"<Compile Include=""../../src/ProcessLens.App/WindowLifetimePolicy.cs"" Link=""WindowLifetimePolicy.cs""/></ItemGroup></Project>"
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,after,"<Compile Include=""../../src/ProcessLens.App/WindowLifetimePolicy.cs"" Link=""WindowLifetimePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/ReadingPositionPolicy.cs"" Link=""ReadingPositionPolicy.cs""/></ItemGroup></Project>"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,// R26: exercise the actual reconciliation and cancellation policy used by WPF.
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,var position26 = new ReadingPositionPolicy();
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,long ticket26 = position26.Capture(); position26.UserInput();
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!position26.IsCurrent(ticket26), ""R26 user input cancels an older queued position"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,long second26 = position26.Capture(); long third26 = position26.Capture();
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!position26.IsCurrent(second26) && position26.IsCurrent(third26), ""R26 only the latest ticket may restore a viewport"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ReadingPositionPolicy.HoldOrder(250,false,false), ""R26 middle-page reading freezes rank"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ReadingPositionPolicy.HoldOrder(0,true,false) && ReadingPositionPolicy.HoldOrder(0,false,true), ""R26 pointer and keyboard targets do not move"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!ReadingPositionPolicy.HoldOrder(0,false,false), ""R26 automatic ranking resumes at top outside interaction"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ReadingPositionPolicy.AnchoredOffset(300,-10,-60)==250, ""R26 removal above retains the anchor screen position"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ReadingPositionPolicy.AnchoredOffset(300,-10,40)==350, ""R26 growth above retains the anchor screen position"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ReadingPositionPolicy.AnchoredOffset(0,10,0)==0, ""R26 anchor offset cannot be negative"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,var a26=new object();var b26=new object();var c26=new object();var new26=new object();
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var reading26=new System.Collections.ObjectModel.ObservableCollection<object>(new[]{a26,b26,c26});"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,var events26=new List<System.Collections.Specialized.NotifyCollectionChangedAction>();
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"reading26.CollectionChanged+=(_,e)=>events26.Add(e.Action);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"ReadingPositionPolicy.Synchronize(reading26,new[]{c26,new26,a26,b26},true);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(reading26.SequenceEqual(new[]{a26,b26,c26,new26}), ""R26 changed rank and a new PID retain reader order"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"ReadingPositionPolicy.Synchronize(reading26,new[]{new26,c26,b26},true);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(reading26.SequenceEqual(new[]{b26,c26,new26}), ""R26 exited PID disappears without reordering survivors"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"ReadingPositionPolicy.Synchronize(reading26,new[]{new26,c26,b26},false);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(reading26.SequenceEqual(new[]{new26,c26,b26}), ""R26 explicit sorting applies current ranking in place"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!events26.Contains(System.Collections.Specialized.NotifyCollectionChangedAction.Reset), ""R26 reconciliation never clears or resets the collection"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"events26.Clear();ReadingPositionPolicy.Synchronize(reading26,reading26.ToArray(),false);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(events26.Count==0, ""R26 unchanged inventory produces no collection events"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"ReadingPositionPolicy.Synchronize(reading26,Array.Empty<object>(),true);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(reading26.Count==0, ""R26 empty snapshot removes exited instances"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(WindowLifetimePolicy.IsMinimizeMessage(0x112,0xF022,false) && WindowLifetimePolicy.IsMinimizeMessage(0x10,0,false), ""R26 native minimize and close route to the owned window action"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!WindowLifetimePolicy.IsMinimizeMessage(0x112,0xF120,false) && !WindowLifetimePolicy.IsMinimizeMessage(0x10,0,true), ""R26 restore and explicit exit are not intercepted"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Console.WriteLine(""R26 reading and native-command policy regressions complete."");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,using System.Windows.Media;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        if(args.Contains(""--scroll-smoke"")) { ScrollSmoke();Application.Current.Shutdown();return; }"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        var stableSource=list.ItemsSource;var stableRow=list.Items[0];
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(ReferenceEquals(stableSource,list.ItemsSource) && ReferenceEquals(stableRow,list.Items[0]),""R26 metadata refresh retains collection and row identity"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        group.IsExpanded=false;Filter(main);Drain();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        group=(ProcessGroupRow)((CollectionViewGroup)CollectionViewSource.GetDefaultView(list.ItemsSource).Groups![0]!).Name;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(!group.IsExpanded,""R26 automatic refresh retains a collapsed group"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(window.WindowState==WindowState.Minimized,""R26 native and WPF minimized states agree"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        for(int pass=0;pass<5;pass++)
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        {
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            SendMessageW(hwnd,0x112,new IntPtr(0xF020),IntPtr.Zero);Until(()=>IsIconic(hwnd));"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,            controller.RequestRestore();Until(()=>!IsIconic(hwnd)&&window.IsVisible);
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        }
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    static T? Find<T>(DependencyObject parent) where T:DependencyObject
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    {
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        for(int i=0;i<VisualTreeHelper.GetChildrenCount(parent);i++)
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        {
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            var child=VisualTreeHelper.GetChild(parent,i);"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,            if(child is T match)return match;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,            if(Find<T>(child) is { } nested)return nested;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        }
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        return null;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    }
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    static void ScrollSmoke()
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    {
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        // Explicit visual fixture: real MainWindow XAML, automatic acquisition disabled."
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        var main=new MainWindow(false);var analyzer=new ProcessIntelligenceAnalyzer();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        var start=DateTime.UtcNow.AddMinutes(-2);
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        ProcessRow Make(int i)
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        {
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            var p=new ProcessSnapshot{Pid=2147400000+i,ParentPid=0,Name=""fixture.exe"",StartTime=start.AddSeconds(i),"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"                ExecutablePath=@""C:\ProcessLens-owned-fixture\fixture.exe"",IsDeepInspected=true,"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"                WorkingSetAvailable=true,WorkingSetBytes=(i+1)*1048576L};"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            return new(p,analyzer.Analyze(p));"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        }
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var rows=Enumerable.Range(0,150).Select(Make).ToList();Set(main,""_allRows"",rows);"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        ((CheckBox)main.FindName(""GroupApplicationsCheckBox"")).IsChecked=false;"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Set(main,""_sortMode"",""Memoria"");Filter(main);main.Show();Drain();main.UpdateLayout();"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var list=(ListView)main.FindName(""ProcessList"");var viewer=Find<ScrollViewer>(list)!;"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        viewer.ScrollToVerticalOffset(600);Drain();double listOffset=viewer.VerticalOffset;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(listOffset>100,""R26 visual fixture reaches middle of real virtualized list"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        var stableSource=list.ItemsSource;var stableOrder=list.Items.Cast<ProcessRow>().ToArray();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        foreach(var row in rows)row.UpdateCpu(null);
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        main.RefreshLiveProcessOrder();Drain();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(ReferenceEquals(list.ItemsSource,stableSource)&&list.Items.Cast<ProcessRow>().SequenceEqual(stableOrder),""R26 live rank tick preserves middle-page order"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var detail=(ScrollViewer)main.FindName(""ProcessDetailsScroll"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        detail.ScrollToVerticalOffset(500);Drain();double detailOffset=detail.VerticalOffset;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(detailOffset>100,""R26 visual fixture reaches middle of actual details panel"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        Filter(main);Drain();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(Math.Abs(viewer.VerticalOffset-listOffset)<1 && Math.Abs(detail.VerticalOffset-detailOffset)<1,""R26 metadata refresh preserves both viewports"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var guard=new AutomaticViewport(detail,()=>detail);"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        using(guard.Begin()) { ((SelectableText)main.FindName(""DetailOriginOperationText"")).Text=""Fixture updated""; }"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        guard.Cancel();detail.ScrollToVerticalOffset(700);Drain();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(Math.Abs(detail.VerticalOffset-700)<1,""R26 new scroll cancels older queued restoration"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        main.Close();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Console.WriteLine(""PASS R26 visual scrolling fixture; no process inventory, network, clipboard or tray registration."");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    }
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"    [DllImport(""user32.dll"")]static extern IntPtr SendMessageW(IntPtr hwnd,int message,IntPtr wParam,IntPtr lParam);"

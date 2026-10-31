@@ -1,0 +1,48 @@
+{
+  "baseline_sha256": "66139e181d3bcc684f1d4a492976f15b8ca1b08eed3aeb92d31d9b1a39e2d6dd",
+  "scope": "R13 explicit Wireshark integration, explicitly requested by the user",
+  "files": [
+    {
+      "file": "src/ProcessLens.App/NetworkCaptureView.xaml",
+      "sha256_before": null,
+      "sha256_after": "ab2ff483987000fcf488e88ea557e5c322d1ea569b021675c6ebc97de148a8ba",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    },
+    {
+      "file": "src/ProcessLens.App/NetworkCaptureView.xaml.cs",
+      "sha256_before": null,
+      "sha256_after": "0d8121d67b2c1bcea6583a977b1264b32cfd16e90bf10afbb35511c0a33561ef",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    },
+    {
+      "file": "src/ProcessLens.App/NetworkDevicesView.xaml",
+      "sha256_before": "73076d1ced9cc836143e477480a8ca43be76788537b11b866b7fe7692fa98f19",
+      "sha256_after": "da329abf2b56db4156b269bfd497cb481fbd5b5332eae582e58fbe8cbfe58c8c",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    },
+    {
+      "file": "src/ProcessLens.App/NetworkDevicesView.xaml.cs",
+      "sha256_before": "2f3df0250b11be262aa71d5b390c0f5d10a7e5439e722979d3533bcfa8d3dec5",
+      "sha256_after": "4dd9ff6ce4b46b18ddfd9a5ed868e3289ffc20e6bdee6d14427726c59e89d29f",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256_before": "3ce2dedb0f6cf84992b70ecb9d90f4f6fa462558677bca7f14c9b3bace7a121d",
+      "sha256_after": "e48a20de4057014e9df7dc2dbe66aaeed375abafdcfd1510fbd1a649f4843471",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    },
+    {
+      "file": "src/ProcessLens.Core/PacketCaptureEvidence.cs",
+      "sha256_before": null,
+      "sha256_after": "0da4633e63212c88813fc9c1b67fc9c1daca78ce1de958fb348160e71733f57c",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    },
+    {
+      "file": "src/ProcessLens.Windows/WiresharkTools.cs",
+      "sha256_before": null,
+      "sha256_after": "86c728599c1f679b8778c3792829eda117ab8175c50d507f757cc3c1c16a6564",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    }
+  ]
+}

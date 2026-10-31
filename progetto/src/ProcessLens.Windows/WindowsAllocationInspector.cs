@@ -1,0 +1,330 @@
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
+using ProcessLens.Core;
+
+namespace ProcessLens.Windows;
+
+/// <summary>
+/// On-demand, read-only Windows allocation-group inspector. Uses OS APIs, no memory
+/// content reads, code injection, suspend, decommit, write or remote executable.
+/// Bounded scan and bounded page samples; resolves mapped file/DLL basenames and page protection roles.
+/// </summary>
+public sealed class WindowsAllocationInspector
+{
+    private const uint MEM_COMMIT = 0x1000;
+    private const uint MEM_PRIVATE = 0x20000;
+    private const uint MEM_MAPPED = 0x40000;
+    private const uint MEM_IMAGE = 0x1000000;
+    private const uint PAGE_READONLY = 0x02;
+    private const uint PAGE_READWRITE = 0x04;
+    private const uint PAGE_WRITECOPY = 0x08;
+    private const uint PAGE_EXECUTE = 0x10;
+    private const uint PAGE_EXECUTE_READ = 0x20;
+    private const uint PAGE_EXECUTE_READWRITE = 0x40;
+    private const uint PAGE_EXECUTE_WRITECOPY = 0x80;
+    private const uint PAGE_GUARD = 0x100;
+    private const int MaxRegions = 25000;
+    private const int MaxGroupsToSample = 12;
+    private const int MaxSampledPages = 2500;
+    private static readonly TimeSpan MaxDuration = TimeSpan.FromSeconds(2);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct MemoryBasicInformation
+    {
+        public IntPtr BaseAddress;
+        public IntPtr AllocationBase;
+        public uint AllocationProtect;
+        public nuint RegionSize;
+        public uint State;
+        public uint Protect;
+        public uint Type;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct WorkingSetExInformation
+    {
+        public IntPtr VirtualAddress;
+        public nuint VirtualAttributes;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct ProcessMemoryCountersEx2
+    {
+        public uint cb;
+        public uint PageFaultCount;
+        public nuint PeakWorkingSetSize;
+        public nuint WorkingSetSize;
+        public nuint QuotaPeakPagedPoolUsage;
+        public nuint QuotaPagedPoolUsage;
+        public nuint QuotaPeakNonPagedPoolUsage;
+        public nuint QuotaNonPagedPoolUsage;
+        public nuint PagefileUsage;
+        public nuint PeakPagefileUsage;
+        public nuint PrivateUsage;
+        public nuint PrivateWorkingSetSize;
+        public ulong SharedCommitUsage;
+    }
+
+    private sealed class AllocationAccumulator
+    {
+        public ulong BaseAddress;
+        public string Kind = "OTHER";
+        public long CommittedBytes;
+        public int Regions;
+        public long ReadWriteBytes;
+        public long ExecutableBytes;
+        public long ReadOnlyBytes;
+        public long GuardBytes;
+        public string? ModuleOrPurpose;
+        public List<(ulong Address, ulong Size)> Ranges = new();
+        public int SampledPages;
+        public int ResidentPages;
+        public int SharedResidentPages;
+    }
+
+    [DllImport("kernel32.dll", EntryPoint = "VirtualQueryEx", SetLastError = true)]
+    private static extern nuint VirtualQueryEx(IntPtr process, IntPtr address,
+        out MemoryBasicInformation information, nuint size);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetProcessTimes(IntPtr process,
+        out long creation, out long exit, out long kernel, out long user);
+
+    [DllImport("psapi.dll", EntryPoint = "QueryWorkingSetEx", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool QueryWorkingSetEx(IntPtr process,
+        [In, Out] WorkingSetExInformation[] information, uint byteSize);
+
+    [DllImport("psapi.dll", EntryPoint = "GetProcessMemoryInfo", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetProcessMemoryInfo(
+        IntPtr process, ref ProcessMemoryCountersEx2 counters, uint size);
+
+    [DllImport("psapi.dll", EntryPoint = "GetMappedFileNameW", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern uint GetMappedFileNameW(
+        IntPtr process, IntPtr address, StringBuilder fileName, uint size);
+
+    public WindowsAllocationReport Capture(int pid, DateTime? expectedStartTime)
+    {
+        if (pid <= 4 || !expectedStartTime.HasValue)
+            return WindowsAllocationReport.Unavailable("PID o istanza iniziale non verificabile.");
+        IntPtr handle = IntPtr.Zero;
+        try
+        {
+            using (var process = Process.GetProcessById(pid))
+            {
+                if (process.StartTime != expectedStartTime.Value)
+                    return WindowsAllocationReport.Unavailable("PID riutilizzato: analisi annullata.");
+            }
+            handle = NativeMethods.OpenProcess(
+                NativeMethods.PROCESS_QUERY_INFORMATION | NativeMethods.PROCESS_VM_READ,
+                false, (uint)pid);
+            if (handle == IntPtr.Zero)
+                return WindowsAllocationReport.Unavailable("OpenProcess: accesso negato o processo protetto.");
+            if (!GetProcessTimes(handle, out long creation, out _, out _, out _) ||
+                DateTime.FromFileTimeUtc(creation).ToLocalTime() != expectedStartTime.Value)
+                return WindowsAllocationReport.Unavailable("Istanza non verificata tramite handle: risultato scartato.");
+
+            long peakWs = 0, peakCommit = 0, pagedPool = 0, nonPagedPool = 0;
+            uint pageFaults = 0;
+            var counters = new ProcessMemoryCountersEx2 { cb = (uint)Marshal.SizeOf<ProcessMemoryCountersEx2>() };
+            if (GetProcessMemoryInfo(handle, ref counters, counters.cb))
+            {
+                peakWs = (long)counters.PeakWorkingSetSize;
+                peakCommit = (long)counters.PeakPagefileUsage;
+                pageFaults = counters.PageFaultCount;
+                pagedPool = (long)counters.QuotaPagedPoolUsage;
+                nonPagedPool = (long)counters.QuotaNonPagedPoolUsage;
+            }
+
+            var stopwatch = Stopwatch.StartNew();
+            var map = new Dictionary<(ulong Base, uint Type), AllocationAccumulator>();
+            ulong position = 0;
+            ulong ceiling = IntPtr.Size == 8 ? 0x00007FFFFFFFFFFFUL : (ulong)int.MaxValue;
+            nuint infoSize = (nuint)Marshal.SizeOf<MemoryBasicInformation>();
+            int regions = 0;
+            bool truncated = false;
+            while (position < ceiling)
+            {
+                if (regions >= MaxRegions || stopwatch.Elapsed > MaxDuration)
+                {
+                    truncated = true;
+                    break;
+                }
+                if (VirtualQueryEx(handle, new IntPtr((long)position), out var v, infoSize) == 0)
+                    break;
+                regions++;
+                ulong address = unchecked((ulong)v.BaseAddress.ToInt64());
+                ulong length = (ulong)v.RegionSize;
+                if (length == 0 || address > ulong.MaxValue - length) break;
+                ulong next = address + length;
+                if (next <= position) break;
+                position = next;
+                if (v.State != MEM_COMMIT) continue;
+
+                ulong allocationBase = unchecked((ulong)v.AllocationBase.ToInt64());
+                var key = (allocationBase, v.Type);
+                if (!map.TryGetValue(key, out var group))
+                {
+                    group = new AllocationAccumulator { BaseAddress = allocationBase, Kind =
+                        v.Type switch { MEM_PRIVATE => "MEM_PRIVATE", MEM_IMAGE => "MEM_IMAGE",
+                                        MEM_MAPPED => "MEM_MAPPED", _ => "OTHER" } };
+                    map.Add(key, group);
+                }
+                group.Regions++;
+                long amount = length > (ulong)long.MaxValue ? long.MaxValue : (long)length;
+                group.CommittedBytes = group.CommittedBytes > long.MaxValue - amount
+                    ? long.MaxValue : group.CommittedBytes + amount;
+                group.Ranges.Add((address, length));
+
+                uint prot = v.Protect;
+                if ((prot & PAGE_GUARD) != 0) group.GuardBytes += amount;
+                else if ((prot & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY)) != 0)
+                    group.ExecutableBytes += amount;
+                else if ((prot & (PAGE_READWRITE | PAGE_WRITECOPY)) != 0)
+                    group.ReadWriteBytes += amount;
+                else if ((prot & PAGE_READONLY) != 0)
+                    group.ReadOnlyBytes += amount;
+            }
+            if (regions == 0)
+                return WindowsAllocationReport.Unavailable("VirtualQueryEx non ha fornito regioni accessibili.");
+
+            var largest = map.Values.OrderByDescending(g => g.CommittedBytes)
+                .Take(MaxGroupsToSample).ToArray();
+
+            // Resolve file/DLL basenames or memory protection roles for the largest allocation groups.
+            var pathBuffer = new StringBuilder(512);
+            foreach (var group in largest)
+            {
+                if (group.Kind is "MEM_IMAGE" or "MEM_MAPPED")
+                {
+                    pathBuffer.Clear();
+                    ulong probeAddr = group.Ranges.Count > 0 ? group.Ranges[0].Address : group.BaseAddress;
+                    uint len = GetMappedFileNameW(handle, new IntPtr((long)probeAddr), pathBuffer, (uint)pathBuffer.Capacity);
+                    if (len > 0)
+                    {
+                        string fileName = Path.GetFileName(pathBuffer.ToString().Trim());
+                        if (!string.IsNullOrWhiteSpace(fileName) && fileName.Length <= 80)
+                        {
+                            group.ModuleOrPurpose = group.Kind == "MEM_IMAGE"
+                                ? $"Modulo: {fileName}"
+                                : $"File mappato: {fileName}";
+                            continue;
+                        }
+                    }
+                    group.ModuleOrPurpose = group.Kind == "MEM_IMAGE" ? "Modulo eseguibile/DLL" : "Sezione/file mappato";
+                }
+                else if (group.Kind == "MEM_PRIVATE")
+                {
+                    if (group.ExecutableBytes > group.CommittedBytes / 4)
+                        group.ModuleOrPurpose = "Codice compilato JIT / Runtime (RX/RWX)";
+                    else if (group.GuardBytes > 0 && group.CommittedBytes <= 8 * 1024 * 1024)
+                        group.ModuleOrPurpose = "Stack di esecuzione thread";
+                    else if (group.ReadWriteBytes >= group.ReadOnlyBytes)
+                        group.ModuleOrPurpose = group.CommittedBytes >= 16 * 1024 * 1024
+                            ? "Grande buffer / Heap primario (RW)"
+                            : "Heap / Strutture dati dinamiche (RW)";
+                    else
+                        group.ModuleOrPurpose = "Tabelle / Dati privati sola lettura (R)";
+                }
+            }
+
+            int pageSize = Environment.SystemPageSize;
+            var samples = new List<(AllocationAccumulator Owner, WorkingSetExInformation Info)>();
+            if (stopwatch.Elapsed < MaxDuration && pageSize > 0)
+            {
+                foreach (var group in largest)
+                {
+                    if (samples.Count >= MaxSampledPages || stopwatch.Elapsed > MaxDuration) break;
+                    int rangesToProbe = Math.Min(group.Ranges.Count, 64);
+                    for (int r = 0; r < rangesToProbe; r++)
+                    {
+                        if (samples.Count >= MaxSampledPages) break;
+                        var range = group.Ranges[(int)((long)r * group.Ranges.Count / rangesToProbe)];
+                        // Stratified probes, a few pages per selected region, NOT full residency.
+                        ulong pageCount = Math.Max(1UL, range.Size / (ulong)pageSize);
+                        int probes = (int)Math.Min(4UL, pageCount);
+                        for (int k = 0; k < probes && samples.Count < MaxSampledPages; k++)
+                        {
+                            ulong offsetPages = ((ulong)(2 * k + 1) * pageCount) / (ulong)(2 * probes);
+                            ulong address = range.Address + offsetPages * (ulong)pageSize;
+                            // Prevent probing an address after an irregular final region page.
+                            if (address >= range.Address + range.Size) continue;
+                            samples.Add((group, new WorkingSetExInformation
+                            {
+                                VirtualAddress = new IntPtr((long)address)
+                            }));
+                        }
+                    }
+                }
+            }
+            bool sampleSuccess = false;
+            if (samples.Count > 0 && stopwatch.Elapsed < MaxDuration)
+            {
+                // QueryWorkingSetEx is batched to avoid excessive P/Invoke overhead.
+                const int BatchSize = 256;
+                sampleSuccess = true;
+                for (int offset = 0; offset < samples.Count; offset += BatchSize)
+                {
+                    if (stopwatch.Elapsed > MaxDuration) { truncated = true; sampleSuccess = false; break; }
+                    int count = Math.Min(BatchSize, samples.Count - offset);
+                    var buffer = new WorkingSetExInformation[count];
+                    for (int i = 0; i < count; i++) buffer[i] = samples[offset + i].Info;
+                    uint bytes = (uint)(count * Marshal.SizeOf<WorkingSetExInformation>());
+                    if (!QueryWorkingSetEx(handle, buffer, bytes))
+                    { sampleSuccess = false; break; }
+                    for (int i = 0; i < count; i++)
+                    {
+                        var group = samples[offset + i].Owner;
+                        group.SampledPages++;
+                        ulong flags = (ulong)buffer[i].VirtualAttributes;
+                        if (!WorkingSetPageFlags.IsValid(flags)) continue;
+                        group.ResidentPages++;
+                        if (WorkingSetPageFlags.IsShared(flags)) group.SharedResidentPages++;
+                    }
+                }
+            }
+            // Don't output half-sampled counters after an API failure or timeout.
+            if (!sampleSuccess)
+                foreach (var group in largest)
+                    group.SampledPages = group.ResidentPages = group.SharedResidentPages = 0;
+
+            // A process can exit mid-capture. Validate opened handle after enumeration.
+            if (!GetProcessTimes(handle, out long finalCreation, out _, out _, out _) ||
+                finalCreation != creation)
+                return WindowsAllocationReport.Unavailable("Istanza cambiata durante l'analisi; dati annullati.");
+
+            long total = 0;
+            foreach (var group in map.Values)
+                total = group.CommittedBytes > long.MaxValue - total
+                    ? long.MaxValue : total + group.CommittedBytes;
+            return new WindowsAllocationReport(true,
+                sampleSuccess ? "VirtualQueryEx + QueryWorkingSetEx: letture completate su campione." :
+                    "VirtualQueryEx completata/parziale; QueryWorkingSetEx non disponibile o tempo esaurito.",
+                regions, map.Count, total,
+                sampleSuccess ? largest.Sum(g => g.SampledPages) : 0,
+                sampleSuccess ? largest.Sum(g => g.ResidentPages) : 0,
+                sampleSuccess ? largest.Sum(g => g.SharedResidentPages) : 0,
+                sampleSuccess, truncated,
+                largest.Select(g => new WindowsAllocationGroup(g.BaseAddress, g.Kind,
+                    g.CommittedBytes, g.Regions, sampleSuccess ? g.SampledPages : 0,
+                    sampleSuccess ? g.ResidentPages : 0,
+                    sampleSuccess ? g.SharedResidentPages : 0,
+                    g.ModuleOrPurpose)).ToArray(),
+                peakWs, peakCommit, pageFaults, pagedPool, nonPagedPool);
+        }
+        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or
+            Win32Exception or UnauthorizedAccessException or OverflowException)
+        {
+            return WindowsAllocationReport.Unavailable("Windows non consente la lettura: " + ex.GetType().Name);
+        }
+        finally
+        {
+            if (handle != IntPtr.Zero) NativeMethods.CloseHandle(handle);
+        }
+    }
+}

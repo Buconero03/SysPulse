@@ -1,0 +1,233 @@
+ysical versus committed explained
+PASS memory trend given with evidence
+PASS virtual map separated from physical pages
+PASS safe next steps
+PASS does not fabricate leak
+PASS actual physical private MiB present
+PASS unavailable metrics not fabricated
+Process behavior explanation tests passed.
+PASS R7 health does not treat missing CPU as zero
+PASS R7 established socket without CPU does not exclude a stall
+PASS R7 high CPU does not establish process health
+PASS R7 partial network acquisition preserves error and does not assert absence
+PASS R7 family sockets do not prove delegation or erase direct listener
+PASS R7 launch text is not verified work progress
+PASS R7 title indicator source is explicit and private title omitted
+PASS R7 ETA range is arithmetic scenario rather than calibrated confidence
+PASS R7 equal endpoints do not prove stable intermediate usage
+PASS R7 CPU window is bounded and may be shorter than thirty seconds
+R7 behavior source and inference regressions passed.
+PASS R7 R1 port wording reaches network: Ha porte aperte?
+PASS R7 R1 port wording reaches network: Ha una porta aperta?
+PASS R7 R1 port wording reaches network: Quali PORTE sono aperte?
+PASS R7 R1 port wording reaches network: Open port?
+PASS R7 R1 port wording reaches network: Open ports?
+PASS R7 R1 embedded porta does not add Network: Il consumo di RAM comporta problemi?
+PASS R7 R1 embedded porta does not add Network: Riporta il consumo di RAM
+PASS R7 R1 embedded porta does not add Network: Supporta il confronto RAM?
+R7 R1 network question routing regressions passed.
+Test terminologia e confini tra regole e osservazioni...
+PASS terminology: highest score describes rule correspondence
+PASS terminology: medium score is not called certain
+PASS terminology: unknown is not certainty
+PASS terminology: high classifier uses a concise, qualified label
+PASS terminology: partial role has clear label
+PASS terminology: insufficient score admits uncertainty
+PASS terminology: internal background category does not imply inactivity
+PASS terminology: other internal categories retained
+PASS terminology: unidentified process remains unidentified
+PASS terminology: classification clearly distinguished from direct measurement
+PASS terminology: internal rule identifiers remain hidden from summary
+PASS terminology: percentages do not appear as statistical confidence
+PASS terminology: function label does not claim moment-by-moment activity
+PASS terminology: renderer recognized by rules rather than fabricated evidence
+PASS terminology: raw evidence retained in diagnostics
+PASS terminology: Electron Node utility uses a professional term
+PASS terminology: Node utility summary is concise
+PASS terminology: reason for execution not invented from command line
+PASS terminology: classification cites its evidence type
+PASS terminology: role classification does not prove live activity
+PASS terminology: raw technical evidence preserved separately
+PASS terminology: UI identity comes from actual Windows snapshot
+PASS terminology: UI association explains why conda is proposed without claiming ownership
+PASS terminology: UI role distinguishes classification from observed activity and avoids numeric confidence
+PASS terminology: command line options are separated for display
+PASS terminology: original command line remains unchanged
+PASS terminology: visual line breaks preserve each command argument byte
+PASS terminology: quoted content not broken into false parameters
+PASS terminology: missing command line is explicit
+PASS terminology: technical facts are organized without losing original values
+PASS terminology: origin evidence has its own section
+PASS terminology: role evidence is separated from observed behavior
+PASS terminology: repetitive confidence phrases removed from evidence
+PASS terminology: technical role evidence kept under an explicit label
+PASS terminology: classification facts include actual executable identity
+PASS terminology: classification explains the concrete renderer parameter
+PASS terminology: classification summary excludes internal rule identifiers and sensitive arguments
+PASS terminology: classification explicitly states what has not been observed
+PASS terminology: unknown process cannot acquire an invented function
+PASS terminology: risk badge does not present a false precise grade
+PASS terminology: generic Windows product name does not hide executable identity
+PASS terminology: classification audit separates rule score from statistical probabilities
+PASS terminology: classification audit has a distinct role evidence section
+PASS terminology: classification audit never mutates original evidence
+PASS terminology: bounded audit rendering points to original evidence without fabricating details
+PASS terminology: audit labels avoid internal classifier wording
+PASS terminology: long metadata evidence renders as separately labelled fields
+PASS terminology: publisher metadata is displayed with a precise label
+PASS terminology: internal rule identifier stays in opt-in technical evidence
+PASS terminology: original semicolon-separated evidence remains unmodified
+PASS terminology: data source has a dedicated UI field
+PASS terminology: classification limitations do not repeat within the same facts panel
+Terminology and evidence boundary tests passed, including v0.19.15 controlled vocabulary.
+PASS terminology: TCP LISTEN reports socket state, not accepted client requests
+PASS terminology: TCP LISTEN explicitly declares accepted requests and byte transfers are not measured
+PASS terminology: TCP LISTEN retains the directly observed socket as technical evidence
+PASS terminology: TCP LISTEN user report separates socket state from unmeasured traffic
+PASS terminology: TCP ESTABLISHED does not infer byte transfer
+PASS terminology: network explanation separates observations from unmeasured traffic
+PASS terminology: matching parent name does not establish verified process instance
+PASS terminology: homonymous parent requires PID plus start-time verification
+PASS terminology: Chromium GPU label cites precise start parameter
+PASS terminology: GPU process role cannot prove current graphics operation
+PASS terminology: R7 role does not invent launch cause: 701
+PASS terminology: R7 launch limitation explicit: 701
+PASS terminology: R7 role does not invent launch cause: 702
+PASS terminology: R7 launch limitation explicit: 702
+PASS terminology: R7 role does not invent launch cause: 703
+PASS terminology: R7 launch limitation explicit: 703
+PASS terminology: R7 role does not invent launch cause: 704
+PASS terminology: R7 launch limitation explicit: 704
+PASS terminology: R7 role does not invent launch cause: 705
+PASS terminology: R7 launch limitation explicit: 705
+PASS terminology: R7 role does not invent launch cause: 706
+PASS terminology: R7 launch limitation explicit: 706
+PASS terminology: R7 role does not invent launch cause: 707
+PASS terminology: R7 launch limitation explicit: 707
+PASS terminology: R7 role does not invent launch cause: 708
+PASS terminology: R7 launch limitation explicit: 708
+PASS terminology: R7 visible window and children do not prove coordination
+PASS terminology: R7 updater name does not prove an active update
+PASS terminology: R7 crash handler name does not prove readiness
+PASS terminology: R7 critical flag does not identify launch cause
+PASS terminology: R7 no known runtime does not prove native execution
+R7 terminology contextual regressions passed.
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe -c multiprocessing.forkserver
+R7 R2 multiprocessing provenance regressions passed.
+Test formattazione numerica, durate e rete (it-IT/en-US)...
+PASS presentation: percent with separated unit [it-IT]: 26,0┬á%
+PASS presentation: sample interval with culture and unit [it-IT]: 16,5┬ás
+PASS presentation: screenshot CPU time, rounded display [it-IT]: 10┬ámin 36,063┬ás
+PASS presentation: genuinely measured zero [it-IT]: 0┬áms
+PASS presentation: positive sub-millisecond is not zero [it-IT]: < 1┬áms
+PASS presentation: one millisecond [it-IT]: 1┬áms
+PASS presentation: ten milliseconds, no leading zero [it-IT]: 10┬áms
+PASS presentation: sub-second rounding [it-IT]: 63┬áms
+PASS presentation: one second, no tick suffix [it-IT]: 1┬ás
+PASS presentation: fractional seconds [it-IT]: 16,5┬ás
+PASS presentation: carry into a second [it-IT]: 1┬ás
+PASS presentation: carry into a minute [it-IT]: 1┬ámin 0┬ás
+PASS presentation: carry into an hour [it-IT]: 1┬áh 0┬ás
+PASS presentation: carry into a day [it-IT]: 1┬ág 0┬ás
+PASS presentation: multi-day CPU time [it-IT]: 1┬ág 1┬áh 1┬ámin 1,125┬ás
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid interval is unavailable [it-IT]: N/D
+PASS presentation: invalid CPU percentage is unavailable [it-IT]: N/D
+PASS presentation: invalid interval is unavailable [it-IT]: N/D
+PASS presentation: invalid CPU percentage is unavailable [it-IT]: N/D
+PASS presentation: invalid interval is unavailable [it-IT]: N/D
+PASS presentation: invalid CPU percentage is unavailable [it-IT]: N/D
+PASS presentation: pending inspection has no invented zero [it-IT]
+PASS presentation: partial acquisition retains error and limits [it-IT]
+PASS presentation: direct counters and ports have separate lines [it-IT]
+PASS presentation: group counters separated from selected PID [it-IT]
+PASS presentation: role and related socket owner preserved [it-IT]
+PASS presentation: layout does not invent delegation or absence [it-IT]
+PASS presentation: related-process fallback and missing note [it-IT]
+PASS presentation: presentation preserves source counters and errors [it-IT]
+PASS presentation: percent with separated unit [en-US]: 26.0┬á%
+PASS presentation: sample interval with culture and unit [en-US]: 16.5┬ás
+PASS presentation: screenshot CPU time, rounded display [en-US]: 10┬ámin 36.063┬ás
+PASS presentation: genuinely measured zero [en-US]: 0┬áms
+PASS presentation: positive sub-millisecond is not zero [en-US]: < 1┬áms
+PASS presentation: one millisecond [en-US]: 1┬áms
+PASS presentation: ten milliseconds, no leading zero [en-US]: 10┬áms
+PASS presentation: sub-second rounding [en-US]: 63┬áms
+PASS presentation: one second, no tick suffix [en-US]: 1┬ás
+PASS presentation: fractional seconds [en-US]: 16.5┬ás
+PASS presentation: carry into a second [en-US]: 1┬ás
+PASS presentation: carry into a minute [en-US]: 1┬ámin 0┬ás
+PASS presentation: carry into an hour [en-US]: 1┬áh 0┬ás
+PASS presentation: carry into a day [en-US]: 1┬ág 0┬ás
+PASS presentation: multi-day CPU time [en-US]: 1┬ág 1┬áh 1┬ámin 1.125┬ás
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid interval is unavailable [en-US]: N/D
+PASS presentation: invalid CPU percentage is unavailable [en-US]: N/D
+PASS presentation: invalid interval is unavailable [en-US]: N/D
+PASS presentation: invalid CPU percentage is unavailable [en-US]: N/D
+PASS presentation: invalid interval is unavailable [en-US]: N/D
+PASS presentation: invalid CPU percentage is unavailable [en-US]: N/D
+PASS presentation: pending inspection has no invented zero [en-US]
+PASS presentation: partial acquisition retains error and limits [en-US]
+PASS presentation: direct counters and ports have separate lines [en-US]
+PASS presentation: group counters separated from selected PID [en-US]
+PASS presentation: role and related socket owner preserved [en-US]
+PASS presentation: layout does not invent delegation or absence [en-US]
+PASS presentation: related-process fallback and missing note [en-US]
+PASS presentation: presentation preserves source counters and errors [en-US]
+Presentation regressions complete (it-IT + en-US).
+Test copia testo, rapporti e tabelle...
+PASS copy: full body, closed sections and unheaded paragraphs preserved exactly
+PASS copy: visible measurement log included
+PASS copy: empty optional fields do not rewrite body
+PASS copy: no extra process metadata appended
+PASS copy: TSV retains tabs, newlines, quotes and missing-value labels
+PASS copy: copy preserves rendered decimal culture it-IT
+PASS copy: copy preserves rendered decimal culture en-US
+Test WPF copia e caricamento markup, senza avvio monitor o clipboard reale...
+PASS copy UI: output stays read-only and has no undo history
+PASS copy UI: copy selection disabled when nothing selected
+PASS copy UI: native Copy command enabled for selection
+PASS copy UI: Copy command returns exactly selected Unicode text
+PASS copy UI: Copy all returns whole block without changing selection
+PASS copy UI: copy does not rewrite selection
+Unhandled exception. System.Exception: FAIL copy UI: multiline output measures at finite height
+   at Program.Check(Boolean ok, String label) in D:\.A2\ProcessLens-v0.19.16-R10-R1-copy-review-candidate\ProcessLens-v0.19.16-R10\tests\ProcessLens.CopyUiTests\Program.cs:line 12
+   at Program.Main() in D:\.A2\ProcessLens-v0.19.16-R10-R1-copy-review-candidate\ProcessLens-v0.19.16-R10\tests\ProcessLens.CopyUiTests\Program.cs:line 38
+
+[ERRORE COMPILAZIONE] PL-BUILD-5002 | Fase: Tests.ProcessLens.CopyUiTests
+Progetto: .\tests\ProcessLens.CopyUiTests\ProcessLens.CopyUiTests.csproj | Exit code: -532462766
+Fasi successive: NON ESEGUITE. Vedere il messaggio compiler completo sopra e build.jsonl.
+
+[ERRORE] Operazione interrotta: PL-BUILD-5002: fase Tests.ProcessLens.CopyUiTests non riuscita, codice compilatore non disponibile, exit code -532462766
+[DETTAGLIO] Tipo eccezione: RuntimeException
+[DETTAGLIO] HRESULT: 0x80131501
+[DETTAGLIO] Sorgente: build-diagnostics.ps1
+Log eventi strutturati: %LOCALAPPDATA%\ProcessLens\logs\build.jsonl
+Sequenza interrotta. Controlla l errore prima di riprovare; Guardian non e stato modificato.
+PS D:\.A2\ProcessLens-v0.19.16-R10-R1-copy-review-candidate\ProcessLens-v0.19.16-R10>

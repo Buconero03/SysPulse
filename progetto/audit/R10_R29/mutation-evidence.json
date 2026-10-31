@@ -1,0 +1,65 @@
+[
+  {
+    "mutation": "override-specific-native-icon",
+    "expected_failure": "R28 Explorer or another Windows component keeps its distinct executable icon",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/IconPreferencePolicy.cs",
+    "production_sha256": "b81afb84463143b32e4b38dfd374e80de91536048bfa7158542e4176b9ff578a",
+    "test_sha256": "7c3a79b5796ea721ff3692d95bf300dfc2cf9a40bec7a9358282a5a0cac39737"
+  },
+  {
+    "mutation": "defer-ordinary-click",
+    "expected_failure": "R28 explicit minimize acts before the queued dispatcher turn",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/WindowLifetimePolicy.cs",
+    "production_sha256": "efcd0a6e83c1781dc9f4c148b4071a1c89d8933f164039cb7ecfd4876e077d43",
+    "test_sha256": "7c3a79b5796ea721ff3692d95bf300dfc2cf9a40bec7a9358282a5a0cac39737"
+  },
+  {
+    "mutation": "stale-restore-after-minimize",
+    "expected_failure": "R28 old queued restore cannot undo an immediate minimize",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/WindowLifetimePolicy.cs",
+    "production_sha256": "efcd0a6e83c1781dc9f4c148b4071a1c89d8933f164039cb7ecfd4876e077d43",
+    "test_sha256": "7c3a79b5796ea721ff3692d95bf300dfc2cf9a40bec7a9358282a5a0cac39737"
+  },
+  {
+    "mutation": "synchronous-window-log",
+    "expected_failure": "R28 window logging never writes from the caller thread",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/DeferredDiagnosticWriter.cs",
+    "production_sha256": "5c0cb0d2599d4868872a81a8a8a4a56fcb7201b36e40fa4ab10f7cf803742f55",
+    "test_sha256": "7c3a79b5796ea721ff3692d95bf300dfc2cf9a40bec7a9358282a5a0cac39737"
+  },
+  {
+    "mutation": "generic-icon-hides-resource",
+    "expected_failure": "R29 embedded executable icon replaces only a generic Shell icon",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/NativeIconPreference.cs",
+    "production_sha256": "65cb2a0d4fa4cdeabb8a15579943c008d60cb2f2d9dd01679a08784eaa50c7fe",
+    "test_sha256": "7c3a79b5796ea721ff3692d95bf300dfc2cf9a40bec7a9358282a5a0cac39737"
+  },
+  {
+    "mutation": "unbounded-window-journal",
+    "expected_failure": "R29 journal retains at most its fixed capacity",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/WindowDiagnosticJournal.cs",
+    "production_sha256": "ad86e50c65f6d85f1070000df0e5204b084107880ea20460d211cae5884a7ff0",
+    "test_sha256": "7c3a79b5796ea721ff3692d95bf300dfc2cf9a40bec7a9358282a5a0cac39737"
+  },
+  {
+    "mutation": "culture-sensitive-window-clock",
+    "expected_failure": "R29 trace captures event time and invariant monotonic elapsed time",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/WindowDiagnosticJournal.cs",
+    "production_sha256": "ad86e50c65f6d85f1070000df0e5204b084107880ea20460d211cae5884a7ff0",
+    "test_sha256": "7c3a79b5796ea721ff3692d95bf300dfc2cf9a40bec7a9358282a5a0cac39737"
+  }
+]

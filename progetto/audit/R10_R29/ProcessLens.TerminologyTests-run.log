@@ -1,0 +1,107 @@
+PASS terminology: highest score describes rule correspondence
+PASS terminology: medium score is not called certain
+PASS terminology: unknown is not certainty
+PASS terminology: high classifier uses a concise, qualified label
+PASS terminology: partial role has clear label
+PASS terminology: insufficient score admits uncertainty
+PASS terminology: internal background category does not imply inactivity
+PASS terminology: other internal categories retained
+PASS terminology: unidentified process remains unidentified
+PASS terminology: classification clearly distinguished from direct measurement
+PASS terminology: internal rule identifiers remain hidden from summary
+PASS terminology: percentages do not appear as statistical confidence
+PASS terminology: function label does not claim moment-by-moment activity
+PASS terminology: renderer recognized by rules rather than fabricated evidence
+PASS terminology: raw evidence retained in diagnostics
+PASS terminology: Electron Node utility uses a professional term
+PASS terminology: Node utility summary is concise
+PASS terminology: reason for execution not invented from command line
+PASS terminology: classification cites its evidence type
+PASS terminology: role classification does not prove live activity
+PASS terminology: raw technical evidence preserved separately
+PASS terminology: UI identity comes from actual Windows snapshot
+PASS terminology: UI association explains why conda is proposed without claiming ownership
+PASS terminology: UI role distinguishes classification from observed activity and avoids numeric confidence
+PASS terminology: command line options are separated for display
+PASS terminology: original command line remains unchanged
+PASS terminology: visual line breaks preserve each command argument byte
+PASS terminology: quoted content not broken into false parameters
+PASS terminology: missing command line is explicit
+PASS terminology: technical facts are organized without losing original values
+PASS terminology: origin evidence has its own section
+PASS terminology: role evidence is separated from observed behavior
+PASS terminology: repetitive confidence phrases removed from evidence
+PASS terminology: technical role evidence kept under an explicit label
+PASS terminology: classification facts include actual executable identity
+PASS terminology: classification explains the concrete renderer parameter
+PASS terminology: classification summary excludes internal rule identifiers and sensitive arguments
+PASS terminology: classification explicitly states what has not been observed
+PASS terminology: unknown process cannot acquire an invented function
+PASS terminology: risk badge does not present a false precise grade
+PASS terminology: generic Windows product name does not hide executable identity
+PASS terminology: classification audit separates rule score from statistical probabilities
+PASS terminology: classification audit has a distinct role evidence section
+PASS terminology: classification audit never mutates original evidence
+PASS terminology: bounded audit rendering points to original evidence without fabricating details
+PASS terminology: audit labels avoid internal classifier wording
+PASS terminology: long metadata evidence renders as separately labelled fields
+PASS terminology: publisher metadata is displayed with a precise label
+PASS terminology: internal rule identifier stays in opt-in technical evidence
+PASS terminology: original semicolon-separated evidence remains unmodified
+PASS terminology: data source has a dedicated UI field
+PASS terminology: classification limitations do not repeat within the same facts panel
+Terminology and evidence boundary tests passed, including v0.19.15 controlled vocabulary.
+PASS terminology: TCP LISTEN reports socket state, not accepted client requests
+PASS terminology: TCP LISTEN explicitly declares accepted requests and byte transfers are not measured
+PASS terminology: TCP LISTEN retains the directly observed socket as technical evidence
+PASS terminology: TCP LISTEN user report separates socket state from unmeasured traffic
+PASS terminology: TCP ESTABLISHED does not infer byte transfer
+PASS terminology: network explanation separates observations from unmeasured traffic
+PASS terminology: matching parent name does not establish verified process instance
+PASS terminology: homonymous parent requires PID plus start-time verification
+PASS terminology: Chromium GPU label cites precise start parameter
+PASS terminology: GPU process role cannot prove current graphics operation
+PASS terminology: R7 role does not invent launch cause: 701
+PASS terminology: R7 launch limitation explicit: 701
+PASS terminology: R7 role does not invent launch cause: 702
+PASS terminology: R7 launch limitation explicit: 702
+PASS terminology: R7 role does not invent launch cause: 703
+PASS terminology: R7 launch limitation explicit: 703
+PASS terminology: R7 role does not invent launch cause: 704
+PASS terminology: R7 launch limitation explicit: 704
+PASS terminology: R7 role does not invent launch cause: 705
+PASS terminology: R7 launch limitation explicit: 705
+PASS terminology: R7 role does not invent launch cause: 706
+PASS terminology: R7 launch limitation explicit: 706
+PASS terminology: R7 role does not invent launch cause: 707
+PASS terminology: R7 launch limitation explicit: 707
+PASS terminology: R7 role does not invent launch cause: 708
+PASS terminology: R7 launch limitation explicit: 708
+PASS terminology: R7 visible window and children do not prove coordination
+PASS terminology: R7 updater name does not prove an active update
+PASS terminology: R7 crash handler name does not prove readiness
+PASS terminology: R7 critical flag does not identify launch cause
+PASS terminology: R7 no known runtime does not prove native execution
+R7 terminology contextual regressions passed.
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe -c multiprocessing.forkserver
+R7 R2 multiprocessing provenance regressions passed.
+PASS terminology: R11 unknown summary is concise without inventing a function
+PASS terminology: R11 subprocess summary keeps the observed count
+PASS terminology: R11 current and legacy memory labels remain in resource facts

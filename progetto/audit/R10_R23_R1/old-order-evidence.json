@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "kind": "LAB / SIMULATED WIN32; NOT native Windows",
+  "old_order_expected_failure_reproduced": true,
+  "mutant_exit_code": -6,
+  "production_source_sha256": "5dd1fbac7267502c4613d839a1ddfede49db227458b29049d80071f20eaeb71e",
+  "test_sha256": "2c31781c297193e1965c73a3490d007a6a0f325168383b35005645ac76f8819c",
+  "mutant_source_sha256": "553f9b664047963ed70f74e3ebac547ee85f6742fa73632290766ba952e60a0b",
+  "mutant_is_delivered": false
+}

@@ -1,0 +1,178 @@
+file,line,before_or_after,changed_text
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,before,    <InformationalVersion>0.19.16-R10-R19-system-layout-ram-candidate</InformationalVersion>
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,after,    <InformationalVersion>0.19.16-R10-R22-system-coverage-candidate</InformationalVersion>
+src/ProcessLens.App/SystemProcessesView.xaml,see patch,before,"   <local:SelectableText Text=""Kernel, sessioni, servizi e sicurezza. Un campione manuale, organizzato per funzione."""
+src/ProcessLens.App/SystemProcessesView.xaml,see patch,after,"   <local:SelectableText Text=""Kernel, sessioni, servizi e sicurezza. Catalogo mirato, non un elenco completo di Windows. R22"""
+src/ProcessLens.App/SystemProcessesView.xaml,see patch,after,"   <local:SelectableText x:Name=""SystemCoverageText"" Text=""Copertura: N/D"" TextWrapping=""Wrap"" Margin=""0,5,0,0""/>"
+src/ProcessLens.App/SystemProcessesView.xaml,see patch,before,"   <local:SelectableText Text=""Catalogo mirato di 17 componenti: nome e percorso previsto, oppure nome con percorso N/D. Firma digitale non verificata. Non è un elenco completo di Windows."""
+src/ProcessLens.App/SystemProcessesView.xaml,see patch,after,"   <local:SelectableText Text=""Una riga riunisce più istanze: selezionala per vedere ogni PID. I conteggi includono solo le voci restituite dalla fonte, anche con dettagli N/D. La firma digitale non è verificata."""
+src/ProcessLens.App/SystemProcessesView.xaml.cs,see patch,after,"            SystemCoverageText.Text = ""Copertura: N/D"";"
+src/ProcessLens.App/SystemProcessesView.xaml.cs,see patch,after,"        SystemCoverageText.Text = ""Copertura: lettura in corso."";"
+src/ProcessLens.App/SystemProcessesView.xaml.cs,see patch,before,"            SystemSourceText.Text = result.Source + ""\n"" + result.Note;"
+src/ProcessLens.App/SystemProcessesView.xaml.cs,see patch,after,            string coverage = WindowsComponentCatalog.CoverageReport(result);
+src/ProcessLens.App/SystemProcessesView.xaml.cs,see patch,after,            SystemCoverageText.Text = coverage.Split('\n')[0];
+src/ProcessLens.App/SystemProcessesView.xaml.cs,see patch,after,"            SystemSourceText.Text = result.Source + ""\n"" + result.Note + ""\n\n"" + coverage;"
+src/ProcessLens.App/SystemProcessesView.xaml.cs,see patch,before,"            { SystemStatusText.Text = ""Lettura non disponibile.""; SystemSourceText.Text = ex.Message; }"
+src/ProcessLens.App/SystemProcessesView.xaml.cs,see patch,after,"            { SystemStatusText.Text = ""Lettura non disponibile.""; SystemCoverageText.Text = ""Copertura: N/D""; SystemSourceText.Text = ex.Message; }"
+src/ProcessLens.App/SystemProcessesView.xaml.cs,see patch,before,"        SystemStatusText.Text = $""Campione {c.CapturedUtc.ToLocalTime():HH:mm:ss} · {visible.Count} componenti mostrati · {c.Processes.Count} istanze nel catalogo"" +"
+src/ProcessLens.App/SystemProcessesView.xaml.cs,see patch,before,"            (c.Partial ? "" · fonte alternativa / dati parziali"" : """") + "" · aggiornamento manuale"";"
+src/ProcessLens.App/SystemProcessesView.xaml.cs,see patch,after,"        SystemStatusText.Text = WindowsComponentCatalog.SampleStatus(c, visible,"
+src/ProcessLens.App/SystemProcessesView.xaml.cs,see patch,after,            category.Length > 0 || SystemSearchBox.Text.Trim().Length > 0);
+src/ProcessLens.Core/SystemProcessCatalog.cs,see patch,before,"    string Source, string Note, IReadOnlyList<SystemProcessEntry> Processes, SystemMemorySnapshot Memory);"
+src/ProcessLens.Core/SystemProcessCatalog.cs,see patch,after,"    string Source, string Note, IReadOnlyList<SystemProcessEntry> Processes, SystemMemorySnapshot Memory)"
+src/ProcessLens.Core/SystemProcessCatalog.cs,see patch,after,{
+src/ProcessLens.Core/SystemProcessCatalog.cs,see patch,after,"    // Counts from the original enumeration, before the Windows-only navigation filter."
+src/ProcessLens.Core/SystemProcessCatalog.cs,see patch,after,    // No duplicate inventory or history is retained.
+src/ProcessLens.Core/SystemProcessCatalog.cs,see patch,after,    public WindowsComponentCoverage? ComponentCoverage { get; init; }
+src/ProcessLens.Core/SystemProcessCatalog.cs,see patch,after,}
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"public sealed record WindowsComponentCoverage(int Returned, int Included, int Groups,"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"    int OtherWindowsPath, int OtherPath, int UnknownPath, int UnexpectedPath,"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"    int IncludedWithoutPath, int IncludedWithoutStart, int IncludedWithoutMemory)"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,{
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,    public int Excluded => OtherWindowsPath + OtherPath + UnknownPath + UnexpectedPath;
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,}
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,before,"        ? ""Percorso N/D per alcune istanze"" : ""PID interno o percorso previsto"";"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        ? ""Dal nome · percorso N/D"" : ""PID riservato o percorso previsto"";"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,before,"            ""Gestisce funzioni della console per i programmi collegati. Non coincide con il comando eseguito: terminale, shell e applicazione sono componenti distinti."", @""System32\conhost.exe"")"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Gestisce funzioni della console per i programmi collegati. Non coincide con il comando eseguito: terminale, shell e applicazione sono componenti distinti."", @""System32\conhost.exe""),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        new(""fontdrvhost"", ""fontdrvhost.exe"", ""Desktop e console"", ""Host dei driver dei caratteri in modalità utente"","
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Ospita l'elaborazione dei caratteri in modalità utente. Il campione non identifica il carattere o il documento elaborato."", @""System32\fontdrvhost.exe""),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        new(""sihost"", ""sihost.exe"", ""Desktop e console"", ""Infrastruttura della shell di Windows"","
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Supporta funzioni della shell. La presenza del processo non dimostra che il desktop risponda correttamente."", @""System32\sihost.exe""),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        new(""ctfmon"", ""ctfmon.exe"", ""Desktop e console"", ""Servizi di input e testo"","
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Componente dei servizi di testo di Windows. Non vengono letti i caratteri digitati o gli input dell'utente."", @""System32\ctfmon.exe""),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        new(""runtimebroker"", ""RuntimeBroker.exe"", ""Desktop e console"", ""Mediazione per le app di Windows"","
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Supporta l'accesso delle app alle risorse gestite da Windows. Il solo processo non identifica l'app o i permessi usati nel momento del campione."", @""System32\RuntimeBroker.exe""),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        new(""taskhostw"", ""taskhostw.exe"", ""Servizi"", ""Host per attività di Windows"","
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Ospita attività di Windows. Il nome non identifica la singola attività caricata o il suo avanzamento."", @""System32\taskhostw.exe""),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        new(""dllhost"", ""dllhost.exe"", ""Servizi"", ""Host di componenti COM"","
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Ospita componenti COM fuori dal processo chiamante, anche di terze parti. Il campione non identifica il componente caricato."", @""System32\dllhost.exe""),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        new(""audiodg"", ""audiodg.exe"", ""Servizi"", ""Motore e grafo audio di Windows"","
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Ospita il motore audio e può caricare effetti dei produttori. La sua presenza non dimostra che sia in riproduzione un suono."", @""System32\audiodg.exe""),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        new(""spoolsv"", ""spoolsv.exe"", ""Servizi"", ""Spooler di stampa"","
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Gestisce il sottosistema di stampa. Il campione non legge le code e non dimostra che una stampa sia in corso."", @""System32\spoolsv.exe""),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        new(""wmiprvse"", ""WmiPrvSE.exe"", ""Servizi"", ""Host dei provider WMI"","
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Ospita provider WMI, anche di terze parti. Per attribuire una richiesta a un client servono dati aggiuntivi; questi contatori non bastano."", @""System32\wbem\WmiPrvSE.exe""),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        new(""searchindexer"", ""SearchIndexer.exe"", ""Servizi"", ""Indicizzazione per Windows Search"","
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Gestisce l'indice di ricerca. Il campione non verifica lo stato dell'indice o il documento in elaborazione."", @""System32\SearchIndexer.exe""),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        new(""searchprotocolhost"", ""SearchProtocolHost.exe"", ""Servizi"", ""Host dei protocolli di Windows Search"","
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Ospita i gestori che accedono alle fonti da indicizzare, anche di terze parti. Il campione non legge i contenuti indicizzati."", @""System32\SearchProtocolHost.exe""),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        new(""searchfilterhost"", ""SearchFilterHost.exe"", ""Servizi"", ""Host dei filtri di Windows Search"","
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Ospita filtri e gestori delle proprietà per estrarre dati da indicizzare. La presenza non identifica il filtro o il file elaborato."", @""System32\SearchFilterHost.exe"")"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,before,"        return p.Path.Replace('/', '\\').Equals(expected, StringComparison.OrdinalIgnoreCase) ? d : null;"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        string actual = p.Path.Replace('/', '\\');"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        if (actual.Equals(expected, StringComparison.OrdinalIgnoreCase)) return d;"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,        // Explicit 32-bit Windows host locations; not an arbitrary path or name wildcard.
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        if (d.Id is ""ctfmon"" or ""dllhost"" or ""wmiprvse"" or ""searchprotocolhost"" or ""searchfilterhost"")"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            return actual.Equals(windowsDirectory.Replace('/', '\\').TrimEnd('\\') + ""\\SysWOW64\\"" + d.RelativePath[9..],"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,                StringComparison.OrdinalIgnoreCase) ? d : null;
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,        return null;
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,before,"    public static SystemProcessCatalog Retain(SystemProcessCatalog source, string windowsDirectory) => source with {"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,before,"        Processes = source.Processes.Where(p => Match(p, windowsDirectory) is not null).ToArray()"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,before,    };
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"    public static SystemProcessCatalog Retain(SystemProcessCatalog source, string windowsDirectory)"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,    {
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,        if (source.ComponentCoverage is not null) return source;
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,        var kept = new List<SystemProcessEntry>(); var groups = new HashSet<string>();
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        int otherWindows = 0, otherPath = 0, unknown = 0, unexpected = 0;"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,        foreach (var p in source.Processes)
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,        {
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            var d = Match(p, windowsDirectory);"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,            if (d is not null) { kept.Add(p); groups.Add(d.Id); }
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            else if (Definitions.Any(x => x.Name.Equals(p.Name, StringComparison.OrdinalIgnoreCase))) unexpected++;"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,            else if (p.Path is null) unknown++;
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            else if (SystemProcessPresentation.UnderWindows(p.Path, windowsDirectory)) otherWindows++;"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,            else otherPath++;
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,        }
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,        return source with {
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            Processes = kept.ToArray(),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ComponentCoverage = new(source.Processes.Count, kept.Count, groups.Count, otherWindows, otherPath,"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"                unknown, unexpected, kept.Count(p => p.Path is null && p.Pid is not (0 or 4)),"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"                kept.Count(p => !p.StartUtc.HasValue), kept.Count(p => p.WorkingSetBytes is null or < 0))"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,        };
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,    }
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,    public static string CoverageReport(SystemProcessCatalog source)
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,    {
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,        if (!source.Available || source.ComponentCoverage is not { } c)
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            return ""Copertura N/D · il campione non consente di contare i processi."";"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        return $""Processi restituiti dalla fonte: {c.Returned} · incluse le app. "" +"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            $""Catalogo Windows: istanze {c.Included} · gruppi {c.Groups}. Fuori catalogo: {c.Excluded}.\n"" +"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            $""Esclusioni: altro nome con percorso in Windows {c.OtherWindowsPath}; altro nome con percorso esterno {c.OtherPath}; "" +"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            $""altro nome senza percorso {c.UnknownPath}; nome del catalogo con percorso inatteso {c.UnexpectedPath}.\n"" +"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            $""Nel catalogo: percorso N/D {c.IncludedWithoutPath}; avvio N/D {c.IncludedWithoutStart}; Working Set N/D {c.IncludedWithoutMemory}.\n"" +"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            $""Catalogo di {Definitions.Count} componenti, non esaustivo. Nome e percorso non verificano la firma digitale. "" +"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            ""Le esclusioni non indicano processi sospetti. La lettura non può escludere processi nascosti alla fonte o già terminati."";"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,    }
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"    public static string SampleStatus(SystemProcessCatalog source, IReadOnlyList<WindowsComponentGroup> visible, bool filtered)"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,    {
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        if (!source.Available) return ""Campione non disponibile · conteggi N/D."";"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"        return $""Campione {source.CapturedUtc.ToLocalTime():HH:mm:ss} · gruppi mostrati: {visible.Count} · istanze mostrate: {visible.SelectMany(g => g.Instances).Count()}"" +"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            (filtered ? "" · filtri attivi"" : "" · senza filtri"") +"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            (source.Partial ? "" · LETTURA PARZIALE / ALTERNATIVA"" : "" · lettura della fonte completata"") +"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,"            "" · aggiornamento manuale"";"
+src/ProcessLens.Core/WindowsComponentCatalog.cs,see patch,after,    }
+tests/ProcessLens.SystemProcessUiTests/Program.cs,see patch,after,"            var coverage = (SelectableText)view.FindName(""SystemCoverageText"");"
+tests/ProcessLens.SystemProcessUiTests/Program.cs,see patch,after,"            Check(coverage.Text.Contains(""fonte: 5"") && coverage.Text.Contains(""istanze 4 · gruppi 3"") &&"
+tests/ProcessLens.SystemProcessUiTests/Program.cs,see patch,after,"                coverage.Text.Contains(""Fuori catalogo: 1""),"
+tests/ProcessLens.SystemProcessUiTests/Program.cs,see patch,after,"                ""R22 visible coverage keeps full enumeration distinct from grouped Windows instances"");"
+tests/ProcessLens.SystemProcessUiTests/Program.cs,see patch,after,"            Check(((SelectableText)view.FindName(""SystemStatusText"")).Text.Contains(""gruppi mostrati: 1 · istanze mostrate: 1"") &&"
+tests/ProcessLens.SystemProcessUiTests/Program.cs,see patch,after,"                ((SelectableText)view.FindName(""SystemStatusText"")).Text.Contains(""filtri attivi"") && coverage.Text.Contains(""fonte: 5""),"
+tests/ProcessLens.SystemProcessUiTests/Program.cs,see patch,after,"                ""R22 filter changes visible instances without rewriting enumeration coverage"");"
+tests/ProcessLens.SystemProcessUiTests/Program.cs,see patch,after,"            Check(coverage.Text.Contains(""N/D""), ""R22 deactivation clears previous coverage"");"
+tests/ProcessLens.SystemProcessUiTests/Program.cs,see patch,after,"            Check(coverage.Text.Contains(""N/D""), ""R22 acquisition failure cannot retain old enumeration counts"");"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,before,"Check(WindowsComponentCatalog.Definitions.Count == 17 && WindowsComponentCatalog.Definitions.Select(d => d.Id).Distinct().Count() == 17,"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,before,"    ""finite catalog has 17 distinct component families"");"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"Check(WindowsComponentCatalog.Definitions.Count == 29 && WindowsComponentCatalog.Definitions.Select(d => d.Id).Distinct().Count() == 29,"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    ""expanded finite catalog has 29 distinct component families"");"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"var coverageSource = source with { Partial = false, Processes = new[] {"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    Row(0, ""System Idle Process"") with { StartUtc = null }, a, b with { StartUtc = null, WorkingSetBytes = null },"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    Row(20, ""audiodg.exe"", win + @""\System32\audiodg.exe""),"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    Row(21, ""WmiPrvSE.exe"", win + @""\SysWOW64\wbem\WmiPrvSE.exe""),"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    Row(22, ""chrome.exe"", @""D:\Apps\chrome.exe""),"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    Row(23, ""new-windows-component.exe"", win + @""\System32\new-windows-component.exe""),"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    Row(24, ""unknown.exe""), Row(25, ""svchost.exe"", @""D:\Users\fake\svchost.exe"")"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,} };
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"var expanded = WindowsComponentCatalog.Retain(coverageSource, win);"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,var coverage = expanded.ComponentCoverage!;
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,Check(coverage.Returned == 9 && coverage.Included == 5 && coverage.Groups == 4 && coverage.Excluded == 4 &&
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    coverage.OtherWindowsPath == 1 && coverage.OtherPath == 1 && coverage.UnknownPath == 1 && coverage.UnexpectedPath == 1,"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    ""R22 coverage partitions original enumeration without calling excluded entries applications or threats"");"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,Check(coverage.Included + coverage.Excluded == coverage.Returned && expanded.Processes.Count == coverage.Included &&
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    coverageSource.Processes.Count == 9 && coverageSource.ComponentCoverage is null,"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    ""R22 source total survives compact retention without mutating or retaining excluded rows"");"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"Check(coverage.IncludedWithoutPath == 1 && coverage.IncludedWithoutStart == 2 && coverage.IncludedWithoutMemory == 4,"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    ""R22 unreadable details stay visible and reserved PID does not inflate missing executable paths"");"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"Check(ReferenceEquals(WindowsComponentCatalog.Retain(expanded, win), expanded),"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    ""R22 repeated retention does not silently replace enumeration total with catalog total"");"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"foreach (string id in new[] { ""ctfmon"", ""dllhost"", ""wmiprvse"", ""searchprotocolhost"", ""searchfilterhost"" })"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,{
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,    var d = WindowsComponentCatalog.Definitions.Single(x => x.Id == id);
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    string path32 = win + @""\SysWOW64\"" + d.RelativePath![9..];"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    Check(WindowsComponentCatalog.Match(Row(30, d.Name, path32), win)?.Id == id,"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"        ""R22 explicit 32-bit host path: "" + id);"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    Check(WindowsComponentCatalog.Match(Row(30, d.Name, win + @""\Temp\"" + d.Name), win) is null,"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"        ""R22 added host cannot match a temporary directory: "" + id);"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,}
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"foreach (string culture in new[] { ""it-IT"", ""en-US"" })"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,{
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,    CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(culture);
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    var all = WindowsComponentCatalog.Groups(expanded.Processes, win);"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    var selected = WindowsComponentCatalog.Groups(expanded.Processes, win, search: ""12"");"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    string full = WindowsComponentCatalog.SampleStatus(expanded, all, false);"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    string filtered = WindowsComponentCatalog.SampleStatus(expanded, selected, true);"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    Check(full.Contains(""gruppi mostrati: 4 · istanze mostrate: 5"") && full.Contains(""senza filtri"") &&"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"        filtered.Contains(""gruppi mostrati: 1 · istanze mostrate: 1"") && filtered.Contains(""filtri attivi"") &&"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"        WindowsComponentCatalog.CoverageReport(expanded).Contains(""fonte: 9""),"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"        ""R22 visible counts change with exact PID filter while source total stays unchanged "" + culture);"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    Check(WindowsComponentCatalog.SampleStatus(expanded with { Partial = true }, all, false).Contains(""LETTURA PARZIALE"") &&"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"        !WindowsComponentCatalog.SampleStatus(expanded with { Partial = true }, all, false).Contains(""completata""),"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"        ""R22 alternative or partial enumeration cannot claim completion "" + culture);"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    Check(WindowsComponentCatalog.CoverageReport(expanded with { Available = false }).Contains(""N/D"") &&"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"        !WindowsComponentCatalog.CoverageReport(expanded with { Available = false }).Contains(""fonte: 0"") &&"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"        WindowsComponentCatalog.SampleStatus(expanded with { Available = false }, all, false).Contains(""N/D""),"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"        ""R22 unavailable enumeration never becomes a valid zero count "" + culture);"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,}
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"Check(compact.ComponentCoverage is { Returned: 5200, Included: 200, OtherWindowsPath: 5000, Groups: 1 },"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"    ""R22 large sample retains scalar exclusion counts and only Windows host rows"");"
+tests/ProcessLens.WindowsComponentTests/Program.cs,see patch,after,"Console.WriteLine(""R22 coverage and expanded Windows catalog regressions complete."");"

@@ -1,0 +1,1131 @@
+file,line,before_or_after,changed_text
+src/ProcessLens.App/App.xaml.cs,see patch,after,            window.ExitRequested += () => { _windowController.AllowExit(); Shutdown(); };
+src/ProcessLens.App/CopyTestVisibility.cs,see patch,after,
+src/ProcessLens.App/CopyTestVisibility.cs,see patch,after,"[assembly: InternalsVisibleTo(""ProcessLens.ProcessGroupsUiTests"")]"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                            <DataTemplate x:Key=""ProcessCardTemplate"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                <Grid>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                    <Grid.ColumnDefinitions>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <ColumnDefinition Width=""44""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <ColumnDefinition Width=""*""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                        <!-- Compact metrics reserve their own bounded columns. -->
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <ColumnDefinition Width=""80""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <ColumnDefinition Width=""112""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                    </Grid.ColumnDefinitions>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                    <Border Grid.Column=""0"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            Width=""34"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            Height=""34"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            CornerRadius=""7"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            Background=""#F3F5F8"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            BorderBrush=""#E1E5EA"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            BorderThickness=""1"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            VerticalAlignment=""Top"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            Margin=""0,1,10,0"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                        <Grid>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            <TextBlock Text=""▣"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                       HorizontalAlignment=""Center"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                       VerticalAlignment=""Center"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                       Foreground=""#A5ADB8"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                       FontSize=""15""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            <Image Source=""{Binding IconSource}"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                   Width=""26"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                   Height=""26"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                   Stretch=""Uniform"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                   SnapsToDevicePixels=""True""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                        </Grid>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                    </Border>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                    <!-- Nome e badge hanno righe proprie; troncamento soltanto con tooltip. -->
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                    <StackPanel Grid.Column=""1"" Margin=""0,0,12,0"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <TextBlock Text=""{Binding FriendlyName}"" FontSize=""15"" FontWeight=""SemiBold"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                   TextTrimming=""CharacterEllipsis"" ToolTip=""{Binding FriendlyName}""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <WrapPanel Margin=""0,4,0,0"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            <Border Background=""#EEF1F5"" CornerRadius=""5"" Padding=""6,2"" Margin=""0,0,6,3"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                <TextBlock Text=""{Binding CategoryLabel}"" FontSize=""10"" FontWeight=""SemiBold"" Foreground=""#5B6470""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                            </Border>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            <Border Background=""#EAF7EE"" CornerRadius=""5"" Padding=""6,2"" Margin=""0,0,0,3"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                <TextBlock Text=""{Binding DetectionLabel}"" FontSize=""10"" FontWeight=""SemiBold"" Foreground=""#27613B""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                            </Border>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                        </WrapPanel>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <TextBlock Text=""{Binding Activity}"" FontSize=""13"" FontWeight=""SemiBold"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                   Foreground=""#303846"" Margin=""0,3,0,0"" TextWrapping=""Wrap"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                   ToolTip=""{Binding Activity}""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <TextBlock Text=""{Binding ParentContext}"" FontSize=""11"" Foreground=""#7A8491"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                   Margin=""0,3,0,0"" TextWrapping=""Wrap""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <WrapPanel Margin=""0,4,0,0"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            <TextBlock Text=""{Binding StartTimeLabel}"" FontSize=""11"" FontWeight=""SemiBold"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                       Foreground=""#46566B"" Margin=""0,0,12,2""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            <TextBlock Text=""{Binding UptimeLabel}"" FontSize=""11"" Foreground=""#46566B"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                       Margin=""0,0,0,2""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                        </WrapPanel>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                    </StackPanel>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                    <!-- A short visible label and full tooltip avoid overlap at compact widths. -->
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                    <StackPanel Grid.Column=""2"" VerticalAlignment=""Center"" HorizontalAlignment=""Stretch"" Margin=""0,0,12,0"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <TextBlock Text=""CPU"" FontSize=""10"" Foreground=""#7A8491"" TextAlignment=""Right"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                   ToolTip=""Quota della CPU complessiva attribuita al processo.""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <TextBlock Text=""{Binding CpuDisplay}"" FontSize=""16"" FontWeight=""SemiBold"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                   TextAlignment=""Right"" TextTrimming=""CharacterEllipsis""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                    </StackPanel>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                    <StackPanel Grid.Column=""3"" VerticalAlignment=""Center"" HorizontalAlignment=""Stretch"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <TextBlock Text=""{Binding MemoryShortLabel}"" FontSize=""10"" Foreground=""#7A8491"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                   TextAlignment=""Right"" TextWrapping=""Wrap"" ToolTip=""{Binding MemoryDescription}""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <TextBlock Text=""{Binding MemoryDisplayText}"" ToolTip=""{Binding MemoryDescription}"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                   FontSize=""16"" FontWeight=""SemiBold"" TextAlignment=""Right"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                                   TextTrimming=""CharacterEllipsis""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                    </StackPanel>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                                </Grid>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                            </DataTemplate>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"        <DataTemplate x:Key=""ProcessMemberTemplate"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"            <Grid Margin=""16,0,0,0"" ToolTip=""{Binding Process.ExecutablePath}"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                <Grid.ColumnDefinitions><ColumnDefinition Width=""*""/><ColumnDefinition Width=""82""/><ColumnDefinition Width=""106""/></Grid.ColumnDefinitions>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                <StackPanel Margin=""0,0,8,0""><TextBlock Text=""{Binding FriendlyName}"" FontWeight=""SemiBold"" TextTrimming=""CharacterEllipsis""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                    <TextBlock Text=""{Binding MemberLabel}"" FontSize=""11"" TextWrapping=""Wrap"" Foreground=""#667085""/></StackPanel>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                <TextBlock Grid.Column=""1"" Text=""{Binding CpuDisplay}"" TextAlignment=""Right"" VerticalAlignment=""Center""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                <StackPanel Grid.Column=""2"" VerticalAlignment=""Center""><TextBlock Text=""{Binding MemoryShortLabel}"" FontSize=""9"" TextAlignment=""Right""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                    <TextBlock Text=""{Binding MemoryDisplayText}"" TextAlignment=""Right"" ToolTip=""{Binding MemoryDescription}""/></StackPanel>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,            </Grid>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,        </DataTemplate>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"        <Style x:Key=""ApplicationGroupStyle"" TargetType=""{x:Type GroupItem}"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"            <Setter Property=""Template""><Setter.Value><ControlTemplate TargetType=""{x:Type GroupItem}"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                <Expander IsExpanded=""{Binding Name.IsExpanded, Mode=TwoWay}"" Margin=""0,0,0,7"" Background=""#F4F7FC"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                    <Expander.Header><Grid ToolTip=""{Binding Name.Description}"" Margin=""2,8,2,8"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                        <Grid.ColumnDefinitions><ColumnDefinition Width=""28""/><ColumnDefinition Width=""*""/><ColumnDefinition Width=""80""/><ColumnDefinition Width=""112""/></Grid.ColumnDefinitions>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                        <Image Source=""{Binding Name.IconSource}"" Width=""22"" Height=""22""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                        <TextBlock Grid.Column=""1"" Text=""{Binding Name.Title}"" FontWeight=""SemiBold"" TextWrapping=""Wrap"" Margin=""5,0,6,0""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                        <StackPanel Grid.Column=""2""><TextBlock Text=""CPU"" FontSize=""9"" TextAlignment=""Right""/><TextBlock Text=""{Binding Name.CpuDisplay}"" TextWrapping=""Wrap"" FontWeight=""SemiBold"" TextAlignment=""Right""/></StackPanel>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                        <StackPanel Grid.Column=""3""><TextBlock Text=""{Binding Name.MemoryLabel}"" TextWrapping=""Wrap"" FontSize=""10"" TextAlignment=""Right""/><TextBlock Text=""{Binding Name.MemoryDisplayText}"" TextWrapping=""Wrap"" FontWeight=""SemiBold"" TextAlignment=""Right""/></StackPanel>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                    </Grid></Expander.Header>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                    <ItemsPresenter/>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,                </Expander>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,            </ControlTemplate></Setter.Value></Setter>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,        </Style>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                <Button x:Name=""ExitApplicationButton"" Content=""Esci"" Margin=""2"" Style=""{StaticResource ActionButtonStyle}"" Click=""ExitApplication_Click"" ToolTip=""Chiude ProcessLens, senza ridurlo a icona.""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                            <CheckBox x:Name=""GroupApplicationsCheckBox"" Content=""Raggruppa app"" IsChecked=""True"" Margin=""0,0,10,4"" VerticalAlignment=""Center"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                      Checked=""GroupApplications_Changed"" Unchecked=""GroupApplications_Changed"" ToolTip=""Stesso eseguibile e catena di avvio; espandi per scegliere un PID.""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                              VirtualizingPanel.IsVirtualizingWhenGrouping=""True"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                        <ListView.ItemTemplate>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                            <DataTemplate>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                <Grid>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                    <Grid.ColumnDefinitions>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                        <ColumnDefinition Width=""44""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                        <ColumnDefinition Width=""*""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                        <!-- Compact metrics reserve their own bounded columns. -->
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                        <ColumnDefinition Width=""80""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                        <ColumnDefinition Width=""112""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                    </Grid.ColumnDefinitions>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                    <Border Grid.Column=""0"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            Width=""34"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            Height=""34"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            CornerRadius=""7"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            Background=""#F3F5F8"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            BorderBrush=""#E1E5EA"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            BorderThickness=""1"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            VerticalAlignment=""Top"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            Margin=""0,1,10,0"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                        <Grid>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            <TextBlock Text=""▣"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                       HorizontalAlignment=""Center"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                       VerticalAlignment=""Center"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                       Foreground=""#A5ADB8"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                       FontSize=""15""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            <Image Source=""{Binding IconSource}"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                   Width=""26"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                   Height=""26"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                   Stretch=""Uniform"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                   SnapsToDevicePixels=""True""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                        </Grid>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                    </Border>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                    <!-- Nome e badge hanno righe proprie; troncamento soltanto con tooltip. -->
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                    <StackPanel Grid.Column=""1"" Margin=""0,0,12,0"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                        <TextBlock Text=""{Binding FriendlyName}"" FontSize=""15"" FontWeight=""SemiBold"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                   TextTrimming=""CharacterEllipsis"" ToolTip=""{Binding FriendlyName}""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                        <WrapPanel Margin=""0,4,0,0"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            <Border Background=""#EEF1F5"" CornerRadius=""5"" Padding=""6,2"" Margin=""0,0,6,3"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                <TextBlock Text=""{Binding CategoryLabel}"" FontSize=""10"" FontWeight=""SemiBold"" Foreground=""#5B6470""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                            </Border>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            <Border Background=""#EAF7EE"" CornerRadius=""5"" Padding=""6,2"" Margin=""0,0,0,3"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                <TextBlock Text=""{Binding DetectionLabel}"" FontSize=""10"" FontWeight=""SemiBold"" Foreground=""#27613B""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                            </Border>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                        </WrapPanel>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                        <TextBlock Text=""{Binding Activity}"" FontSize=""13"" FontWeight=""SemiBold"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                   Foreground=""#303846"" Margin=""0,3,0,0"" TextWrapping=""Wrap"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                   ToolTip=""{Binding Activity}""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                        <TextBlock Text=""{Binding ParentContext}"" FontSize=""11"" Foreground=""#7A8491"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                   Margin=""0,3,0,0"" TextWrapping=""Wrap""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                        <WrapPanel Margin=""0,4,0,0"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            <TextBlock Text=""{Binding StartTimeLabel}"" FontSize=""11"" FontWeight=""SemiBold"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                       Foreground=""#46566B"" Margin=""0,0,12,2""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            <TextBlock Text=""{Binding UptimeLabel}"" FontSize=""11"" Foreground=""#46566B"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                       Margin=""0,0,0,2""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                        </WrapPanel>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                    </StackPanel>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                    <!-- A short visible label and full tooltip avoid overlap at compact widths. -->
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                    <StackPanel Grid.Column=""2"" VerticalAlignment=""Center"" HorizontalAlignment=""Stretch"" Margin=""0,0,12,0"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                        <TextBlock Text=""CPU"" FontSize=""10"" Foreground=""#7A8491"" TextAlignment=""Right"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                   ToolTip=""Quota della CPU complessiva attribuita al processo.""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                        <TextBlock Text=""{Binding CpuDisplay}"" FontSize=""16"" FontWeight=""SemiBold"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                   TextAlignment=""Right"" TextTrimming=""CharacterEllipsis""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                    </StackPanel>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                    <StackPanel Grid.Column=""3"" VerticalAlignment=""Center"" HorizontalAlignment=""Stretch"">"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                        <TextBlock Text=""{Binding MemoryShortLabel}"" FontSize=""10"" Foreground=""#7A8491"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                   TextAlignment=""Right"" TextWrapping=""Wrap"" ToolTip=""{Binding MemoryDescription}""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                        <TextBlock Text=""{Binding MemoryDisplayText}"" ToolTip=""{Binding MemoryDescription}"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                   FontSize=""16"" FontWeight=""SemiBold"" TextAlignment=""Right"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                                   TextTrimming=""CharacterEllipsis""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                    </StackPanel>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                                </Grid>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                            </DataTemplate>
+src/ProcessLens.App/MainWindow.xaml,see patch,before,                        </ListView.ItemTemplate>
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                        <ListView.GroupStyle><GroupStyle ContainerStyle=""{StaticResource ApplicationGroupStyle}""/></ListView.GroupStyle>"
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                <local:SelectableText x:Name=""DetailNetworkStateText"" Text=""-"" FontSize=""13"" Margin=""0,6,0,0"" TextWrapping=""Wrap""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                <Button x:Name=""RefreshProcessPortsButton"" Content=""Aggiorna porte del PID e del gruppo"" Style=""{StaticResource ActionButtonStyle}"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            Click=""RefreshProcessPorts_Click"" IsEnabled=""False"" HorizontalAlignment=""Left"" Margin=""0,0,0,8""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                        <local:SelectableText x:Name=""DetailNetworkStateText"" Text=""-"" FontSize=""13"" Margin=""0,6,0,0"" TextWrapping=""Wrap""/>"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    private List<ProcessGroupRow> _processGroups = new();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"    private readonly Dictionary<string, bool> _groupExpansion = new();"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,    private readonly IDeepProcessInspector _deepInspector = new WindowsDeepProcessInspector();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    private readonly WindowsDeepProcessInspector _deepInspector = new();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    private bool _networkPortsRefreshing;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        foreach (var group in _processGroups) group.Refresh();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            rows = rows.Where(row =>
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                Contains(row.FriendlyName, search) ||"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                Contains(row.Name, search) ||"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                row.Pid.ToString().Contains(search, StringComparison.OrdinalIgnoreCase) ||"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                Contains(row.Activity, search) ||"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                Contains(row.Role, search) ||"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                Contains(row.OwnerApp, search) ||"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                Contains(row.DetectionLabel, search) ||"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                Contains(row.Process.ExecutablePath, search) ||"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                Contains(row.Process.CommandLine, search) ||"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                Contains(row.Parent, search) ||"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"                Contains(row.Insight.ProjectRoot, search));"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            rows = rows.Where(row => ProcessIdentitySearch.Matches(row.Process, search, row.FriendlyName));"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        foreach (var group in _processGroups) _groupExpansion[group.Key] = group.IsExpanded;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        var rowByPid = visible.ToDictionary(x => x.Pid);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        var allByPid = _allRows.ToDictionary(x => x.Pid);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        var families = ProcessGrouping.Build(_allRows.Select(x => x.Process).ToArray());
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        var groups = new List<ProcessGroupRow>();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        foreach (var family in families)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            var members = family.Members.Where(x => rowByPid.ContainsKey(x.Pid)).Select(x => rowByPid[x.Pid]).ToArray();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            if (members.Length == 0) continue;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            string title = allByPid[family.Root.Pid].FriendlyName;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            var group = new ProcessGroupRow(family.Key, title, members, family.Members.Count)"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                { IsExpanded = _groupExpansion.GetValueOrDefault(family.Key) };
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            foreach (var member in members) member.Group = group;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            groups.Add(group);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        _processGroups = groups;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        var liveKeys = families.Select(x => x.Key).ToHashSet();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        foreach (string key in _groupExpansion.Keys.Where(x => !liveKeys.Contains(x)).ToArray()) _groupExpansion.Remove(key);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        if (_groupExpansion.Count > 512) _groupExpansion.Clear();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            bool grouped = GroupApplicationsCheckBox.IsChecked == true;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            ProcessList.ItemTemplate = (DataTemplate)FindResource(grouped ? ""ProcessMemberTemplate"" : ""ProcessCardTemplate"");"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            var processView = CollectionViewSource.GetDefaultView(ProcessList.ItemsSource);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            processView.GroupDescriptions.Clear();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            if (grouped) processView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ProcessRow.Group)));
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"                    if (grouped) cpuView.SortDescriptions.Add(new SortDescription(""Group.CpuPercent"", ListSortDirection.Descending));"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"                    if (grouped) memoryView.SortDescriptions.Add(new SortDescription(""Group.MemoryDisplayMb"", ListSortDirection.Descending));"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"            CurrentFilterText.Text = _activeFilter == ""Tutti"" ? ""Vista: tutti i processi"" : $""Vista: {_activeFilter}"";"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            CurrentFilterText.Text = (_activeFilter == ""Tutti"" ? ""Vista: tutti i processi"" : $""Vista: {_activeFilter}"") +"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"                (grouped ? $"" · {_processGroups.Count} gruppi · {visible.Count} PID"" : """");"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                if (grouped && item.Group is not null) item.Group.IsExpanded = true;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                _selectedPid = null;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"    private void GroupApplications_Changed(object sender, RoutedEventArgs e)"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"        if (IsLoaded && ProcessList is not null) ApplyFilter(_selectedPid, preserveScroll: true);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    internal event Action? ExitRequested;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"    private void ExitApplication_Click(object sender, RoutedEventArgs e)"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"        AppDiagnostics.Record(""Clic Esci dalla finestra principale"");"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        if (ExitRequested is { } exit) exit(); else Close();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"        AppDiagnostics.Record(""Clic Riduci a icona dalla finestra principale"");"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"            ? ""Analisi approfondita completata"""
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            ? (p.DirectNetworkIdentityVerified == false || (p.NetworkCapturedUtc.HasValue && !p.NetworkAcquisitionComplete)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"                ? ""Analisi parziale · limiti nei dettagli di rete"" : ""Analisi approfondita completata"")"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,        DetailNetworkStateText.Text = ProcessNetworkPresentation.Describe(p);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        DetailNetworkStateText.Text = ProcessNetworkPresentation.DescribeEndpointOwners(p);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        RefreshProcessPortsButton.IsEnabled = p.IsDeepInspected && !_networkPortsRefreshing;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"    private async void RefreshProcessPorts_Click(object sender, RoutedEventArgs e)"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        if (_networkPortsRefreshing || _currentDetailRow is not { } row || !row.Process.IsDeepInspected) return;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        _networkPortsRefreshing = true; RefreshProcessPortsButton.IsEnabled = false;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        try
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            var refreshed = await Task.Run(() => _deepInspector.RefreshNetwork(row.Process));
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            if (_windowClosed || _selectedPid != row.Pid) return;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            int index = _allRows.FindIndex(x => ProcessGrouping.IdentityMatches(row.Process, x.Process));"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            if (index < 0) return;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            var merged = MergeDynamicSnapshot(_allRows[index].Process, refreshed);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            var insight = _analyzer.Analyze(merged);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            _allRows[index] = new ProcessRow(merged, insight);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            _deepCache[row.Pid] = (merged.StartTime, merged, insight);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            ApplyFilter(_selectedPid, preserveScroll: true);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        catch (Exception ex)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            if (_selectedPid == row.Pid)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"                DetailNetworkStateText.Text = ""Aggiornamento porte non riuscito: "" + ex.Message;"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            AppDiagnostics.Record(""Aggiornamento porte selezionate non riuscito"", ex);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        finally
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            _networkPortsRefreshing = false;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            RefreshProcessPortsButton.IsEnabled = _currentDetailRow?.Process.IsDeepInspected == true;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        if (!row.Process.StartTime.HasValue)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        {
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            if (_selectedPid == row.Pid) DeepInspectionStatusText.Text = ""Analisi parziale: ora di avvio non disponibile, identità dell'istanza non verificabile."";"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            return;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            var currentInstance = _allRows.FirstOrDefault(x => x.Pid == row.Pid);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            if (currentInstance is null || !ProcessGrouping.IdentityMatches(row.Process, currentInstance.Process)) return;"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            var currentInstance = _allRows.FirstOrDefault(x => x.Pid == row.Pid);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"            if (currentInstance is null || !ProcessGrouping.IdentityMatches(row.Process, currentInstance.Process))"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"                throw new InvalidOperationException(""Istanza del processo cambiata durante l’analisi; seleziona di nuovo il PID."");"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,                if (_selectedPid == row.Pid)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,                    ShowDetails(updated);
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,                if (!_servicesMode && !_guardianMode && !_memoryMode && !_networkMode && !_systemMode)
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"                    ApplyFilter(_selectedPid, preserveScroll: true);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        RefreshProcessPortsButton.IsEnabled = false;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,using System.ComponentModel;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,using System.Windows.Media;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,using ProcessLens.Core;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,namespace ProcessLens.App;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"public sealed class ProcessGroupRow(string key, string name, IReadOnlyList<ProcessRow> members, int totalMembers) : INotifyPropertyChanged"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,{
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    public string Key { get; } = key;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"    public string Title => totalMembers == Members.Count ? $""{name} ({Members.Count})"" : $""{name} ({Members.Count}/{totalMembers})"";"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    public IReadOnlyList<ProcessRow> Members { get; } = members;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    public ImageSource? IconSource => Members.FirstOrDefault()?.IconSource;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    private bool _expanded;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    public bool IsExpanded
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    {
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,        get => _expanded;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"        set { if (_expanded == value) return; _expanded = value; PropertyChanged?.Invoke(this, new(nameof(IsExpanded))); }"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    }
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    private ProcessGroupUsage _usage = ProcessGroupUsage.From(members.Select(x => x.Process));
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    public double CpuPercent => _usage.CpuPercent;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"    public string CpuDisplay => _usage.CpuKnown == 0 ? ""N/D"" : ProcessDisplayFormatter.Percent(CpuPercent) +"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"        (_usage.CpuKnown == Members.Count ? """" : $"" ({_usage.CpuKnown}/{Members.Count})"");"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    public double MemoryDisplayMb => _usage.MemoryMb;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"    public string MemoryDisplayText => _usage.MemoryKnown == 0 ? ""N/D"" : $""{MemoryDisplayMb:F1} MiB"";"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"    public string MemoryLabel => (_usage.PrivateResident ? ""WS PRIVATO"" : ""WS TOTALE"") +"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"        (_usage.MemoryKnown == Members.Count ? """" : $"" ({_usage.MemoryKnown}/{Members.Count})"");"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"    public string Description => ""Gruppo per percorso eseguibile e catena di avvio con orari compatibili. "" +"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"        ""Somme dei soli PID mostrati; contatori mancanti esclusi e copertura indicata. CPU: intervalli propri di ciascun PID. "" +"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"        ""Working Set totale: le pagine condivise possono essere contate più volte. "" +"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"        ""Non include automaticamente altri eseguibili o processi di cui manca l'identità."";"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    public event PropertyChangedEventHandler? PropertyChanged;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"    private static readonly PropertyChangedEventArgs[] CounterChanges = new[] { nameof(CpuPercent), nameof(CpuDisplay),"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"        nameof(MemoryDisplayMb), nameof(MemoryDisplayText), nameof(MemoryLabel) }.Select(x => new PropertyChangedEventArgs(x)).ToArray();"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    public void Refresh()
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    {
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,        _usage = ProcessGroupUsage.From(Members.Select(x => x.Process));
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"        foreach (var change in CounterChanges) PropertyChanged?.Invoke(this, change);"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    }
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,}
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,before,    <InformationalVersion>0.19.16-R10-R24-minimize-live-memory-candidate</InformationalVersion>
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,after,    <InformationalVersion>0.19.16-R10-R25-groups-filter-ports-tray-candidate</InformationalVersion>
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,before,        if (!p.IsDeepInspected)
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,        if (!p.IsDeepInspected && !p.NetworkCapturedUtc.HasValue)
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,        if (p.DirectNetworkIdentityVerified == false)
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"            direct = new List<string> { $""PID {p.Pid}: socket N/D — identità non verificata durante il campione."" };"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,        if (p.NetworkCapturedUtc.HasValue)
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"            sections.Insert(0, $""Campione rete: {p.NetworkCapturedUtc.Value.ToLocalTime():HH:mm:ss} · "" +"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"                (p.NetworkAcquisitionComplete ? ""quattro tabelle lette"" : ""LETTURA PARZIALE"") +"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"                $""\nPID con identità confrontata prima/dopo: {p.NetworkVerifiedProcessCount}/{p.NetworkFamilyProcessCount}\n{p.NetworkAcquisitionNote}"");"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,    public static string DescribeEndpointOwners(ProcessSnapshot p)
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,    {
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"        var lines = new List<string> { Describe(p), ""SOCKET OSSERVATI — proprietario PID, indirizzo locale e destinazione"" };"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"        static string Endpoint(int pid, NetworkEndpointSnapshot e) =>"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"            $""PID {pid} · {e.Protocol} {e.State} · locale [{e.LocalAddress}]:{e.LocalPort}"" +"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"            (e.RemoteAddress is null ? """" : $"" → remoto [{e.RemoteAddress}]:{e.RemotePort}"");"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,        if (p.DirectNetworkIdentityVerified != false)
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"            lines.AddRange(p.NetworkEndpoints.Select(e => Endpoint(p.Pid, e)));"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,        foreach (var owner in p.RelatedNetworkProcesses.Where(x => x.Pid != p.Pid))
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"            lines.AddRange(owner.SampleEndpoints.Select(e => Endpoint(owner.Pid, e)));"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"        lines.Add(""Elenco campionato: fino a 40 endpoint del PID selezionato e 12 per ciascuno dei primi 32 PID correlati con socket. "" +"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"            ""I conteggi includono le righe lette oltre questi limiti; gli altri stati TCP compaiono soltanto nell'elenco. "" +"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"            ""Gruppo per stesso eseguibile e catena di avvio con orari compatibili; altri eseguibili o identità non leggibili esclusi. "" +"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"            ""Una porta remota 443 non è una porta locale in ascolto. Nessuna misura dei byte trasferiti."");"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,"        return string.Join(""\n\n"", lines);"
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,    }
+src/ProcessLens.App/ProcessNetworkPresentation.cs,see patch,after,
+src/ProcessLens.App/ProcessRow.cs,see patch,after,    public ProcessGroupRow? Group { get; internal set; }
+src/ProcessLens.App/ProcessRow.cs,see patch,after,"    public string MemberLabel => $""{Insight.Role} · PID {Pid}"";"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    private int _transitionGeneration;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    private bool _trayVersion4;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    private readonly TrayActivationGate _trayActivation = new();
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        // Limit the elevated window's message exception to its own tray/restore callbacks.
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        ChangeWindowMessageFilterEx(_hwnd, TrayMessage, 1, IntPtr.Zero);"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        if (RestoreMessage != 0) ChangeWindowMessageFilterEx(_hwnd, RestoreMessage, 1, IntPtr.Zero);"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        if (TaskbarCreated != 0) ChangeWindowMessageFilterEx(_hwnd, TaskbarCreated, 1, IntPtr.Zero);"
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,    public void AllowExit() { _exitRequested = true; _actions.Dispose(); }
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    public void AllowExit() { _exitRequested = true; ++_transitionGeneration; _actions.Dispose(); }
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        int generation = ++_transitionGeneration;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        SystemCommands.MinimizeWindow(_window);
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        _window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        {
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,            if (_disposed || _exitRequested || generation != _transitionGeneration) return;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"            if (!IsIconic(_hwnd)) ShowWindow(_hwnd, 6); // SW_MINIMIZE: act on this owned HWND only."
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"            AppDiagnostics.Record($""Riduzione verificata: HWND ridotto={IsIconic(_hwnd)}, WPF={_window.WindowState}."");"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        }));
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        ++_transitionGeneration;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        if (IsIconic(_hwnd)) ShowWindow(_hwnd, 9); // SW_RESTORE before restoring the saved WPF state."
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,    private void RequestRestore()
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    internal void RequestRestore()
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,            if (notification is 0x0202 or 0x0203 or 0x0400 or 0x0401) RequestRestore();
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,            bool activate = _trayVersion4 ? notification is 0x0400 or 0x0401 : notification is 0x0202 or 0x0203;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,            if (activate)
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,            {
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,                double now = System.Diagnostics.Stopwatch.GetTimestamp() / (double)System.Diagnostics.Stopwatch.Frequency;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"                var action = _trayActivation.Activate(now, GetDoubleClickTime() / 1000d,"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"                    _window.IsVisible, _window.WindowState == WindowState.Minimized);"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,                if (action == TrayActivation.Minimize) RequestMinimize();
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,                else if (action == TrayActivation.Restore) RequestRestore();
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,            }
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"        Icon = LoadIconW(IntPtr.Zero, new IntPtr(32512)), Tip = ""ProcessLens — clic per riaprire"","
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        Icon = LoadIconW(IntPtr.Zero, new IntPtr(32512)), Tip = ""ProcessLens — clic: riduci/riapri; tasto destro: menu"","
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"            Shell_NotifyIconW(4, ref data); // NIM_SETVERSION; legacy mouse messages remain supported."
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"            _trayVersion4 = Shell_NotifyIconW(4, ref data); // Accept only one callback protocol for this icon."
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"    [DllImport(""user32.dll"")] private static extern uint GetDoubleClickTime();"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"    [DllImport(""user32.dll"")] [return: MarshalAs(UnmanagedType.Bool)]"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"    private static extern bool ShowWindow(IntPtr hwnd, int command);"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"    [DllImport(""user32.dll"")] [return: MarshalAs(UnmanagedType.Bool)]"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    private static extern bool IsIconic(IntPtr hwnd);
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"    [DllImport(""user32.dll"", SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)]"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"    private static extern bool ChangeWindowMessageFilterEx(IntPtr hwnd, uint message, uint action, IntPtr changeFilter);"
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,"internal enum TrayActivation { Minimize, Restore }"
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,internal sealed class TrayActivationGate
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,{
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,    private double? _lastActivation;
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,"    public TrayActivation? Activate(double now, double doubleClickSeconds, bool visible, bool minimized)"
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,    {
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,        if (!double.IsFinite(now) || !double.IsFinite(doubleClickSeconds) || doubleClickSeconds < 0) return null;
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,        if (_lastActivation.HasValue && now >= _lastActivation.Value && now - _lastActivation.Value <= doubleClickSeconds) return null;
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,        _lastActivation = now;
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,        return visible && !minimized ? TrayActivation.Minimize : TrayActivation.Restore;
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,    }
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,}
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,namespace ProcessLens.Core;
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"public sealed record ProcessFamily(string Key, ProcessSnapshot Root, IReadOnlyList<ProcessSnapshot> Members);"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"/// <summary>Display grouping, not Windows Task Manager's undocumented application grouping.</summary>"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,public static class ProcessGrouping
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,{
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"    public static bool IdentityMatches(ProcessSnapshot expected, ProcessSnapshot actual) =>"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,        expected.Pid == actual.Pid && expected.StartTime.HasValue && actual.StartTime.HasValue &&
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"        expected.StartTime.Value.ToUniversalTime() == actual.StartTime.Value.ToUniversalTime() && SameExecutable(expected, actual);"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"    public static bool SameExecutable(ProcessSnapshot a, ProcessSnapshot b) =>"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,        !string.IsNullOrWhiteSpace(a.ExecutablePath) && !string.IsNullOrWhiteSpace(b.ExecutablePath) &&
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"        string.Equals(a.ExecutablePath, b.ExecutablePath, StringComparison.OrdinalIgnoreCase) &&"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"        string.Equals(a.Name, b.Name, StringComparison.OrdinalIgnoreCase);"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,    public static IReadOnlyList<ProcessFamily> Build(IReadOnlyCollection<ProcessSnapshot> processes)
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,    {
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"        var byPid = processes.GroupBy(p => p.Pid).Where(g => g.Count() == 1).ToDictionary(g => g.Key, g => g.Single());"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,        int Root(ProcessSnapshot p)
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,        {
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,            int current = p.Pid; var seen = new HashSet<int>();
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"            while (seen.Add(current) && byPid.TryGetValue(current, out var child) &&"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"                byPid.TryGetValue(child.ParentPid, out var parent) && SameExecutable(child, parent) &&"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,                child.StartTime.HasValue && parent.StartTime.HasValue &&
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,                parent.StartTime.Value.ToUniversalTime() <= child.StartTime.Value.ToUniversalTime())
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,            {
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,                if (seen.Contains(parent.Pid)) return p.Pid; // A cycle is not a verified lineage.
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,                current = parent.Pid;
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,            }
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,            return current;
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,        }
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,        return byPid.Values.GroupBy(Root).Select(g =>
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,        {
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,            var root = byPid[g.Key];
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"            string key = $""{root.Pid}:{root.StartTime?.ToUniversalTime().Ticks}:{root.ExecutablePath?.ToUpperInvariant()}"";"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"            return new ProcessFamily(key, root, g.OrderBy(p => p.Pid == root.Pid ? 0 : 1).ThenBy(p => p.Pid).ToArray());"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,        }).ToArray();
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,    }
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,}
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,public static class ProcessIdentitySearch
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,{
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"    // Visible app name and executable only; excludes parent, arguments, product aliases and technical explanations."
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"    public static bool Matches(ProcessSnapshot p, string? query, string? displayName = null)"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,    {
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"        string text = query?.Trim() ?? """";"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,        if (text.Length == 0) return true;
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,        if (text.All(char.IsAsciiDigit)) return p.Pid.ToString(System.Globalization.CultureInfo.InvariantCulture) == text;
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"        return p.Name.Contains(text, StringComparison.OrdinalIgnoreCase) ||"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"            (displayName ?? p.FileDescription ?? p.Name).Contains(text, StringComparison.OrdinalIgnoreCase);"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,    }
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,}
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"public sealed record ProcessGroupUsage(double CpuPercent, int CpuKnown, double MemoryMb, int MemoryKnown, bool PrivateResident, int Count)"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,{
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,    public static ProcessGroupUsage From(IEnumerable<ProcessSnapshot> source)
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,    {
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,        var rows = source.ToArray(); bool privateResident = rows.Any(x => x.PrivateWorkingSetAvailable);
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"        return new(rows.Where(x => x.CpuSampleAvailable).Sum(x => x.CpuPercent), rows.Count(x => x.CpuSampleAvailable),"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"            rows.Sum(x => privateResident ? x.PrivateWorkingSetAvailable ? x.PrivateWorkingSetMb : 0 : x.WorkingSetAvailable ? x.WorkingSetMb : 0),"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,"            rows.Count(x => privateResident ? x.PrivateWorkingSetAvailable : x.WorkingSetAvailable), privateResident, rows.Length);"
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,    }
+src/ProcessLens.Core/ProcessGrouping.cs,see patch,after,}
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,namespace ProcessLens.Core;
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,public static class ProcessNetworkEvidence
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,{
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,"    public static ProcessSnapshot Unavailable(ProcessSnapshot p, string reason) => p with"
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,    {
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,"        NetworkCapturedUtc = DateTime.UtcNow, NetworkAcquisitionComplete = false,"
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,"        DirectNetworkIdentityVerified = false, NetworkVerifiedProcessCount = 0, NetworkAcquisitionNote = reason,"
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,"        DeepInspectionNote = (p.DeepInspectionNote?.Split("" | Rete: "")[0] ?? """") + "" | Rete: "" + reason,"
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,"        TcpListeningCount = 0, TcpEstablishedCount = 0, UdpEndpointCount = 0,"
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,"        ListeningTcpPorts = Array.Empty<int>(), UdpPorts = Array.Empty<int>(),"
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,"        PublicRemoteConnectionCount = 0, PrivateRemoteConnectionCount = 0, LoopbackRemoteConnectionCount = 0,"
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,"        NetworkEndpoints = Array.Empty<NetworkEndpointSnapshot>(), RelatedNetworkProcesses = Array.Empty<RelatedNetworkProcessSnapshot>(),"
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,"        NetworkFamilyRootPid = p.Pid, NetworkFamilyProcessCount = 1, NetworkFamilyProcessesWithSockets = 0,"
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,"        NetworkFamilyTcpListeningCount = 0, NetworkFamilyTcpEstablishedCount = 0, NetworkFamilyUdpEndpointCount = 0,"
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,"        NetworkFamilyPublicRemoteConnectionCount = 0, NetworkFamilyPrivateRemoteConnectionCount = 0,"
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,"        NetworkFamilyLoopbackRemoteConnectionCount = 0, NetworkFamilyListeningTcpPorts = Array.Empty<int>()"
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,    };
+src/ProcessLens.Core/ProcessNetworkEvidence.cs,see patch,after,}
+src/ProcessLens.Core/ProcessSnapshot.cs,see patch,after,    public bool? DirectNetworkIdentityVerified { get; init; }
+src/ProcessLens.Core/ProcessSnapshot.cs,see patch,after,    public int? NetworkVerifiedProcessCount { get; init; }
+src/ProcessLens.Core/ProcessSnapshot.cs,see patch,after,    public DateTime? NetworkCapturedUtc { get; init; }
+src/ProcessLens.Core/ProcessSnapshot.cs,see patch,after,    public bool NetworkAcquisitionComplete { get; init; }
+src/ProcessLens.Core/ProcessSnapshot.cs,see patch,after,    public string? NetworkAcquisitionNote { get; init; }
+src/ProcessLens.Semantics/RoleClassifier.cs,see patch,after,    // Windows paths can also arrive in portable reports/tests; never expose their directories in summaries.
+src/ProcessLens.Semantics/RoleClassifier.cs,see patch,after,"    private static string FileNameForDisplay(string path) => Path.GetFileName(path.Replace('\\', '/'));"
+src/ProcessLens.Semantics/RoleClassifier.cs,see patch,after,
+src/ProcessLens.Semantics/RoleClassifier.cs,see patch,before,            string filename = Path.GetFileName(path);
+src/ProcessLens.Semantics/RoleClassifier.cs,see patch,after,            string filename = FileNameForDisplay(path);
+src/ProcessLens.Semantics/RoleClassifier.cs,see patch,before,"            return R(""Applicazione Node.js"", $""File indicato nei parametri: {Path.GetFileName(path)}"", ""Nei parametri Node.js compare un file JavaScript; il testo non verifica il lavoro corrente."", $""La riga di comando indica come punto di ingresso {Path.GetFileName(path)}; l’operazione corrente non è stata misurata."", ""Interrompe l'app/tool Node.js associato."", ""BASSO / MEDIO"", ""Sviluppo"", 94, $""entrypoint JavaScript: {path}"");"
+src/ProcessLens.Semantics/RoleClassifier.cs,see patch,after,"            return R(""Applicazione Node.js"", $""File indicato nei parametri: {FileNameForDisplay(path)}"", ""Nei parametri Node.js compare un file JavaScript; il testo non verifica il lavoro corrente."", $""La riga di comando indica come punto di ingresso {FileNameForDisplay(path)}; l’operazione corrente non è stata misurata."", ""Interrompe l'app/tool Node.js associato."", ""BASSO / MEDIO"", ""Sviluppo"", 94, $""entrypoint JavaScript: {path}"");"
+src/ProcessLens.Semantics/RoleClassifier.cs,see patch,before,"            return R(""Applicazione Java"", $""File indicato nei parametri: {Path.GetFileName(path)}"", ""Il parametro -jar indica un file JAR; il lavoro corrente non è verificato."", $""File JAR indicato nei parametri: {Path.GetFileName(path)}; motivo dell’avvio sconosciuto."", ""Interrompe l'app Java associata."", ""BASSO / MEDIO"", ""Sviluppo"", 98, $""-jar {path}"");"
+src/ProcessLens.Semantics/RoleClassifier.cs,see patch,after,"            return R(""Applicazione Java"", $""File indicato nei parametri: {FileNameForDisplay(path)}"", ""Il parametro -jar indica un file JAR; il lavoro corrente non è verificato."", $""File JAR indicato nei parametri: {FileNameForDisplay(path)}; motivo dell’avvio sconosciuto."", ""Interrompe l'app Java associata."", ""BASSO / MEDIO"", ""Sviluppo"", 98, $""-jar {path}"");"
+src/ProcessLens.Semantics/RoleClassifier.cs,see patch,before,"            return R(""Script PowerShell"", $""File indicato nei parametri: {Path.GetFileName(path)}"", ""Nei parametri PowerShell compare un file .ps1; il lavoro corrente non è verificato."", $""La riga di comando indica come punto di ingresso {Path.GetFileName(path)}; l’operazione corrente non è stata misurata."", ""Interrompe lo script e i comandi correnti."", ""BASSO / MEDIO"", ""Sviluppo"", 98, $""script PowerShell: {path}"");"
+src/ProcessLens.Semantics/RoleClassifier.cs,see patch,after,"            return R(""Script PowerShell"", $""File indicato nei parametri: {FileNameForDisplay(path)}"", ""Nei parametri PowerShell compare un file .ps1; il lavoro corrente non è verificato."", $""La riga di comando indica come punto di ingresso {FileNameForDisplay(path)}; l’operazione corrente non è stata misurata."", ""Interrompe lo script e i comandi correnti."", ""BASSO / MEDIO"", ""Sviluppo"", 98, $""script PowerShell: {path}"");"
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,using System.ComponentModel;
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,using System.Runtime.InteropServices;
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,namespace ProcessLens.Windows;
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,internal static class OwnedNetworkTableReader
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,{
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,"    internal delegate uint Query(IntPtr buffer, ref int size);"
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,"    internal static void Read(int rowSize, Query query, Action<IntPtr, int> consume)"
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,    {
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,        const int maximum = 16 * 1024 * 1024;
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,"        int size = 0; uint result = query(IntPtr.Zero, ref size);"
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,        if (result != 0 && result != 122 && result != 234) throw new Win32Exception((int)result);
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,        for (int attempt = 0; attempt < 3; attempt++)
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,        {
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,"            if (size < 4 || size > maximum || rowSize <= 0) throw new InvalidDataException(""Dimensione tabella rete non valida o oltre 16 MiB."");"
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,            int capacity = size; IntPtr buffer = Marshal.AllocHGlobal(capacity);
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,            try
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,            {
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,"                result = query(buffer, ref size);"
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,                if (result is 122 or 234) continue; // Connections changed between size query and read.
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,                if (result != 0) throw new Win32Exception((int)result);
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,"                if (size < 4 || size > capacity) throw new InvalidDataException(""Dimensione restituita dalla tabella rete non valida."");"
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,                int count = Marshal.ReadInt32(buffer);
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,                if (count < 0 || count > 100000 || 4L + (long)count * rowSize > size)
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,"                    throw new InvalidDataException(""Conteggio righe rete non valido o troncato."");"
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,"                consume(IntPtr.Add(buffer, 4), count); return;"
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,            }
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,            finally { Marshal.FreeHGlobal(buffer); }
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,        }
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,"        throw new IOException(""La tabella rete cambia durante la lettura: riprova l'aggiornamento."");"
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,    }
+src/ProcessLens.Windows/OwnedNetworkTableReader.cs,see patch,after,}
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        var identity = ReadIdentity(process.Pid, process.ParentPid, process.Name);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        if (identity is null || !ProcessGrouping.IdentityMatches(process, identity))"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            return ClearUnverifiedDetails(ProcessNetworkEvidence.Unavailable(process, ""PID selezionato non verificabile prima dell'analisi; dati N/D.""));"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        int familyRootPid = process.Pid;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        HashSet<int> familyPids = new() { process.Pid };
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"        Dictionary<int, TreeEntry> tree = new();"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        var baseSnapshot = process with
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            IsDeepInspected = true, ApplicationUserModelId = aumid, HasVisibleWindow = hasVisibleWindow,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            WindowTitles = windowTitles.Take(12).ToArray(), WindowClasses = windowClasses.Take(20).ToArray(),"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            ModuleNames = modules.OrderBy(x => x, StringComparer.OrdinalIgnoreCase).ToArray(),"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            DeepInspectionNote = notes.Count == 0 ? ""Analisi Windows completata"" : string.Join(""; "", notes)"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        };
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        var result = RefreshNetwork(baseSnapshot);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        return result.DirectNetworkIdentityVerified == false ? ClearUnverifiedDetails(result) : result;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,    }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,    public ProcessSnapshot RefreshNetwork(ProcessSnapshot process)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,    {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        var anchor = ReadIdentity(process.Pid, process.ParentPid, process.Name);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        if (anchor is null || !ProcessGrouping.IdentityMatches(process, anchor))"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            return ProcessNetworkEvidence.Unavailable(process, ""Identità del PID selezionato cambiata o non leggibile: nessun socket attribuito al vecchio gruppo."");"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        var notes = new List<string>();
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        var tree = new Dictionary<int, TreeEntry>();"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        var candidates = new List<ProcessSnapshot>();
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            familyPids = ResolveSameExecutableFamily(process.Pid, process.Name, tree, out familyRootPid);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        catch (Exception ex)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            notes.Add($""famiglia processi non enumerabile: {ex.GetType().Name}"");"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        // Read command lines only for the small selected family. This is not global polling.
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"        var familyCommandLines = new Dictionary<int, string?>();"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        foreach (int pid in familyPids)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            familyCommandLines[pid] = pid == process.Pid ? process.CommandLine : TryGetCommandLineByPid(pid);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            var matching = tree.Values.Where(x => string.Equals(x.Name, process.Name, StringComparison.OrdinalIgnoreCase)).ToArray();"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            if (matching.Length > 512) notes.Add(""Gruppo limitato ai primi 512 candidati omonimi; copertura parziale."");"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            foreach (var entry in matching.Take(512))
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"                var identity = ReadIdentity(entry.Pid, entry.ParentPid, entry.Name);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,                if (identity is not null) candidates.Add(identity);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"                else notes.Add($""PID {entry.Pid}: identità del candidato non disponibile; escluso dal gruppo."");"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        catch (Exception ex) { notes.Add($""Gruppo: {DescribeError(ex)}""); }"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        // The selected row's identity is authoritative; a newly reused PID cannot replace it.
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        candidates.RemoveAll(x => x.Pid == process.Pid); candidates.Add(process);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        var family = ProcessGrouping.Build(candidates).FirstOrDefault(x => x.Members.Any(p => p.Pid == process.Pid));
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        int familyRootPid = family?.Root.Pid ?? process.Pid;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        var expected = (family?.Members ?? new[] { process }).Take(512).ToDictionary(x => x.Pid);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        var familyPids = new HashSet<int>();
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        foreach (var member in expected.Values)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            var current = ReadIdentity(member.Pid, member.ParentPid, member.Name);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            if (current is not null && ProcessGrouping.IdentityMatches(member, current)) familyPids.Add(member.Pid);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            else notes.Add($""PID {member.Pid}: identità non verificabile prima della lettura; escluso."");"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        var familyCommandLines = familyPids.ToDictionary(pid => pid,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            pid => pid == process.Pid ? process.CommandLine : TryGetCommandLineByPid(pid));
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        try
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            ReadTcpForPids(familyPids, network, NativeMethods.AF_INET);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            ReadTcpForPids(familyPids, network, NativeMethods.AF_INET6);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        catch (Exception ex)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            notes.Add($""TCP non enumerabile: {ex.GetType().Name}"");"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        try
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            ReadUdpForPids(familyPids, network, NativeMethods.AF_INET);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            ReadUdpForPids(familyPids, network, NativeMethods.AF_INET6);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        catch (Exception ex)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            notes.Add($""UDP non enumerabile: {ex.GetType().Name}"");"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        foreach (var (label, addressFamily, tcp) in new[]"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            (""TCP IPv4"", NativeMethods.AF_INET, true), (""TCP IPv6"", NativeMethods.AF_INET6, true),"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            (""UDP IPv4"", NativeMethods.AF_INET, false), (""UDP IPv6"", NativeMethods.AF_INET6, false)"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        })
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            try
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"                if (tcp) ReadTcpForPids(familyPids, network, addressFamily);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"                else ReadUdpForPids(familyPids, network, addressFamily);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            catch (Exception ex) { notes.Add($""{label}: {DescribeError(ex)}""); }"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        foreach (int pid in familyPids.ToArray())
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            var current = ReadIdentity(pid, expected[pid].ParentPid, expected[pid].Name);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            if (current is null || !ProcessGrouping.IdentityMatches(expected[pid], current))"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,                network.Remove(pid); familyPids.Remove(pid);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"                notes.Add($""PID {pid}: terminato o identità cambiata durante la lettura; socket esclusi."");"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        if (!familyPids.Contains(process.Pid))
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            return ProcessNetworkEvidence.Unavailable(process, string.Join(""; "", notes));"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            IsDeepInspected = true,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            ApplicationUserModelId = aumid,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            HasVisibleWindow = hasVisibleWindow,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            WindowTitles = windowTitles.Take(12).ToArray(),"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            WindowClasses = windowClasses.Take(20).ToArray(),"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            ModuleNames = modules.OrderBy(x => x, StringComparer.OrdinalIgnoreCase).ToArray(),"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            DeepInspectionNote = (process.DeepInspectionNote?.Split("" | Rete: "")[0] ?? """") +"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"                (notes.Count == 0 ? """" : "" | Rete: "" + string.Join(""; "", notes)),"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            DirectNetworkIdentityVerified = familyPids.Contains(process.Pid),"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            NetworkVerifiedProcessCount = familyPids.Count,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            NetworkCapturedUtc = DateTime.UtcNow,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            NetworkAcquisitionComplete = notes.Count == 0,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            NetworkAcquisitionNote = notes.Count == 0 ? ""Quattro tabelle Windows lette; identità dei PID confrontate prima e dopo."" : string.Join(""; "", notes),"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            NetworkFamilyProcessCount = familyPids.Count,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            NetworkFamilyProcessCount = expected.Count,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            DeepInspectionNote = notes.Count == 0 ? ""Analisi Windows completata"" : string.Join(""; "", notes)"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,    private static ProcessSnapshot ClearUnverifiedDetails(ProcessSnapshot p) => p with
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,    {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        IsDeepInspected = true, ModuleNames = Array.Empty<string>(), WindowTitles = Array.Empty<string>(),"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        WindowClasses = Array.Empty<string>(), HasVisibleWindow = false, ApplicationUserModelId = null"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,    };
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,    private static string DescribeError(Exception ex) => ex is System.ComponentModel.Win32Exception w
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        ? $""Win32 {w.NativeErrorCode}: {w.Message}"" : $""{ex.GetType().Name}: {ex.Message}"";"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"    private static ProcessSnapshot? ReadIdentity(int pid, int parent, string name)"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,    {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        IntPtr handle = NativeMethods.OpenProcess(NativeMethods.PROCESS_QUERY_LIMITED_INFORMATION, false, (uint)pid);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        if (handle == IntPtr.Zero) return null;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        try
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            if (!GetProcessTimes(handle, out long creation, out long exit, out _, out _) || exit != 0) return null;"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            var buffer = new StringBuilder(32768); uint length = (uint)buffer.Capacity;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            if (!NativeMethods.QueryFullProcessImageNameW(handle, 0, buffer, ref length)) return null;"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            return new ProcessSnapshot { Pid = pid, ParentPid = parent, Name = name,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"                StartTime = DateTime.FromFileTimeUtc(creation), ExecutablePath = buffer.ToString() };"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        catch { return null; }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        finally { NativeMethods.CloseHandle(handle); }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,    }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"    [DllImport(""kernel32.dll"", SetLastError = true)]"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,    [return: MarshalAs(UnmanagedType.Bool)]
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"    private static extern bool GetProcessTimes(IntPtr process, out long creation, out long exit, out long kernel, out long user);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            return result;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,                return result;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,                throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            int error = Marshal.GetLastWin32Error();
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            if (error != 18) throw new System.ComponentModel.Win32Exception(error);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,    }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,    private static HashSet<int> ResolveSameExecutableFamily(
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"        int selectedPid,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"        string selectedName,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"        IReadOnlyDictionary<int, TreeEntry> tree,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        out int rootPid)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,    {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        rootPid = selectedPid;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        string targetName = selectedName ?? string.Empty;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        int guard = 0;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        while (guard++ < 64 &&
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"               tree.TryGetValue(rootPid, out var current) &&"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"               tree.TryGetValue(current.ParentPid, out var parent) &&"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"               string.Equals(parent.Name, targetName, StringComparison.OrdinalIgnoreCase))"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            rootPid = parent.Pid;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        var childrenByParent = tree.Values
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            .GroupBy(x => x.ParentPid)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            .ToDictionary(g => g.Key, g => g.ToArray());"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        var family = new HashSet<int>();
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        var queue = new Queue<int>();
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        family.Add(rootPid);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        queue.Enqueue(rootPid);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        while (queue.Count > 0 && family.Count < 128)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            int parentPid = queue.Dequeue();
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            if (!childrenByParent.TryGetValue(parentPid, out var children))"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,                continue;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            foreach (var child in children)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"                if (!string.Equals(child.Name, targetName, StringComparison.OrdinalIgnoreCase))"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,                    continue;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,                if (family.Add(child.Pid))
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,                    queue.Enqueue(child.Pid);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        family.Add(selectedPid);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        return family;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,    private static void ReadTcpForPids(
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"        HashSet<int> targetPids,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"        Dictionary<int, NetworkAccumulator> stats,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        int addressFamily)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,    {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        int size = 0;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        uint rc = NativeMethods.GetExtendedTcpTable(
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            IntPtr.Zero,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            ref size,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            false,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            addressFamily,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            NativeMethods.TCP_TABLE_OWNER_PID_ALL,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            0);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        if (size <= 0 || (rc != NativeMethods.ERROR_INSUFFICIENT_BUFFER && rc != NativeMethods.ERROR_MORE_DATA && rc != 0))
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            return;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        IntPtr buffer = Marshal.AllocHGlobal(size);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        try
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            rc = NativeMethods.GetExtendedTcpTable(
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"                buffer,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"                ref size,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"                false,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"                addressFamily,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"                NativeMethods.TCP_TABLE_OWNER_PID_ALL,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,                0);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            if (rc != 0)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,                return;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            int count = Marshal.ReadInt32(buffer);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            IntPtr rowPtr = IntPtr.Add(buffer, sizeof(int));"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"    private static void ReadTcpForPids(HashSet<int> targetPids, Dictionary<int, NetworkAccumulator> stats, int addressFamily)"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,    {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        int stride = addressFamily == NativeMethods.AF_INET ? Marshal.SizeOf<NativeMethods.MIB_TCPROW_OWNER_PID>() : Marshal.SizeOf<NativeMethods.MIB_TCP6ROW_OWNER_PID>();
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        uint Query(IntPtr buffer, ref int size) => NativeMethods.GetExtendedTcpTable(buffer, ref size, false, addressFamily, NativeMethods.TCP_TABLE_OWNER_PID_ALL, 0);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        OwnedNetworkTableReader.Read(stride, Query, (rowPtr, count) =>"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,                int rowSize = Marshal.SizeOf<NativeMethods.MIB_TCPROW_OWNER_PID>();
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,                int rowSize = stride;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,                int rowSize = Marshal.SizeOf<NativeMethods.MIB_TCP6ROW_OWNER_PID>();
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,                int rowSize = stride;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        finally
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            Marshal.FreeHGlobal(buffer);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        });
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            item.Endpoints.Add(new NetworkEndpointSnapshot(
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            if (item.Endpoints.Count < 128) item.Endpoints.Add(new NetworkEndpointSnapshot(
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            item.Endpoints.Add(new NetworkEndpointSnapshot(
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,            if (item.Endpoints.Count < 128) item.Endpoints.Add(new NetworkEndpointSnapshot(
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,    }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,    private static void ReadUdpForPids(
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"        HashSet<int> targetPids,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"        Dictionary<int, NetworkAccumulator> stats,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        int addressFamily)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,    {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        int size = 0;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        uint rc = NativeMethods.GetExtendedUdpTable(
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            IntPtr.Zero,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            ref size,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            false,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            addressFamily,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            NativeMethods.UDP_TABLE_OWNER_PID,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            0);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        if (size <= 0 || (rc != NativeMethods.ERROR_INSUFFICIENT_BUFFER && rc != NativeMethods.ERROR_MORE_DATA && rc != 0))
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            return;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        IntPtr buffer = Marshal.AllocHGlobal(size);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        try
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            rc = NativeMethods.GetExtendedUdpTable(
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"                buffer,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"                ref size,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"                false,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"                addressFamily,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"                NativeMethods.UDP_TABLE_OWNER_PID,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,                0);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            if (rc != 0)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,                return;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            int count = Marshal.ReadInt32(buffer);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,"            IntPtr rowPtr = IntPtr.Add(buffer, sizeof(int));"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        else if (item.Endpoints.Count < 128)
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            string stateName = state switch { 1 => ""CLOSED"", 3 => ""SYN_SENT"", 4 => ""SYN_RECEIVED"", 6 => ""FIN_WAIT_1"","
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"                7 => ""FIN_WAIT_2"", 8 => ""CLOSE_WAIT"", 9 => ""CLOSING"", 10 => ""LAST_ACK"", 11 => ""TIME_WAIT"", 12 => ""DELETE_TCB"", _ => $""STATE_{state}"" };"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"            item.Endpoints.Add(new NetworkEndpointSnapshot(""TCP"", stateName, localAddress.ToString(), localPort,"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"                remoteAddress.ToString(), remotePort, ClassifyRemote(remoteAddress)));"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,    }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"    private static void ReadUdpForPids(HashSet<int> targetPids, Dictionary<int, NetworkAccumulator> stats, int addressFamily)"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,    {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        int stride = addressFamily == NativeMethods.AF_INET ? Marshal.SizeOf<NativeMethods.MIB_UDPROW_OWNER_PID>() : Marshal.SizeOf<NativeMethods.MIB_UDP6ROW_OWNER_PID>();
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        uint Query(IntPtr buffer, ref int size) => NativeMethods.GetExtendedUdpTable(buffer, ref size, false, addressFamily, NativeMethods.UDP_TABLE_OWNER_PID, 0);"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,"        OwnedNetworkTableReader.Read(stride, Query, (rowPtr, count) =>"
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,                int rowSize = Marshal.SizeOf<NativeMethods.MIB_UDPROW_OWNER_PID>();
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,                int rowSize = stride;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,                int rowSize = Marshal.SizeOf<NativeMethods.MIB_UDP6ROW_OWNER_PID>();
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,                int rowSize = stride;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        finally
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        {
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,            Marshal.FreeHGlobal(buffer);
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        }
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        });
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        item.Endpoints.Add(new NetworkEndpointSnapshot(
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        if (item.Endpoints.Count < 128) item.Endpoints.Add(new NetworkEndpointSnapshot(
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,before,        public bool HasAnySocket => TcpListening > 0 || TcpEstablished > 0 || UdpEndpoints > 0;
+src/ProcessLens.Windows/WindowsDeepProcessInspector.cs,see patch,after,        public bool HasAnySocket => TcpListening > 0 || TcpEstablished > 0 || UdpEndpoints > 0 || Endpoints.Count > 0;
+tests/ProcessLens.BehaviorTests/Program.cs,see patch,after,
+tests/ProcessLens.BehaviorTests/Program.cs,see patch,after,"foreach (string culture in new[] { ""it-IT"", ""en-US"" })"
+tests/ProcessLens.BehaviorTests/Program.cs,see patch,after,{
+tests/ProcessLens.BehaviorTests/Program.cs,see patch,after,    System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo(culture);
+tests/ProcessLens.BehaviorTests/Program.cs,see patch,after,"    foreach (string path in new[] { @""D:\Secret Folder\scan.py"", ""/home/private-user/Secret Folder/scan.py"" })"
+tests/ProcessLens.BehaviorTests/Program.cs,see patch,after,    {
+tests/ProcessLens.BehaviorTests/Program.cs,see patch,after,"        var script = baseline with { Name = ""python.exe"", CommandLine = ""python.exe \"""" + path + ""\"""" };"
+tests/ProcessLens.BehaviorTests/Program.cs,see patch,after,"        var result = new ProcessQueryEngine().Ask(script, new ProcessIntelligenceAnalyzer().Analyze(script), ""Cosa sta facendo?"", null);"
+tests/ProcessLens.BehaviorTests/Program.cs,see patch,after,"        Require(result.Answer.Contains(""scan.py"") && !result.Answer.Contains(""Secret Folder""), ""R25 script summary keeps only basename across path separators ["" + culture + ""]"");"
+tests/ProcessLens.BehaviorTests/Program.cs,see patch,after,"        Require(script.CommandLine.Contains(path), ""R25 original script command line is preserved ["" + culture + ""]"");"
+tests/ProcessLens.BehaviorTests/Program.cs,see patch,after,    }
+tests/ProcessLens.BehaviorTests/Program.cs,see patch,after,}
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,after,"<Project Sdk=""Microsoft.NET.Sdk""><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup>"
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,after,"<ProjectReference Include=""../../src/ProcessLens.Core/ProcessLens.Core.csproj""/>"
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,after,"<Compile Include=""../../src/ProcessLens.Windows/NativeMethods.cs"" Link=""NativeMethods.cs""/>"
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,after,"<Compile Include=""../../src/ProcessLens.Windows/OwnedNetworkTableReader.cs"" Link=""OwnedNetworkTableReader.cs""/>"
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,after,"<Compile Include=""../../src/ProcessLens.Windows/WindowsDeepProcessInspector.cs"" Link=""WindowsDeepProcessInspector.cs""/>"
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,after,"<Compile Include=""../../src/ProcessLens.App/ProcessDisplayFormatter.cs"" Link=""ProcessDisplayFormatter.cs""/>"
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,after,"<Compile Include=""../../src/ProcessLens.App/ProcessNetworkPresentation.cs"" Link=""ProcessNetworkPresentation.cs""/>"
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,after,"<Compile Include=""../../src/ProcessLens.App/WindowLifetimePolicy.cs"" Link=""WindowLifetimePolicy.cs""/></ItemGroup></Project>"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,using System.Globalization;
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,using System.ComponentModel;
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,using System.Runtime.InteropServices;
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,using System.Net;
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,using System.Net.Sockets;
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,using ProcessLens.Core;
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,using ProcessLens.Windows;
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,using ProcessLens.App;
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"static void Check(bool ok, string label)"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"{ if (!ok) throw new Exception(""FAIL R25 "" + label); Console.WriteLine(""PASS R25 "" + label); }"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var start = new DateTime(2026,10,23,12,0,0,DateTimeKind.Utc);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"ProcessSnapshot Chrome(int pid, int parent, int second = 0) => new() { Pid = pid, ParentPid = parent, Name = ""chrome.exe"","
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    ExecutablePath = @""C:\Google\Chrome\chrome.exe"", FileDescription = ""Google Chrome"", StartTime = start.AddSeconds(second) };"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var root = Chrome(10,1); var child = Chrome(11,10,1); var leaf = Chrome(12,11,2);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var otherRoot = Chrome(20,1); var otherChild = Chrome(21,20,1);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var cloud = new ProcessSnapshot { Pid=30, ParentPid=10, Name=""claude.exe"", FileDescription=""Claude"", ProductName=""Google integration"","
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    ExecutablePath=@""C:\Cloud\claude.exe"", StartTime=start.AddSeconds(1), CommandLine=""--google integration"", ParentName=""Google Chrome"" };"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var list = new[] { root, child, leaf, otherRoot, otherChild, cloud };"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,var groups = ProcessGrouping.Build(list);
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(groups.Count==3 && groups.Single(g=>g.Root.Pid==10).Members.Select(x=>x.Pid).SequenceEqual(new[]{10,11,12}), ""same executable linked children form a group"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(groups.Single(g=>g.Root.Pid==20).Members.Count==2 && groups.Single(g=>g.Root.Pid==30).Members.Count==1, ""independent browser instances and other executables remain separate"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ProcessGrouping.Build(new[]{ root, child with { ExecutablePath=@""C:\Other\chrome.exe"" } }).Count==2, ""homonymous executable from another path is not the same app"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ProcessGrouping.Build(new[]{ root with { StartTime=start.AddSeconds(3) }, child }).Count==2, ""newer reused parent cannot adopt an older child"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ProcessGrouping.Build(new[]{ root with { StartTime=null }, child }).Count==2 &&"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    ProcessGrouping.Build(new[]{ root with { ExecutablePath=null }, child }).Count==2, ""unknown creation or path never establishes grouping"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ProcessGrouping.Build(new[]{ root with { ParentPid=11 }, child with { StartTime=start } }).Count==2, ""cyclic parent graph cannot fabricate an application tree"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ProcessGrouping.Build(new[]{ child }).Single().Root.Pid==11, ""orphan stays a separate group"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ProcessGrouping.Build(new[]{ root }).Single().Key != ProcessGrouping.Build(new[]{ root with { StartTime=start.AddDays(1) } }).Single().Key,"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    ""group expansion key cannot cross PID reuse"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ProcessIdentitySearch.Matches(root,""google"") && ProcessIdentitySearch.Matches(root,""CHROME"") && ProcessIdentitySearch.Matches(root,""10""), ""search accepts executable identity, display metadata and exact PID"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!ProcessIdentitySearch.Matches(cloud,""google"") && !ProcessIdentitySearch.Matches(cloud,""10"") && !ProcessIdentitySearch.Matches(root,""1""),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    ""parent, arguments and PID substrings cannot add unrelated search results"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ProcessIdentitySearch.Matches(cloud,""  claude  "") && ProcessIdentitySearch.Matches(cloud,""""), ""trimmed and empty identity filters"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!ProcessIdentitySearch.Matches(root,""google"",""Cloud""), ""hidden product/description metadata cannot override the displayed name filter"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var visible=list.Where(x=>ProcessIdentitySearch.Matches(x,""google"")).ToArray();"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"for(int i=0;i<20;i++) visible=list.Select(x=>x with { WorkingSetBytes=i*1048576L }).Where(x=>ProcessIdentitySearch.Matches(x,""google"")).ToArray();"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(visible.Length==5 && visible.All(x=>x.Name==""chrome.exe""), ""repeated refreshed snapshots keep the active identity filter"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ProcessGrouping.IdentityMatches(root, root with { CpuPercent=9 }) && !ProcessGrouping.IdentityMatches(root, root with { StartTime=start.AddSeconds(1) }) &&"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    !ProcessGrouping.IdentityMatches(root, root with { ExecutablePath=@""C:\Other\chrome.exe"" }), ""network ownership gate requires exact known creation and executable path"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"foreach (string culture in new[]{""it-IT"",""en-US""})"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,{
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,    CultureInfo.CurrentCulture=CultureInfo.GetCultureInfo(culture);
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    var a=root with { CpuSampleAvailable=true, CpuPercent=2.5, PrivateWorkingSetAvailable=true, PrivateWorkingSetBytes=10*1048576, WorkingSetAvailable=true, WorkingSetBytes=20*1048576 };"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    var b=child with { CpuSampleAvailable=true, CpuPercent=3.5, PrivateWorkingSetAvailable=true, PrivateWorkingSetBytes=30*1048576, WorkingSetAvailable=true, WorkingSetBytes=50*1048576 };"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    var usage=ProcessGroupUsage.From(new[]{a,b});"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Check(usage.CpuPercent==6 && usage.CpuKnown==2 && usage.MemoryMb==40 && usage.MemoryKnown==2 && usage.PrivateResident, ""group sums private resident and valid CPU [""+culture+""]"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    usage=ProcessGroupUsage.From(new[]{a,b with { PrivateWorkingSetAvailable=false, CpuSampleAvailable=false }});"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Check(usage.MemoryMb==10 && usage.MemoryKnown==1 && usage.CpuPercent==2.5 && usage.CpuKnown==1 && usage.Count==2,"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"        ""partial coverage cannot mix total WS or missing CPU into private totals [""+culture+""]"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    usage=ProcessGroupUsage.From(new[]{a with { PrivateWorkingSetAvailable=false },b with { PrivateWorkingSetAvailable=false }});"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Check(!usage.PrivateResident && usage.MemoryMb==70, ""explicit total-resident fallback stays separate [""+culture+""]"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    usage=ProcessGroupUsage.From(new[]{root,child});"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Check(usage.MemoryKnown==0 && usage.CpuKnown==0, ""missing group counters remain unavailable [""+culture+""]"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    var net=root with { IsDeepInspected=true, NetworkCapturedUtc=start, NetworkAcquisitionComplete=false,"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"        NetworkVerifiedProcessCount=2, NetworkFamilyProcessCount=2, DirectNetworkIdentityVerified=true,"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"        NetworkAcquisitionNote=""TCP IPv6: AccessDenied"", NetworkEndpoints=new[]{new NetworkEndpointSnapshot(""TCP"",""LISTEN"",""127.0.0.1"",9222,null,null,""SOLO LOCALE"")},"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"        RelatedNetworkProcesses=new[]{new RelatedNetworkProcessSnapshot(11,""chrome.exe"",""Servizio di rete"",0,1,0,1,"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"            new[]{new NetworkEndpointSnapshot(""TCP"",""ESTABLISHED"",""192.168.1.2"",51000,""1.1.1.1"",443,""PUBBLICO"")})} };"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,    string report=ProcessNetworkPresentation.DescribeEndpointOwners(net);
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Check(report.Contains(""LETTURA PARZIALE"") && report.Contains(""AccessDenied"") && report.Contains(""PID 10 · TCP LISTEN"") &&"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"        report.Contains(""PID 11 · TCP ESTABLISHED"") && report.Contains(""locale [192.168.1.2]:51000 → remoto [1.1.1.1]:443""),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"        ""sample time, partial read and per-PID local/remote port ownership retained [""+culture+""]"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Check(ProcessNetworkPresentation.Describe(net with { DirectNetworkIdentityVerified=false }).Contains(""socket N/D""), ""unverified selected instance cannot acquire measured zero sockets [""+culture+""]"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,}
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var staleNetwork=root with { CpuSampleAvailable=true,CpuPercent=42,WorkingSetAvailable=true,WorkingSetBytes=1234,"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    TcpListeningCount=2,NetworkFamilyProcessCount=10,NetworkFamilyTcpEstablishedCount=9,"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    NetworkEndpoints=new[]{new NetworkEndpointSnapshot(""TCP"",""LISTEN"",""127.0.0.1"",9222,null,null,""SOLO LOCALE"")},"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    RelatedNetworkProcesses=new[]{new RelatedNetworkProcessSnapshot(11,""chrome.exe"",""rete"",1,2,0,2,Array.Empty<NetworkEndpointSnapshot>())} };"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var invalidated=ProcessNetworkEvidence.Unavailable(staleNetwork,""PID riutilizzato"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,Check(invalidated.DirectNetworkIdentityVerified==false && !invalidated.NetworkAcquisitionComplete && invalidated.NetworkVerifiedProcessCount==0 &&
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    invalidated.NetworkEndpoints.Count==0 && invalidated.RelatedNetworkProcesses.Count==0 && invalidated.TcpListeningCount==0 && invalidated.NetworkFamilyTcpEstablishedCount==0,"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    ""invalid selected anchor cannot retain another instance's group sockets or counters"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(invalidated.CpuPercent==42 && invalidated.WorkingSetBytes==1234 && ProcessNetworkPresentation.Describe(invalidated).Contains(""socket N/D""),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    ""network invalidation preserves independent CPU/RAM while displaying unavailable socket identity"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,var tray = new TrayActivationGate();
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(tray.Activate(10,0.5,true,false)==TrayActivation.Minimize,""visible tray click requests minimize"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(tray.Activate(10.01,0.5,true,true) is null && tray.Activate(10.3,0.5,true,true) is null,"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    ""duplicate or double-click notification cannot immediately reopen minimized window"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(tray.Activate(11,0.5,true,true)==TrayActivation.Restore,""later tray click restores a minimized window"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(tray.Activate(11.2,0.5,true,false) is null,""second click of restore double-click cannot minimize again"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(tray.Activate(12,0.5,false,false)==TrayActivation.Restore && tray.Activate(double.NaN,0.5,true,false) is null,"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    ""hidden window is restored and invalid callback clock is ignored"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"// Independent SDK fixtures: table header is DWORD, owner PID is at byte 20 in IPv4 TCP."
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,Check(Marshal.SizeOf<NativeMethods.MIB_TCPROW_OWNER_PID>()==24 && Marshal.SizeOf<NativeMethods.MIB_TCP6ROW_OWNER_PID>()==56 &&
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Marshal.SizeOf<NativeMethods.MIB_UDPROW_OWNER_PID>()==12 && Marshal.SizeOf<NativeMethods.MIB_UDP6ROW_OWNER_PID>()==28,"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    ""IPv4/IPv6 TCP/UDP row stride matches SDK fixture"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var decodePort=typeof(WindowsDeepProcessInspector).GetMethod(""PortFromNetworkOrder"",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Static)!;"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check((int)decodePort.Invoke(null,new object[]{0x50c3u})! == 50000 && (int)decodePort.Invoke(null,new object[]{0xbb01u})! == 443,"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    ""native port conversion distinguishes ephemeral local 50000 and remote 443"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"uint IPv6Fixture(IntPtr buffer,ref int size)"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,{
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,    size=60;if(buffer==IntPtr.Zero)return 122;
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Marshal.Copy(new byte[60],0,buffer,60);Marshal.WriteInt32(buffer,1);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Marshal.WriteByte(buffer,4+15,1);Marshal.WriteInt32(buffer,4+16,7);Marshal.WriteInt32(buffer,4+20,0xbb01);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Marshal.WriteInt32(buffer,4+48,5);Marshal.WriteInt32(buffer,4+52,43);return 0;"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,}
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"OwnedNetworkTableReader.Read(56,IPv6Fixture,(rows,count)=>"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,{
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,    var row=Marshal.PtrToStructure<NativeMethods.MIB_TCP6ROW_OWNER_PID>(rows);
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Check(count==1 && row.dwOwningPid==43 && row.dwLocalScopeId==7 && row.ucLocalAddr![15]==1 && row.dwLocalPort==0xbb01,"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"        ""independent IPv6 fixture preserves scope, owner and network-order port"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,});
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,int calls=0; bool decoded=false;
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"uint Table(IntPtr buffer,ref int size)"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,{
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,    calls++; if(buffer==IntPtr.Zero) { size=28;return 122; }
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Marshal.WriteInt32(buffer,1); for(int i=4;i<28;i+=4) Marshal.WriteInt32(buffer,i,0);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Marshal.WriteInt32(buffer,4,5); Marshal.WriteInt32(buffer,4+8,0x50c3); Marshal.WriteInt32(buffer,4+20,42);size=28;return 0;"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,}
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"OwnedNetworkTableReader.Read(24,Table,(rows,count)=> { var row=Marshal.PtrToStructure<NativeMethods.MIB_TCPROW_OWNER_PID>(rows);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,    decoded=count==1 && row.dwOwningPid==42 && row.dwState==5 && row.dwLocalPort==0x50c3; });
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(calls==2 && decoded,""independent native table fixture decodes owner, state and network-order port"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,calls=0;
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"uint Growing(IntPtr buffer,ref int size)"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"{ calls++; if(calls==1){size=4;return 122;} if(calls==2){size=28;return 122;} return Table(buffer,ref size); }"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"OwnedNetworkTableReader.Read(24,Growing,(_,count)=>Check(count==1,""growing socket table retried with new capacity""));"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"uint Denied(IntPtr buffer,ref int size)=>5;"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"try { OwnedNetworkTableReader.Read(24,Denied,(_,_)=>{});throw new Exception(""expected denial""); }"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"catch(Win32Exception ex) { Check(ex.NativeErrorCode==5,""native access error cannot become a valid empty table""); }"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"uint Truncated(IntPtr buffer,ref int size)"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"{ size=4;if(buffer==IntPtr.Zero)return 122;Marshal.WriteInt32(buffer,100);return 0; }"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"try { OwnedNetworkTableReader.Read(24,Truncated,(_,_)=>{});throw new Exception(""expected truncation""); }"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"catch(InvalidDataException) { Check(true,""table count exceeding returned bytes is rejected""); }"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"uint Huge(IntPtr buffer,ref int size) {size=17*1024*1024;return 122;}"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"try { OwnedNetworkTableReader.Read(24,Huge,(_,_)=>{});throw new Exception(""expected cap""); }"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"catch(InvalidDataException) { Check(true,""oversized table rejected before allocation""); }"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,if(OperatingSystem.IsWindows())
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,{
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    using var listener=new TcpListener(IPAddress.Loopback,0); listener.Start();int port=((IPEndPoint)listener.LocalEndpoint).Port;"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,    using var own=System.Diagnostics.Process.GetCurrentProcess();
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    var snapshot=new ProcessSnapshot{Pid=own.Id,ParentPid=0,Name=own.ProcessName+"".exe"",ExecutablePath=own.MainModule!.FileName,StartTime=own.StartTime};"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,    var observed=new WindowsDeepProcessInspector().RefreshNetwork(snapshot);
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Check(observed.DirectNetworkIdentityVerified==true && observed.NetworkEndpoints.Any(e=>e.Protocol==""TCP"" && e.State==""LISTEN"" && e.LocalPort==port),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"        ""WINDOWS native reader finds only its owned loopback listener with exact selected identity"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,}
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"else Console.WriteLine(""NOT RUN: Windows native tables and owned loopback listener (Linux host)."");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Console.WriteLine(""R25 grouping, identity filter and network table regressions complete."");"
+tests/ProcessLens.ProcessGroupsUiTests/ProcessLens.ProcessGroupsUiTests.csproj,see patch,after,"<Project Sdk=""Microsoft.NET.Sdk"">"
+tests/ProcessLens.ProcessGroupsUiTests/ProcessLens.ProcessGroupsUiTests.csproj,see patch,after, <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+tests/ProcessLens.ProcessGroupsUiTests/ProcessLens.ProcessGroupsUiTests.csproj,see patch,after," <ItemGroup><ProjectReference Include=""../../src/ProcessLens.App/ProcessLens.App.csproj""/></ItemGroup>"
+tests/ProcessLens.ProcessGroupsUiTests/ProcessLens.ProcessGroupsUiTests.csproj,see patch,after,</Project>
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,using System.Collections;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,using System.Diagnostics;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,using System.Reflection;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,using System.Runtime.InteropServices;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,using System.Windows;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,using System.Windows.Controls;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,using System.Windows.Data;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,using System.Windows.Threading;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,using ProcessLens.App;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,using ProcessLens.Core;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,using ProcessLens.Semantics;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,internal static class Program
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,{
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"    static void Check(bool ok, string label)"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"    { if (!ok) throw new Exception(""FAIL R25 WPF "" + label); Console.WriteLine(""PASS R25 WPF "" + label); }"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"    static void Set(MainWindow main,string name,object value)=>typeof(MainWindow).GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(main,value);"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"    static void Filter(MainWindow main)=>typeof(MainWindow).GetMethod(""ApplyFilter"",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(main,new object?[]{null,true,false});"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    static void Drain()
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"    { var frame=new DispatcherFrame();Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ContextIdle,new Action(()=>frame.Continue=false));Dispatcher.PushFrame(frame); }"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    [STAThread]
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    public static void Main(string[] args)
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    {
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        _=new Application{ShutdownMode=ShutdownMode.OnExplicitShutdown};
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        if(args.Contains(""--shell-smoke"")) { ShellSmoke();Application.Current.Shutdown();return; }"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        var main=new MainWindow();var analyzer=new ProcessIntelligenceAnalyzer();var start=DateTime.UtcNow.AddMinutes(-2);
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        ProcessSnapshot Chrome(int pid,int parent,int seconds)=>new(){Pid=pid,ParentPid=parent,Name=""chrome.exe"",FileDescription=""Google Chrome"","
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            ExecutablePath=@""C:\Chrome\chrome.exe"",StartTime=start.AddSeconds(seconds),IsDeepInspected=true};"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var root=Chrome(2147483000,1,0);var child=Chrome(2147483001,root.Pid,1);"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var cloud=new ProcessSnapshot{Pid=2147483002,ParentPid=root.Pid,Name=""claude.exe"",FileDescription=""Claude"",ExecutablePath=@""C:\Claude\claude.exe"","
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            StartTime=start.AddSeconds(1),CommandLine=""--google"",ParentName=""Google Chrome"",IsDeepInspected=true};"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        ProcessRow Row(ProcessSnapshot p)=>new(p,analyzer.Analyze(p));"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var rows=new List<ProcessRow>{Row(root),Row(child),Row(cloud)};Set(main,""_allRows"",rows);"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var search=(TextBox)main.FindName(""SearchBox"");var list=(ListView)main.FindName(""ProcessList"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        search.Text=""google"";Filter(main);Drain();"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(list.Items.Count==2 && list.Items.Cast<ProcessRow>().All(x=>x.Name==""chrome.exe""),""identity filter excludes another app mentioning Google in parent and arguments"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        var view=CollectionViewSource.GetDefaultView(list.ItemsSource);
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(view.Groups?.Count==1 && ((CollectionViewGroup)view.Groups[0]!).ItemCount==2,""real collection view contains one expandable group with two PID rows"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        var group=(ProcessGroupRow)((CollectionViewGroup)view.Groups![0]!).Name;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(group.Title.Contains(""(2)"") && group.Members.Select(x=>x.Pid).Distinct().Count()==2,""group count retains individual PID selection targets"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        group.IsExpanded=true;Filter(main);Drain();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        group=(ProcessGroupRow)((CollectionViewGroup)CollectionViewSource.GetDefaultView(list.ItemsSource).Groups![0]!).Name;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(group.IsExpanded,""expansion survives snapshot/filter rebuild for the same process instance"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        rows[2]=Row(cloud with{WorkingSetBytes=1234});Filter(main);
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(search.Text==""google"" && list.Items.Count==2 && list.Items.Cast<ProcessRow>().All(x=>x.Name==""chrome.exe""),""asynchronous row replacement cannot bypass current search"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        group=(ProcessGroupRow)((CollectionViewGroup)CollectionViewSource.GetDefaultView(list.ItemsSource).Groups![0]!).Name;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(group.Members.All(x=>rows.Contains(x)),""group members reference the current row instances after a rebuild"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        double now=Stopwatch.GetTimestamp()/(double)Stopwatch.Frequency;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        main.ApplyLiveMemorySamples(new Dictionary<int,LiveMemorySample>{"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            [root.Pid]=new(root.Pid,root.StartTime,3*1048576,true,2*1048576,true,9*1048576,true,now,DateTime.UtcNow),"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            [child.Pid]=new(child.Pid,child.StartTime,4*1048576,true,3*1048576,true,10*1048576,true,now,DateTime.UtcNow)});"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(group.MemoryDisplayMb==5 && group.MemoryLabel==""WS PRIVATO"",""live RAM updates group sum from existing PID rows"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        search.Text=child.Pid.ToString();Filter(main);
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(list.Items.Count==1 && ((ProcessRow)list.Items[0]).Pid==child.Pid,""PID search is exact and exposes only its matching member"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        ((CheckBox)main.FindName(""GroupApplicationsCheckBox"")).IsChecked=false;Filter(main);"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(CollectionViewSource.GetDefaultView(list.ItemsSource).Groups is null,""flat per-PID view remains available"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        int minimize=0,exit=0;main.MinimizeRequested+=()=>minimize++;main.ExitRequested+=()=>exit++;"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        ((Button)main.FindName(""MinimizeWindowButton"")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        ((Button)main.FindName(""ExitApplicationButton"")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(minimize==1 && exit==1,""real header buttons route separate minimize and exit commands"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(((Button)main.FindName(""RefreshProcessPortsButton"")).Style is not null,""manual port refresh action uses native themed style"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        main.Close();Application.Current.Shutdown();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Console.WriteLine(""R25 WPF fixture complete: no shown window, native process/network reads, tray registration or user clipboard."");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    }
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    static void Until(Func<bool> condition)
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    {
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        var clock=Stopwatch.StartNew();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        while(!condition() && clock.Elapsed<TimeSpan.FromSeconds(5))
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        {
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,            var frame=new DispatcherFrame();var timer=new DispatcherTimer{Interval=TimeSpan.FromMilliseconds(20)};
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            timer.Tick+=(_,_)=>frame.Continue=false;timer.Start();Dispatcher.PushFrame(frame);timer.Stop();"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        }
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(condition(),""owned window reaches expected native shell state within five seconds"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    }
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    static void ShellSmoke()
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    {
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        // Explicit manual option: only this fixture's own window and tray entry are operated.
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var window=new Window{Title=""ProcessLens R25 shell fixture"",Width=600,Height=320,Content=new TextBlock{Text=""Verifica riduzione/riapertura R25 — finestra fixture"",Margin=new Thickness(20)}};"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        using var controller=new TrayWindowController(window,()=>window.Close(),_=>{});"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        var hwnd=new System.Windows.Interop.WindowInteropHelper(window).EnsureHandle();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        window.Show();controller.RequestMinimize();Until(()=>IsIconic(hwnd));
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        controller.RequestRestore();Until(()=>!IsIconic(hwnd)&&window.IsVisible);
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        window.WindowState=WindowState.Maximized;controller.RequestMinimize();Until(()=>IsIconic(hwnd));
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        controller.RequestRestore();Until(()=>!IsIconic(hwnd)&&window.WindowState==WindowState.Maximized);
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        window.Close();Until(()=>IsIconic(hwnd));Check(window.IsVisible,""X retains taskbar restore route"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        controller.RequestRestore();Until(()=>!IsIconic(hwnd));controller.AllowExit();window.Close();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(!window.IsVisible,""explicit exit closes the owned fixture window"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Console.WriteLine(""PASS R25 manual shell fixture; human click on tray and Explorer restart still require manual verification."");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    }
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"    [DllImport(""user32.dll"")][return:MarshalAs(UnmanagedType.Bool)]static extern bool IsIconic(IntPtr hwnd);"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,}
+tests/check-ui-format-r9.ps1,see patch,before,    -not $code.Contains('ProcessNetworkPresentation.Describe(p)')) {
+tests/check-ui-format-r9.ps1,see patch,after,    -not $code.Contains('ProcessNetworkPresentation.DescribeEndpointOwners(p)')) {

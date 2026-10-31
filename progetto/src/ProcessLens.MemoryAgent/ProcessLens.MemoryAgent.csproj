@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>ProcessLens.MemoryAgent</AssemblyName>
+    <Version>0.16.0</Version>
+    <PublishSingleFile>false</PublishSingleFile>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProcessLens.Core\ProcessLens.Core.csproj" />
+    <Compile Include="..\ProcessLens.Windows\WindowsPhysicalMemoryReader.cs" Link="WindowsPhysicalMemoryReader.cs" />
+  </ItemGroup>
+</Project>

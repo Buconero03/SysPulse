@@ -1,0 +1,10 @@
+PASS refresh policy: normal scans not aggressive
+PASS refresh policy: service catalog rate limit
+PASS refresh policy: SCM mapping rate limit
+PASS refresh policy: normal resources: normal interval
+PASS refresh policy: high CPU: slow down GUI
+PASS refresh policy: high RAM: slow down GUI
+PASS refresh policy: missing counters are not invented
+PASS refresh policy: invalid counters ignored
+Refresh policy checks passed.
+PASS refresh policy: R24 live counters have their own one-second interval

@@ -1,0 +1,8 @@
+{
+  "git_apply_check": "PASS",
+  "actual_git_apply": "PASS",
+  "exact_changed_files": 15,
+  "unchanged_prior_source_files": 111,
+  "deleted_prior_files": 0,
+  "scope": "Complete delta from delivered R9, excluding current audit and current manifest for self-reference; earlier audits retained unchanged"
+}

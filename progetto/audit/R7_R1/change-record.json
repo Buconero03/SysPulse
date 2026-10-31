@@ -1,0 +1,50 @@
+[
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "line_R7": 742,
+    "before": "if (ContainsAny(q, \"internet\", \"rete\", \"connession\", \"porta\", \"socket\")) intents.Add(ProcessQueryIntent.Network);",
+    "after": "if (ContainsAny(q, \"internet\", \"rete\", \"connession\", \"socket\") || Regex.IsMatch(q, @\"\\b(?:porta|porte|port|ports)\\b\")) intents.Add(ProcessQueryIntent.Network);",
+    "reason": "Riconosce porte/porta/port/ports come parole, evitando comporta/riporta/supporta; condizioni degli altri intent invariati",
+    "test": "ProcessLens.BehaviorTests; runtime Windows NON ESEGUITO qui"
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/Program.cs",
+    "line_R7": 158,
+    "before": "Require(partialNetwork.Answer.Contains(\"AccessDenied\") && partialNetwork.Answer.Contains(\"non garantisce assenza\"),",
+    "after": "Require(partialNetwork.Title == \"Porte e connessioni\" &&\n        partialNetwork.Answer.Contains(\"AccessDenied\") && partialNetwork.Answer.Contains(\"non garantisce assenza\"),",
+    "reason": "L’asserzione verifica anche l’instradamento: non indebolisce il controllo delle note e dell’assenza non garantita",
+    "test": "ProcessLens.BehaviorTests; runtime Windows NON ESEGUITO qui"
+  },
+  {
+    "file": "VERSION.txt",
+    "line_R7": 1,
+    "before": "0.19.16 R7 Candidate",
+    "after": "0.19.16 R7 R1 Candidate",
+    "reason": "Distingue hotfix dalla candidata fallita sul PC dell’utente",
+    "test": "ProcessLens.BehaviorTests; runtime Windows NON ESEGUITO qui"
+  },
+  {
+    "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+    "line_R7": 11,
+    "before": "0.19.16-R7-candidate",
+    "after": "0.19.16-R7-R1-candidate",
+    "reason": "Metadati candidata, nessuna promozione stabile",
+    "test": "ProcessLens.BehaviorTests; runtime Windows NON ESEGUITO qui"
+  },
+  {
+    "file": "start-processlens-all.ps1",
+    "line_R7": 30,
+    "before": "v0.19.16 R7 candidata",
+    "after": "v0.19.16 R7 R1 candidata",
+    "reason": "Banner coerente con hotfix",
+    "test": "ProcessLens.BehaviorTests; runtime Windows NON ESEGUITO qui"
+  },
+  {
+    "file": "README.md",
+    "line_R7": 1,
+    "before": "# R7 candidata — revisione del 14 ottobre 2026",
+    "after": "# R7 R1 candidata — hotfix instradamento porte\n\nLeggere prima `HOTFIX_R7_R1.md`. Gli audit R7 documentano la revisione precedente; R1 corregge il difetto emerso dal log Windows del 14 ottobre. I test R1 su Windows restano NON ESEGUITI qui.\n\n## Revisione precedente R7",
+    "reason": "Stato corrente e storico distinti",
+    "test": "ProcessLens.BehaviorTests; runtime Windows NON ESEGUITO qui"
+  }
+]

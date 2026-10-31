@@ -1,0 +1,102 @@
+[
+  {
+    "test": "view delta is exactly the explicit initial tab attribute",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "only view markup and candidate version changed in production",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "all production C# code exact to R14 R1",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "only network UI C# test changed",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "candidate version delta exact",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "actual XAML explicitly selects cache before Loaded",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "the same XML guard rejects original R1 initialization",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "reject missing selection",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "reject no selected tab",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "reject capture tab selected",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "reject conflicting second tab selection",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "cache acquisition and recognition guards retained",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "packet capability capture and cancellation guards retained",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "original three conditions retained as strict independent assertions",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "headless initial state and tab switch regressions supplied",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "nullable cast checks expected view explicitly",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "standard Windows source gate requires explicit initial tab",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "exact authorized production and test delta hashes",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "all project and XAML XML parse",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  },
+  {
+    "test": "reported evidence distinguishes completed data suites from failed UI suite",
+    "status": "PASS",
+    "kind": "source/XML only; no WPF execution"
+  }
+]

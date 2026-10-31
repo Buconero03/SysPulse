@@ -1,0 +1,68 @@
+﻿test,tipo,esito,prova,comando
+protected-bytes,STATICO_PYTHON,PASS,45 file invariati byte per byte,python3 test/check_r7.py
+XML-well-formed,STATICO_PYTHON,PASS,30 XML; non compilazione XAML,python3 test/check_r7.py
+XAML-names MemoryDashboardView.xaml,STATICO_PYTHON,PASS,15 nomi univoci; non rendering,python3 test/check_r7.py
+XAML-names App.xaml,STATICO_PYTHON,PASS,0 nomi univoci; non rendering,python3 test/check_r7.py
+XAML-names GuardianDashboardView.xaml,STATICO_PYTHON,PASS,26 nomi univoci; non rendering,python3 test/check_r7.py
+XAML-names MainWindow.xaml,STATICO_PYTHON,PASS,122 nomi univoci; non rendering,python3 test/check_r7.py
+rule-contract role-signatures.json,STATICO_PYTHON,PASS,"ID, punteggi, categorie, vincoli e predicati invariati",python3 test/check_r7.py
+rule-contract framework-signatures.json,STATICO_PYTHON,PASS,"ID, punteggi, categorie, vincoli e predicati invariati",python3 test/check_r7.py
+model-contract ProcessSnapshot,STATICO_PYTHON,PASS,Dichiarazioni e campi pubblici invariati,python3 test/check_r7.py
+model-contract ProcessInsight,STATICO_PYTHON,PASS,Dichiarazioni e campi pubblici invariati,python3 test/check_r7.py
+model-contract ServiceSnapshot,STATICO_PYTHON,PASS,Dichiarazioni e campi pubblici invariati,python3 test/check_r7.py
+layout-constraints,STATICO_PYTHON,PASS,Titoli a capo e minimi nella terna; DPI NON ESEGUITO,python3 test/check_r7.py
+missing-CPU-presentation,STATICO_PYTHON,PASS,N/D rispettato anche nel rapporto tecnico,python3 test/check_r7.py
+missing-health-guard,STATICO_PYTHON,PASS,Guardia di sola presentazione; esecuzione .NET NON ESEGUITA,python3 test/check_r7.py
+no-launch-causality,STATICO_PYTHON,PASS,RoleClassifier: cause storiche inventate rimosse,python3 test/check_r7.py
+network-boundaries,STATICO_PYTHON,PASS,"Verifica strutturale messaggi, non test reti Windows",python3 test/check_r7.py
+ETA-boundaries,STATICO_PYTHON,PASS,Fonte testuale e scenario aritmetico qualificati,python3 test/check_r7.py
+memory-endpoint-limits,STATICO_PYTHON,PASS,Saldo distinto da monotonia,python3 test/check_r7.py
+candidate-metadata,STATICO_PYTHON,PASS,Nessuna promozione stabile,python3 test/check_r7.py
+verification-no-actions,STATICO_PYTHON,PASS,"La procedura non avvia GUI, target profiler, terminazioni o installazioni",python3 test/check_r7.py
+check-classification-hierarchy-v01914.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-classification-hierarchy-v01914.ps1
+check-classification-language-v01911.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-classification-language-v01911.ps1
+check-detail-hierarchy-v01910.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-detail-hierarchy-v01910.ps1
+check-diagnostics-v01913.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-diagnostics-v01913.ps1
+check-elevation.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-elevation.ps1
+check-etw-startup-order.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-etw-startup-order.ps1
+check-guardian-dashboard.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-guardian-dashboard.ps1
+check-memory-dashboard.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-memory-dashboard.ps1
+check-memory-measurement-audit.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-memory-measurement-audit.ps1
+check-memory-ui-v0195.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-memory-ui-v0195.ps1
+check-powershell-syntax.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-powershell-syntax.ps1
+check-profiler-fixture-v01912.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-profiler-fixture-v01912.ps1
+check-profiler-isolation.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-profiler-isolation.ps1
+check-structured-queries.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-structured-queries.ps1
+check-terminology-ui.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-terminology-ui.ps1
+check-ui-readability.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-ui-readability.ps1
+check-windows-allocation-inspector.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-windows-allocation-inspector.ps1
+check-wpf-contextmenu.ps1,POWERSHELL,NON ESEGUITO,pwsh/Windows PowerShell non disponibile,.\tests\check-wpf-contextmenu.ps1
+ProcessLens.BehaviorTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.BehaviorTests\ProcessLens.BehaviorTests.csproj -c Release
+ProcessLens.CpuTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.CpuTests\ProcessLens.CpuTests.csproj -c Release
+ProcessLens.DiagnosticsTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.DiagnosticsTests\ProcessLens.DiagnosticsTests.csproj -c Release
+ProcessLens.GuardianDashboardTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.GuardianDashboardTests\ProcessLens.GuardianDashboardTests.csproj -c Release
+ProcessLens.GuardianStorageTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.GuardianStorageTests\ProcessLens.GuardianStorageTests.csproj -c Release
+ProcessLens.GuardianTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.GuardianTests\ProcessLens.GuardianTests.csproj -c Release
+ProcessLens.MemoryAlertTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.MemoryAlertTests\ProcessLens.MemoryAlertTests.csproj -c Release
+ProcessLens.MemoryTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.MemoryTests\ProcessLens.MemoryTests.csproj -c Release
+ProcessLens.OriginTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.OriginTests\ProcessLens.OriginTests.csproj -c Release
+ProcessLens.ProfilerFixture,DOTNET_FIXTURE_BUILD,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet build
+ProcessLens.ProfilerTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.ProfilerTests\ProcessLens.ProfilerTests.csproj -c Release
+ProcessLens.RefreshPolicyTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.RefreshPolicyTests\ProcessLens.RefreshPolicyTests.csproj -c Release
+ProcessLens.ServiceHistoryTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.ServiceHistoryTests\ProcessLens.ServiceHistoryTests.csproj -c Release
+ProcessLens.ServiceStopTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.ServiceStopTests\ProcessLens.ServiceStopTests.csproj -c Release
+ProcessLens.ServiceTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.ServiceTests\ProcessLens.ServiceTests.csproj -c Release
+ProcessLens.TerminationTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.TerminationTests\ProcessLens.TerminationTests.csproj -c Release
+ProcessLens.TerminologyTests,DOTNET_TEST,NON ESEGUITO,dotnet assente; ambiente Linux,dotnet run --project .\tests\ProcessLens.TerminologyTests\ProcessLens.TerminologyTests.csproj -c Release
+ProcessLens.App,BUILD,NON ESEGUITO,SDK non disponibile; WPF richiede Windows,dotnet build .\src\ProcessLens.App\ProcessLens.App.csproj -c Release
+ProcessLens.Core,BUILD,NON ESEGUITO,SDK non disponibile; WPF richiede Windows,dotnet build .\src\ProcessLens.Core\ProcessLens.Core.csproj -c Release
+ProcessLens.Guardian.Core,BUILD,NON ESEGUITO,SDK non disponibile; WPF richiede Windows,dotnet build .\src\ProcessLens.Guardian.Core\ProcessLens.Guardian.Core.csproj -c Release
+ProcessLens.Guardian.Service,BUILD,NON ESEGUITO,SDK non disponibile; WPF richiede Windows,dotnet build .\src\ProcessLens.Guardian.Service\ProcessLens.Guardian.Service.csproj -c Release
+ProcessLens.MemoryAgent,BUILD,NON ESEGUITO,SDK non disponibile; WPF richiede Windows,dotnet build .\src\ProcessLens.MemoryAgent\ProcessLens.MemoryAgent.csproj -c Release
+ProcessLens.Profiler,BUILD,NON ESEGUITO,SDK non disponibile; WPF richiede Windows,dotnet build .\src\ProcessLens.Profiler\ProcessLens.Profiler.csproj -c Release
+ProcessLens.Semantics,BUILD,NON ESEGUITO,SDK non disponibile; WPF richiede Windows,dotnet build .\src\ProcessLens.Semantics\ProcessLens.Semantics.csproj -c Release
+ProcessLens.Windows,BUILD,NON ESEGUITO,SDK non disponibile; WPF richiede Windows,dotnet build .\src\ProcessLens.Windows\ProcessLens.Windows.csproj -c Release
+TerminologyWithoutKnowledge,WINDOWS,NON ESEGUITO,Ambiente Linux; nessuna profilazione/installazione/terminazione avviata,.\verify-candidate-r7.ps1
+GUI 100% / 125% / 150% DPI,WINDOWS,NON ESEGUITO,Ambiente Linux; nessuna profilazione/installazione/terminazione avviata,Vedere VALIDAZIONE_WINDOWS_R7.md
+Scenari Windows reali,WINDOWS,NON ESEGUITO,Ambiente Linux; nessuna profilazione/installazione/terminazione avviata,Vedere VALIDAZIONE_WINDOWS_R7.md
+AVVIA-TUTTO.cmd,WINDOWS,NON ESEGUITO,Ambiente Linux; nessuna profilazione/installazione/terminazione avviata,Vedere VALIDAZIONE_WINDOWS_R7.md

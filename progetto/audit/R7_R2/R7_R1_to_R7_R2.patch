@@ -1,0 +1,128 @@
+--- /dev/null
++++ b/HOTFIX_R7_R2.md
+@@ -0,0 +1,23 @@
++# ProcessLens v0.19.16 R7 R2 — origine multiprocessing
++
++Base: R7 R1 candidata. La revisione terminologica precedente e la correzione sulle porte sono conservate. R2 resta candidata.
++
++Il nuovo log Windows fornito dall’utente conferma il completamento di BehaviorTests, comprese tutte le regressioni R7 e R1 su porta/porte e falsi positivi. TerminologyTests ha poi superato le verifiche precedenti e i primi casi R7, ma si è arrestato sull’asserzione del PID sintetico 704: «R7 launch limitation explicit». Le fasi successive sono NON ESEGUITE. Questi esiti si riferiscono a R1, non a R2.
++
++La frase del ramo multiprocessing con ParentName presente diceva «la catena di avvio richiede verifica temporale». Non attribuiva al padre un’attività di avvio certa. Il test generico cercava la sola parola «non», quindi ha prodotto un falso negativo: il messaggio esprimeva il limite con parole diverse.
++
++La frase R2 è: «Padre riportato: [nome]; il nome non verifica la catena di avvio né identifica autore o motivo dell’avvio.» Comunica precisamente il limite di ParentName nel classificatore; non nega un’eventuale verifica separata nel pannello Origine.
++
++Il caso 704 ora verifica espressamente il limite sulla catena e sul richiedente. Sono aggiunti casi per --multiprocessing-fork, multiprocessing.spawn e multiprocessing.forkserver, con e senza ParentName, conservazione delle evidenze e invariabilità della spiegazione al variare di CPU/RAM. Il controllo negativo sulla causalità rimane. Non sono cambiati predicati di classificazione, punteggi, contratti, ID knowledge, collector, Guardian, MemoryAgent, profiler o diagnostica strutturata.
++
++I controlli strutturali e la riproduzione della patch sono eseguiti localmente; non equivalgono a test .NET. Qui Linux non dispone di dotnet/pwsh. Build e test .NET/PowerShell/WPF R2: NON ESEGUITO.
++
++Su Windows, estrarre nuovamente il pacchetto aggiornato e dalla radice che contiene src e tests eseguire:
++
++```powershell
++dotnet run --project .\tests\ProcessLens.TerminologyTests\ProcessLens.TerminologyTests.csproj -c Release
++```
++
++Con exit code 0, riprendere `./AVVIA-TUTTO.cmd` oppure eseguire `./verify-candidate-r7.ps1` per la suite completa senza avvio GUI/installazioni. Non è necessario modificare Guardian. Visuale WPF/DPI e fasi non completate restano pendenti.
++
++Gli audit R7/R7_R1 sono storici. Il delta R2 è sotto audit/R7_R2; il manifest corrente SHA256SUMS_R7.txt copre tutta la candidata aggiornata. Una sola directory radice e un solo ZIP di consegna.
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,8 @@
+-﻿# R7 R1 candidata — hotfix instradamento porte
++﻿# R7 R2 candidata — chiarimento origine multiprocessing
++
++Leggere prima `HOTFIX_R7_R2.md`. La correzione delle porte R1 è conservata e i relativi test sono PASS nel log Windows fornito dall’utente. I test e le build R2 su Windows restano NON ESEGUITI qui.
++
++## Hotfix precedente R1
+ 
+ Leggere prima `HOTFIX_R7_R1.md`. Gli audit R7 documentano la revisione precedente; R1 corregge il difetto emerso dal log Windows del 14 ottobre. I test R1 su Windows restano NON ESEGUITI qui.
+ 
+--- a/VERSION.txt
++++ b/VERSION.txt
+@@ -1 +1 @@
+-0.19.16 R7 R1 Candidate - Contextual Terminology Review; Windows validation pending
++0.19.16 R7 R2 Candidate - Contextual Terminology Review; Windows validation pending
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R7-R1-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R7-R2-candidate</InformationalVersion>
+     <Product>ProcessLens</Product>
+     <Description>Windows process intelligence and Task Manager alternative</Description>
+     <Company>ProcessLens</Company>
+--- a/src/ProcessLens.Semantics/RoleClassifier.cs
++++ b/src/ProcessLens.Semantics/RoleClassifier.cs
+@@ -235,7 +235,7 @@
+         {
+             return R("Worker multiprocessing Python", "Parametri compatibili con multiprocessing Python",
+                 "Nei parametri compaiono indicatori di multiprocessing CPython; non provano quale lavoro sia in corso o chi lo abbia richiesto.",
+-                p.ParentName is null ? "Indicatori multiprocessing nei parametri; motivo dell’avvio non osservato." : $"Padre riportato: {p.ParentName}; la catena di avvio richiede verifica temporale.",
++                p.ParentName is null ? "Indicatori multiprocessing nei parametri; motivo dell’avvio non osservato." : $"Padre riportato: {p.ParentName}; il nome non verifica la catena di avvio né identifica autore o motivo dell’avvio.",
+                 "La chiusura può interrompere il pool di worker o l'attività attualmente eseguita.", "MEDIO", "Sviluppo", 97,
+                 "indicatori multiprocessing nella command line Python");
+         }
+--- a/start-processlens-all.ps1
++++ b/start-processlens-all.ps1
+@@ -27,7 +27,7 @@
+ }
+ 
+ try {
+-    Write-Host 'ProcessLens v0.19.16 R7 R1 candidata - Avvio guidato in sequenza' -ForegroundColor Green
++    Write-Host 'ProcessLens v0.19.16 R7 R2 candidata - Avvio guidato in sequenza' -ForegroundColor Green
+     Write-Host ('Modalita: ' + $Mode)
+     Write-Host ('Cartella: ' + $PSScriptRoot)
+     $isAdmin = Test-IsAdministrator
+--- a/tests/ProcessLens.TerminologyTests/Program.cs
++++ b/tests/ProcessLens.TerminologyTests/Program.cs
+@@ -249,8 +249,13 @@
+     Check(!classified.WhyRunning.Contains("lo ha avviato") && !classified.WhyRunning.Contains("Avviato da") &&
+           !classified.WhyRunning.Contains("lo usa per") && !classified.WhyRunning.Contains("Rimane pronto"),
+         "R7 role does not invent launch cause: " + snapshot.Pid);
+-    Check(classified.WhyRunning.Contains("non", StringComparison.OrdinalIgnoreCase),
+-        "R7 launch limitation explicit: " + snapshot.Pid);
++    if (snapshot.Pid == 704)
++        Check(classified.WhyRunning.Contains("il nome non verifica la catena di avvio", StringComparison.Ordinal) &&
++              classified.WhyRunning.Contains("né identifica autore o motivo", StringComparison.Ordinal),
++            "R7 launch limitation explicit: " + snapshot.Pid);
++    else
++        Check(classified.WhyRunning.Contains("non", StringComparison.OrdinalIgnoreCase),
++            "R7 launch limitation explicit: " + snapshot.Pid);
+ }
+ var coordinatorR7 = analyzerR7.Analyze(new ProcessSnapshot
+ {
+@@ -270,3 +275,33 @@
+ var unknownRuntimeR7 = analyzerR7.Analyze(new ProcessSnapshot { Pid = 713, ParentPid = 0, Name = "unknown.exe" });
+ Check(unknownRuntimeR7.Framework == "Runtime non determinato", "R7 no known runtime does not prove native execution");
+ Console.WriteLine("R7 terminology contextual regressions passed.");
++
++// R7 R2: all recognized multiprocessing indicators preserve their evidence and provenance limit.
++foreach (string command in new[]
++{
++    "python.exe --multiprocessing-fork",
++    "python.exe -c multiprocessing.spawn",
++    "python.exe -c multiprocessing.forkserver"
++})
++{
++    foreach (string? parentName in new string?[] { "editor.exe", null })
++    {
++        var snapshot = new ProcessSnapshot { Pid = 714, ParentPid = parentName is null ? 0 : 10,
++            ParentName = parentName, Name = "python.exe", CommandLine = command };
++        var classified = analyzerR7.Analyze(snapshot);
++        Check(classified.Role == "Worker multiprocessing Python" &&
++              classified.Evidence.Any(e => e.Contains("indicatori multiprocessing nella command line Python")),
++            "R7 R2 multiprocessing role and input evidence retained: " + command);
++        Check(parentName is null
++            ? classified.WhyRunning.Contains("motivo dell’avvio non osservato", StringComparison.Ordinal)
++            : classified.WhyRunning.Contains("Padre riportato: editor.exe", StringComparison.Ordinal) &&
++              classified.WhyRunning.Contains("il nome non verifica la catena di avvio", StringComparison.Ordinal) &&
++              classified.WhyRunning.Contains("né identifica autore o motivo", StringComparison.Ordinal),
++            "R7 R2 multiprocessing launch limits with/without parent: " + command);
++        var changedInput = analyzerR7.Analyze(snapshot with { CpuSampleAvailable = true, CpuPercent = 80,
++            PrivateWorkingSetAvailable = true, PrivateWorkingSetBytes = 256L * 1024 * 1024 });
++        Check(changedInput.WhyRunning == classified.WhyRunning,
++            "R7 R2 CPU and RAM do not establish multiprocessing launch cause: " + command);
++    }
++}
++Console.WriteLine("R7 R2 multiprocessing provenance regressions passed.");

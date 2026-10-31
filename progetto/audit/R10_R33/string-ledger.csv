@@ -1,0 +1,566 @@
+file,side,changed_text
+LEGGIMI.txt,before,ProcessLens R32 R2 — correzione caricamento icona all'avvio
+LEGGIMI.txt,after,ProcessLens R33 — icone dei processi
+LEGGIMI.txt,before,Chiudi il messaggio di errore con OK e chiudi eventuali versioni precedenti con Esci.
+LEGGIMI.txt,before,Estrai questo ZIP in una cartella nuova.
+LEGGIMI.txt,before,Entra in ProcessLens-Leggero e avvia AVVIA_PROCESSLENS.cmd.
+LEGGIMI.txt,before,Esplora file puo mostrare il nome AVVIA_PROCESSLENS senza estensione.
+LEGGIMI.txt,before,Non occorre avviare file dentro progetto o supporto.
+LEGGIMI.txt,after,Chiudi la versione precedente con Esci. Estrai in una cartella nuova.
+LEGGIMI.txt,after,Apri ProcessLens-Leggero e fai doppio clic su AVVIA_PROCESSLENS.cmd.
+LEGGIMI.txt,after,Esplora file puo mostrare soltanto AVVIA_PROCESSLENS.
+LEGGIMI.txt,before,CORREZIONE
+LEGGIMI.txt,before,La nuova icona non viene piu caricata tramite un percorso XAML esterno.
+LEGGIMI.txt,before,"Finestra e tray leggono la risorsa incorporata nell'assembly, anche nel file unico pubblicato."
+LEGGIMI.txt,before,"Se l'icona non puo essere caricata, ProcessLens continua ad aprirsi con l'icona standard."
+LEGGIMI.txt,after,ICONE
+LEGGIMI.txt,after,Le icone originali degli eseguibili restano prioritarie.
+LEGGIMI.txt,after,"Quando mancano: simboli ProcessLens per 99 nomi di eseguibile, tra cui Bash, Git, Python, Node e numerosi componenti Windows."
+LEGGIMI.txt,after,"Per gli altri nomi: distintivi grafici stabili, senza riquadri con iniziali."
+LEGGIMI.txt,after,Il tooltip distingue l'icona originale dal simbolo o dal distintivo generato.
+LEGGIMI.txt,after,Un gruppo chiamato Git non eredita piu automaticamente l'immagine di Bash.
+LEGGIMI.txt,after,L'immagine del gruppo non modifica l'identita o l'appartenenza dei PID.
+LEGGIMI.txt,before,Nascondi accanto all'orologio nasconde la finestra e i dettagli posseduti.
+LEGGIMI.txt,before,Per riaprire: clic sull'icona oppure tasto destro > Mostra ProcessLens.
+LEGGIMI.txt,before,"Se l'icona e sotto ^, puoi trascinarla nella zona visibile accanto all'orologio."
+LEGGIMI.txt,before,Trattino e X riducono nella barra delle applicazioni. Esci chiude ProcessLens.
+LEGGIMI.txt,after,La gestione funzionante della R32 R2 e invariata.
+LEGGIMI.txt,after,Nascondi accanto all'orologio: nasconde la finestra; clic sull'icona: riapre.
+LEGGIMI.txt,after,Trattino e X: riduzione nella barra delle applicazioni. Esci: chiusura effettiva.
+LEGGIMI.txt,before,VERIFICHE R32 R2
+LEGGIMI.txt,before,17 controlli risorsa/ICO e 19 controlli nella pubblicazione reale in file unico Linux: PASS.
+LEGGIMI.txt,before,42 controlli PowerShell e 17 prove del launcher: PASS.
+LEGGIMI.txt,before,C# WindowsDesktop con campi XAML simulati: 9 assembly PASS.
+LEGGIMI.txt,before,"Avvio WPF, decodifica nativa tray e clic fisico: da verificare su Windows."
+LEGGIMI.txt,before,"Nessun SDK, runtime o driver aggiunto allo ZIP. Le prove storiche precedenti restano nell'audit."
+LEGGIMI.txt,before,Dettagli: progetto/audit/R10_R32_R2/REVIEW.md.
+LEGGIMI.txt,after,VERIFICHE
+LEGGIMI.txt,after,"308 controlli C# eseguiti, inclusa la lettura delle risorse nella pubblicazione single-file Linux: PASS."
+LEGGIMI.txt,after,43 controlli PowerShell e 17 prove del launcher: PASS.
+LEGGIMI.txt,after,9 assembly WindowsDesktop verificati come C# con campi XAML simulati: PASS.
+LEGGIMI.txt,after,Aspetto e comportamento WPF da verificare su Windows; RAM non misurata.
+LEGGIMI.txt,after,"Nessun SDK, runtime, driver o dipendenza esterna aggiunti allo ZIP."
+LEGGIMI.txt,after,Dettagli: progetto/audit/R10_R33/REVIEW.md.
+progetto/audit/tools/check_notification_area_r32.ps1,before,$icons=Get-Content (Join-Path $root 'src/ProcessLens.App/ProcessIconResolver.cs') -Raw -Encoding UTF8
+progetto/audit/tools/check_notification_area_r32.ps1,after,$icons=(Get-Content (Join-Path $root 'src/ProcessLens.App/ProcessIconResolver.cs') -Raw -Encoding UTF8) + (Get-Content (Join-Path $root 'src/ProcessLens.App/ProcessSymbolDrawing.cs') -Raw -Encoding UTF8)
+progetto/audit/tools/check_notification_area_r32.ps1,before,"foreach($v in @('NativeIconPreference.ResolveExecutable','Placeholder(processName)','UseSharedWindowsSymbol','Segnaposto con iniziali','image.Freeze()')) { if(-not $icons.Contains($v)){throw ('FAIL R32 icons: '+$v)} }"
+progetto/audit/tools/check_notification_area_r32.ps1,after,"foreach($v in @('NativeIconPreference.ResolveExecutable','Placeholder(processName)','ProcessSymbolCatalog.Find','Distintivo grafico','image.Freeze()')) { if(-not $icons.Contains($v)){throw ('FAIL R32 icons: '+$v)} }"
+progetto/audit/tools/check_powershell_r33.py,after,"""""""Run PowerShell source preflight and isolated launcher fixtures, never a build or installation."""""""
+progetto/audit/tools/check_powershell_r33.py,after,"import argparse,json,hashlib,subprocess"
+progetto/audit/tools/check_powershell_r33.py,after,from pathlib import Path
+progetto/audit/tools/check_powershell_r33.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--shell',type=Path,required=True);p.add_argument('--pwsh',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/check_powershell_r33.py,after,r=a.project.resolve();shell=a.shell.resolve();audit=r/'audit/R10_R33';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/check_powershell_r33.py,after,"# Same 30 authorized baseline source stages, plus the R24 wiring gate."
+progetto/audit/tools/check_powershell_r33.py,after,"stages=[x['file'] for x in json.loads((r/'audit/R10_R23_R1/powershell-evidence.json').read_text())['stages']]+['audit/tools/check_live_metrics_r24.ps1','audit/tools/check_process_groups_r25.ps1','audit/tools/check_scroll_minimize_r26.ps1','audit/tools/check_windows_icons_r27.ps1','audit/tools/check_window_controls_r28.ps1','audit/tools/check_window_diagnostics_r29.ps1','audit/tools/check_tray_callbacks_r30.ps1','audit/tools/check_search_hosts_r31.ps1','audit/tools/check_build_reference_r31r1.ps1','audit/tools/check_notification_area_r32.ps1','audit/tools/check_wpf_path_r32r1.ps1','audit/tools/check_embedded_icon_r32r2.ps1','audit/tools/check_process_symbols_r33.ps1'];results=[];logs=[]"
+progetto/audit/tools/check_powershell_r33.py,after,for n in stages:
+progetto/audit/tools/check_powershell_r33.py,after," x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(r/n)],cwd=r,capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;logs.append(n+'\n'+log)"
+progetto/audit/tools/check_powershell_r33.py,after, if x.returncode:(audit/'preflight.log').write_text('\n'.join(logs));raise SystemExit(log)
+progetto/audit/tools/check_powershell_r33.py,after," results.append({'file':n,'sha256':sha((r/n).read_bytes()),'status':'PASS'})"
+progetto/audit/tools/check_powershell_r33.py,after,(audit/'preflight.log').write_text('\n'.join(logs))
+progetto/audit/tools/check_powershell_r33.py,after,fixture=r/'audit/tools/test_launcher_r33.ps1';launcher=shell/'supporto/avvia.ps1'
+progetto/audit/tools/check_powershell_r33.py,after,"x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(fixture),'-Launcher',str(launcher)],capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;(audit/'launcher-fixture.log').write_text(log)"
+progetto/audit/tools/check_powershell_r33.py,after,if x.returncode:raise SystemExit(log)
+progetto/audit/tools/check_powershell_r33.py,after,"count=sum(line.startswith('PASS R33 launcher:') for line in log.splitlines());assert count==17,count"
+progetto/audit/tools/check_powershell_r33.py,after,"(audit/'powershell-evidence.json').write_text(json.dumps({'PowerShell':'7.4.21 Linux; no Windows runtime execution','stages':results,'launcher_fixture_checks':count,'launcher_sha256':sha(launcher.read_bytes()),'fixture_sha256':sha(fixture.read_bytes())},indent=2)+'\n');print('PASS',len(results),'source stages;',count,'launcher checks')"
+progetto/audit/tools/check_process_symbols_r33.ps1,after,$ErrorActionPreference='Stop'
+progetto/audit/tools/check_process_symbols_r33.ps1,after,$root=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+progetto/audit/tools/check_process_symbols_r33.ps1,after,$resolver=Get-Content (Join-Path $root 'src/ProcessLens.App/ProcessIconResolver.cs') -Raw -Encoding UTF8
+progetto/audit/tools/check_process_symbols_r33.ps1,after,$drawing=Get-Content (Join-Path $root 'src/ProcessLens.App/ProcessSymbolDrawing.cs') -Raw -Encoding UTF8
+progetto/audit/tools/check_process_symbols_r33.ps1,after,$groups=Get-Content (Join-Path $root 'src/ProcessLens.App/ProcessGroupRow.cs') -Raw -Encoding UTF8
+progetto/audit/tools/check_process_symbols_r33.ps1,after,"foreach($token in @('NativeIconPreference.ResolveExecutable','ProcessSymbolCatalog.GroupOverride','ProcessSymbolDrawing.ForName')){if(-not $resolver.Contains($token)){throw ('FAIL R33 resolver: '+$token)}}"
+progetto/audit/tools/check_process_symbols_r33.ps1,after,if($drawing.Contains('FormattedText') -or $resolver.Contains('FormattedText')){throw 'FAIL R33: initials must not be rendered.'}
+progetto/audit/tools/check_process_symbols_r33.ps1,after,"foreach($token in @('new(128, StringComparer.OrdinalIgnoreCase)','image.Freeze()','ProcessIconPlaceholder.Pattern')){if(-not $drawing.Contains($token)){throw ('FAIL R33 vector/cache: '+$token)}}"
+progetto/audit/tools/check_process_symbols_r33.ps1,after,"if(-not $groups.Contains('ProcessIconResolver.GetGroupIcon(_name, Members.FirstOrDefault())')){throw 'FAIL R33: group image must follow its actual displayed title.'}"
+progetto/audit/tools/check_process_symbols_r33.ps1,after,[xml]$project=Get-Content (Join-Path $root 'src/ProcessLens.App/ProcessLens.App.csproj') -Raw -Encoding UTF8
+progetto/audit/tools/check_process_symbols_r33.ps1,after,$symbol=@($project.Project.ItemGroup.EmbeddedResource|Where-Object {$_.LogicalName -eq 'ProcessLens.ProcessSymbols'})
+progetto/audit/tools/check_process_symbols_r33.ps1,after,"if($symbol.Count -ne 1){throw 'FAIL R33: symbols must be a raw embedded resource, with no XAML URI.'}"
+progetto/audit/tools/check_process_symbols_r33.ps1,after,$data=Get-Content (Join-Path $root 'src/ProcessLens.App/Assets/ProcessSymbols.json') -Raw -Encoding UTF8|ConvertFrom-Json
+progetto/audit/tools/check_process_symbols_r33.ps1,after,if($data.schema -ne 1 -or $data.entries.Count -lt 60){throw 'FAIL R33: process catalogue missing.'}
+progetto/audit/tools/check_process_symbols_r33.ps1,after,"Write-Host 'PASS R33 source: original icons first, meaningful exact-name symbols, no initials, title-aware group image, bounded frozen vectors and embedded catalogue. Windows rendering remains separate.'"
+progetto/audit/tools/check_window_controls_r28.ps1,before,"foreach($token in @('IconPreferencePolicy.Select','GetResolution(process.ExecutablePath, process.Name)','IsGenericIcon','IconPreferencePolicy.SamePixels','new(128, StringComparer.OrdinalIgnoreCase)')) {"
+progetto/audit/tools/check_window_controls_r28.ps1,after,"foreach($token in @('NativeIconPreference.ResolveExecutable','GetResolution(process.ExecutablePath, process.Name)','IsGenericIcon','IconPreferencePolicy.SamePixels','new(128, StringComparer.OrdinalIgnoreCase)')) {"
+progetto/audit/tools/check_windows_icons_r27.ps1,before,"foreach($token in @('WindowsProcessIconPolicy.UseSharedWindowsSymbol','WindowsComponentIcon { get; }','image.Freeze()','GetResolution(process.ExecutablePath, process.Name)')) {"
+progetto/audit/tools/check_windows_icons_r27.ps1,after,"foreach($token in @('ProcessSymbolCatalog.Find','ProcessSymbolDrawing.ForName','GetResolution(process.ExecutablePath, process.Name)')) {"
+progetto/audit/tools/check_windows_icons_r27.ps1,before,if(-not $row.Contains('ProcessIconResolver.GetIcon(Process)') -or -not $group.Contains('Members.FirstOrDefault()?.IconSource')){throw 'R27 rows/groups must use the same icon path.'}
+progetto/audit/tools/check_windows_icons_r27.ps1,after,"if(-not $row.Contains('ProcessIconResolver.GetIcon(Process)') -or -not $group.Contains('ProcessIconResolver.GetGroupIcon(_name, Members.FirstOrDefault())')){throw 'R27 rows/groups must use the same icon path.'}"
+progetto/audit/tools/package_process_symbols_r33.py,after,"""""""Create a lightweight R33 candidate; assert the precise R32 R2 icon-only delta, evidence hashes and manifests."""""""
+progetto/audit/tools/package_process_symbols_r33.py,after,"import argparse,csv,difflib,hashlib,json,shutil,subprocess,tempfile,zipfile"
+progetto/audit/tools/package_process_symbols_r33.py,after,from pathlib import Path
+progetto/audit/tools/package_process_symbols_r33.py,after,import xml.etree.ElementTree as ET
+progetto/audit/tools/package_process_symbols_r33.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--shell',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True);p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/package_process_symbols_r33.py,after,shell=a.shell.resolve();r=shell/'progetto';audit=r/'audit/R10_R33';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/package_process_symbols_r33.py,after,assert sha(a.baseline_zip.read_bytes())=='4eb61f3c4e6954dff8bc2e1ec8ca79155a835664f1734ba185d69c72242ec6b2'
+progetto/audit/tools/package_process_symbols_r33.py,after,"with zipfile.ZipFile(a.baseline_zip) as z:before={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}"
+progetto/audit/tools/package_process_symbols_r33.py,after,"for d in sorted(shell.rglob('__pycache__'),reverse=True):shutil.rmtree(d)"
+progetto/audit/tools/package_process_symbols_r33.py,after,after={f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file()}
+progetto/audit/tools/package_process_symbols_r33.py,after,"modified={'LEGGIMI.txt','supporto/avvia.ps1','progetto/build-dashboard.ps1','progetto/audit/tools/check_notification_area_r32.ps1','progetto/audit/tools/check_window_controls_r28.ps1','progetto/audit/tools/check_windows_icons_r27.ps1','progetto/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv','progetto/src/ProcessLens.App/ProcessLens.App.csproj','progetto/src/ProcessLens.App/ProcessIconResolver.cs','progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs','progetto/src/ProcessLens.App/ProcessGroupRow.cs','progetto/tests/ProcessLens.IconResourceTests/ProcessLens.IconResourceTests.csproj','progetto/tests/ProcessLens.IconResourceTests/Program.cs','progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj','progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs','progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs'}"
+progetto/audit/tools/package_process_symbols_r33.py,after,"added={'progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs','progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs','progetto/src/ProcessLens.App/Assets/ProcessSymbols.json'}|{f'progetto/audit/tools/{n}' for n in ['typecheck_wpf_sources_r33.py','check_powershell_r33.py','check_process_symbols_r33.ps1','test_launcher_r33.ps1','package_process_symbols_r33.py']}"
+progetto/audit/tools/package_process_symbols_r33.py,after,"manifests={'SHA256SUMS.txt','progetto/SHA256SUMS_R10.txt'}"
+progetto/audit/tools/package_process_symbols_r33.py,after,"assert all(n in after for n in before),'No baseline file may disappear'"
+progetto/audit/tools/package_process_symbols_r33.py,after,"assert {n for n,b in before.items() if n not in manifests and after[n]!=b}==modified,'Unexpected modification or missing intended change'"
+progetto/audit/tools/package_process_symbols_r33.py,after,"assert {n for n in after if n not in before and not n.startswith('progetto/audit/R10_R33/')}==added,'Unexpected new file'"
+progetto/audit/tools/package_process_symbols_r33.py,after,"assert not any(n.startswith('progetto/progetto/') for n in after),'Nested duplicate project'"
+progetto/audit/tools/package_process_symbols_r33.py,after,"for n,b in after.items():"
+progetto/audit/tools/package_process_symbols_r33.py,after," if n.endswith(('.xaml','.csproj')):ET.fromstring(b)"
+progetto/audit/tools/package_process_symbols_r33.py,after,"assert all(after[n]==b for n,b in before.items() if n not in modified and n.startswith(('progetto/src/ProcessLens.Core/','progetto/src/ProcessLens.Semantics/','progetto/src/ProcessLens.Windows/','progetto/src/ProcessLens.Guardian/','progetto/src/ProcessLens.MemoryAgent/','progetto/src/ProcessLens.Profiler/','progetto/src/ProcessLens.RamMonitor/')))"
+progetto/audit/tools/package_process_symbols_r33.py,after,"for n in ['AutomaticViewport.cs','ReadingPositionPolicy.cs','WindowLifetimePolicy.cs','IconPreferencePolicy.cs','DeferredDiagnosticWriter.cs','ProcessLensIcon.cs','IconFile.cs','TrayWindowController.cs','TrayCallbackRouter.cs','MainWindow.xaml','MainWindow.xaml.cs','WindowActionDiagnostics.cs','NativeIconPreference.cs','AppDiagnostics.cs']:"
+progetto/audit/tools/package_process_symbols_r33.py,after," assert after['progetto/src/ProcessLens.App/'+n]==before['progetto/src/ProcessLens.App/'+n],n"
+progetto/audit/tools/package_process_symbols_r33.py,after,d=json.loads((audit/'wpf-typecheck-evidence.json').read_text())
+progetto/audit/tools/package_process_symbols_r33.py,after,assert len(d['assemblies'])==9 and all(x['status']=='PASS' for x in d['assemblies'])
+progetto/audit/tools/package_process_symbols_r33.py,after,assert 'System.IO' not in d['evaluated_wpf_implicit_usings']
+progetto/audit/tools/package_process_symbols_r33.py,after,"for n,h in d['inputs'].items():assert sha((r/n).read_bytes())==h,(n,'stale typecheck input')"
+progetto/audit/tools/package_process_symbols_r33.py,after,ps=json.loads((audit/'powershell-evidence.json').read_text());assert len(ps['stages'])==43 and ps['launcher_fixture_checks']==17
+progetto/audit/tools/package_process_symbols_r33.py,after,for row in ps['stages']:assert sha((r/row['file']).read_bytes())==row['sha256']
+progetto/audit/tools/package_process_symbols_r33.py,after,assert sha((shell/'supporto/avvia.ps1').read_bytes())==ps['launcher_sha256']
+progetto/audit/tools/package_process_symbols_r33.py,after,runtime=json.loads((audit/'runtime-evidence.json').read_text());assert runtime['assertions']==308
+progetto/audit/tools/package_process_symbols_r33.py,after,"for n,h in runtime['source_hashes'].items():assert sha((r/n).read_bytes())==h,(n,'stale runtime input')"
+progetto/audit/tools/package_process_symbols_r33.py,after,assert 'Build succeeded.' in (audit/'IconResourceTests-build.log').read_text()
+progetto/audit/tools/package_process_symbols_r33.py,after,assert sum(l.startswith('PASS') for l in (audit/'single-file-run.log').read_text().splitlines())==42
+progetto/audit/tools/package_process_symbols_r33.py,after,items=json.loads((audit/'msbuild-wpf-usings.json').read_text())['Items']
+progetto/audit/tools/package_process_symbols_r33.py,after,assert not any('ProcessLens.ico' in x['Identity'] for x in items['Content'])
+progetto/audit/tools/package_process_symbols_r33.py,after,assert any(x.get('LogicalName')=='ProcessLens.AppIcon' for x in items['EmbeddedResource'])
+progetto/audit/tools/package_process_symbols_r33.py,after,assert any(x.get('LogicalName')=='ProcessLens.ProcessSymbols' for x in items['EmbeddedResource'])
+progetto/audit/tools/package_process_symbols_r33.py,after,assert not any('ProcessSymbols' in x['Identity'] for x in items['Content'])
+progetto/audit/tools/package_process_symbols_r33.py,after,assert ' Icon=' not in (r/'src/ProcessLens.App/MainWindow.xaml').read_text().split('>')[0]
+progetto/audit/tools/package_process_symbols_r33.py,after,"(audit/'scope-evidence.json').write_text(json.dumps({'baseline_sha256':sha(a.baseline_zip.read_bytes()),'modified_files':sorted(modified),'new_files':sorted(added),'protected':'Core, Semantics, native process/network acquisition, Guardian, metrics, tray/window/scroll policies and application icon pipeline byte identical to working R32 R2. Only process icon display, catalogue, tests and declared version/build files changed','new_dependencies':0,'Windows_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'},indent=2)+'\n')"
+progetto/audit/tools/package_process_symbols_r33.py,after,"with (audit/'string-ledger.csv').open('w',newline='') as f:"
+progetto/audit/tools/package_process_symbols_r33.py,after," w=csv.writer(f);w.writerow(['file','side','changed_text'])"
+progetto/audit/tools/package_process_symbols_r33.py,after, for n in sorted(modified|added):
+progetto/audit/tools/package_process_symbols_r33.py,after,"  for line in difflib.unified_diff(before.get(n,b'').decode('utf-8-sig').splitlines(),after[n].decode('utf-8-sig').splitlines(),n,n,n=0):"
+progetto/audit/tools/package_process_symbols_r33.py,after,"   if line.startswith(('+','-')) and not line.startswith(('+++','---')):w.writerow([n,'after' if line[0]=='+' else 'before',line[1:]])"
+progetto/audit/tools/package_process_symbols_r33.py,after,"with (audit/'files-changed.csv').open('w',newline='') as f:"
+progetto/audit/tools/package_process_symbols_r33.py,after," w=csv.writer(f);w.writerow(['file','kind','sha256_before','sha256_after'])"
+progetto/audit/tools/package_process_symbols_r33.py,after," for n in sorted(modified|added):w.writerow([n,'added' if n in added else 'modified',sha(before[n]) if n in before else '',sha(after[n])])"
+progetto/audit/tools/package_process_symbols_r33.py,after,include=lambda n:n not in manifests and not n.startswith('progetto/audit/R10_R33/')
+progetto/audit/tools/package_process_symbols_r33.py,after,with tempfile.TemporaryDirectory(prefix='processlens-r31-') as tmp:
+progetto/audit/tools/package_process_symbols_r33.py,after, t=Path(tmp);bdir=t/'before';adir=t/'after';bdir.mkdir();adir.mkdir()
+progetto/audit/tools/package_process_symbols_r33.py,after," for base,data in [(bdir,before),(adir,after)]:"
+progetto/audit/tools/package_process_symbols_r33.py,after,"  for n,b in data.items():"
+progetto/audit/tools/package_process_symbols_r33.py,after,"   if include(n):p=base/n;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b)"
+progetto/audit/tools/package_process_symbols_r33.py,after," x=subprocess.run(['git','diff','--no-index','--no-renames','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=t,capture_output=True);assert x.returncode==1"
+progetto/audit/tools/package_process_symbols_r33.py,after, lines=[]
+progetto/audit/tools/package_process_symbols_r33.py,after, for line in x.stdout.splitlines(keepends=True):
+progetto/audit/tools/package_process_symbols_r33.py,after,"  if line.startswith((b'diff --git ',b'--- ',b'+++ ')):"
+progetto/audit/tools/package_process_symbols_r33.py,after,"   for prefix in [b'a/before/',b'a/after/']:line=line.replace(prefix,b'a/')"
+progetto/audit/tools/package_process_symbols_r33.py,after,"   for prefix in [b'b/before/',b'b/after/']:line=line.replace(prefix,b'b/')"
+progetto/audit/tools/package_process_symbols_r33.py,after,  lines.append(line)
+progetto/audit/tools/package_process_symbols_r33.py,after, patch=b''.join(lines);path=audit/'R32_R2_to_R33.patch';path.write_bytes(patch)
+progetto/audit/tools/package_process_symbols_r33.py,after," x=subprocess.run(['git','apply','--check',str(path)],cwd=bdir,capture_output=True);assert x.returncode==0,x.stderr"
+progetto/audit/tools/package_process_symbols_r33.py,after," subprocess.run(['git','apply',str(path)],cwd=bdir,check=True)"
+progetto/audit/tools/package_process_symbols_r33.py,after," assert {f.relative_to(bdir).as_posix():f.read_bytes() for f in bdir.rglob('*') if f.is_file()}=={n:b for n,b in after.items() if include(n)}"
+progetto/audit/tools/package_process_symbols_r33.py,after,"(audit/'patch-evidence.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','patch_sha256':sha(patch),'excluded_from_diff_only':'current R33 audit and recursive manifests; all included in final ZIP'},indent=2)+'\n')"
+progetto/audit/tools/package_process_symbols_r33.py,after,current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt'}
+progetto/audit/tools/package_process_symbols_r33.py,after,"(r/'SHA256SUMS_R10.txt').write_text(''.join(sha(b)+'  '+n+'\n' for n,b in sorted(current.items())))"
+progetto/audit/tools/package_process_symbols_r33.py,after,files={f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file() and f.name!='SHA256SUMS.txt'}
+progetto/audit/tools/package_process_symbols_r33.py,after,"assert not any(n.endswith(('.dll','.exe','.pdb','.deb','.nupkg','.pyc','.ok')) for n in files),'Build/SDK artifacts forbidden'"
+progetto/audit/tools/package_process_symbols_r33.py,after,assert all(len(b)<10*1024*1024 for b in files.values())
+progetto/audit/tools/package_process_symbols_r33.py,after,"manifest=''.join(sha(b)+'  '+n+'\n' for n,b in sorted(files.items()));files['SHA256SUMS.txt']=manifest.encode();(shell/'SHA256SUMS.txt').write_text(manifest)"
+progetto/audit/tools/package_process_symbols_r33.py,after,"a.output_directory.mkdir(parents=True,exist_ok=True);target=a.output_directory/'ProcessLens-R33-icone-processi.zip'"
+progetto/audit/tools/package_process_symbols_r33.py,after,"with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:"
+progetto/audit/tools/package_process_symbols_r33.py,after," for n,b in sorted(files.items()):z.writestr('ProcessLens-Leggero/'+n,b)"
+progetto/audit/tools/package_process_symbols_r33.py,after,with zipfile.ZipFile(target) as z:
+progetto/audit/tools/package_process_symbols_r33.py,after, assert z.testzip() is None
+progetto/audit/tools/package_process_symbols_r33.py,after," for line in manifest.splitlines():h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/'+n))==h"
+progetto/audit/tools/package_process_symbols_r33.py,after," for line in (r/'SHA256SUMS_R10.txt').read_text().splitlines():h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/progetto/'+n))==h"
+progetto/audit/tools/package_process_symbols_r33.py,after," assert {n.split('/')[1] for n in z.namelist()}=={'AVVIA_PROCESSLENS.cmd','LEGGIMI.txt','supporto','progetto','SHA256SUMS.txt'}"
+progetto/audit/tools/package_process_symbols_r33.py,after,"result={'zip':str(target.resolve()),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files)-1,'R32_historical_assertions_not_rerun':834,'PowerShell_source_stages':43,'launcher_fixture_checks':17,'current_assertions':308,'real_single_file_fixture':'PASS linux-x64; WPF Windows NOT EXECUTED','CSharp_WindowsDesktop_typechecked_assemblies':9,'Windows_WPF_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'}"
+progetto/audit/tools/package_process_symbols_r33.py,after,"(a.output_directory/'verification-r33.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))"
+progetto/audit/tools/test_launcher_r33.ps1,after,param([string] $Launcher)
+progetto/audit/tools/test_launcher_r33.ps1,after,$ErrorActionPreference = 'Stop'
+progetto/audit/tools/test_launcher_r33.ps1,after,. $Launcher -FunctionsOnly
+progetto/audit/tools/test_launcher_r33.ps1,after,$count = 0
+progetto/audit/tools/test_launcher_r33.ps1,after,"function Check([bool] $Ok, [string] $Label) {"
+progetto/audit/tools/test_launcher_r33.ps1,after,    if (-not $Ok) { throw ('FAIL R33 launcher: ' + $Label) }
+progetto/audit/tools/test_launcher_r33.ps1,after,    Write-Host ('PASS R33 launcher: ' + $Label); $script:count++
+progetto/audit/tools/test_launcher_r33.ps1,after,}
+progetto/audit/tools/test_launcher_r33.ps1,after,function Touch([string] $Path) {
+progetto/audit/tools/test_launcher_r33.ps1,after,    New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
+progetto/audit/tools/test_launcher_r33.ps1,after,    Set-Content -LiteralPath $Path -Value 'fixture only' -Encoding ASCII
+progetto/audit/tools/test_launcher_r33.ps1,after,}
+progetto/audit/tools/test_launcher_r33.ps1,after,"function Make-Runtime([string] $Path, [string] $Version='8.0.32') {"
+progetto/audit/tools/test_launcher_r33.ps1,after,    Touch (Join-Path $Path 'dotnet.exe')
+progetto/audit/tools/test_launcher_r33.ps1,after,    New-Item -ItemType Directory -Path (Join-Path $Path 'shared/Microsoft.NETCore.App/8.0.32') -Force | Out-Null
+progetto/audit/tools/test_launcher_r33.ps1,after,    New-Item -ItemType Directory -Path (Join-Path $Path ('shared/Microsoft.WindowsDesktop.App/' + $Version)) -Force | Out-Null
+progetto/audit/tools/test_launcher_r33.ps1,after,}
+progetto/audit/tools/test_launcher_r33.ps1,after,$temporary = Join-Path ([IO.Path]::GetTempPath()) ('processlens-r23-' + [Guid]::NewGuid().ToString('N'))
+progetto/audit/tools/test_launcher_r33.ps1,after,$saved = @{}
+progetto/audit/tools/test_launcher_r33.ps1,after,"foreach ($name in @('PATH','DOTNET_ROOT','DOTNET_ROOT_X64','NUGET_PACKAGES')) { $saved[$name] = [Environment]::GetEnvironmentVariable($name) }"
+progetto/audit/tools/test_launcher_r33.ps1,after,try {
+progetto/audit/tools/test_launcher_r33.ps1,after,    $root = Join-Path $temporary 'bundle with space'; $profile = Join-Path $temporary 'profile with space'
+progetto/audit/tools/test_launcher_r33.ps1,after,"    New-Item -ItemType Directory -Path $root,$profile,(Join-Path $root 'supporto') -Force | Out-Null"
+progetto/audit/tools/test_launcher_r33.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'empty package has no runnable GUI'
+progetto/audit/tools/test_launcher_r33.ps1,after,    $installed = Join-Path $profile 'Programs/ProcessLens/R20'
+progetto/audit/tools/test_launcher_r33.ps1,after,    Touch (Join-Path $installed 'app/win-x64/ProcessLens.exe'); Touch (Join-Path $installed 'start-installed.ps1')
+progetto/audit/tools/test_launcher_r33.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'completed old installation cannot silently substitute its old GUI'
+progetto/audit/tools/test_launcher_r33.ps1,after,    $exe = Join-Path $root 'progetto/publish/win-x64/ProcessLens.exe'; Touch $exe
+progetto/audit/tools/test_launcher_r33.ps1,after,    $receipt = Join-Path $root 'supporto/build-r33.ok'
+progetto/audit/tools/test_launcher_r33.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'publication without successful R31 receipt is not accepted'
+progetto/audit/tools/test_launcher_r33.ps1,after,    Set-Content -LiteralPath $receipt -Value 'older version'
+progetto/audit/tools/test_launcher_r33.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'receipt for another revision is rejected'
+progetto/audit/tools/test_launcher_r33.ps1,after,    Remove-Item -LiteralPath $receipt
+progetto/audit/tools/test_launcher_r33.ps1,after,    $sdk = Join-Path $installed 'dotnet'; Make-Runtime $sdk
+progetto/audit/tools/test_launcher_r33.ps1,after,"    New-Item -ItemType Directory -Path (Join-Path $sdk 'sdk/8.0.426'),(Join-Path $installed 'packages') -Force | Out-Null"
+progetto/audit/tools/test_launcher_r33.ps1,after,"    # Stub only the compiler entry point and project build script; no dotnet, app or service is launched."
+progetto/audit/tools/test_launcher_r33.ps1,after,    function global:dotnet { throw 'fixture must not launch a real compiler' }
+progetto/audit/tools/test_launcher_r33.ps1,after,    $build = Join-Path $root 'progetto/build-dashboard.ps1'
+progetto/audit/tools/test_launcher_r33.ps1,after,"    Set-Content -LiteralPath $build -Value 'throw ""synthetic failed tests""'"
+progetto/audit/tools/test_launcher_r33.ps1,after,    $failed = $false
+progetto/audit/tools/test_launcher_r33.ps1,after,    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('synthetic failed tests') }
+progetto/audit/tools/test_launcher_r33.ps1,after,    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'failed tests cannot issue a build receipt or launch a stale publication'
+progetto/audit/tools/test_launcher_r33.ps1,after,    Check ($env:NUGET_PACKAGES -eq (Join-Path $installed 'packages')) 'completed R20 cache reused without copying packages into ZIP'
+progetto/audit/tools/test_launcher_r33.ps1,after,    [xml]$config = Get-Content -LiteralPath (Join-Path $root 'progetto/NuGet.Config') -Raw
+progetto/audit/tools/test_launcher_r33.ps1,after,    Check ($config.configuration.packageSources.clear -ne $null -and -not $config.configuration.packageSources.add) 'R20 cache build has no configured network feed'
+progetto/audit/tools/test_launcher_r33.ps1,after,    Remove-Item -LiteralPath $exe
+progetto/audit/tools/test_launcher_r33.ps1,after,    Set-Content -LiteralPath $build -Value '# fixture successful script but no executable'
+progetto/audit/tools/test_launcher_r33.ps1,after,    $failed = $false
+progetto/audit/tools/test_launcher_r33.ps1,after,    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('senza eseguibile') }
+progetto/audit/tools/test_launcher_r33.ps1,after,    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'missing executable after build remains an error'
+progetto/audit/tools/test_launcher_r33.ps1,after,"    Set-Content -LiteralPath $build -Value 'New-Item -ItemType Directory -Path ""publish/win-x64"" -Force | Out-Null; Set-Content -LiteralPath ""publish/win-x64/ProcessLens.exe"" -Value ""fixture""'"
+progetto/audit/tools/test_launcher_r33.ps1,after,    Invoke-ProcessLensBuild $root $profile
+progetto/audit/tools/test_launcher_r33.ps1,after,    $target = Resolve-ProcessLensLaunch $root $profile
+progetto/audit/tools/test_launcher_r33.ps1,after,    Check ($target.Kind -eq 'Exe' -and $target.Entry -eq $exe -and $target.Runtime -eq $sdk) 'successful owned build resolves new publication with existing private runtime'
+progetto/audit/tools/test_launcher_r33.ps1,after,"    Set-Content -LiteralPath $build -Value 'throw ""fast path must not rebuild""'"
+progetto/audit/tools/test_launcher_r33.ps1,after,    Check ((Resolve-ProcessLensLaunch $root $profile).Entry -eq $exe) 'subsequent resolution needs no build or SDK command'
+progetto/audit/tools/test_launcher_r33.ps1,after,    $incomplete = Join-Path $temporary 'incomplete'; Touch (Join-Path $incomplete 'dotnet.exe')
+progetto/audit/tools/test_launcher_r33.ps1,after,    Check (-not (Test-DesktopRuntime8 $incomplete)) 'missing desktop runtime is not accepted'
+progetto/audit/tools/test_launcher_r33.ps1,after,    Make-Runtime $incomplete '9.0.1'
+progetto/audit/tools/test_launcher_r33.ps1,after,    Check (-not (Test-DesktopRuntime8 $incomplete)) 'wrong desktop runtime major is not accepted'
+progetto/audit/tools/test_launcher_r33.ps1,after,"    Check ((Quote-LaunchArgument 'C:\Program Files\ProcessLens\ProcessLens.exe') -eq '""C:\Program Files\ProcessLens\ProcessLens.exe""') 'paths with spaces remain one UAC argument'"
+progetto/audit/tools/test_launcher_r33.ps1,after,"    foreach ($bad in @('C:\bad""path', ""C:\bad`npath"")) {"
+progetto/audit/tools/test_launcher_r33.ps1,after,        $failed = $false; try { Quote-LaunchArgument $bad | Out-Null } catch { $failed = $true }
+progetto/audit/tools/test_launcher_r33.ps1,after,        Check $failed 'quotes and newlines cannot create extra launch arguments'
+progetto/audit/tools/test_launcher_r33.ps1,after,    }
+progetto/audit/tools/test_launcher_r33.ps1,after,    $tokens = $null; $errors = $null
+progetto/audit/tools/test_launcher_r33.ps1,after,"    $ast = [System.Management.Automation.Language.Parser]::ParseFile($Launcher,[ref]$tokens,[ref]$errors)"
+progetto/audit/tools/test_launcher_r33.ps1,after,    Check ($errors.Count -eq 0) 'real PowerShell parser accepts complete launcher'
+progetto/audit/tools/test_launcher_r33.ps1,after,"    $commands = @($ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] },$true) | ForEach-Object { $_.GetCommandName() })"
+progetto/audit/tools/test_launcher_r33.ps1,after,"    Check (@($commands | Where-Object { $_ -in @('Expand-Archive','Invoke-WebRequest','Install-Package','Install-Module','Set-Service','Start-Service','Stop-Service','Stop-Process') }).Count -eq 0) 'launcher installs no dependencies and changes no services or running processes'"
+progetto/audit/tools/test_launcher_r33.ps1,after,"    Write-Host ('R33 launcher fixture complete: ' + $count + ' checks; synthetic files only, no Windows app or UAC.')"
+progetto/audit/tools/test_launcher_r33.ps1,after,} finally {
+progetto/audit/tools/test_launcher_r33.ps1,after,    Remove-Item function:global:dotnet -ErrorAction SilentlyContinue
+progetto/audit/tools/test_launcher_r33.ps1,after,"    foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name,$saved[$name]) }"
+progetto/audit/tools/test_launcher_r33.ps1,after,    if (Test-Path -LiteralPath $temporary) { Remove-Item -LiteralPath $temporary -Recurse -Force }
+progetto/audit/tools/test_launcher_r33.ps1,after,}
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"""""""Type-check real C# against WindowsDesktop reference assemblies with explicit generated-field stubs."
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"This is NOT WPF markup compilation, BAML, MSBuild, or runtime validation. Stubs live outside the deliverable."
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,""""""""
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"import argparse,hashlib,json,subprocess,xml.etree.ElementTree as ET"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,from pathlib import Path
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();out=work/'typecheck';out.mkdir(exist_ok=True);audit=r/'audit/R10_R33';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,base={p.name:p for p in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll')};desktop=list((work/'wpf-ref').glob('*.dll'))
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,assert len(desktop)>20
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,for f in desktop:base[f.name]=f
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,refs=list(base.values());event=sdk/'packs/Microsoft.AspNetCore.App.Ref/8.0.32/ref/net8.0/System.Diagnostics.EventLog.dll';sqlite=work/'Microsoft.Data.Sqlite.dll'
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"globals=out/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,wpf_usings=[x['Identity'] for x in json.loads((audit/'msbuild-wpf-usings.json').read_text())['Items']['Using']]
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"assert set(wpf_usings)=={'System','System.Collections.Generic','System.Linq','System.Threading','System.Threading.Tasks'}, 'Unexpected evaluated WPF implicit usings'"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,wpf_globals=out/'WpfGlobalUsings.cs';wpf_globals.write_text(''.join('global using '+s+';\n' for s in wpf_usings))
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,x='{http://schemas.microsoft.com/winfx/2006/xaml}';stubs=[];inputs={}
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,for path in (r/'src/ProcessLens.App').glob('*.xaml'):
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after, tree=ET.parse(path).getroot();cls=tree.get(x+'Class');assert cls
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after, fields=[]
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after, for e in tree.iter():
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,  name=e.get(x+'Name')
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,  if not name:continue
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"  tag=e.tag.split('}',1)[1]"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,  if e.tag.startswith('{clr-namespace:ProcessLens.App}'):typ='ProcessLens.App.'+tag
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,  elif tag=='Polyline':typ='System.Windows.Shapes.Polyline'
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,  else:typ='System.Windows.Controls.'+tag
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,  fields.append('internal '+typ+' '+name+' = null!;')
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after," ns,short=cls.rsplit('.',1);stubs.append('namespace '+ns+' { public partial class '+short+' { '+ ' '.join(fields)+' private void InitializeComponent() {} } }')"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after, inputs[path.relative_to(r).as_posix()]=sha(path.read_bytes())
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,stub=out/'MarkupFieldStubs.cs';stub.write_text('\n'.join(stubs));results=[]
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"def compile(name,sources,extra=(),library=True):"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after, for f in sources:
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,  if f.is_relative_to(r):inputs[f.relative_to(r).as_posix()]=sha(f.read_bytes())
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after," args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(out/(name+'.dll'))]"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after, args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after," args+=['-resource:'+str(r/'src/ProcessLens.App/Assets/ProcessLens.ico')+',ProcessLens.AppIcon','-resource:'+str(r/'src/ProcessLens.App/Assets/ProcessSymbols.json')+',ProcessLens.ProcessSymbols'] if name=='ProcessLens' else []"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after," args+=['-r:'+str(f) for f in [*refs,event,*extra]]+[str(wpf_globals if name == 'ProcessLens' or name.endswith('UiTests') else globals)]+[str(f) for f in sources]"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after," result=subprocess.run(args,capture_output=True,text=True);log=result.stdout+result.stderr;(audit/(name+'-typecheck.log')).write_text(log)"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after," print(name, 'PASS' if result.returncode==0 else 'FAIL');results.append({'assembly':name,'status':'PASS' if result.returncode==0 else 'FAIL','warning_count':log.count('warning CS')})"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after, if result.returncode:raise SystemExit(log)
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,core=work/'runtime/ProcessLens.Core.dll';assert core.is_file()
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"compile('ProcessLens.Windows',sorted((r/'src/ProcessLens.Windows').glob('*.cs')),[core])"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),[core])"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"extra=[core,out/'ProcessLens.Windows.dll',out/'ProcessLens.Semantics.dll',sqlite]"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"compile('ProcessLens',sorted((r/'src/ProcessLens.App').rglob('*.cs'))+[stub],extra)"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"for name in ['NetworkUiTests','CopyUiTests','SystemProcessUiTests','NewTaskUiTests','LiveMetricsUiTests','ProcessGroupsUiTests']:"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after," compile('ProcessLens.'+name,[r/'tests'/('ProcessLens.'+name)/'Program.cs'],extra+[out/'ProcessLens.dll'],False)"
+progetto/audit/tools/typecheck_wpf_sources_r33.py,after,"(audit/'wpf-typecheck-evidence.json').write_text(json.dumps({'qualification':'C# type checking with generated-field stubs only; NOT actual WPF markup compilation or runtime','evaluated_wpf_implicit_usings':wpf_usings,'assemblies':results,'inputs':inputs,'stub_sha256':sha(stub.read_bytes()),'reference_hashes':{f.name:sha(f.read_bytes()) for f in [*desktop,event,sqlite]}},indent=2)+'\n')"
+progetto/build-dashboard.ps1,after,& (Join-Path $PSScriptRoot 'audit\tools\check_process_symbols_r33.ps1')
+progetto/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv,after,"PLT-R33-001,Icone,Segnaposto con iniziali,Simbolo ProcessLens,""Pittogramma dal nome esatto, distinto da icona originale"",Originale non disponibile,nome del file osservato,logo ufficiale riconosciuto,UX,,tooltip,alta,R33"
+progetto/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv,after,"PLT-R33-002,Icone,Icona generica,Distintivo grafico generato,Figura e colore deterministici dal nome; non prova identita,Nome fuori catalogo e originale mancante,nome del file osservato,icona univoca o firma verificata,UX,,tooltip,alta,R33"
+progetto/src/ProcessLens.App/Assets/ProcessSymbols.json,after,"{""schema"":1,""description"":""Original ProcessLens fallback symbols, not original vendor logos or authenticity checks."",""glyphs"":{""terminal"":[{""path"":""M5,7 H27 V26 H5 Z"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M9,12 L13,16 L9,20 M16,21 H23"",""fill"":null,""stroke"":""accent"",""width"":2}],""git"":[{""path"":""M16,3 L29,16 L16,29 L3,16 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M11,10 L22,21 M16,15 V24"",""fill"":null,""stroke"":""white"",""width"":2.5},{""path"":""M9,10 A2,2 0 1 0 13,10 A2,2 0 1 0 9,10 Z"",""fill"":""white"",""stroke"":null,""width"":2},{""path"":""M20,21 A2,2 0 1 0 24,21 A2,2 0 1 0 20,21 Z"",""fill"":""white"",""stroke"":null,""width"":2},{""path"":""M14,24 A2,2 0 1 0 18,24 A2,2 0 1 0 14,24 Z"",""fill"":""white"",""stroke"":null,""width"":2}],""python"":[{""path"":""M16,4 H12 Q7,4 7,9 V14 H19 V17 H7 Q4,17 4,21 Q4,25 9,25 H12 V21 H20 Q25,21 25,16 V10 Q25,4 20,4 Z"",""fill"":""#3776AB"",""stroke"":null,""width"":2},{""path"":""M16,28 H20 Q25,28 25,23 V18 H13 V15 H25 Q28,15 28,11 Q28,7 23,7 H20 V11 H12 Q7,11 7,16 V22 Q7,28 12,28 Z"",""fill"":""#FFD343"",""stroke"":null,""width"":2},{""path"":""M12,7 A1,1 0 1 0 14,7 A1,1 0 1 0 12,7 Z"",""fill"":""white"",""stroke"":null,""width"":2},{""path"":""M18,25 A1,1 0 1 0 20,25 A1,1 0 1 0 18,25 Z"",""fill"":""white"",""stroke"":null,""width"":2}],""node"":[{""path"":""M16,3 L27,9 V23 L16,29 L5,23 V9 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M11,13 L20,11 L21,21 L11,13"",""fill"":null,""stroke"":""white"",""width"":2},{""path"":""M9,13 A2,2 0 1 0 13,13 A2,2 0 1 0 9,13 Z"",""fill"":""white"",""stroke"":null,""width"":2},{""path"":""M18,11 A2,2 0 1 0 22,11 A2,2 0 1 0 18,11 Z"",""fill"":""white"",""stroke"":null,""width"":2},{""path"":""M19,21 A2,2 0 1 0 23,21 A2,2 0 1 0 19,21 Z"",""fill"":""white"",""stroke"":null,""width"":2}],""powershell"":[{""path"":""M7,6 H29 L24,26 H2 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M11,11 L17,16 L9,21 M17,22 H23"",""fill"":null,""stroke"":""white"",""width"":2.5}],""chip"":[{""path"":""M8,8 H24 V24 H8 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M12,3 V8 M20,3 V8 M12,24 V29 M20,24 V29 M3,12 H8 M3,20 H8 M24,12 H29 M24,20 H29"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M12,12 H20 V20 H12 Z"",""fill"":""white"",""stroke"":null,""width"":2}],""idle"":[{""path"":""M5,17 A11,11 0 1 0 27,17 A11,11 0 1 0 5,17 Z"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M8,22 A10,10 0 0 1 24,22 M16,17 L21,11"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M14,17 A2,2 0 1 0 18,17 A2,2 0 1 0 14,17 Z"",""fill"":""accent"",""stroke"":null,""width"":2}],""folder"":[{""path"":""M3,8 H13 L16,11 H29 V26 H3 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M4,13 H28 L25,25 H4 Z"",""fill"":""#FEC84B"",""stroke"":null,""width"":2}],""gear"":[{""path"":""M13,3 H19 L20,7 L24,6 L28,10 L26,14 L29,16 L27,22 L23,22 L22,27 L16,29 L13,25 L8,26 L4,21 L6,17 L3,13 L7,8 L11,9 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M11,16 A5,5 0 1 0 21,16 A5,5 0 1 0 11,16 Z"",""fill"":""white"",""stroke"":null,""width"":2}],""services"":[{""path"":""M4,5 H12 V13 H4 Z M20,5 H28 V13 H20 Z M12,21 H20 V29 H12 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M8,13 V17 H24 V13 M16,17 V21"",""fill"":null,""stroke"":""accent"",""width"":2}],""shield"":[{""path"":""M16,3 L28,8 V17 Q27,25 16,29 Q5,25 4,17 V8 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M10,16 L14,20 L22,11"",""fill"":null,""stroke"":""white"",""width"":2.5}],""lock"":[{""path"":""M9,14 V10 A7,7 0 0 1 23,10 V14"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M6,14 H26 V29 H6 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M14,20 A2,2 0 1 0 18,20 A2,2 0 1 0 14,20 Z"",""fill"":""white"",""stroke"":null,""width"":2},{""path"":""M16,21 V25"",""fill"":null,""stroke"":""white"",""width"":2}],""session"":[{""path"":""M3,5 H24 V22 H3 Z"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M9,11 H29 V28 H9 Z"",""fill"":""white"",""stroke"":""accent"",""width"":2},{""path"":""M9,16 H29"",""fill"":null,""stroke"":""accent"",""width"":2}],""power"":[{""path"":""M16,3 V16 M9,7 A11,11 0 1 0 23,7"",""fill"":null,""stroke"":""accent"",""width"":3.5}],""key"":[{""path"":""M4,12 A7,7 0 1 0 18,12 A7,7 0 1 0 4,12 Z"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M16,17 L27,28 M22,23 L26,19 M25,26 L29,22"",""fill"":null,""stroke"":""accent"",""width"":3}],""display"":[{""path"":""M3,5 H29 V23 H3 Z"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M16,23 V28 M10,28 H22 M6,9 H13 V19 H6 Z M16,9 H26 V13 H16 Z"",""fill"":""accent"",""stroke"":""accent"",""width"":1}],""home"":[{""path"":""M3,15 L16,3 L29,15 M7,13 V28 H25 V13 M13,28 V19 H20 V28"",""fill"":null,""stroke"":""accent"",""width"":2}],""broker"":[{""path"":""M8,10 L24,10 L16,25 Z"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M4,10 A4,4 0 1 0 12,10 A4,4 0 1 0 4,10 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M20,10 A4,4 0 1 0 28,10 A4,4 0 1 0 20,10 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M12,25 A4,4 0 1 0 20,25 A4,4 0 1 0 12,25 Z"",""fill"":""accent"",""stroke"":null,""width"":2}],""clock"":[{""path"":""M4,16 A12,12 0 1 0 28,16 A12,12 0 1 0 4,16 Z"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M16,7 V16 L23,20"",""fill"":null,""stroke"":""accent"",""width"":2.5}],""tasks"":[{""path"":""M5,5 H27 V28 H5 Z"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M9,10 L11,12 L14,8 M17,10 H23 M9,18 L11,20 L14,16 M17,18 H23 M9,25 H23"",""fill"":null,""stroke"":""accent"",""width"":2}],""search"":[{""path"":""M4,13 A9,9 0 1 0 22,13 A9,9 0 1 0 4,13 Z"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M20,20 L29,29"",""fill"":null,""stroke"":""accent"",""width"":4}],""font"":[{""path"":""M6,27 L16,4 L26,27 M10,20 H22"",""fill"":null,""stroke"":""accent"",""width"":3}],""plugin"":[{""path"":""M9,3 V10 M21,3 V10 M6,10 H25 V17 Q25,23 16,23 V29 M6,10 V17 Q6,23 16,23"",""fill"":null,""stroke"":""accent"",""width"":3}],""preview"":[{""path"":""M3,7 H29 V26 H3 Z"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M6,19 L11,14 L17,21 L22,16 L27,22"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M19,12 A2,2 0 1 0 23,12 A2,2 0 1 0 19,12 Z"",""fill"":""accent"",""stroke"":null,""width"":2}],""printer"":[{""path"":""M8,3 H24 V11 H8 Z M8,21 H24 V29 H8 Z M4,11 H28 V24 H24 M8,24 H4 V11"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M22,15 A1,1 0 1 0 24,15 A1,1 0 1 0 22,15 Z"",""fill"":""accent"",""stroke"":null,""width"":2}],""speaker"":[{""path"":""M4,12 H10 L19,5 V27 L10,20 H4 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M23,10 Q30,16 23,22 M22,14 Q25,16 22,18"",""fill"":null,""stroke"":""accent"",""width"":2}],""network"":[{""path"":""M12,6 A4,4 0 1 0 20,6 A4,4 0 1 0 12,6 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M2,25 A4,4 0 1 0 10,25 A4,4 0 1 0 2,25 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M22,25 A4,4 0 1 0 30,25 A4,4 0 1 0 22,25 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M16,10 V17 H6 V21 M16,17 H26 V21"",""fill"":null,""stroke"":""accent"",""width"":2}],""update"":[{""path"":""M25,11 A11,11 0 0 0 6,9 M6,9 V3 M6,9 H12 M7,22 A11,11 0 0 0 26,23 M26,23 V29 M26,23 H20"",""fill"":null,""stroke"":""accent"",""width"":2.5}],""box"":[{""path"":""M3,10 L16,3 L29,10 V24 L16,31 L3,24 Z M3,10 L16,17 L29,10 M16,17 V31 M10,7 L23,14"",""fill"":null,""stroke"":""accent"",""width"":2}],""tools"":[{""path"":""M8,3 L14,9 L10,14 L4,8 Q1,16 10,19 L21,29 Q26,32 29,27 Q31,24 27,21 L17,11 Q19,3 12,3"",""fill"":null,""stroke"":""accent"",""width"":2.5}],""java"":[{""path"":""M7,15 H24 V21 Q24,27 16,27 Q7,27 7,21 Z M24,16 H28 Q31,22 24,23 M5,29 H27 M13,12 Q20,8 14,4 M19,12 Q25,7 20,2"",""fill"":null,""stroke"":""accent"",""width"":2}],""dotnet"":[{""path"":""M2,16 A4,4 0 1 0 10,16 A4,4 0 1 0 2,16 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M12,9 A4,4 0 1 0 20,9 A4,4 0 1 0 12,9 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M22,16 A4,4 0 1 0 30,16 A4,4 0 1 0 22,16 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M6,16 L16,9 L26,16 L16,26 Z"",""fill"":null,""stroke"":""accent"",""width"":2}],""editor"":[{""path"":""M21,3 L30,7 V25 L21,29 L9,20 L3,25 V8 L9,12 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M21,9 V23 L11,16 Z"",""fill"":""white"",""stroke"":null,""width"":2}],""docker"":[{""path"":""M2,17 H29 Q29,28 16,28 Q5,28 2,17 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M7,11 H12 V16 H7 Z M13,11 H18 V16 H13 Z M19,11 H24 V16 H19 Z M13,5 H18 V10 H13 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M24,21 A1,1 0 1 0 26,21 A1,1 0 1 0 24,21 Z"",""fill"":""white"",""stroke"":null,""width"":2}],""browser"":[{""path"":""M4,16 A12,12 0 1 0 28,16 A12,12 0 1 0 4,16 Z"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M4,16 H28 M16,4 Q4,16 16,28 Q28,16 16,4 M7,8 H25 M7,24 H25"",""fill"":null,""stroke"":""accent"",""width"":2}],""linux"":[{""path"":""M11,11 Q10,3 16,3 Q22,3 21,11 Q29,20 24,27 H8 Q3,20 11,11 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M12,15 Q16,11 20,15 V24 H12 Z"",""fill"":""white"",""stroke"":null,""width"":2},{""path"":""M13,10 L16,14 L19,10 Z"",""fill"":""#FDB022"",""stroke"":null,""width"":2},{""path"":""M13,8 A1,1 0 1 0 15,8 A1,1 0 1 0 13,8 Z"",""fill"":""white"",""stroke"":null,""width"":2},{""path"":""M17,8 A1,1 0 1 0 19,8 A1,1 0 1 0 17,8 Z"",""fill"":""white"",""stroke"":null,""width"":2}],""database"":[{""path"":""M4,8 A12,5 0 1 0 28,8 A12,5 0 1 0 4,8 M4,8 V24 A12,5 0 0 0 28,24 V8 M4,16 A12,5 0 0 0 28,16"",""fill"":null,""stroke"":""accent"",""width"":2}],""camera"":[{""path"":""M3,9 H11 L14,5 H22 L25,9 H30 V27 H3 Z"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M11,18 A6,6 0 1 0 23,18 A6,6 0 1 0 11,18 Z"",""fill"":null,""stroke"":""accent"",""width"":2}],""chat"":[{""path"":""M3,5 H29 V23 H15 L7,29 V23 H3 Z"",""fill"":null,""stroke"":""accent"",""width"":2},{""path"":""M7.5,14 A1.5,1.5 0 1 0 10.5,14 A1.5,1.5 0 1 0 7.5,14 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M14.5,14 A1.5,1.5 0 1 0 17.5,14 A1.5,1.5 0 1 0 14.5,14 Z"",""fill"":""accent"",""stroke"":null,""width"":2},{""path"":""M21.5,14 A1.5,1.5 0 1 0 24.5,14 A1.5,1.5 0 1 0 21.5,14 Z"",""fill"":""accent"",""stroke"":null,""width"":2}],""document"":[{""path"":""M7,3 H21 L28,10 V29 H7 Z M21,3 V10 H28 M11,16 H23 M11,21 H23 M11,26 H19"",""fill"":null,""stroke"":""accent"",""width"":2}],""cloud"":[{""path"":""M8,26 A7,7 0 1 1 7,12 A10,10 0 0 1 26,13 A7,7 0 0 1 25,26 Z"",""fill"":""accent"",""stroke"":null,""width"":2}]},""entries"":[{""id"":""git"",""label"":""Git"",""glyph"":""git"",""color"":""#F05133"",""names"":[""git"",""git-remote-https"",""git-remote-http"",""git-lfs""],""groups"":[""Git""]},{""id"":""bash"",""label"":""Bash"",""glyph"":""terminal"",""color"":""#16845B"",""names"":[""bash""],""groups"":[""bash"",""Git Bash""]},{""id"":""shell"",""label"":""Shell"",""glyph"":""terminal"",""color"":""#526575"",""names"":[""sh"",""dash"",""zsh"",""busybox""],""groups"":[]},{""id"":""python"",""label"":""Python"",""glyph"":""python"",""color"":""#3776AB"",""names"":[""python"",""pythonw""],""groups"":[""Python""]},{""id"":""node"",""label"":""Node.js"",""glyph"":""node"",""color"":""#43853D"",""names"":[""node""],""groups"":[""Node.js"",""Node.js JavaScript Runtime""]},{""id"":""powershell"",""label"":""PowerShell"",""glyph"":""powershell"",""color"":""#175CD3"",""names"":[""powershell""],""groups"":[""Windows PowerShell""]},{""id"":""pwsh"",""label"":""PowerShell Core"",""glyph"":""powershell"",""color"":""#075985"",""names"":[""pwsh""],""groups"":[""PowerShell""]},{""id"":""cmd"",""label"":""Prompt dei comandi"",""glyph"":""terminal"",""color"":""#344054"",""names"":[""cmd""],""groups"":[""Prompt dei comandi""]},{""id"":""terminal"",""label"":""Windows Terminal"",""glyph"":""terminal"",""color"":""#0969A5"",""names"":[""WindowsTerminal""],""groups"":[""Windows Terminal""]},{""id"":""conhost"",""label"":""Console Windows"",""glyph"":""terminal"",""color"":""#845820"",""names"":[""conhost""],""groups"":[]},{""id"":""openconsole"",""label"":""OpenConsole"",""glyph"":""terminal"",""color"":""#088C93"",""names"":[""OpenConsole""],""groups"":[]},{""id"":""system"",""label"":""System"",""glyph"":""chip"",""color"":""#175CD3"",""names"":[""System""],""groups"":[]},{""id"":""idle"",""label"":""Idle"",""glyph"":""idle"",""color"":""#667085"",""names"":[""Idle""],""groups"":[""System Idle Process""]},{""id"":""svchost"",""label"":""Host servizi"",""glyph"":""gear"",""color"":""#175CD3"",""names"":[""svchost""],""groups"":[]},{""id"":""services"",""label"":""Gestione servizi"",""glyph"":""services"",""color"":""#077D83"",""names"":[""services""],""groups"":[]},{""id"":""smss"",""label"":""Sessioni Windows"",""glyph"":""session"",""color"":""#7F56D9"",""names"":[""smss""],""groups"":[]},{""id"":""csrss"",""label"":""Runtime Windows"",""glyph"":""session"",""color"":""#B54708"",""names"":[""csrss""],""groups"":[]},{""id"":""wininit"",""label"":""Avvio Windows"",""glyph"":""power"",""color"":""#107D68"",""names"":[""wininit""],""groups"":[]},{""id"":""winlogon"",""label"":""Accesso Windows"",""glyph"":""key"",""color"":""#175CD3"",""names"":[""winlogon""],""groups"":[]},{""id"":""lsass"",""label"":""Sicurezza locale"",""glyph"":""shield"",""color"":""#3E4784"",""names"":[""lsass""],""groups"":[]},{""id"":""lsaiso"",""label"":""Isolamento credenziali"",""glyph"":""lock"",""color"":""#9E165F"",""names"":[""LsaIso""],""groups"":[]},{""id"":""dwm"",""label"":""Desktop Windows"",""glyph"":""display"",""color"":""#6938AD"",""names"":[""dwm""],""groups"":[]},{""id"":""explorer"",""label"":""Esplora risorse"",""glyph"":""folder"",""color"":""#B97504"",""names"":[""explorer""],""groups"":[""Esplora risorse""]},{""id"":""sihost"",""label"":""Shell Windows"",""glyph"":""home"",""color"":""#175CD3"",""names"":[""sihost""],""groups"":[]},{""id"":""shellhost"",""label"":""Host shell"",""glyph"":""home"",""color"":""#6938AD"",""names"":[""ShellHost"",""ShellExperienceHost""],""groups"":[]},{""id"":""broker"",""label"":""Runtime Broker"",""glyph"":""broker"",""color"":""#08799D"",""names"":[""RuntimeBroker""],""groups"":[]},{""id"":""background"",""label"":""Attività in background"",""glyph"":""clock"",""color"":""#087D68"",""names"":[""backgroundTaskHost""],""groups"":[]},{""id"":""taskhost"",""label"":""Host attività"",""glyph"":""tasks"",""color"":""#B54708"",""names"":[""taskhostw"",""taskhost""],""groups"":[]},{""id"":""searchhost"",""label"":""Ricerca Windows"",""glyph"":""search"",""color"":""#175CD3"",""names"":[""SearchHost"",""SearchApp"",""SearchUI""],""groups"":[]},{""id"":""indexer"",""label"":""Indice Windows"",""glyph"":""database"",""color"":""#4F46A5"",""names"":[""SearchIndexer"",""SearchProtocolHost"",""SearchFilterHost""],""groups"":[]},{""id"":""fonts"",""label"":""Font Windows"",""glyph"":""font"",""color"":""#79439D"",""names"":[""fontdrvhost""],""groups"":[]},{""id"":""dllhost"",""label"":""Host COM"",""glyph"":""plugin"",""color"":""#087C89"",""names"":[""dllhost""],""groups"":[]},{""id"":""preview"",""label"":""Anteprime"",""glyph"":""preview"",""color"":""#175CD3"",""names"":[""prevhost""],""groups"":[]},{""id"":""smartscreen"",""label"":""SmartScreen"",""glyph"":""shield"",""color"":""#175CD3"",""names"":[""smartscreen""],""groups"":[]},{""id"":""defender"",""label"":""Microsoft Defender"",""glyph"":""shield"",""color"":""#0C8159"",""names"":[""MsMpEng"",""NisSrv"",""SecurityHealthService"",""SecurityHealthSystray""],""groups"":[]},{""id"":""secure"",""label"":""Secure System"",""glyph"":""lock"",""color"":""#175CD3"",""names"":[""SecureSystem""],""groups"":[""Secure System""]},{""id"":""print"",""label"":""Stampa"",""glyph"":""printer"",""color"":""#344B7C"",""names"":[""spoolsv"",""PrintIsolationHost""],""groups"":[]},{""id"":""audio"",""label"":""Audio Windows"",""glyph"":""speaker"",""color"":""#7C3AA4"",""names"":[""audiodg""],""groups"":[]},{""id"":""wmi"",""label"":""WMI"",""glyph"":""network"",""color"":""#0C8159"",""names"":[""WmiPrvSE""],""groups"":[]},{""id"":""installer"",""label"":""Installazione Windows"",""glyph"":""box"",""color"":""#A95D00"",""names"":[""TrustedInstaller"",""msiexec""],""groups"":[]},{""id"":""update"",""label"":""Aggiornamenti Windows"",""glyph"":""update"",""color"":""#175CD3"",""names"":[""TiWorker"",""wuauclt"",""MoUsoCoreWorker"",""UsoClient""],""groups"":[]},{""id"":""taskmgr"",""label"":""Gestione attività"",""glyph"":""tasks"",""color"":""#107D4A"",""names"":[""Taskmgr""],""groups"":[""Gestione attività""]},{""id"":""wsl"",""label"":""WSL"",""glyph"":""linux"",""color"":""#6F5B24"",""names"":[""wsl"",""wslhost"",""wslservice""],""groups"":[""Windows Subsystem for Linux"",""WSL""]},{""id"":""vmmem"",""label"":""Memoria VM"",""glyph"":""chip"",""color"":""#0C8159"",""names"":[""Vmmem"",""VmmemWSL"",""vmwp""],""groups"":[]},{""id"":""java"",""label"":""Java"",""glyph"":""java"",""color"":""#C04A0E"",""names"":[""java"",""javaw""],""groups"":[""Java""]},{""id"":""dotnet"",""label"":"".NET"",""glyph"":""dotnet"",""color"":""#6333B4"",""names"":[""dotnet""],""groups"":["".NET"","".NET Runtime""]},{""id"":""docker"",""label"":""Docker"",""glyph"":""docker"",""color"":""#087CB5"",""names"":[""docker"",""dockerd"",""com.docker.backend""],""groups"":[""Docker"",""Docker Desktop""]},{""id"":""code"",""label"":""Visual Studio Code"",""glyph"":""editor"",""color"":""#087CB5"",""names"":[""Code""],""groups"":[""Visual Studio Code""]},{""id"":""vscodeinsiders"",""label"":""VS Code Insiders"",""glyph"":""editor"",""color"":""#0C8159"",""names"":[""CodeInsiders""],""groups"":[""Visual Studio Code Insiders""]},{""id"":""visualstudio"",""label"":""Visual Studio"",""glyph"":""editor"",""color"":""#6333B4"",""names"":[""devenv""],""groups"":[""Visual Studio""]},{""id"":""compiler"",""label"":""Compilatore"",""glyph"":""tools"",""color"":""#79451E"",""names"":[""rustc"",""gcc"",""g++"",""clang"",""cl"",""MSBuild"",""VBCSCompiler""],""groups"":[]},{""id"":""build"",""label"":""Strumenti di build"",""glyph"":""box"",""color"":""#79451E"",""names"":[""cargo"",""cmake"",""ninja"",""make""],""groups"":[]},{""id"":""chrome"",""label"":""Google Chrome"",""glyph"":""browser"",""color"":""#167D4A"",""names"":[""chrome""],""groups"":[""Google Chrome""]},{""id"":""edge"",""label"":""Microsoft Edge"",""glyph"":""browser"",""color"":""#087CB5"",""names"":[""msedge""],""groups"":[""Microsoft Edge""]},{""id"":""firefox"",""label"":""Firefox"",""glyph"":""browser"",""color"":""#C35410"",""names"":[""firefox""],""groups"":[""Mozilla Firefox"",""Firefox""]},{""id"":""webview"",""label"":""WebView"",""glyph"":""browser"",""color"":""#077F87"",""names"":[""msedgewebview2""],""groups"":[]},{""id"":""notepad"",""label"":""Blocco note"",""glyph"":""document"",""color"":""#087CB5"",""names"":[""Notepad""],""groups"":[""Blocco note""]},{""id"":""onedrive"",""label"":""OneDrive"",""glyph"":""cloud"",""color"":""#175CD3"",""names"":[""OneDrive""],""groups"":[""Microsoft OneDrive""]},{""id"":""camera"",""label"":""Fotocamera"",""glyph"":""camera"",""color"":""#79439D"",""names"":[""WindowsCamera""],""groups"":[]},{""id"":""teams"",""label"":""Teams"",""glyph"":""chat"",""color"":""#6333B4"",""names"":[""ms-teams"",""Teams""],""groups"":[""Microsoft Teams""]},{""id"":""discord"",""label"":""Discord"",""glyph"":""chat"",""color"":""#5865A2"",""names"":[""Discord""],""groups"":[""Discord""]}]}"
+progetto/src/ProcessLens.App/ProcessGroupRow.cs,before,    public ImageSource? IconSource => Members.FirstOrDefault()?.IconSource;
+progetto/src/ProcessLens.App/ProcessGroupRow.cs,before,    public string IconDescription => Members.FirstOrDefault()?.IconDescription ?? WindowsProcessIconPolicy.ExecutableDescription;
+progetto/src/ProcessLens.App/ProcessGroupRow.cs,after,"    public ImageSource? IconSource => ProcessIconResolver.GetGroupIcon(_name, Members.FirstOrDefault());"
+progetto/src/ProcessLens.App/ProcessGroupRow.cs,after,"    public string IconDescription => ProcessIconResolver.GetGroupIconDescription(_name, Members.FirstOrDefault());"
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,before,    internal static string Initials(string? name)
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,    internal static int Pattern(string? name)
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,before,        string text = Key(name);
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,before,"        if (text.EndsWith("".EXE"", StringComparison.Ordinal)) text = text[..^4];"
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,before,"        var words = text.Split(new[] { ' ', '.', '-', '_' }, StringSplitOptions.RemoveEmptyEntries);"
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,before,        var first = words.Select(w => w.FirstOrDefault(char.IsAsciiLetterOrDigit)).Where(c => c != '\0').Take(2).ToArray();
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,before,"        if (first.Length == 0) return ""?"";"
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,before,        if (first.Length == 1) return new string(words[0].Where(char.IsAsciiLetterOrDigit).Take(2).ToArray());
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,before,        return new string(first);
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,        ulong hash = 14695981039346656037;
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,        foreach (char c in Key(name)) hash = unchecked((hash ^ c) * 1099511628211);
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,        int pattern = (int)((hash ^ (hash >> 32)) & 0x7FFF);
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,        return pattern == 0 ? 1 << 7 : pattern;
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"    private static readonly BoundedCache<string, DrawingImage> Placeholders = new(128, StringComparer.OrdinalIgnoreCase);"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,    private static readonly string WindowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,    internal static DrawingImage WindowsComponentIcon { get; } = CreateWindowsComponentIcon();
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,    internal static ImageSource? GetIcon(ProcessSnapshot process)
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,    {
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        var original = GetResolution(process.ExecutablePath, process.Name);"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        return IconPreferencePolicy.Select(original.Image, original.Generic,"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"            WindowsProcessIconPolicy.UseSharedWindowsSymbol(process, WindowsDirectory), WindowsComponentIcon);"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,    }
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"    internal static ImageSource? GetIcon(ProcessSnapshot process) => GetResolution(process.ExecutablePath, process.Name).Image;"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        if (ReferenceEquals(GetIcon(process), WindowsComponentIcon))"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"            return ""Simbolo Windows · icona originale non disponibile. Firma digitale non verificata."";"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"            ""Shell"" => ""Icona associata all’eseguibile da Windows. Non verifica l’identità o la firma del processo."","
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"            ""Risorsa eseguibile"" => ""Icona letta dalle risorse dell’eseguibile. Non verifica l’identità o la firma del processo."","
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"            _ => ""Segnaposto con iniziali del file · icona originale non disponibile. Non è il logo del programma."""
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"            ""Shell"" when !icon.Generic => ""Icona associata all’eseguibile da Windows. Non verifica l’identità o la firma del processo."","
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"            ""Risorsa eseguibile"" when !icon.Generic => ""Icona letta dalle risorse dell’eseguibile. Non verifica l’identità o la firma del processo."","
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"            _ when ProcessSymbolCatalog.Find(process.Name) is { } symbol => $""Simbolo ProcessLens: {symbol.Label}. Icona originale non disponibile. Firma digitale non verificata."","
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"            _ => ""Distintivo grafico generato dal nome del file. Icona originale non disponibile; non identifica il produttore."""
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,    }
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"    internal static ImageSource? GetGroupIcon(string title, ProcessRow? first)"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,    {
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"        var symbol = ProcessSymbolCatalog.GroupOverride(title, first?.Name);"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,        return symbol is null ? first?.IconSource ?? ProcessSymbolDrawing.ForName(title) : ProcessSymbolDrawing.Known(symbol);
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,    }
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"    internal static string GetGroupIconDescription(string title, ProcessRow? first)"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,    {
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"        var symbol = ProcessSymbolCatalog.GroupOverride(title, first?.Name);"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"        return symbol is null ? first?.IconDescription ?? ""Distintivo del gruppo."" :"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"            $""Simbolo del gruppo {symbol.Label}, dal titolo mostrato. Non è l’icona estratta dal processo {first?.Name ?? ""non disponibile""}."";"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,    private static DrawingImage CreateWindowsComponentIcon()
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,    {
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        // One frozen vector shared by all Windows rows, groups and details, at every DPI."
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,        var tiles = new GeometryGroup();
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        tiles.Children.Add(new RectangleGeometry(new Rect(0, 0, 7, 7)));"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        tiles.Children.Add(new RectangleGeometry(new Rect(9, 0, 7, 7)));"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        tiles.Children.Add(new RectangleGeometry(new Rect(0, 9, 7, 7)));"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        tiles.Children.Add(new RectangleGeometry(new Rect(9, 9, 7, 7)));"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        var drawing = new GeometryDrawing(new SolidColorBrush(Color.FromRgb(0, 120, 212)), null, tiles);"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,        var image = new DrawingImage(drawing); image.Freeze(); return image;
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,    }
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,    private static DrawingImage Placeholder(string processName)
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,    {
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,        string key = ProcessIconPlaceholder.Key(processName);
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        if (Placeholders.TryGetValue(key, out var cached)) return cached;"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        string[] colors = { ""#175CD3"", ""#6941C6"", ""#027A48"", ""#B54708"", ""#B42318"", ""#026AA2"", ""#C11574"", ""#475467"" };"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,        var brush = (SolidColorBrush)new BrushConverter().ConvertFromString(colors[ProcessIconPlaceholder.ColorIndex(key)])!;
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,        var group = new DrawingGroup();
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        group.Children.Add(new GeometryDrawing(brush, null, new RectangleGeometry(new Rect(0, 0, 32, 32), 7, 7)));"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        var label = new FormattedText(ProcessIconPlaceholder.Initials(key), System.Globalization.CultureInfo.InvariantCulture,"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"            FlowDirection.LeftToRight, new Typeface(""Segoe UI Semibold""), 14, Brushes.White, 1);"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        group.Children.Add(new GeometryDrawing(Brushes.White, null, label.BuildGeometry(new Point((32 - label.Width) / 2, (32 - label.Height) / 2))));"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,        var image = new DrawingImage(group); image.Freeze(); Placeholders[key] = image; return image;
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,    }
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,    private static DrawingImage Placeholder(string processName) => ProcessSymbolDrawing.ForName(processName);
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,before,    <InformationalVersion>0.19.16-R10-R32-R2-embedded-icon-candidate</InformationalVersion>
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,after,    <InformationalVersion>0.19.16-R10-R33-process-symbols-candidate</InformationalVersion>
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,after,"    <EmbeddedResource Include=""Assets/ProcessSymbols.json"" LogicalName=""ProcessLens.ProcessSymbols"" />"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,using System.IO;
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,using System.Text.Json;
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,namespace ProcessLens.App;
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"internal sealed record SymbolLayer(string Path, string? Fill, string? Stroke, double Width);"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"internal sealed record ProcessSymbol(string Id, string Label, string Color, IReadOnlyList<SymbolLayer> Layers);"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"// Display symbols from exact names, not process classification or signature verification."
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,internal static class ProcessSymbolCatalog
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,{
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"    internal const string ResourceName = ""ProcessLens.ProcessSymbols"";"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"    private sealed record Catalog(IReadOnlyList<ProcessSymbol> Entries,"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"        Dictionary<string, ProcessSymbol> Names, Dictionary<string, ProcessSymbol> Groups, string? Error);"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,    private static readonly Lazy<Catalog> Data = new(Load);
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,    internal static IReadOnlyList<ProcessSymbol> Entries => Data.Value.Entries;
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,    internal static string? LoadError => Data.Value.Error;
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,    internal static ProcessSymbol? Find(string? executableName)
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,    {
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,        if (string.IsNullOrWhiteSpace(executableName) || executableName.Length > 260 ||
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,            executableName.Contains('\\') || executableName.Contains('/') || executableName.Contains(':') || executableName.Any(char.IsControl)) return null;
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,        string key = executableName.Trim();
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"        if (key.Equals(""System Idle Process"", StringComparison.OrdinalIgnoreCase)) key = ""Idle"";"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"        if (key.EndsWith("".exe"", StringComparison.OrdinalIgnoreCase)) key = key[..^4];"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,        return Data.Value.Names.GetValueOrDefault(key);
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,    }
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,    // A group labelled Git must not inherit Bash's image merely because Bash is the first row.
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,    // This affects only the group illustration; no membership or process identity changes.
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"    internal static ProcessSymbol? GroupOverride(string? title, string? executableName)"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,    {
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"        if (title is null || title.Length > 128 || !Data.Value.Groups.TryGetValue(title.Trim(), out var group)) return null;"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,        return Find(executableName)?.Id == group.Id ? null : group;
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,    }
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,    private static Catalog Load()
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,    {
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"        var names = new Dictionary<string, ProcessSymbol>(StringComparer.OrdinalIgnoreCase);"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"        var groups = new Dictionary<string, ProcessSymbol>(StringComparer.OrdinalIgnoreCase);"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,        try {
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,            using var stream = typeof(ProcessSymbolCatalog).Assembly.GetManifestResourceStream(ResourceName);
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"            if (stream is null || stream.Length is <= 0 or > 128 * 1024) throw new InvalidDataException(""Catalogo icone non disponibile."");"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"            using var document = JsonDocument.Parse(stream, new JsonDocumentOptions { MaxDepth = 12 });"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,            var root = document.RootElement;
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"            if (root.GetProperty(""schema"").GetInt32() != 1) throw new InvalidDataException(""Schema icone non supportato."");"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"            var glyphs = new Dictionary<string, SymbolLayer[]>();"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"            foreach (var glyph in root.GetProperty(""glyphs"").EnumerateObject()) {"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,                var layers = glyph.Value.EnumerateArray().Select(x => new SymbolLayer(
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"                    x.GetProperty(""path"").GetString()!, x.GetProperty(""fill"").GetString(),"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"                    x.GetProperty(""stroke"").GetString(), x.GetProperty(""width"").GetDouble())).ToArray();"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,                if (layers.Length is < 1 or > 12 || layers.Any(x => x.Path.Length is < 1 or > 1024 || !double.IsFinite(x.Width) || x.Width is < 0 or > 5))
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"                    throw new InvalidDataException(""Geometria icona non valida."");"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"                glyphs.Add(glyph.Name, layers);"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"                if (glyphs.Count > 128) throw new InvalidDataException(""Troppe geometrie."");"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,            }
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,            var entries = new List<ProcessSymbol>();
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,            var ids = new HashSet<string>(StringComparer.Ordinal);
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"            foreach (var entry in root.GetProperty(""entries"").EnumerateArray()) {"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"                var symbol = new ProcessSymbol(entry.GetProperty(""id"").GetString()!, entry.GetProperty(""label"").GetString()!,"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"                    entry.GetProperty(""color"").GetString()!, glyphs[entry.GetProperty(""glyph"").GetString()!]);"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,                if (!ids.Add(symbol.Id) || symbol.Id.Length is < 1 or > 64 || symbol.Label.Length is < 1 or > 80 ||
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,                    symbol.Color.Length != 7 || symbol.Color[0] != '#' || !symbol.Color.AsSpan(1).ToString().All(Uri.IsHexDigit))
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"                    throw new InvalidDataException(""Descrittore icona non valido."");"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,                entries.Add(symbol);
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"                foreach (var name in entry.GetProperty(""names"").EnumerateArray()) names.Add(name.GetString()!, symbol);"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"                foreach (var group in entry.GetProperty(""groups"").EnumerateArray()) groups.Add(group.GetString()!, symbol);"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"                if (entries.Count > 256 || names.Count > 512 || groups.Count > 256) throw new InvalidDataException(""Catalogo troppo grande."");"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,            }
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"            return new(entries.ToArray(), names, groups, null);"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,        } catch (Exception ex) {
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,"            return new(Array.Empty<ProcessSymbol>(), new(StringComparer.OrdinalIgnoreCase), new(StringComparer.OrdinalIgnoreCase), ex.GetType().Name);"
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,        }
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,    }
+progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs,after,}
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,using System.Windows;
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,using System.Windows.Media;
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,using ProcessLens.Core;
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,namespace ProcessLens.App;
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,internal static class ProcessSymbolDrawing
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,{
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"    private static readonly BoundedCache<string, DrawingImage> Cache = new(128, StringComparer.OrdinalIgnoreCase);"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"    private static readonly string[] Colors = { ""#175CD3"", ""#6941C6"", ""#027A48"", ""#B54708"", ""#B42318"", ""#026AA2"", ""#C11574"", ""#475467"" };"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    internal static DrawingImage ForName(string name)
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    {
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,        var symbol = ProcessSymbolCatalog.Find(name);
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,        return symbol is null ? Distinctive(name) : Known(symbol);
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    }
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    internal static DrawingImage Known(ProcessSymbol symbol)
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    {
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"        string key = ""known:"" + symbol.Id;"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"        if (Cache.TryGetValue(key, out var cached)) return cached;"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,        try {
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,            var group = Background();
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,            foreach (var layer in symbol.Layers) {
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,                var geometry = Geometry.Parse(layer.Path);
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"                var pen = layer.Stroke is null ? null : new Pen(Paint(layer.Stroke, symbol.Color), layer.Width) {"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"                    StartLineCap = PenLineCap.Round, EndLineCap = PenLineCap.Round, LineJoin = PenLineJoin.Round };"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"                group.Children.Add(new GeometryDrawing(layer.Fill is null ? null : Paint(layer.Fill, symbol.Color), pen, geometry));"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,            }
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"            return Save(key, group);"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,        } catch (Exception) { return Distinctive(symbol.Id); } // Optional visuals must not break the process list.
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    }
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    private static DrawingImage Distinctive(string name)
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    {
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"        string key = ""file:"" + ProcessIconPlaceholder.Key(name);"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"        if (Cache.TryGetValue(key, out var cached)) return cached;"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,        var group = Background();
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"        var brush = Paint(Colors[ProcessIconPlaceholder.ColorIndex(name)], ""#175CD3"");"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,        int pattern = ProcessIconPlaceholder.Pattern(name);
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,        for (int row = 0; row < 5; row++) for (int column = 0; column < 3; column++) {
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,            if ((pattern & (1 << (row * 3 + column))) == 0) continue;
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"            void Cell(int x) => group.Children.Add(new GeometryDrawing(brush, null,"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"                new RectangleGeometry(new Rect(4 + x * 5, 4 + row * 5, 4, 4), 1, 1)));"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,            Cell(column);
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,            if (column != 2) Cell(4 - column);
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,        }
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"        return Save(key, group);"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    }
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    private static DrawingGroup Background()
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    {
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,        var group = new DrawingGroup();
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"        group.Children.Add(new GeometryDrawing(Brushes.White, null, new RectangleGeometry(new Rect(0, 0, 32, 32), 5, 5)));"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,        return group;
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    }
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"    private static Brush Paint(string value, string accent) =>"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"        new SolidColorBrush((Color)ColorConverter.ConvertFromString(value == ""accent"" ? accent : value));"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,"    private static DrawingImage Save(string key, DrawingGroup group)"
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    {
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,        var image = new DrawingImage(group); image.Freeze(); Cache[key] = image; return image;
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,    }
+progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs,after,}
+progetto/tests/ProcessLens.IconResourceTests/ProcessLens.IconResourceTests.csproj,before,</Project>
+progetto/tests/ProcessLens.IconResourceTests/ProcessLens.IconResourceTests.csproj,after,"<ItemGroup><Compile Include=""../../src/ProcessLens.App/ProcessSymbolCatalog.cs"" Link=""ProcessSymbolCatalog.cs""/>"
+progetto/tests/ProcessLens.IconResourceTests/ProcessLens.IconResourceTests.csproj,after,"<EmbeddedResource Include=""../../src/ProcessLens.App/Assets/ProcessSymbols.json"" LogicalName=""ProcessLens.ProcessSymbols""/>"
+progetto/tests/ProcessLens.IconResourceTests/ProcessLens.IconResourceTests.csproj,after,"<Compile Include=""../../src/ProcessLens.App/ProcessIconPlaceholder.cs"" Link=""ProcessIconPlaceholder.cs""/>"
+progetto/tests/ProcessLens.IconResourceTests/ProcessLens.IconResourceTests.csproj,after,</ItemGroup></Project>
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,// R33: same embedded catalogue used by the app; exact names and display-only group overrides.
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(ProcessSymbolCatalog.LoadError is null && ProcessSymbolCatalog.Entries.Count==61,""R33 actual SDK catalogue loads with all 61 entries"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(ProcessSymbolCatalog.Find(""bash.exe"")?.Id==""bash""&&ProcessSymbolCatalog.Find(""git.exe"")?.Id==""git"",""R33 Bash and Git have distinct symbols"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(ProcessSymbolCatalog.Find(""System"")?.Id==""system""&&ProcessSymbolCatalog.Find(""System Idle Process"")?.Id==""idle"",""R33 System and Idle have distinct symbols"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(ProcessSymbolCatalog.Find(""RuntimeBroker.exe"")?.Id==""broker""&&ProcessSymbolCatalog.Find(""svchost.exe"")?.Id==""svchost"",""R33 Windows components have explicit symbols"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"foreach(string name in new[]{""git-helper.exe"",""not-git.exe"",""C:\\Tools\\git.exe"",""/tmp/git.exe"",""git.exe --anything"",""git.exe.bak"","" "",""git\n.exe""})"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after," Check(ProcessSymbolCatalog.Find(name) is null,""R33 exact-name boundary excludes ""+name.Replace('\n',' '));"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(ProcessSymbolCatalog.GroupOverride(""Git"",""bash.exe"")?.Id==""git"",""R33 Git group cannot inherit Bash image"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(ProcessSymbolCatalog.GroupOverride(""Git"",""git.exe"") is null,""R33 actual Git executable retains native icon priority"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(ProcessSymbolCatalog.GroupOverride(""Google Chrome"",""chrome.exe"") is null,""R33 Chrome group retains actual Chrome icon"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(ProcessSymbolCatalog.GroupOverride(""Git helper"",""bash.exe"") is null,""R33 group labels use exact aliases"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(ProcessSymbolCatalog.Find(""BASH.EXE"")?.Id==ProcessSymbolCatalog.Find(""bash"")?.Id,""R33 name matching is case insensitive"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(ProcessIconPlaceholder.Pattern(""hello.exe"")==ProcessIconPlaceholder.Pattern(""HELLO.EXE""),""R33 generated pattern is stable across case"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(Enumerable.Range(0,1000).All(i=>ProcessIconPlaceholder.Pattern(""unknown""+i+"".exe"") is >0 and <=0x7fff),""R33 every generated icon has visible bounded cells"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(Enumerable.Range(0,1000).Select(i=>(ProcessIconPlaceholder.Pattern(""unknown""+i+"".exe""),ProcessIconPlaceholder.ColorIndex(""unknown""+i+"".exe""))).Distinct().Count()>980,""R33 unknown files do not collapse to one generic pattern"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(ProcessIconPlaceholder.Pattern(null)>0&&ProcessIconPlaceholder.Pattern(""你好.exe"")>0,""R33 missing and Unicode names keep a visible pattern"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(ProcessSymbolCatalog.Entries.All(s=>s.Layers.Count>0&&s.Layers.Count<=12&&s.Color.Length==7),""R33 catalogue geometry remains bounded"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Check(ProcessSymbolCatalog.Entries.Select(s=>s.Id).Distinct().Count()==61,""R33 catalogue identifiers are distinct"");"
+progetto/tests/ProcessLens.IconResourceTests/Program.cs,after,"Console.WriteLine(""R33 catalogue regressions complete; no native icon acquisition or network."");"
+progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,before,"<Compile Include=""../../src/ProcessLens.App/WindowLifetimePolicy.cs"" Link=""WindowLifetimePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/ReadingPositionPolicy.cs"" Link=""ReadingPositionPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/WindowsProcessIconPolicy.cs"" Link=""WindowsProcessIconPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/IconPreferencePolicy.cs"" Link=""IconPreferencePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/DeferredDiagnosticWriter.cs"" Link=""DeferredDiagnosticWriter.cs""/><Compile Include=""../../src/ProcessLens.App/WindowDiagnosticJournal.cs"" Link=""WindowDiagnosticJournal.cs""/><Compile Include=""../../src/ProcessLens.App/NativeIconPreference.cs"" Link=""NativeIconPreference.cs""/><Compile Include=""../../src/ProcessLens.App/TrayCallbackRouter.cs"" Link=""TrayCallbackRouter.cs""/><Compile Include=""../../src/ProcessLens.App/WindowsComponentContext.cs"" Link=""WindowsComponentContext.cs""/><Compile Include=""../../src/ProcessLens.App/ProcessIconPlaceholder.cs"" Link=""ProcessIconPlaceholder.cs""/></ItemGroup></Project>"
+progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,after,"<Compile Include=""../../src/ProcessLens.App/WindowLifetimePolicy.cs"" Link=""WindowLifetimePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/ReadingPositionPolicy.cs"" Link=""ReadingPositionPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/WindowsProcessIconPolicy.cs"" Link=""WindowsProcessIconPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/IconPreferencePolicy.cs"" Link=""IconPreferencePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/DeferredDiagnosticWriter.cs"" Link=""DeferredDiagnosticWriter.cs""/><Compile Include=""../../src/ProcessLens.App/WindowDiagnosticJournal.cs"" Link=""WindowDiagnosticJournal.cs""/><Compile Include=""../../src/ProcessLens.App/NativeIconPreference.cs"" Link=""NativeIconPreference.cs""/><Compile Include=""../../src/ProcessLens.App/TrayCallbackRouter.cs"" Link=""TrayCallbackRouter.cs""/><Compile Include=""../../src/ProcessLens.App/WindowsComponentContext.cs"" Link=""WindowsComponentContext.cs""/><Compile Include=""../../src/ProcessLens.App/ProcessIconPlaceholder.cs"" Link=""ProcessIconPlaceholder.cs""/></ItemGroup><ItemGroup><Compile Include=""../../src/ProcessLens.App/ProcessSymbolCatalog.cs"" Link=""ProcessSymbolCatalog.cs""/>"
+progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,after,"<EmbeddedResource Include=""../../src/ProcessLens.App/Assets/ProcessSymbols.json"" LogicalName=""ProcessLens.ProcessSymbols""/>"
+progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,after,</ItemGroup></Project>
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,before,"Check(ProcessIconPlaceholder.Initials(""runtime_broker.exe"")==""RB""&&ProcessIconPlaceholder.Initials(""chrome.exe"")==""CH"",""R32 initials are derived from executable names"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,before,"Check(ProcessIconPlaceholder.Initials(null)==""?""&&ProcessIconPlaceholder.Initials(""你好.exe"")==""?"",""R32 unreadable initials have a neutral fallback"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(ProcessSymbolCatalog.Find(""RuntimeBroker.exe"")?.Id==""broker""&&ProcessSymbolCatalog.Find(""chrome.exe"")?.Id==""chrome"",""R33 exact executable names select meaningful symbols"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(ProcessIconPlaceholder.Pattern(null)>0&&ProcessIconPlaceholder.Pattern(""你好.exe"")>0,""R33 missing or Unicode names retain visible generated patterns"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"        Check(ReferenceEquals(systemIconRow.IconSource,idleIconRow.IconSource) &&"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"            ReferenceEquals(iconGroup.IconSource,systemIconRow.IconSource),""R27 Windows rows and groups share one icon object"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"        Check(systemIconRow.IconSource is DrawingImage{IsFrozen:true},""R27 shared vector icon is frozen and needs no Shell handle"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(!ReferenceEquals(systemIconRow.IconSource,idleIconRow.IconSource) &&"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"            ReferenceEquals(iconGroup.IconSource,systemIconRow.IconSource),""R33 System and Idle differ while the group retains its member icon"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(systemIconRow.IconSource is DrawingImage{IsFrozen:true},""R33 per-component vector icon is frozen and needs no Shell handle"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"            systemIconRow.IconDescription.Contains(""Firma digitale non verificata""),""R27 icon tooltip keeps category meaning explicit"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"            systemIconRow.IconDescription.Contains(""Firma digitale non verificata""),""R33 icon tooltip declares generated symbol and unverified signature"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"        Check(ReferenceEquals(placeholder32,ProcessIconResolver.GetIcon(unknown32))&&ProcessIconResolver.IconDescription(unknown32).Contains(""Segnaposto""),""R32 placeholders are cached and explicitly described as placeholders"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(ReferenceEquals(placeholder32,ProcessIconResolver.GetIcon(unknown32))&&ProcessIconResolver.IconDescription(unknown32).Contains(""Distintivo grafico""),""R32 placeholders are cached and explicitly described as placeholders"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        foreach(var symbol33 in ProcessSymbolCatalog.Entries) {
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"            foreach(var layer33 in symbol33.Layers) _=Geometry.Parse(layer33.Path); // Must fail the fixture for invalid source paths, rather than accepting the renderer fallback."
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,            var image33=ProcessSymbolDrawing.Known(symbol33);
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"            Check(image33.IsFrozen && image33.Drawing.Bounds.Width>0 && image33.Drawing.Bounds.Width<=34 && image33.Drawing.Bounds.Height<=34,""R33 catalogue vector renders and freezes: ""+symbol33.Id);"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        }
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        var bash33=new ProcessRow(new ProcessSnapshot{Pid=910003,ParentPid=0,Name=""bash.exe""},analyzer.Analyze(new ProcessSnapshot{Pid=910003,ParentPid=0,Name=""bash.exe""}));"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        var git33=new ProcessGroupRow(""git-fixture"",""Git"",new[]{bash33},1);"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(!ReferenceEquals(git33.IconSource,bash33.IconSource)&&git33.IconDescription.Contains(""gruppo Git""),""R33 Git group does not inherit Bash icon and explains group illustration"");"
+supporto/avvia.ps1,before,    $receipt = Join-Path $Root 'supporto/build-r32-r2.ok'
+supporto/avvia.ps1,after,    $receipt = Join-Path $Root 'supporto/build-r33.ok'
+supporto/avvia.ps1,before,        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R32-R2-embedded-icon') {
+supporto/avvia.ps1,after,        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R33-process-symbols') {
+supporto/avvia.ps1,before,    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r32-r2.ok') -Value 'ProcessLens-R32-R2-embedded-icon' -Encoding ASCII
+supporto/avvia.ps1,after,    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r33.ok') -Value 'ProcessLens-R33-process-symbols' -Encoding ASCII

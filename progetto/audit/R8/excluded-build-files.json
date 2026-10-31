@@ -1,0 +1,2246 @@
+[
+  {
+    "file": "publish/MemoryAgent-win-x64/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "publish/MemoryAgent-win-x64/ProcessLens.Core.pdb",
+    "bytes": 32192
+  },
+  {
+    "file": "publish/MemoryAgent-win-x64/ProcessLens.MemoryAgent.deps.json",
+    "bytes": 826
+  },
+  {
+    "file": "publish/MemoryAgent-win-x64/ProcessLens.MemoryAgent.dll",
+    "bytes": 18944
+  },
+  {
+    "file": "publish/MemoryAgent-win-x64/ProcessLens.MemoryAgent.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "publish/MemoryAgent-win-x64/ProcessLens.MemoryAgent.pdb",
+    "bytes": 14296
+  },
+  {
+    "file": "publish/MemoryAgent-win-x64/ProcessLens.MemoryAgent.runtimeconfig.json",
+    "bytes": 492
+  },
+  {
+    "file": "publish/win-x64/knowledge/framework-signatures.json",
+    "bytes": 3024
+  },
+  {
+    "file": "publish/win-x64/knowledge/role-signatures.json",
+    "bytes": 6713
+  },
+  {
+    "file": "publish/win-x64/ProcessLens.exe",
+    "bytes": 2797087
+  },
+  {
+    "file": "publish/win-x64/Profiler/ProcessLensProfiler.exe",
+    "bytes": 326676
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/knowledge/framework-signatures.json",
+    "bytes": 3024
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/knowledge/role-signatures.json",
+    "bytes": 6713
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/Microsoft.Data.Sqlite.dll",
+    "bytes": 175136
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/ProcessLens.Core.pdb",
+    "bytes": 32192
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/ProcessLens.deps.json",
+    "bytes": 9650
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/ProcessLens.dll",
+    "bytes": 256000
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/ProcessLens.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/ProcessLens.pdb",
+    "bytes": 48180
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/ProcessLens.runtimeconfig.json",
+    "bytes": 529
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/ProcessLens.Semantics.dll",
+    "bytes": 178688
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/ProcessLens.Semantics.pdb",
+    "bytes": 33832
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/ProcessLens.Windows.dll",
+    "bytes": 91136
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/ProcessLens.Windows.pdb",
+    "bytes": 31724
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/browser-wasm/nativeassets/net8.0/e_sqlite3.a",
+    "bytes": 1122394
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/linux-arm/native/libe_sqlite3.so",
+    "bytes": 827568
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/linux-arm64/native/libe_sqlite3.so",
+    "bytes": 1285800
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/linux-armel/native/libe_sqlite3.so",
+    "bytes": 1162812
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/linux-mips64/native/libe_sqlite3.so",
+    "bytes": 1500256
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/linux-musl-arm/native/libe_sqlite3.so",
+    "bytes": 1126664
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/linux-musl-arm64/native/libe_sqlite3.so",
+    "bytes": 1333800
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/linux-musl-x64/native/libe_sqlite3.so",
+    "bytes": 1228752
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/linux-ppc64le/native/libe_sqlite3.so",
+    "bytes": 1648888
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/linux-s390x/native/libe_sqlite3.so",
+    "bytes": 1397832
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/linux-x64/native/libe_sqlite3.so",
+    "bytes": 1249880
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/linux-x86/native/libe_sqlite3.so",
+    "bytes": 1309268
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/maccatalyst-arm64/native/libe_sqlite3.dylib",
+    "bytes": 1091295
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/maccatalyst-x64/native/libe_sqlite3.dylib",
+    "bytes": 1117336
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/osx-arm64/native/libe_sqlite3.dylib",
+    "bytes": 1091359
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/osx-x64/native/libe_sqlite3.dylib",
+    "bytes": 1116192
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/win-arm/native/e_sqlite3.dll",
+    "bytes": 1192960
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/win-arm64/native/e_sqlite3.dll",
+    "bytes": 1485824
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/win-x64/native/e_sqlite3.dll",
+    "bytes": 1691648
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/runtimes/win-x86/native/e_sqlite3.dll",
+    "bytes": 1308672
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/SQLitePCLRaw.batteries_v2.dll",
+    "bytes": 5120
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/SQLitePCLRaw.core.dll",
+    "bytes": 50688
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/SQLitePCLRaw.provider.e_sqlite3.dll",
+    "bytes": 36352
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/e_sqlite3.dll",
+    "bytes": 1691648
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/knowledge/framework-signatures.json",
+    "bytes": 3024
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/knowledge/role-signatures.json",
+    "bytes": 6713
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/Microsoft.Data.Sqlite.dll",
+    "bytes": 175136
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/ProcessLens.deps.json",
+    "bytes": 6571
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/ProcessLens.dll",
+    "bytes": 254976
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/ProcessLens.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/ProcessLens.runtimeconfig.json",
+    "bytes": 529
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/ProcessLens.Semantics.dll",
+    "bytes": 178176
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/ProcessLens.Windows.dll",
+    "bytes": 90624
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/SQLitePCLRaw.batteries_v2.dll",
+    "bytes": 5120
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/SQLitePCLRaw.core.dll",
+    "bytes": 50688
+  },
+  {
+    "file": "src/ProcessLens.App/bin/Release/net8.0-windows/win-x64/SQLitePCLRaw.provider.e_sqlite3.dll",
+    "bytes": 36352
+  },
+  {
+    "file": "src/ProcessLens.App/obj/ProcessLens.App.csproj.nuget.dgspec.json",
+    "bytes": 11235
+  },
+  {
+    "file": "src/ProcessLens.App/obj/ProcessLens.App.csproj.nuget.g.props",
+    "bytes": 1749
+  },
+  {
+    "file": "src/ProcessLens.App/obj/ProcessLens.App.csproj.nuget.g.targets",
+    "bytes": 521
+  },
+  {
+    "file": "src/ProcessLens.App/obj/project.assets.json",
+    "bytes": 26850
+  },
+  {
+    "file": "src/ProcessLens.App/obj/project.nuget.cache",
+    "bytes": 1340
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/App.g.cs",
+    "bytes": 1767
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/apphost.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/GeneratedInternalTypeHelper.g.cs",
+    "bytes": 7
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/GuardianDashboardView.baml",
+    "bytes": 10999
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/GuardianDashboardView.g.cs",
+    "bytes": 17278
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/MainWindow.baml",
+    "bytes": 30341
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/MainWindow.g.cs",
+    "bytes": 71235
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/MemoryDashboardView.baml",
+    "bytes": 5953
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/MemoryDashboardView.g.cs",
+    "bytes": 9269
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessL.9AB01AFA.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App.AssemblyInfo.cs",
+    "bytes": 1272
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App.assets.cache",
+    "bytes": 9890
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App.csproj.AssemblyReference.cache",
+    "bytes": 5328
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App.csproj.FileListAbsolute.txt",
+    "bytes": 7138
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 624
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App.GlobalUsings.g.cs",
+    "bytes": 223
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App_ee3nrilg_wpftmp.AssemblyInfo.cs",
+    "bytes": 1272
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App_ee3nrilg_wpftmp.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App_ee3nrilg_wpftmp.assets.cache",
+    "bytes": 9890
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App_ee3nrilg_wpftmp.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 640
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.App_ee3nrilg_wpftmp.GlobalUsings.g.cs",
+    "bytes": 223
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.dll",
+    "bytes": 256000
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.g.resources",
+    "bytes": 47657
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens.pdb",
+    "bytes": 48180
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens_MarkupCompile.cache",
+    "bytes": 389
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ProcessLens_MarkupCompile.lref",
+    "bytes": 208
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/ref/ProcessLens.dll",
+    "bytes": 33792
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/refint/ProcessLens.dll",
+    "bytes": 33792
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/App.g.cs",
+    "bytes": 1770
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/apphost.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/GeneratedInternalTypeHelper.g.cs",
+    "bytes": 7
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/GuardianDashboardView.baml",
+    "bytes": 10999
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/GuardianDashboardView.g.cs",
+    "bytes": 17386
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/MainWindow.baml",
+    "bytes": 30341
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/MainWindow.g.cs",
+    "bytes": 71730
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/MemoryDashboardView.baml",
+    "bytes": 5953
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/MemoryDashboardView.g.cs",
+    "bytes": 9317
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessL.9AB01AFA.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App.AssemblyInfo.cs",
+    "bytes": 1272
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App.assets.cache",
+    "bytes": 4060
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App.csproj.AssemblyReference.cache",
+    "bytes": 5328
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App.csproj.FileListAbsolute.txt",
+    "bytes": 4325
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App.genbundle.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 798
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App.genpublishdeps.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App.GlobalUsings.g.cs",
+    "bytes": 223
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App_k5v0qpaa_wpftmp.AssemblyInfo.cs",
+    "bytes": 1272
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App_k5v0qpaa_wpftmp.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App_k5v0qpaa_wpftmp.assets.cache",
+    "bytes": 4060
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App_k5v0qpaa_wpftmp.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 814
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.App_k5v0qpaa_wpftmp.GlobalUsings.g.cs",
+    "bytes": 223
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.deps.json",
+    "bytes": 6571
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.dll",
+    "bytes": 254976
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens.g.resources",
+    "bytes": 47657
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens_MarkupCompile.cache",
+    "bytes": 396
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ProcessLens_MarkupCompile.lref",
+    "bytes": 216
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/PublishOutputs.afa4a01330.txt",
+    "bytes": 254
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/ref/ProcessLens.dll",
+    "bytes": 32768
+  },
+  {
+    "file": "src/ProcessLens.App/obj/Release/net8.0-windows/win-x64/refint/ProcessLens.dll",
+    "bytes": 32768
+  },
+  {
+    "file": "src/ProcessLens.Core/bin/Release/net8.0/ProcessLens.Core.deps.json",
+    "bytes": 440
+  },
+  {
+    "file": "src/ProcessLens.Core/bin/Release/net8.0/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "src/ProcessLens.Core/bin/Release/net8.0/ProcessLens.Core.pdb",
+    "bytes": 32192
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/ProcessLens.Core.csproj.nuget.dgspec.json",
+    "bytes": 2211
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/ProcessLens.Core.csproj.nuget.g.props",
+    "bytes": 1138
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/ProcessLens.Core.csproj.nuget.g.targets",
+    "bytes": 150
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/project.assets.json",
+    "bytes": 2082
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/project.nuget.cache",
+    "bytes": 235
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/Release/net8.0/ProcessLens.Core.AssemblyInfo.cs",
+    "bytes": 985
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/Release/net8.0/ProcessLens.Core.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/Release/net8.0/ProcessLens.Core.assets.cache",
+    "bytes": 153
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/Release/net8.0/ProcessLens.Core.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/Release/net8.0/ProcessLens.Core.csproj.FileListAbsolute.txt",
+    "bytes": 1237
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/Release/net8.0/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/Release/net8.0/ProcessLens.Core.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 615
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/Release/net8.0/ProcessLens.Core.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/Release/net8.0/ProcessLens.Core.pdb",
+    "bytes": 32192
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/Release/net8.0/ref/ProcessLens.Core.dll",
+    "bytes": 44544
+  },
+  {
+    "file": "src/ProcessLens.Core/obj/Release/net8.0/refint/ProcessLens.Core.dll",
+    "bytes": 44544
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/bin/Release/net8.0-windows/win-x64/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/bin/Release/net8.0-windows/win-x64/ProcessLens.Core.pdb",
+    "bytes": 32192
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/bin/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.deps.json",
+    "bytes": 826
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/bin/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.dll",
+    "bytes": 18944
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/bin/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/bin/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.pdb",
+    "bytes": 14296
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/bin/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.runtimeconfig.json",
+    "bytes": 492
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/ProcessLens.MemoryAgent.csproj.nuget.dgspec.json",
+    "bytes": 4756
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/ProcessLens.MemoryAgent.csproj.nuget.g.props",
+    "bytes": 1138
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/ProcessLens.MemoryAgent.csproj.nuget.g.targets",
+    "bytes": 150
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/project.assets.json",
+    "bytes": 3422
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/project.nuget.cache",
+    "bytes": 249
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/apphost.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/ProcessL.AF501C66.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.AssemblyInfo.cs",
+    "bytes": 1168
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.assets.cache",
+    "bytes": 153
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.csproj.AssemblyReference.cache",
+    "bytes": 1008
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.csproj.FileListAbsolute.txt",
+    "bytes": 2536
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.dll",
+    "bytes": 18944
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 896
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.GlobalUsings.g.cs",
+    "bytes": 377
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/ProcessLens.MemoryAgent.pdb",
+    "bytes": 14296
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/PublishOutputs.f73683ea16.txt",
+    "bytes": 686
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/ref/ProcessLens.MemoryAgent.dll",
+    "bytes": 6656
+  },
+  {
+    "file": "src/ProcessLens.MemoryAgent/obj/Release/net8.0-windows/win-x64/refint/ProcessLens.MemoryAgent.dll",
+    "bytes": 6656
+  },
+  {
+    "file": "src/ProcessLens.Profiler/bin/Release/net8.0-windows/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "src/ProcessLens.Profiler/bin/Release/net8.0-windows/ProcessLens.Core.pdb",
+    "bytes": 32192
+  },
+  {
+    "file": "src/ProcessLens.Profiler/bin/Release/net8.0-windows/ProcessLensProfiler.deps.json",
+    "bytes": 763
+  },
+  {
+    "file": "src/ProcessLens.Profiler/bin/Release/net8.0-windows/ProcessLensProfiler.dll",
+    "bytes": 33280
+  },
+  {
+    "file": "src/ProcessLens.Profiler/bin/Release/net8.0-windows/ProcessLensProfiler.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "src/ProcessLens.Profiler/bin/Release/net8.0-windows/ProcessLensProfiler.pdb",
+    "bytes": 14072
+  },
+  {
+    "file": "src/ProcessLens.Profiler/bin/Release/net8.0-windows/ProcessLensProfiler.runtimeconfig.json",
+    "bytes": 374
+  },
+  {
+    "file": "src/ProcessLens.Profiler/bin/Release/net8.0-windows/win-x64/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "src/ProcessLens.Profiler/bin/Release/net8.0-windows/win-x64/ProcessLensProfiler.deps.json",
+    "bytes": 1257
+  },
+  {
+    "file": "src/ProcessLens.Profiler/bin/Release/net8.0-windows/win-x64/ProcessLensProfiler.dll",
+    "bytes": 32768
+  },
+  {
+    "file": "src/ProcessLens.Profiler/bin/Release/net8.0-windows/win-x64/ProcessLensProfiler.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "src/ProcessLens.Profiler/bin/Release/net8.0-windows/win-x64/ProcessLensProfiler.runtimeconfig.json",
+    "bytes": 374
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/ProcessLens.Profiler.csproj.nuget.dgspec.json",
+    "bytes": 5125
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/ProcessLens.Profiler.csproj.nuget.g.props",
+    "bytes": 1749
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/ProcessLens.Profiler.csproj.nuget.g.targets",
+    "bytes": 150
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/project.assets.json",
+    "bytes": 6235
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/project.nuget.cache",
+    "bytes": 374
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/apphost.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/ProcessL.E7891996.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/ProcessLens.Profiler.AssemblyInfo.cs",
+    "bytes": 1159
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/ProcessLens.Profiler.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/ProcessLens.Profiler.assets.cache",
+    "bytes": 153
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/ProcessLens.Profiler.csproj.AssemblyReference.cache",
+    "bytes": 1008
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/ProcessLens.Profiler.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/ProcessLens.Profiler.csproj.FileListAbsolute.txt",
+    "bytes": 2284
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/ProcessLens.Profiler.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 634
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/ProcessLens.Profiler.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/ProcessLens.Profiler.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/ProcessLensProfiler.dll",
+    "bytes": 33280
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/ProcessLensProfiler.pdb",
+    "bytes": 14072
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/ref/ProcessLensProfiler.dll",
+    "bytes": 13312
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/refint/ProcessLensProfiler.dll",
+    "bytes": 13312
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/apphost.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessL.E7891996.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessLens.Profiler.AssemblyInfo.cs",
+    "bytes": 1159
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessLens.Profiler.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessLens.Profiler.assets.cache",
+    "bytes": 720
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessLens.Profiler.csproj.AssemblyReference.cache",
+    "bytes": 1008
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessLens.Profiler.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessLens.Profiler.csproj.FileListAbsolute.txt",
+    "bytes": 2056
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessLens.Profiler.genbundle.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessLens.Profiler.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 808
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessLens.Profiler.genpublishdeps.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessLens.Profiler.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessLens.Profiler.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessLensProfiler.deps.json",
+    "bytes": 1257
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ProcessLensProfiler.dll",
+    "bytes": 32768
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/PublishOutputs.934b1e79b1.txt",
+    "bytes": 90
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/ref/ProcessLensProfiler.dll",
+    "bytes": 12288
+  },
+  {
+    "file": "src/ProcessLens.Profiler/obj/Release/net8.0-windows/win-x64/refint/ProcessLensProfiler.dll",
+    "bytes": 12288
+  },
+  {
+    "file": "src/ProcessLens.Semantics/bin/Release/net8.0/knowledge/framework-signatures.json",
+    "bytes": 3024
+  },
+  {
+    "file": "src/ProcessLens.Semantics/bin/Release/net8.0/knowledge/role-signatures.json",
+    "bytes": 6713
+  },
+  {
+    "file": "src/ProcessLens.Semantics/bin/Release/net8.0/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "src/ProcessLens.Semantics/bin/Release/net8.0/ProcessLens.Semantics.deps.json",
+    "bytes": 1206
+  },
+  {
+    "file": "src/ProcessLens.Semantics/bin/Release/net8.0/ProcessLens.Semantics.dll",
+    "bytes": 178176
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/ProcessLens.Semantics.csproj.nuget.dgspec.json",
+    "bytes": 5088
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/ProcessLens.Semantics.csproj.nuget.g.props",
+    "bytes": 1749
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/ProcessLens.Semantics.csproj.nuget.g.targets",
+    "bytes": 150
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/project.assets.json",
+    "bytes": 6161
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/project.nuget.cache",
+    "bytes": 376
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/Release/net8.0/ProcessL.BBDD24B1.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/Release/net8.0/ProcessLens.Semantics.AssemblyInfo.cs",
+    "bytes": 1000
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/Release/net8.0/ProcessLens.Semantics.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/Release/net8.0/ProcessLens.Semantics.assets.cache",
+    "bytes": 720
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/Release/net8.0/ProcessLens.Semantics.csproj.AssemblyReference.cache",
+    "bytes": 1008
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/Release/net8.0/ProcessLens.Semantics.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/Release/net8.0/ProcessLens.Semantics.csproj.FileListAbsolute.txt",
+    "bytes": 1720
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/Release/net8.0/ProcessLens.Semantics.dll",
+    "bytes": 178176
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/Release/net8.0/ProcessLens.Semantics.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 799
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/Release/net8.0/ProcessLens.Semantics.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/Release/net8.0/ref/ProcessLens.Semantics.dll",
+    "bytes": 22016
+  },
+  {
+    "file": "src/ProcessLens.Semantics/obj/Release/net8.0/refint/ProcessLens.Semantics.dll",
+    "bytes": 22016
+  },
+  {
+    "file": "src/ProcessLens.Windows/bin/Release/net8.0-windows/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "src/ProcessLens.Windows/bin/Release/net8.0-windows/ProcessLens.Windows.deps.json",
+    "bytes": 2356
+  },
+  {
+    "file": "src/ProcessLens.Windows/bin/Release/net8.0-windows/ProcessLens.Windows.dll",
+    "bytes": 90624
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/ProcessLens.Windows.csproj.nuget.dgspec.json",
+    "bytes": 5250
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/ProcessLens.Windows.csproj.nuget.g.props",
+    "bytes": 1749
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/ProcessLens.Windows.csproj.nuget.g.targets",
+    "bytes": 150
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/project.assets.json",
+    "bytes": 9715
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/project.nuget.cache",
+    "bytes": 500
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/Release/net8.0-windows/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/Release/net8.0-windows/ProcessL.EA51E505.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/Release/net8.0-windows/ProcessLens.Windows.AssemblyInfo.cs",
+    "bytes": 1153
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/Release/net8.0-windows/ProcessLens.Windows.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/Release/net8.0-windows/ProcessLens.Windows.assets.cache",
+    "bytes": 2201
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/Release/net8.0-windows/ProcessLens.Windows.csproj.AssemblyReference.cache",
+    "bytes": 1494
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/Release/net8.0-windows/ProcessLens.Windows.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/Release/net8.0-windows/ProcessLens.Windows.csproj.FileListAbsolute.txt",
+    "bytes": 1533
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/Release/net8.0-windows/ProcessLens.Windows.dll",
+    "bytes": 90624
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/Release/net8.0-windows/ProcessLens.Windows.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 806
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/Release/net8.0-windows/ProcessLens.Windows.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/Release/net8.0-windows/ref/ProcessLens.Windows.dll",
+    "bytes": 24064
+  },
+  {
+    "file": "src/ProcessLens.Windows/obj/Release/net8.0-windows/refint/ProcessLens.Windows.dll",
+    "bytes": 24064
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/bin/Release/net8.0/knowledge/framework-signatures.json",
+    "bytes": 3024
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/bin/Release/net8.0/knowledge/role-signatures.json",
+    "bytes": 6713
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/bin/Release/net8.0/ProcessLens.BehaviorTests.deps.json",
+    "bytes": 1147
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/bin/Release/net8.0/ProcessLens.BehaviorTests.dll",
+    "bytes": 19968
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/bin/Release/net8.0/ProcessLens.BehaviorTests.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/bin/Release/net8.0/ProcessLens.BehaviorTests.pdb",
+    "bytes": 11928
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/bin/Release/net8.0/ProcessLens.BehaviorTests.runtimeconfig.json",
+    "bytes": 340
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/bin/Release/net8.0/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/bin/Release/net8.0/ProcessLens.Core.pdb",
+    "bytes": 32192
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/bin/Release/net8.0/ProcessLens.Semantics.dll",
+    "bytes": 178688
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/bin/Release/net8.0/ProcessLens.Semantics.pdb",
+    "bytes": 33832
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/ProcessLens.BehaviorTests.csproj.nuget.dgspec.json",
+    "bytes": 6984
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/ProcessLens.BehaviorTests.csproj.nuget.g.props",
+    "bytes": 1138
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/ProcessLens.BehaviorTests.csproj.nuget.g.targets",
+    "bytes": 150
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/project.assets.json",
+    "bytes": 3795
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/project.nuget.cache",
+    "bytes": 255
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/apphost.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/ProcessL.649E71E6.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/ProcessLens.BehaviorTests.AssemblyInfo.cs",
+    "bytes": 1012
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/ProcessLens.BehaviorTests.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/ProcessLens.BehaviorTests.assets.cache",
+    "bytes": 153
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/ProcessLens.BehaviorTests.csproj.AssemblyReference.cache",
+    "bytes": 1912
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/ProcessLens.BehaviorTests.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/ProcessLens.BehaviorTests.csproj.FileListAbsolute.txt",
+    "bytes": 2837
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/ProcessLens.BehaviorTests.dll",
+    "bytes": 19968
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/ProcessLens.BehaviorTests.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 635
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/ProcessLens.BehaviorTests.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/ProcessLens.BehaviorTests.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/ProcessLens.BehaviorTests.pdb",
+    "bytes": 11928
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/ref/ProcessLens.BehaviorTests.dll",
+    "bytes": 5632
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/obj/Release/net8.0/refint/ProcessLens.BehaviorTests.dll",
+    "bytes": 5632
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/bin/Release/net8.0/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/bin/Release/net8.0/ProcessLens.Core.pdb",
+    "bytes": 32192
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/bin/Release/net8.0/ProcessLens.DiagnosticsTests.deps.json",
+    "bytes": 786
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/bin/Release/net8.0/ProcessLens.DiagnosticsTests.dll",
+    "bytes": 8704
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/bin/Release/net8.0/ProcessLens.DiagnosticsTests.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/bin/Release/net8.0/ProcessLens.DiagnosticsTests.pdb",
+    "bytes": 11060
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/bin/Release/net8.0/ProcessLens.DiagnosticsTests.runtimeconfig.json",
+    "bytes": 340
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/ProcessLens.DiagnosticsTests.csproj.nuget.dgspec.json",
+    "bytes": 4476
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/ProcessLens.DiagnosticsTests.csproj.nuget.g.props",
+    "bytes": 1138
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/ProcessLens.DiagnosticsTests.csproj.nuget.g.targets",
+    "bytes": 150
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/project.assets.json",
+    "bytes": 2874
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/project.nuget.cache",
+    "bytes": 261
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/apphost.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/ProcessL.F9E2A698.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/ProcessLens.DiagnosticsTests.AssemblyInfo.cs",
+    "bytes": 1021
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/ProcessLens.DiagnosticsTests.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/ProcessLens.DiagnosticsTests.assets.cache",
+    "bytes": 153
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/ProcessLens.DiagnosticsTests.csproj.AssemblyReference.cache",
+    "bytes": 1008
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/ProcessLens.DiagnosticsTests.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/ProcessLens.DiagnosticsTests.csproj.FileListAbsolute.txt",
+    "bytes": 2449
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/ProcessLens.DiagnosticsTests.dll",
+    "bytes": 8704
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/ProcessLens.DiagnosticsTests.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 641
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/ProcessLens.DiagnosticsTests.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/ProcessLens.DiagnosticsTests.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/ProcessLens.DiagnosticsTests.pdb",
+    "bytes": 11060
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/ref/ProcessLens.DiagnosticsTests.dll",
+    "bytes": 6144
+  },
+  {
+    "file": "tests/ProcessLens.DiagnosticsTests/obj/Release/net8.0/refint/ProcessLens.DiagnosticsTests.dll",
+    "bytes": 6144
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/Microsoft.Data.Sqlite.dll",
+    "bytes": 175136
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/ProcessLens.GuardianDashboardTests.deps.json",
+    "bytes": 8259
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/ProcessLens.GuardianDashboardTests.dll",
+    "bytes": 65024
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/ProcessLens.GuardianDashboardTests.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/ProcessLens.GuardianDashboardTests.pdb",
+    "bytes": 20412
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/ProcessLens.GuardianDashboardTests.runtimeconfig.json",
+    "bytes": 340
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/browser-wasm/nativeassets/net8.0/e_sqlite3.a",
+    "bytes": 1122394
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/linux-arm/native/libe_sqlite3.so",
+    "bytes": 827568
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/linux-arm64/native/libe_sqlite3.so",
+    "bytes": 1285800
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/linux-armel/native/libe_sqlite3.so",
+    "bytes": 1162812
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/linux-mips64/native/libe_sqlite3.so",
+    "bytes": 1500256
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/linux-musl-arm/native/libe_sqlite3.so",
+    "bytes": 1126664
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/linux-musl-arm64/native/libe_sqlite3.so",
+    "bytes": 1333800
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/linux-musl-x64/native/libe_sqlite3.so",
+    "bytes": 1228752
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/linux-ppc64le/native/libe_sqlite3.so",
+    "bytes": 1648888
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/linux-s390x/native/libe_sqlite3.so",
+    "bytes": 1397832
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/linux-x64/native/libe_sqlite3.so",
+    "bytes": 1249880
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/linux-x86/native/libe_sqlite3.so",
+    "bytes": 1309268
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/maccatalyst-arm64/native/libe_sqlite3.dylib",
+    "bytes": 1091295
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/maccatalyst-x64/native/libe_sqlite3.dylib",
+    "bytes": 1117336
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/osx-arm64/native/libe_sqlite3.dylib",
+    "bytes": 1091359
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/osx-x64/native/libe_sqlite3.dylib",
+    "bytes": 1116192
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/win-arm/native/e_sqlite3.dll",
+    "bytes": 1192960
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/win-arm64/native/e_sqlite3.dll",
+    "bytes": 1485824
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/win-x64/native/e_sqlite3.dll",
+    "bytes": 1691648
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/runtimes/win-x86/native/e_sqlite3.dll",
+    "bytes": 1308672
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/SQLitePCLRaw.batteries_v2.dll",
+    "bytes": 5120
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/SQLitePCLRaw.core.dll",
+    "bytes": 50688
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/bin/Release/net8.0/SQLitePCLRaw.provider.e_sqlite3.dll",
+    "bytes": 35840
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/ProcessLens.GuardianDashboardTests.csproj.nuget.dgspec.json",
+    "bytes": 2485
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/ProcessLens.GuardianDashboardTests.csproj.nuget.g.props",
+    "bytes": 1138
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/ProcessLens.GuardianDashboardTests.csproj.nuget.g.targets",
+    "bytes": 521
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/project.assets.json",
+    "bytes": 14077
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/project.nuget.cache",
+    "bytes": 1124
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/apphost.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/ProcessL.4B8BC9E1.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/ProcessLens.GuardianDashboardTests.AssemblyInfo.cs",
+    "bytes": 1039
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/ProcessLens.GuardianDashboardTests.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/ProcessLens.GuardianDashboardTests.assets.cache",
+    "bytes": 8628
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/ProcessLens.GuardianDashboardTests.csproj.AssemblyReference.cache",
+    "bytes": 1930
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/ProcessLens.GuardianDashboardTests.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/ProcessLens.GuardianDashboardTests.csproj.FileListAbsolute.txt",
+    "bytes": 5833
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/ProcessLens.GuardianDashboardTests.dll",
+    "bytes": 65024
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/ProcessLens.GuardianDashboardTests.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 653
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/ProcessLens.GuardianDashboardTests.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/ProcessLens.GuardianDashboardTests.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/ProcessLens.GuardianDashboardTests.pdb",
+    "bytes": 20412
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/ref/ProcessLens.GuardianDashboardTests.dll",
+    "bytes": 18944
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/obj/Release/net8.0/refint/ProcessLens.GuardianDashboardTests.dll",
+    "bytes": 18944
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/bin/Release/net8.0/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/bin/Release/net8.0/ProcessLens.Core.pdb",
+    "bytes": 32192
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/bin/Release/net8.0/ProcessLens.MemoryAlertTests.deps.json",
+    "bytes": 786
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/bin/Release/net8.0/ProcessLens.MemoryAlertTests.dll",
+    "bytes": 6656
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/bin/Release/net8.0/ProcessLens.MemoryAlertTests.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/bin/Release/net8.0/ProcessLens.MemoryAlertTests.pdb",
+    "bytes": 10812
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/bin/Release/net8.0/ProcessLens.MemoryAlertTests.runtimeconfig.json",
+    "bytes": 340
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/ProcessLens.MemoryAlertTests.csproj.nuget.dgspec.json",
+    "bytes": 4476
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/ProcessLens.MemoryAlertTests.csproj.nuget.g.props",
+    "bytes": 1138
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/ProcessLens.MemoryAlertTests.csproj.nuget.g.targets",
+    "bytes": 150
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/project.assets.json",
+    "bytes": 2874
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/project.nuget.cache",
+    "bytes": 261
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/apphost.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/ProcessL.1E05F63F.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/ProcessLens.MemoryAlertTests.AssemblyInfo.cs",
+    "bytes": 1021
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/ProcessLens.MemoryAlertTests.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/ProcessLens.MemoryAlertTests.assets.cache",
+    "bytes": 153
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/ProcessLens.MemoryAlertTests.csproj.AssemblyReference.cache",
+    "bytes": 1008
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/ProcessLens.MemoryAlertTests.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/ProcessLens.MemoryAlertTests.csproj.FileListAbsolute.txt",
+    "bytes": 2449
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/ProcessLens.MemoryAlertTests.dll",
+    "bytes": 6656
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/ProcessLens.MemoryAlertTests.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 641
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/ProcessLens.MemoryAlertTests.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/ProcessLens.MemoryAlertTests.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/ProcessLens.MemoryAlertTests.pdb",
+    "bytes": 10812
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/ref/ProcessLens.MemoryAlertTests.dll",
+    "bytes": 6144
+  },
+  {
+    "file": "tests/ProcessLens.MemoryAlertTests/obj/Release/net8.0/refint/ProcessLens.MemoryAlertTests.dll",
+    "bytes": 6144
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/bin/Release/net8.0/knowledge/framework-signatures.json",
+    "bytes": 3024
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/bin/Release/net8.0/knowledge/role-signatures.json",
+    "bytes": 6713
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/bin/Release/net8.0/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/bin/Release/net8.0/ProcessLens.Core.pdb",
+    "bytes": 32192
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/bin/Release/net8.0/ProcessLens.MemoryTests.deps.json",
+    "bytes": 1141
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/bin/Release/net8.0/ProcessLens.MemoryTests.dll",
+    "bytes": 16384
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/bin/Release/net8.0/ProcessLens.MemoryTests.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/bin/Release/net8.0/ProcessLens.MemoryTests.pdb",
+    "bytes": 11832
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/bin/Release/net8.0/ProcessLens.MemoryTests.runtimeconfig.json",
+    "bytes": 340
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/bin/Release/net8.0/ProcessLens.Semantics.dll",
+    "bytes": 178688
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/bin/Release/net8.0/ProcessLens.Semantics.pdb",
+    "bytes": 33832
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/ProcessLens.MemoryTests.csproj.nuget.dgspec.json",
+    "bytes": 6964
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/ProcessLens.MemoryTests.csproj.nuget.g.props",
+    "bytes": 1138
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/ProcessLens.MemoryTests.csproj.nuget.g.targets",
+    "bytes": 150
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/project.assets.json",
+    "bytes": 3783
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/project.nuget.cache",
+    "bytes": 251
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/apphost.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/ProcessL.F87A136A.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/ProcessLens.MemoryTests.AssemblyInfo.cs",
+    "bytes": 1006
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/ProcessLens.MemoryTests.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/ProcessLens.MemoryTests.assets.cache",
+    "bytes": 153
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/ProcessLens.MemoryTests.csproj.AssemblyReference.cache",
+    "bytes": 1912
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/ProcessLens.MemoryTests.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/ProcessLens.MemoryTests.csproj.FileListAbsolute.txt",
+    "bytes": 2763
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/ProcessLens.MemoryTests.dll",
+    "bytes": 16384
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/ProcessLens.MemoryTests.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 631
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/ProcessLens.MemoryTests.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/ProcessLens.MemoryTests.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/ProcessLens.MemoryTests.pdb",
+    "bytes": 11832
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/ref/ProcessLens.MemoryTests.dll",
+    "bytes": 5120
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/obj/Release/net8.0/refint/ProcessLens.MemoryTests.dll",
+    "bytes": 5120
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/bin/Release/net8.0/ProcessLens.ProfilerFixture.deps.json",
+    "bytes": 473
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/bin/Release/net8.0/ProcessLens.ProfilerFixture.dll",
+    "bytes": 6656
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/bin/Release/net8.0/ProcessLens.ProfilerFixture.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/bin/Release/net8.0/ProcessLens.ProfilerFixture.pdb",
+    "bytes": 10840
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/bin/Release/net8.0/ProcessLens.ProfilerFixture.runtimeconfig.json",
+    "bytes": 340
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/ProcessLens.ProfilerFixture.csproj.nuget.dgspec.json",
+    "bytes": 2242
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/ProcessLens.ProfilerFixture.csproj.nuget.g.props",
+    "bytes": 1138
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/ProcessLens.ProfilerFixture.csproj.nuget.g.targets",
+    "bytes": 150
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/project.assets.json",
+    "bytes": 2048
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/project.nuget.cache",
+    "bytes": 259
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/apphost.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/ProcessLens.ProfilerFixture.AssemblyInfo.cs",
+    "bytes": 1018
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/ProcessLens.ProfilerFixture.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/ProcessLens.ProfilerFixture.assets.cache",
+    "bytes": 153
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/ProcessLens.ProfilerFixture.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/ProcessLens.ProfilerFixture.csproj.FileListAbsolute.txt",
+    "bytes": 1913
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/ProcessLens.ProfilerFixture.dll",
+    "bytes": 6656
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/ProcessLens.ProfilerFixture.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 639
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/ProcessLens.ProfilerFixture.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/ProcessLens.ProfilerFixture.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/ProcessLens.ProfilerFixture.pdb",
+    "bytes": 10840
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/ref/ProcessLens.ProfilerFixture.dll",
+    "bytes": 6144
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerFixture/obj/Release/net8.0/refint/ProcessLens.ProfilerFixture.dll",
+    "bytes": 6144
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/bin/Release/net8.0/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/bin/Release/net8.0/ProcessLens.Core.pdb",
+    "bytes": 32192
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/bin/Release/net8.0/ProcessLens.ProfilerTests.deps.json",
+    "bytes": 777
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/bin/Release/net8.0/ProcessLens.ProfilerTests.dll",
+    "bytes": 7680
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/bin/Release/net8.0/ProcessLens.ProfilerTests.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/bin/Release/net8.0/ProcessLens.ProfilerTests.pdb",
+    "bytes": 10872
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/bin/Release/net8.0/ProcessLens.ProfilerTests.runtimeconfig.json",
+    "bytes": 340
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/ProcessLens.ProfilerTests.csproj.nuget.dgspec.json",
+    "bytes": 4446
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/ProcessLens.ProfilerTests.csproj.nuget.g.props",
+    "bytes": 1138
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/ProcessLens.ProfilerTests.csproj.nuget.g.targets",
+    "bytes": 150
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/project.assets.json",
+    "bytes": 2856
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/project.nuget.cache",
+    "bytes": 255
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/apphost.exe",
+    "bytes": 151552
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/ProcessL.1599E804.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/ProcessLens.ProfilerTests.AssemblyInfo.cs",
+    "bytes": 1012
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/ProcessLens.ProfilerTests.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/ProcessLens.ProfilerTests.assets.cache",
+    "bytes": 153
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/ProcessLens.ProfilerTests.csproj.AssemblyReference.cache",
+    "bytes": 1008
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/ProcessLens.ProfilerTests.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/ProcessLens.ProfilerTests.csproj.FileListAbsolute.txt",
+    "bytes": 2350
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/ProcessLens.ProfilerTests.dll",
+    "bytes": 7680
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/ProcessLens.ProfilerTests.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 635
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/ProcessLens.ProfilerTests.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/ProcessLens.ProfilerTests.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/ProcessLens.ProfilerTests.pdb",
+    "bytes": 10872
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/ref/ProcessLens.ProfilerTests.dll",
+    "bytes": 5120
+  },
+  {
+    "file": "tests/ProcessLens.ProfilerTests/obj/Release/net8.0/refint/ProcessLens.ProfilerTests.dll",
+    "bytes": 5120
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/bin/Release/net8.0/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/bin/Release/net8.0/ProcessLens.Core.pdb",
+    "bytes": 32192
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/bin/Release/net8.0/ProcessLens.RefreshPolicyTests.deps.json",
+    "bytes": 792
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/bin/Release/net8.0/ProcessLens.RefreshPolicyTests.dll",
+    "bytes": 6656
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/bin/Release/net8.0/ProcessLens.RefreshPolicyTests.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/bin/Release/net8.0/ProcessLens.RefreshPolicyTests.pdb",
+    "bytes": 10776
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/bin/Release/net8.0/ProcessLens.RefreshPolicyTests.runtimeconfig.json",
+    "bytes": 340
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/ProcessLens.RefreshPolicyTests.csproj.nuget.dgspec.json",
+    "bytes": 4496
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/ProcessLens.RefreshPolicyTests.csproj.nuget.g.props",
+    "bytes": 1138
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/ProcessLens.RefreshPolicyTests.csproj.nuget.g.targets",
+    "bytes": 150
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/project.assets.json",
+    "bytes": 2886
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/project.nuget.cache",
+    "bytes": 265
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/apphost.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/ProcessL.E295CE53.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/ProcessLens.RefreshPolicyTests.AssemblyInfo.cs",
+    "bytes": 1027
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/ProcessLens.RefreshPolicyTests.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/ProcessLens.RefreshPolicyTests.assets.cache",
+    "bytes": 153
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/ProcessLens.RefreshPolicyTests.csproj.AssemblyReference.cache",
+    "bytes": 1008
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/ProcessLens.RefreshPolicyTests.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/ProcessLens.RefreshPolicyTests.csproj.FileListAbsolute.txt",
+    "bytes": 2515
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/ProcessLens.RefreshPolicyTests.dll",
+    "bytes": 6656
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/ProcessLens.RefreshPolicyTests.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 645
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/ProcessLens.RefreshPolicyTests.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/ProcessLens.RefreshPolicyTests.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/ProcessLens.RefreshPolicyTests.pdb",
+    "bytes": 10776
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/ref/ProcessLens.RefreshPolicyTests.dll",
+    "bytes": 6144
+  },
+  {
+    "file": "tests/ProcessLens.RefreshPolicyTests/obj/Release/net8.0/refint/ProcessLens.RefreshPolicyTests.dll",
+    "bytes": 6144
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/bin/Release/net8.0/knowledge/framework-signatures.json",
+    "bytes": 3024
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/bin/Release/net8.0/knowledge/role-signatures.json",
+    "bytes": 6713
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/bin/Release/net8.0/ProcessLens.Core.dll",
+    "bytes": 136704
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/bin/Release/net8.0/ProcessLens.Core.pdb",
+    "bytes": 32192
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/bin/Release/net8.0/ProcessLens.Semantics.dll",
+    "bytes": 178688
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/bin/Release/net8.0/ProcessLens.Semantics.pdb",
+    "bytes": 33832
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/bin/Release/net8.0/ProcessLens.TerminologyTests.deps.json",
+    "bytes": 1156
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/bin/Release/net8.0/ProcessLens.TerminologyTests.dll",
+    "bytes": 28672
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/bin/Release/net8.0/ProcessLens.TerminologyTests.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/bin/Release/net8.0/ProcessLens.TerminologyTests.pdb",
+    "bytes": 12700
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/bin/Release/net8.0/ProcessLens.TerminologyTests.runtimeconfig.json",
+    "bytes": 340
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/ProcessLens.TerminologyTests.csproj.nuget.dgspec.json",
+    "bytes": 7014
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/ProcessLens.TerminologyTests.csproj.nuget.g.props",
+    "bytes": 1138
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/ProcessLens.TerminologyTests.csproj.nuget.g.targets",
+    "bytes": 150
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/project.assets.json",
+    "bytes": 3813
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/project.nuget.cache",
+    "bytes": 261
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs",
+    "bytes": 198
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/apphost.exe",
+    "bytes": 152064
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/ProcessL.B242B190.Up2Date",
+    "bytes": 0
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/ProcessLens.TerminologyTests.AssemblyInfo.cs",
+    "bytes": 1021
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/ProcessLens.TerminologyTests.AssemblyInfoInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/ProcessLens.TerminologyTests.assets.cache",
+    "bytes": 153
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/ProcessLens.TerminologyTests.csproj.AssemblyReference.cache",
+    "bytes": 1912
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/ProcessLens.TerminologyTests.csproj.CoreCompileInputs.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/ProcessLens.TerminologyTests.csproj.FileListAbsolute.txt",
+    "bytes": 2948
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/ProcessLens.TerminologyTests.dll",
+    "bytes": 28672
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/ProcessLens.TerminologyTests.GeneratedMSBuildEditorConfig.editorconfig",
+    "bytes": 641
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/ProcessLens.TerminologyTests.genruntimeconfig.cache",
+    "bytes": 66
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/ProcessLens.TerminologyTests.GlobalUsings.g.cs",
+    "bytes": 295
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/ProcessLens.TerminologyTests.pdb",
+    "bytes": 12700
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/ref/ProcessLens.TerminologyTests.dll",
+    "bytes": 6144
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/obj/Release/net8.0/refint/ProcessLens.TerminologyTests.dll",
+    "bytes": 6144
+  }
+]

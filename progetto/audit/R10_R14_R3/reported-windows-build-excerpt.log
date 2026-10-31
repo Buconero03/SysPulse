@@ -1,0 +1,11 @@
+User-supplied Windows R14 R2 log excerpt; not locally executed.
+Network device regressions complete; no live network acquisition or probes.
+Packet capture tests complete; synthetic data and owned test children only, no live capture or driver changes.
+PASS network UI: R14 R2 cache tab explicitly selected before Loaded or visual layout
+PASS network UI: R14 R2 manual refresh enabled before the control is shown
+Unhandled exception. System.InvalidOperationException: Il thread chiamante non riesce ad accedere a questo oggetto perché tale oggetto è di proprietà di un altro thread.
+   at ProcessLens.App.NetworkDevicesView.UpdateButtons():line 133
+   at ProcessLens.App.NetworkDevicesView.RefreshAsync():line 94
+   at Program.Complete(Task task):line 25
+   at Program.Main():line 50
+Tests.ProcessLens.NetworkUiTests: exit -532462766; later phases not executed.

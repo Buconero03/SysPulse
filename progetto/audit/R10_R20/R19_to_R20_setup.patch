@@ -1,0 +1,512 @@
+diff --git a/AVVIA_PROCESSLENS.cmd b/AVVIA_PROCESSLENS.cmd
+new file mode 100644
+index 0000000..50ddbf9
+--- /dev/null
++++ b/AVVIA_PROCESSLENS.cmd
+@@ -0,0 +1,4 @@
++@echo off
++setlocal
++"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0setup\start-installed.ps1"
++if errorlevel 1 pause
+diff --git a/DIAGNOSTICA_RETE.cmd b/DIAGNOSTICA_RETE.cmd
+new file mode 100644
+index 0000000..bd50626
+--- /dev/null
++++ b/DIAGNOSTICA_RETE.cmd
+@@ -0,0 +1,4 @@
++@echo off
++setlocal
++"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0setup\diagnose-network.ps1"
++pause
+diff --git a/INSTALLA_PROCESSLENS.cmd b/INSTALLA_PROCESSLENS.cmd
+new file mode 100644
+index 0000000..a2c0a00
+--- /dev/null
++++ b/INSTALLA_PROCESSLENS.cmd
+@@ -0,0 +1,5 @@
++@echo off
++setlocal
++"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0setup\install-offline.ps1"
++if errorlevel 1 echo Installazione interrotta. Conserva il log indicato sopra.
++pause
+diff --git a/PACCHETTO_UNICO_R20.md b/PACCHETTO_UNICO_R20.md
+new file mode 100644
+index 0000000..cb75af7
+--- /dev/null
++++ b/PACCHETTO_UNICO_R20.md
+@@ -0,0 +1,50 @@
++# ProcessLens R20 — pacchetto offline Windows x64
++
++R20 e il pacchetto di installazione della candidata R19. Il codice dell'applicazione resta identico alla R19, inclusi indicatore RAM e nuova schermata Sistema Windows. La foto allegata mostra la schermata iniziale della cattura: non contiene un errore da cui si possa identificare una dipendenza mancante.
++
++## Uso
++
++1. Chiudi ProcessLens. Estrai tutto lo ZIP in una nuova cartella con percorso breve, ad esempio `D:\ProcessLens-R20`. Non avviare i file direttamente dallo ZIP.
++2. Doppio clic su `INSTALLA_PROCESSLENS.cmd`. Lascia terminare test, compilazione WPF e pubblicazione. Non serve scaricare separatamente .NET o i pacchetti NuGet. Prevedi circa 3 GiB di spazio libero per SDK, cache e compilazione.
++3. Apri ProcessLens dal menu Start oppure usa `AVVIA_PROCESSLENS.cmd`. Windows mostra la richiesta UAC prevista dal programma.
++4. Per i problemi delle sezioni Rete esegui `DIAGNOSTICA_RETE.cmd`. Il rapporto indica il percorso di `rete-prerequisiti.txt`; puoi inviare quel file per individuare il blocco specifico.
++
++Il pacchetto comprende i sorgenti completi, .NET SDK 8.0.426 Windows x64 con Desktop Runtime 8.0.32 e 64 pacchetti NuGet con le dipendenze per net8.0/net8.0-windows7.0. Il manifest registra gli hash. L'hash SHA512 dell'archivio SDK coincide con quello pubblicato da Microsoft e viene controllato nuovamente all'installazione.
++
++La copia privata di .NET si trova in `%LOCALAPPDATA%\Programs\ProcessLens\R20`; l'ambiente viene configurato solo nei processi avviati dagli script. Non viene cambiato il PATH dell'utente o della macchina. Il runtime include WPF; Visual Studio non serve. I collegamenti sono nel menu Start dell'utente. L'installer non attiva Guardian o MemoryAgent e non installa servizi, driver o attività pianificate.
++
++Il progetto estratto riceve un `NuGet.Config` locale con una sola origine, la cartella NuGet inclusa. Le impostazioni NuGet globali non cambiano. Durante questa installazione offline non si esegue l'audit online delle vulnerabilita NuGet e si usa la verifica offline della revoca certificati. Nessun esito di sicurezza e dedotto da queste impostazioni.
++
++L'installer **compila sul PC Windows**: questo ZIP non contiene una nuova GUI precompilata e qualificata qui. Se un test fallisce, l'installazione si interrompe e conserva il log; non vengono ignorati test per ottenere un eseguibile. I log sono in `%LOCALAPPDATA%\ProcessLens\logs`.
++
++## Perche le sezioni possono non mostrare dati
++
++| Funzione | Requisiti reali | Controllo nel pacchetto |
++| --- | --- | --- |
++| Leggi reti Wi-Fi | Scheda/driver WLAN, servizio WLAN AutoConfig, eventuale consenso Posizione | Stato servizio, interfacce di rete, WlanOpenHandle e WlanEnumInterfaces; istruzioni per Posizione |
++| Cattura IPv4 locale | IPv4 locale valido e privilegi amministrativi; traffico visibile al PC | Conteggio interfacce/indirizzi IPv4 e stato amministratore; nessuna cattura automatica |
++| Cattura PktMon | Export API esposti dalla versione di Windows e privilegi richiesti | Verifica dei dieci export richiesti nella DLL di sistema; non avvia il motore |
++| Segnali Windows | Accesso al registro Security e criteri di audit pertinenti | Prova di lettura senza salvare eventi; auditpol esclusivamente /get |
++
++Un installer non aggiunge una scheda Wi-Fi, non concede il consenso Posizione e non rende disponibili export assenti dal sistema operativo. La diagnostica non verifica il consenso effettivo per la cache BSS: per quello serve l'esito del pulsante Leggi reti Wi-Fi. I driver vanno ottenuti dal produttore della scheda; non sono inclusi driver generici.
++
++Queste sezioni usano API Windows: Wireshark, TShark e Npcap non sono dipendenze della vista attuale. Installarli non correggerebbe una lettura WLAN negata o l'accesso a Security. Il pacchetto non cambia automaticamente i criteri di audit e non copia DLL di Windows da altri computer.
++
++Dopo l'installazione: Rete > Cattura Windows / Wi-Fi > Elenca sorgenti Windows, seleziona la sorgente e avvia la cattura. Per la lettura Wi-Fi premi Leggi reti Wi-Fi e consulta Cache radio Wi-Fi. Segnali Windows ha il suo pulsante di lettura separato. Gli elenchi vuoti e i dati N/D non certificano l'assenza di dispositivi o tentativi di accesso.
++
++## Verifiche di questo pacchetto
++
++Eseguiti su Linux: sintassi PowerShell, fixture di integrita e percorsi, controllo tipi C# della diagnostica, chiusura delle dipendenze tramite NuGet.Frameworks, CRC degli archivi, hash ufficiale SDK e manifest completo. Le prove precedenti della R19 restano archiviate con i loro limiti.
++
++**Non eseguiti qui:** installazione Windows, Windows PowerShell 5.1, restore effettivo con MSBuild su Windows, build completa WPF, driver, consenso Posizione e letture reali di rete/Security. La verifica completa avviene sul PC destinazione; il pacchetto non puo dichiarare gia risolto il problema di rilevamento mostrato.
++
++## Fonti
++
++- Microsoft, installazione .NET su Windows: https://learn.microsoft.com/dotnet/core/install/windows
++- Metadati ufficiali .NET 8: https://builds.dotnet.microsoft.com/dotnet/release-metadata/8.0/releases.json
++- Microsoft, accesso Wi-Fi e Posizione: https://learn.microsoft.com/windows/win32/nativewifi/wi-fi-access-location-changes
++- Microsoft, PacketMonitorInitialize: https://learn.microsoft.com/windows/win32/pktmon/packetmonitor/nf-packetmonitor-packetmonitorinitialize
++- Microsoft, auditpol get: https://learn.microsoft.com/windows-server/administration/windows-commands/auditpol-get
++- Pacchetti originali NuGet: https://api.nuget.org/v3-flatcontainer/
++
++Licenze .NET e avvisi di terze parti sono conservati nell'archivio SDK originale. Le licenze dei pacchetti restano nei rispettivi nupkg; questo bundle non modifica i binari di terze parti.
+diff --git a/README.md b/README.md
+index b8b9f24..cbead51 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,5 @@
++> **Pacchetto R20 offline Windows x64:** include .NET SDK/Desktop Runtime, feed NuGet locale, installazione guidata e diagnostica dei prerequisiti rete. Avvia `INSTALLA_PROCESSLENS.cmd`. Codice GUI identico alla R19; installazione completa da verificare su Windows. Leggere `PACCHETTO_UNICO_R20.md`.
++
+ > **Candidata R19:** RAM fisica in uso / totale e percentuale accanto a CPU logici; schermata Sistema Windows con tabella più ariosa e dettagli separati. 86 asserzioni di presentazione e sei controlli tipi C# PASS. Build e verifica visiva WPF da eseguire su Windows. Leggere `INTERFACCIA_E_RAM_R19.md`.
+ 
+ > **Candidata R18 R2:** corretto il falso positivo PowerShell su `template=` nel messaggio diagnostico. Tutti i 30 controlli statici eseguiti con PowerShell 7.4; WPF e build completa da verificare su Windows. Leggere `CORREZIONE_CONTROLLO_POWERSHELL_R18_R2.md`.
+diff --git a/audit/tools/package_offline_setup_r20.py b/audit/tools/package_offline_setup_r20.py
+new file mode 100644
+index 0000000..c89c8c2
+--- /dev/null
++++ b/audit/tools/package_offline_setup_r20.py
+@@ -0,0 +1,73 @@
++"""Package original R19 sources plus offline Windows SDK/NuGet payload and setup. No Windows install claimed."""
++import argparse,csv,hashlib,json,shutil,subprocess,tempfile,zipfile
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--payload',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True);p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();audit=r/'audit/R10_R20';payload=a.payload.resolve();out=a.output_directory.resolve();sha=lambda b:hashlib.sha256(b).hexdigest()
++assert sha(a.baseline_zip.read_bytes())=='f01f5434192e34e7ce30d5496d3b777863ffa53ba49310c71cb6e26bbc318598'
++with zipfile.ZipFile(a.baseline_zip) as z:old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++assert all((r/n).is_file() for n in old)
++assert all((r/n).read_bytes()==b for n,b in old.items() if n.startswith(('src/','tests/')))
++assert (r/'build-dashboard.ps1').read_bytes()==old['build-dashboard.ps1']
++proof=json.loads((audit/'powershell-evidence.json').read_text());assert len(proof['stages'])==30 and all(x['status']=='PASS' and sha((r/x['file']).read_bytes())==x['sha256'] for x in proof['stages'])
++assert proof['fixture_checks']==19 and proof['script_syntax_count']==74
++assert (audit/'installer-fixture.log').read_text().count('PASS bundle:')==19
++assert (audit/'native-diagnostic-typecheck.log').read_text()==''
++downloads=json.loads((payload/'downloads.json').read_text());assert len(downloads['files'])==65
++for row in downloads['files']:assert sha((payload/row['file']).read_bytes())==row['sha256']
++sdk=next(x for x in downloads['files'] if x['role'].startswith('Windows'))
++assert hashlib.sha512((payload/sdk['file']).read_bytes()).hexdigest()==sdk['sha512']
++assert json.loads((audit/'dependency-closure.json').read_text())['status']=='PASS'
++for d in sorted(r.rglob('__pycache__'),reverse=True):shutil.rmtree(d)
++source_names=['global.json','INSTALLA_PROCESSLENS.cmd','AVVIA_PROCESSLENS.cmd','DIAGNOSTICA_RETE.cmd',*sorted(p.relative_to(r).as_posix() for p in (r/'setup').glob('*.ps1'))]
++(audit/'authorized-source-edits.json').write_text(json.dumps({'baseline_sha256':sha(a.baseline_zip.read_bytes()),'scope':'Offline setup wrapper only. Every existing production and test source unchanged.','files':[{'file':n,'sha256_before':None,'sha256_after':sha((r/n).read_bytes())} for n in source_names]},indent=2)+'\n')
++with (audit/'string-ledger.csv').open('w',newline='') as f:
++ writer=csv.writer(f);writer.writerow(['file','line','source_text','context'])
++ for n in source_names:
++  for line,s in enumerate((r/n).read_text().splitlines(),1):
++   if '"' in s or "'" in s:writer.writerow([n,line,s.strip(),'Offline installer / local diagnostic; no application UI changes'])
++current={f.relative_to(r).as_posix():f for f in r.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt'}
++include=lambda n:not n.startswith('audit/R10_R20/') and n!='setup/bundle-manifest.json'
++delta=[n for n,f in sorted(current.items()) if include(n) and old.get(n)!=f.read_bytes()]
++with (audit/'files-changed.csv').open('w',newline='') as f:
++ writer=csv.writer(f);writer.writerow(['file','kind','sha256_before','sha256_after'])
++ for n in delta:writer.writerow([n,'modified' if n in old else 'added',sha(old[n]) if n in old else '',sha(current[n].read_bytes())])
++with tempfile.TemporaryDirectory(prefix='patch-replay-r20-',dir=r.parent.parent/'test') as d:
++ t=Path(d);before=t/'before';after=t/'after';before.mkdir();after.mkdir()
++ for n,b in old.items():
++  if include(n) and n!='SHA256SUMS_R10.txt':p=before/n;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b)
++ for n,f in current.items():
++  if include(n):p=after/n;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(f.read_bytes())
++ diff=subprocess.run(['git','diff','--no-index','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=t,capture_output=True);assert diff.returncode==1
++ lines=[]
++ for line in diff.stdout.splitlines(keepends=True):
++  if line.startswith((b'diff --git ',b'--- ',b'+++ ')):
++   for prefix in [b'a/before/',b'a/after/']:line=line.replace(prefix,b'a/')
++   for prefix in [b'b/before/',b'b/after/']:line=line.replace(prefix,b'b/')
++  lines.append(line)
++ patch=b''.join(lines);path=audit/'R19_to_R20_setup.patch';path.write_bytes(patch)
++ subprocess.run(['git','apply','--check',str(path)],cwd=before,check=True,capture_output=True);subprocess.run(['git','apply',str(path)],cwd=before,check=True,capture_output=True)
++ assert all((before/n).read_bytes()==f.read_bytes() for n,f in current.items() if include(n))
++(audit/'patch-replay-results.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','source_delta_files':len(delta),'patch_sha256':sha(patch),'exclusions':'Current audit metadata, manifest and original third-party payload. Payload exact bytes and download URLs are separately recorded in downloads.json.'},indent=2)+'\n')
++(audit/'test-matrix.csv').write_text('check,environment,status,scope\nPowerShell source pipeline,PowerShell 7.4.21 Linux,PASS,30 stages and syntax of 74 scripts\nInstaller integrity fixtures,PowerShell 7.4.21 Linux,PASS,19 checks; no install\nNative diagnostic CSharp,Roslyn SDK 8.0.426 Linux,PASS,Type check only; no native call\nDependency closure,NuGet.Frameworks and package manifests,PASS,64 packages for net8.0 and Windows target\nSDK payload,SHA512 official Microsoft metadata,PASS,Original archive unchanged\nFull Windows restore install build and WPF,Windows,NOT EXECUTED,Performed by installer on destination\nLive WLAN Security permissions and capture,Windows,NOT EXECUTED,Read-only diagnostic supplied\n')
++(audit/'retention.json').write_text(json.dumps({'source_trees':1,'current_release_zips':1,'previous_R19_baseline_retained':True,'SDK_archive_in_payload_only':True,'no_extracted_Windows_SDK_in_source':True,'App_Guardian_MemoryAgent_profiler_native_collectors':'BYTE IDENTICAL R19','Windows_installation':'NOT EXECUTED'},indent=2)+'\n')
++current={f.relative_to(r).as_posix():f for f in r.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt' and f.relative_to(r).as_posix()!='setup/bundle-manifest.json'}
++payload_files=[row['file'] for row in downloads['files']]+['downloads.json']
++assert len(payload_files)==66 and len(set(payload_files))==66
++for n in payload_files:
++ current['setup/payload/'+n]=payload/n
++assert not any(n.endswith('.part') for n in current)
++manifest={'schema':1,'bundle':'ProcessLens-R20-win-x64-offline','sdk_sha512':sdk['sha512'],'files':[{'file':n,'sha256':sha(f.read_bytes()),'bytes':f.stat().st_size} for n,f in sorted(current.items())]}
++(r/'setup/bundle-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');current['setup/bundle-manifest.json']=r/'setup/bundle-manifest.json'
++(r/'SHA256SUMS_R10.txt').write_text(''.join(sha(f.read_bytes())+'  '+n+'\n' for n,f in sorted(current.items())))
++current['SHA256SUMS_R10.txt']=r/'SHA256SUMS_R10.txt'
++out.mkdir(exist_ok=True,parents=True);target=out/'ProcessLens-v0.19.16-R10-R20-offline-install-win-x64.zip'
++with zipfile.ZipFile(target,'w',allowZip64=True) as z:
++ for n,f in sorted(current.items()):
++  assert not any(part in {'bin','obj','__pycache__'} for part in Path(n).parts)
++  z.write(f,r.name+'/'+n,compress_type=zipfile.ZIP_STORED if n.startswith('setup/payload/') else zipfile.ZIP_DEFLATED,compresslevel=None if n.startswith('setup/payload/') else 9)
++with zipfile.ZipFile(target) as z:
++ assert z.testzip() is None
++ for n,f in current.items():assert sha(z.read(r.name+'/'+n))==sha(f.read_bytes()),n
++ assert len({n.split('/')[0] for n in z.namelist()})==1
++result={'file':str(target),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(current)-1,'third_party_archives':65,'NuGet_packages':64,'source_delta_files':len(delta),'Windows_installation_and_WPF':'NOT EXECUTED','application_source_version':'R19','bundle_version':'R20'}
++(out/'verification-r20.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
+diff --git a/audit/tools/test_offline_bundle_r20.ps1 b/audit/tools/test_offline_bundle_r20.ps1
+new file mode 100644
+index 0000000..a3a5df4
+--- /dev/null
++++ b/audit/tools/test_offline_bundle_r20.ps1
+@@ -0,0 +1,51 @@
++param([string] $ProjectRoot)
++$ErrorActionPreference = 'Stop'
++. (Join-Path $ProjectRoot 'setup/offline-common.ps1')
++$temporary = Join-Path ([IO.Path]::GetTempPath()) ('processlens-setup-fixture-' + [Guid]::NewGuid().ToString('N'))
++$count = 0
++function Check([bool] $Ok, [string] $Label) {
++    if (-not $Ok) { throw ('FAIL bundle: ' + $Label) }
++    Write-Host ('PASS bundle: ' + $Label)
++    $script:count++
++}
++function Throws([scriptblock] $Action, [string] $Label) {
++    $caught = $false
++    try { & $Action | Out-Null } catch { $caught = $true }
++    Check $caught $Label
++}
++try {
++    New-Item -ItemType Directory -Path (Join-Path $temporary 'setup') -Force | Out-Null
++    $file = Join-Path $temporary 'sample with space.txt'
++    Set-Content -LiteralPath $file -Value 'original sample' -Encoding UTF8
++    $row = @{ file='sample with space.txt'; sha256=(Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant() }
++    $manifest = @{ schema=1; bundle='ProcessLens-R20-win-x64-offline'; files=@($row) }
++    $path = Join-Path $temporary 'setup/bundle-manifest.json'
++    $manifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $path -Encoding UTF8
++    Check ((Test-ProcessLensBundle $temporary).schema -eq 1) 'valid package with spaces accepted'
++    Add-Content -LiteralPath $file -Value 'tampered'
++    Throws { Test-ProcessLensBundle $temporary } 'tampered payload rejected'
++    Remove-Item -LiteralPath $file
++    Throws { Test-ProcessLensBundle $temporary } 'missing payload rejected'
++    foreach ($bad in @('../outside.txt', 'a/../../outside.txt', [IO.Path]::GetFullPath((Join-Path $temporary 'absolute.txt')))) {
++        $manifest.files[0].file = $bad
++        $manifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $path -Encoding UTF8
++        Throws { Test-ProcessLensBundle $temporary } ('unsafe path rejected: ' + $bad)
++    }
++    $manifest.schema = 99
++    $manifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $path -Encoding UTF8
++    Throws { Test-ProcessLensBundle $temporary } 'unknown schema rejected'
++    $setup = Get-Content -LiteralPath (Join-Path $ProjectRoot 'setup/install-offline.ps1') -Raw
++    Check ($setup.IndexOf('Test-ProcessLensBundle') -lt $setup.IndexOf('Expand-Archive')) 'integrity checked before extracting SDK'
++    Check ($setup.IndexOf('build-dashboard.ps1') -lt $setup.IndexOf('Copy-Item -Path')) 'full build required before publishing installation'
++    Check ($setup.Contains('processlens-owned-r20.txt') -and $setup.Contains('Nessun file sovrascritto')) 'unowned destination protected'
++    Check ($setup.Contains('SHA512') -and $setup.Contains('sdk_sha512')) 'official SDK hash checked again at install'
++    Check ($setup.Contains('<clear/>') -and $setup.Contains('payload\nuget')) 'local NuGet feed isolated from user sources'
++    $diagnostic = Get-Content -LiteralPath (Join-Path $ProjectRoot 'setup/diagnose-network.ps1') -Raw
++    Check ($diagnostic.Contains(' /get ') -and -not $diagnostic.Contains('/set')) 'audit query remains read only'
++    foreach ($forbidden in @('Set-Service', 'Start-Service', 'Stop-Service', 'WlanScan(', 'AuditSetSystemPolicy', 'FwpmFilterAdd')) {
++        Check (-not $diagnostic.Contains($forbidden)) ('no automatic action: ' + $forbidden)
++    }
++    Write-Host ('Bundle fixture complete: ' + $count + ' checks. No Windows install or network access.')
++} finally {
++    if (Test-Path -LiteralPath $temporary) { Remove-Item -LiteralPath $temporary -Recurse -Force }
++}
+diff --git a/global.json b/global.json
+new file mode 100644
+index 0000000..85281de
+--- /dev/null
++++ b/global.json
+@@ -0,0 +1,3 @@
++{
++  "sdk": { "version": "8.0.426", "rollForward": "disable", "allowPrerelease": false }
++}
+diff --git a/setup/diagnose-network.ps1 b/setup/diagnose-network.ps1
+new file mode 100644
+index 0000000..1c09f20
+--- /dev/null
++++ b/setup/diagnose-network.ps1
+@@ -0,0 +1,119 @@
++param([switch] $NoPrompt)
++$ErrorActionPreference = 'Stop'
++if ($env:OS -ne 'Windows_NT') { throw 'Diagnostica disponibile su Windows.' }
++$lines = New-Object 'System.Collections.Generic.List[string]'
++function Add-Result([string] $Text) { $lines.Add($Text); Write-Host $Text }
++$admin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
++Add-Result ('ProcessLens - prerequisiti rete - ' + [DateTime]::Now.ToString('yyyy-MM-dd HH:mm:ss'))
++Add-Result ('Windows: ' + [Environment]::OSVersion.Version.ToString() + ' | processo 64 bit: ' + [Environment]::Is64BitProcess)
++Add-Result ('Amministratore: ' + $admin)
++Add-Result 'Controllo locale: nessuna cattura, scansione Wi-Fi, sonda, modifica a servizi, audit o firewall.'
++foreach ($name in @('WlanSvc', 'EventLog')) {
++    try { $service = Get-Service -Name $name -ErrorAction Stop; Add-Result ('Servizio ' + $name + ': ' + $service.Status) }
++    catch { Add-Result ('Servizio ' + $name + ': N/D - ' + $_.Exception.Message) }
++}
++try {
++    $adapters = @([Net.NetworkInformation.NetworkInterface]::GetAllNetworkInterfaces())
++    $wifi = @($adapters | Where-Object { $_.NetworkInterfaceType -eq [Net.NetworkInformation.NetworkInterfaceType]::Wireless80211 })
++    Add-Result ('Interfacce classificate Wi-Fi da Windows: ' + $wifi.Count)
++    $ipv4 = 0
++    foreach ($adapter in $adapters) {
++        if ($adapter.OperationalStatus -eq [Net.NetworkInformation.OperationalStatus]::Up -and
++            $adapter.NetworkInterfaceType -ne [Net.NetworkInformation.NetworkInterfaceType]::Loopback) {
++            $ipv4 += @($adapter.GetIPProperties().UnicastAddresses | Where-Object { $_.Address.AddressFamily -eq [Net.Sockets.AddressFamily]::InterNetwork }).Count
++        }
++    }
++    Add-Result ('Indirizzi IPv4 locali su interfacce attive: ' + $ipv4 + ' (indirizzi non salvati nel rapporto)')
++} catch { Add-Result ('Inventario interfacce: N/D - ' + $_.Exception.Message) }
++try {
++    if (-not ('ProcessLensSetup.NativeCheck' -as [type])) {
++        Add-Type -TypeDefinition @'
++using System;
++using System.ComponentModel;
++using System.Runtime.InteropServices;
++namespace ProcessLensSetup {
++ public static class NativeCheck {
++  [DllImport("kernel32.dll", CharSet=CharSet.Unicode, SetLastError=true)]
++  static extern IntPtr LoadLibraryEx(string name, IntPtr file, uint flags);
++  [DllImport("kernel32.dll", CharSet=CharSet.Ansi, ExactSpelling=true)]
++  static extern IntPtr GetProcAddress(IntPtr module, string name);
++  [DllImport("kernel32.dll")] static extern bool FreeLibrary(IntPtr module);
++  [DllImport("wlanapi.dll")] static extern uint WlanOpenHandle(uint version, IntPtr reserved, out uint negotiated, out IntPtr client);
++  [DllImport("wlanapi.dll")] static extern uint WlanEnumInterfaces(IntPtr client, IntPtr reserved, out IntPtr list);
++  [DllImport("wlanapi.dll")] static extern void WlanFreeMemory(IntPtr memory);
++  [DllImport("wlanapi.dll")] static extern uint WlanCloseHandle(IntPtr client, IntPtr reserved);
++  public static string Exports(string path) {
++   IntPtr module=LoadLibraryEx(path,IntPtr.Zero,0x800);
++   if(module==IntPtr.Zero) return "PktMon API: N/D - caricamento DLL di sistema, Win32 " + Marshal.GetLastWin32Error();
++   try {
++    string[] names={"PacketMonitorInitialize","PacketMonitorUninitialize","PacketMonitorCreateLiveSession","PacketMonitorEnumDataSources","PacketMonitorCreateRealtimeStream","PacketMonitorAddSingleDataSourceToSession","PacketMonitorAttachOutputToSession","PacketMonitorSetSessionActive","PacketMonitorCloseSessionHandle","PacketMonitorCloseRealtimeStream"};
++    var missing=new System.Collections.Generic.List<string>();
++    foreach(string name in names) if(GetProcAddress(module,name)==IntPtr.Zero) missing.Add(name);
++    return missing.Count==0 ? "PktMon API: tutti i 10 export richiesti presenti; motore non avviato." : "PktMon API: export mancanti: " + string.Join(", ",missing.ToArray());
++   } finally {FreeLibrary(module);}
++  }
++  public static string Wlan() {
++   IntPtr client=IntPtr.Zero, list=IntPtr.Zero; uint version;
++   try {
++    uint error=WlanOpenHandle(2,IntPtr.Zero,out version,out client);
++    if(error!=0) return "WLAN OpenHandle: Win32 " + error + " - " + new Win32Exception((int)error).Message;
++    error=WlanEnumInterfaces(client,IntPtr.Zero,out list);
++    if(error!=0) return "WLAN EnumInterfaces: Win32 " + error + " - " + new Win32Exception((int)error).Message;
++    if(list==IntPtr.Zero) return "WLAN: N/D - tabella mancante.";
++    int count=Marshal.ReadInt32(list);
++    if(count<0 || count>16) return "WLAN: N/D - conteggio fuori limite.";
++    return "WLAN API: " + count + " interfacce restituite; cache BSS e permesso Posizione non verificati.";
++   } finally {if(list!=IntPtr.Zero) WlanFreeMemory(list); if(client!=IntPtr.Zero) WlanCloseHandle(client,IntPtr.Zero);}
++  }
++ }
++}
++'@
++    }
++    Add-Result ([ProcessLensSetup.NativeCheck]::Wlan())
++    Add-Result ([ProcessLensSetup.NativeCheck]::Exports((Join-Path $env:SystemRoot 'System32\pktmonapi.dll')))
++} catch { Add-Result ('Verifica API native: N/D - ' + $_.Exception.Message) }
++$reader = $null; $record = $null
++try {
++    $query = New-Object System.Diagnostics.Eventing.Reader.EventLogQuery('Security', [System.Diagnostics.Eventing.Reader.PathType]::LogName, '*')
++    $query.ReverseDirection = $true
++    $reader = New-Object System.Diagnostics.Eventing.Reader.EventLogReader($query)
++    $record = $reader.ReadEvent([TimeSpan]::FromSeconds(1))
++    Add-Result 'Registro Security: lettura consentita. Contenuto degli eventi non salvato.'
++} catch { Add-Result ('Registro Security: N/D - ' + $_.Exception.Message) }
++finally { if ($record) { $record.Dispose() }; if ($reader) { $reader.Dispose() } }
++$auditpol = Join-Path $env:SystemRoot 'System32\auditpol.exe'
++foreach ($guid in @('{0CCE9226-69AE-11D9-BED3-505054503030}', '{0CCE9215-69AE-11D9-BED3-505054503030}')) {
++    try {
++        Add-Result ('Audit in sola lettura: ' + $guid)
++        $text = @(& $auditpol /get "/subcategory:$guid" 2>&1)
++        $exitCode = $LASTEXITCODE
++        foreach ($line in ($text | Select-Object -First 16)) { Add-Result ([string]$line) }
++        Add-Result ('Auditpol exit code: ' + $exitCode)
++    } catch { Add-Result ('Audit: N/D - ' + $_.Exception.Message) }
++}
++Add-Result ''
++Add-Result 'PROSSIMI CONTROLLI'
++Add-Result 'Wi-Fi assente: verificare scheda, driver del produttore e WLAN AutoConfig. Un installer non aggiunge una scheda radio.'
++Add-Result 'Wi-Fi accesso negato: Impostazioni > Privacy e sicurezza > Posizione. Amministratore non sostituisce il consenso.'
++Add-Result 'PktMon export assenti: dipendono dalla versione di Windows; non copiare DLL da altri PC. La cattura IPv4 locale e separata.'
++Add-Result 'Segnali Windows: audit disabilitato o registro non accessibile non significa nessun tentativo di accesso.'
++Add-Result 'In ProcessLens: Elenca sorgenti Windows > seleziona sorgente > Cattura per 20 s; per Wi-Fi usa Leggi reti Wi-Fi e Cache radio Wi-Fi.'
++Add-Result 'Nessuno di questi controlli conta tutti i client del router o dimostra che qualcuno stia spiando un IP.'
++$logRoot = Join-Path $env:LOCALAPPDATA 'ProcessLens\logs'
++New-Item -ItemType Directory -Path $logRoot -Force | Out-Null
++$report = Join-Path $logRoot 'rete-prerequisiti.txt'
++[IO.File]::WriteAllLines($report, $lines, (New-Object Text.UTF8Encoding($true)))
++Write-Host ('Rapporto: ' + $report) -ForegroundColor Cyan
++if (-not $NoPrompt) {
++    $answer = Read-Host 'P: apri Posizione | S: apri Servizi | A: ripeti come amministratore | Invio: termina'
++    switch ($answer.ToUpperInvariant()) {
++        'P' { Start-Process 'ms-settings:privacy-location' }
++        'S' { Start-Process (Join-Path $env:SystemRoot 'System32\services.msc') }
++        'A' {
++            if (-not $admin) {
++                $ps = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
++                Start-Process -FilePath $ps -Verb RunAs -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -File "' + $PSCommandPath + '"')
++            }
++        }
++    }
++}
+diff --git a/setup/install-offline.ps1 b/setup/install-offline.ps1
+new file mode 100644
+index 0000000..c6d4752
+--- /dev/null
++++ b/setup/install-offline.ps1
+@@ -0,0 +1,77 @@
++$ErrorActionPreference = 'Stop'
++. (Join-Path $PSScriptRoot 'offline-common.ps1')
++if ($env:OS -ne 'Windows_NT' -or -not [Environment]::Is64BitProcess -or $env:PROCESSOR_ARCHITECTURE -ne 'AMD64') {
++    throw 'Questo pacchetto richiede Windows x64 e PowerShell a 64 bit. ARM64 e x86 non supportati.'
++}
++$sourceRoot = Split-Path -Parent $PSScriptRoot
++$installRoot = Get-ProcessLensInstallRoot
++$logRoot = Join-Path $env:LOCALAPPDATA 'ProcessLens\logs'
++New-Item -ItemType Directory -Path $logRoot -Force | Out-Null
++$transcriptStarted = $false
++try {
++    Start-Transcript -LiteralPath (Join-Path $logRoot 'installazione-r20.txt') -Force | Out-Null
++    $transcriptStarted = $true
++    Write-Host '[1/5] Verifica integrita del pacchetto completo...'
++    $manifest = Test-ProcessLensBundle $sourceRoot
++    if (@(Get-Process -Name ProcessLens -ErrorAction SilentlyContinue).Count -gt 0) {
++        throw 'Chiudi ProcessLens prima di installare. Nessun processo e stato terminato.'
++    }
++    Set-Location -LiteralPath $sourceRoot
++    $marker = Join-Path $installRoot 'processlens-owned-r20.txt'
++    if ((Test-Path -LiteralPath $installRoot) -and
++        (-not (Test-Path -LiteralPath $marker) -or (Get-Content -LiteralPath $marker -Raw).Trim() -ne $manifest.bundle)) {
++        throw 'La cartella di destinazione esiste e non appartiene a questa installazione. Nessun file sovrascritto.'
++    }
++    New-Item -ItemType Directory -Path $installRoot -Force | Out-Null
++    Set-Content -LiteralPath $marker -Value $manifest.bundle -Encoding ASCII
++    Write-Host '[2/5] Preparazione .NET SDK e Desktop Runtime privati...'
++    $sdkZip = Join-Path $PSScriptRoot 'payload\dotnet-sdk-8.0.426-win-x64.zip'
++    if ((Get-FileHash -LiteralPath $sdkZip -Algorithm SHA512).Hash -ne $manifest.sdk_sha512) { throw 'SHA512 Microsoft SDK non corrispondente.' }
++    $dotnetRoot = Join-Path $installRoot 'dotnet'
++    Expand-Archive -LiteralPath $sdkZip -DestinationPath $dotnetRoot -Force
++    Set-ProcessLensDotnetEnvironment $installRoot
++    $dotnet = Join-Path $dotnetRoot 'dotnet.exe'
++    $version = & $dotnet --version
++    if ($LASTEXITCODE -ne 0 -or "$version".Trim() -ne '8.0.426') { throw 'SDK privato non avviabile. Vedere il log.' }
++    # Configuration local to the extracted project; no user/machine NuGet settings changed.
++    $feed = [Security.SecurityElement]::Escape((Join-Path $PSScriptRoot 'payload\nuget'))
++    $config = '<?xml version="1.0" encoding="utf-8"?><configuration><packageSources><clear/><add key="ProcessLensOffline" value="' + $feed + '"/></packageSources><disabledPackageSources><clear/></disabledPackageSources></configuration>'
++    $configPath = Join-Path $sourceRoot 'NuGet.Config'
++    if ((Test-Path -LiteralPath $configPath) -and (Get-Content -LiteralPath $configPath -Raw).Trim() -ne $config) {
++        throw 'NuGet.Config esistente e diverso: estrai il pacchetto in una nuova cartella.'
++    }
++    Set-Content -LiteralPath $configPath -Value $config -Encoding UTF8
++    Write-Host '[3/5] Test completi e compilazione WPF. Puo richiedere diversi minuti...'
++    & (Join-Path $sourceRoot 'build-dashboard.ps1')
++    if (-not (Test-Path -LiteralPath (Join-Path $sourceRoot 'publish\win-x64\ProcessLens.exe'))) { throw 'Build senza eseguibile GUI.' }
++    Write-Host '[4/5] Installazione applicazione e collegamenti...'
++    $appRoot = Join-Path $installRoot 'app'
++    New-Item -ItemType Directory -Path $appRoot -Force | Out-Null
++    Copy-Item -Path (Join-Path $sourceRoot 'publish\*') -Destination $appRoot -Recurse -Force
++    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'start-installed.ps1') -Destination $installRoot -Force
++    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'offline-common.ps1') -Destination $installRoot -Force
++    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'diagnose-network.ps1') -Destination $installRoot -Force
++    $shell = New-Object -ComObject WScript.Shell
++    $menu = Join-Path ([Environment]::GetFolderPath('Programs')) 'ProcessLens'
++    New-Item -ItemType Directory -Path $menu -Force | Out-Null
++    $powershell = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
++    foreach ($item in @(@{ Name='ProcessLens'; Script='start-installed.ps1' }, @{ Name='ProcessLens - Diagnostica rete'; Script='diagnose-network.ps1' })) {
++        $link = $shell.CreateShortcut((Join-Path $menu ($item.Name + '.lnk')))
++        $link.TargetPath = $powershell
++        $scriptPath = Join-Path $installRoot $item.Script
++        $link.Arguments = '-NoProfile -ExecutionPolicy Bypass -File "' + $scriptPath + '"'
++        $link.WorkingDirectory = $installRoot
++        $link.Save()
++    }
++    Write-Host '[5/5] Installazione completata. Nessun servizio o criterio audit modificato.' -ForegroundColor Green
++    Write-Host 'Apri ProcessLens dal menu Start. Windows mostrera la richiesta amministratore.'
++    Write-Host 'Per i problemi rete usa DIAGNOSTICA_RETE.cmd o ProcessLens - Diagnostica rete nel menu Start.'
++    Write-Host 'Wi-Fi: verifica anche Privacy e sicurezza > Posizione e il servizio WLAN AutoConfig.'
++    Write-Host 'Le dipendenze sono locali. La verifica vulnerabilita online NuGet non e stata eseguita.'
++} catch {
++    Write-Host ('[INSTALLAZIONE INTERROTTA] ' + $_.Exception.Message) -ForegroundColor Red
++    Write-Host ('Log: ' + (Join-Path $logRoot 'installazione-r20.txt'))
++    throw
++} finally {
++    if ($transcriptStarted) { Stop-Transcript | Out-Null }
++}
+diff --git a/setup/offline-common.ps1 b/setup/offline-common.ps1
+new file mode 100644
+index 0000000..0339eef
+--- /dev/null
++++ b/setup/offline-common.ps1
+@@ -0,0 +1,36 @@
++$ErrorActionPreference = 'Stop'
++function Get-ProcessLensInstallRoot {
++    if (-not $env:LOCALAPPDATA) { throw 'LOCALAPPDATA non disponibile.' }
++    return Join-Path $env:LOCALAPPDATA 'Programs\ProcessLens\R20'
++}
++function Test-ProcessLensBundle([string] $Root) {
++    $manifestPath = Join-Path $Root 'setup\bundle-manifest.json'
++    $manifest = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
++    if ($manifest.schema -ne 1 -or $manifest.bundle -ne 'ProcessLens-R20-win-x64-offline') { throw 'Manifest del pacchetto non valido.' }
++    $prefix = [IO.Path]::GetFullPath($Root).TrimEnd([IO.Path]::DirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
++    foreach ($entry in $manifest.files) {
++        $relative = [string]$entry.file
++        if ([IO.Path]::IsPathRooted($relative) -or $relative -match '(^|[\\/])\.\.([\\/]|$)') { throw 'Percorso non valido nel manifest.' }
++        $full = [IO.Path]::GetFullPath((Join-Path $Root $relative))
++        if (-not $full.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase)) { throw 'File esterno al pacchetto.' }
++        if (-not (Test-Path -LiteralPath $full -PathType Leaf)) { throw "File mancante: $relative" }
++        if ((Get-FileHash -LiteralPath $full -Algorithm SHA256).Hash -ne $entry.sha256) { throw "File modificato o incompleto: $relative" }
++    }
++    return $manifest
++}
++function Set-ProcessLensDotnetEnvironment([string] $InstallRoot) {
++    $env:DOTNET_ROOT = Join-Path $InstallRoot 'dotnet'
++    $env:DOTNET_ROOT_X64 = $env:DOTNET_ROOT
++    $env:PATH = $env:DOTNET_ROOT + [IO.Path]::PathSeparator + $env:PATH
++    $env:DOTNET_MULTILEVEL_LOOKUP = '0'
++    $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = '1'
++    $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
++    $env:DOTNET_GENERATE_ASPNET_CERTIFICATE = 'false'
++    $env:NUGET_CERT_REVOCATION_MODE = 'offline'
++    $env:DOTNET_CLI_HOME = Join-Path $InstallRoot 'cli-home'
++    $env:NUGET_PACKAGES = Join-Path $InstallRoot 'packages'
++    $env:NuGetAudit = 'false' # Offline install only; no online vulnerability audit is claimed.
++    $env:MSBUILDDISABLENODEREUSE = '1'
++    $env:DOTNET_CLI_DO_NOT_USE_MSBUILD_SERVER = '1'
++    $env:UseSharedCompilation = 'false'
++}
+diff --git a/setup/start-installed.ps1 b/setup/start-installed.ps1
+new file mode 100644
+index 0000000..ea97246
+--- /dev/null
++++ b/setup/start-installed.ps1
+@@ -0,0 +1,14 @@
++$ErrorActionPreference = 'Stop'
++. (Join-Path $PSScriptRoot 'offline-common.ps1')
++$installRoot = if (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'processlens-owned-r20.txt')) { $PSScriptRoot } else { Get-ProcessLensInstallRoot }
++$exe = Join-Path $installRoot 'app\win-x64\ProcessLens.exe'
++if (-not (Test-Path -LiteralPath $exe)) { throw 'ProcessLens non installato. Esegui INSTALLA_PROCESSLENS.cmd.' }
++$admin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
++if (-not $admin) {
++    $ps = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
++    $script = Join-Path $installRoot 'start-installed.ps1'
++    Start-Process -FilePath $ps -Verb RunAs -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -File "' + $script + '"')
++    exit
++}
++Set-ProcessLensDotnetEnvironment $installRoot
++Start-Process -FilePath $exe -WorkingDirectory (Split-Path -Parent $exe)

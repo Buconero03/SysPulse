@@ -1,0 +1,98 @@
+[
+  {
+    "id": "framework.dotnet-coreclr",
+    "kind": "framework",
+    "label": ".NET",
+    "minScore": 70,
+    "requiresDeepInspection": true,
+    "moduleExact": [
+      { "value": "coreclr.dll", "score": 100, "evidence": "coreclr.dll: runtime .NET moderno caricato" },
+      { "value": "hostfxr.dll", "score": 45, "evidence": "hostfxr.dll: host .NET rilevato" },
+      { "value": "hostpolicy.dll", "score": 45, "evidence": "hostpolicy.dll: policy host .NET rilevato" }
+    ]
+  },
+  {
+    "id": "framework.dotnet-framework-clr",
+    "kind": "framework",
+    "label": ".NET Framework",
+    "minScore": 90,
+    "requiresDeepInspection": true,
+    "moduleExact": [
+      { "value": "clr.dll", "score": 100, "evidence": "clr.dll: CLR .NET Framework caricato" }
+    ]
+  },
+  {
+    "id": "framework.python-cpython",
+    "kind": "framework",
+    "label": "Python",
+    "minScore": 85,
+    "requiresDeepInspection": true,
+    "modulePrefix": [
+      { "value": "python3", "score": 100, "evidence": "DLL CPython python3*.dll caricata" },
+      { "value": "python2", "score": 100, "evidence": "DLL CPython python2*.dll caricata" }
+    ]
+  },
+  {
+    "id": "framework.java-jvm",
+    "kind": "framework",
+    "label": "Java/JVM",
+    "minScore": 90,
+    "requiresDeepInspection": true,
+    "moduleExact": [
+      { "value": "jvm.dll", "score": 100, "evidence": "jvm.dll: Java Virtual Machine caricata" }
+    ]
+  },
+  {
+    "id": "framework.node-runtime",
+    "kind": "framework",
+    "label": "Node.js",
+    "minScore": 90,
+    "requiresDeepInspection": true,
+    "moduleExact": [
+      { "value": "node.dll", "score": 100, "evidence": "node.dll: runtime Node.js incorporato/caricato" }
+    ]
+  },
+  {
+    "id": "framework.chromium",
+    "kind": "framework",
+    "label": "Chromium/Electron",
+    "minScore": 60,
+    "minimumEvidenceCount": 2,
+    "requiresDeepInspection": true,
+    "moduleExact": [
+      { "value": "chrome_elf.dll", "score": 65, "evidence": "chrome_elf.dll: componente Chromium" },
+      { "value": "libEGL.dll", "score": 20, "evidence": "libEGL.dll: stack grafico Chromium/ANGLE" },
+      { "value": "libGLESv2.dll", "score": 20, "evidence": "libGLESv2.dll: stack grafico Chromium/ANGLE" }
+    ]
+  },
+  {
+    "id": "framework.cef",
+    "kind": "framework",
+    "label": "Chromium Embedded Framework",
+    "minScore": 95,
+    "requiresDeepInspection": true,
+    "moduleExact": [
+      { "value": "libcef.dll", "score": 100, "evidence": "libcef.dll: Chromium Embedded Framework caricato" }
+    ]
+  },
+  {
+    "id": "framework.qt6",
+    "kind": "framework",
+    "label": "Qt 6",
+    "minScore": 90,
+    "requiresDeepInspection": true,
+    "modulePrefix": [
+      { "value": "Qt6Core", "score": 100, "evidence": "Qt6Core*: runtime Qt 6 caricato" }
+    ]
+  },
+  {
+    "id": "framework.qt5",
+    "kind": "framework",
+    "label": "Qt 5",
+    "minScore": 90,
+    "requiresDeepInspection": true,
+    "modulePrefix": [
+      { "value": "Qt5Core", "score": 100, "evidence": "Qt5Core*: runtime Qt 5 caricato" }
+    ]
+  }
+]

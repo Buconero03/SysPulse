@@ -1,0 +1,77 @@
+[
+  {
+    "test": "production catalog delta is exactly one explicit exception alternative",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "App project delta changes only candidate identity",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "catalog fix retained with only exact authorized R14 R2 UI delta",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "R14 sources and prior C# tests retained outside exact authorized R14 R2 delta",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "current network guards pass",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "real file tests retain oversized schema null duplicate boundary and overwrite checks",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "catalog fix hashes exact or exact authorized R14 R2 version update",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "retained compiled source hashes match current source",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "81 actual network assertions retained",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "22 portable system assertions retained with Windows branch skipped",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "same suite reproduces original unhandled exception on R14 Core",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "XAML and project XML parse",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "source guard rejects missing semantic error handling",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "source guard rejects corrupt file overwrite",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  },
+  {
+    "test": "source guard rejects byte limit removed",
+    "status": "PASS",
+    "kind": "source/retained runtime evidence"
+  }
+]

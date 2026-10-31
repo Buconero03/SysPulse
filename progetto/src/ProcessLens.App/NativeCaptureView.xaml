@@ -1,0 +1,72 @@
+<UserControl x:Class="ProcessLens.App.NativeCaptureView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:ProcessLens.App">
+ <UserControl.Resources>
+  <Style x:Key="CaptureAction" TargetType="Button">
+   <Setter Property="Background" Value="#F8FAFC"/><Setter Property="Foreground" Value="#1F2937"/>
+   <Setter Property="BorderBrush" Value="#CBD5E1"/><Setter Property="BorderThickness" Value="1"/>
+   <Setter Property="MinHeight" Value="36"/><Setter Property="Padding" Value="12,8"/><Setter Property="Margin" Value="0,0,8,7"/>
+   <Setter Property="ContentTemplate"><Setter.Value><DataTemplate><TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center"/></DataTemplate></Setter.Value></Setter>
+  </Style>
+  <Style x:Key="CaptureCell" TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/><Setter Property="Padding" Value="5"/></Style>
+ </UserControl.Resources>
+ <Grid Margin="0,10,0,0">
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="2*" MinHeight="100"/><RowDefinition Height="7"/><RowDefinition Height="*" MinHeight="95"/></Grid.RowDefinitions>
+  <ScrollViewer MaxHeight="220" VerticalScrollBarVisibility="Auto"><StackPanel>
+   <TextBlock Text="Traffico del PC e reti Wi-Fi" FontSize="21" FontWeight="SemiBold"/>
+   <local:SelectableText Text="Traffico: elenca le sorgenti, scegline una e cattura per 20 s. Wi-Fi: leggi separatamente le reti radio nella cache Windows. Non servono programmi aggiuntivi." TextWrapping="Wrap" Margin="0,6,0,9"/>
+   <WrapPanel>
+    <Button x:Name="DiscoverNativeCaptureButton" Background="#175CD3" Foreground="White" BorderBrush="#175CD3" Content="1. Elenca sorgenti" Style="{StaticResource CaptureAction}" Click="Discover_Click"/>
+    <Button x:Name="ReadWifiBssButton" Content="Leggi reti Wi-Fi" Style="{StaticResource CaptureAction}" Click="Wifi_Click"/>
+    <Button x:Name="StopNativeCaptureButton" Content="Interrompi lettura" Style="{StaticResource CaptureAction}" Click="Stop_Click" IsEnabled="False"/>
+    <Button x:Name="CopyNativeCaptureButton" Content="Copia rapporto" Style="{StaticResource CaptureAction}" Click="Copy_Click" IsEnabled="False"/>
+   </WrapPanel>
+   <WrapPanel>
+    <TextBlock Text="Sorgente:" VerticalAlignment="Center" Margin="0,0,8,7"/>
+    <ComboBox x:Name="NativeCaptureSourcesBox" DisplayMemberPath="Name" MinWidth="220" MaxWidth="470" Margin="0,0,8,7" SelectionChanged="Source_Changed"/>
+    <Button x:Name="StartNativeCaptureButton" Content="2. Cattura per 20 s" Style="{StaticResource CaptureAction}" Click="Capture_Click" IsEnabled="False"/>
+   </WrapPanel>
+   <Border Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="7" Padding="10,8" Margin="0,4,0,8"><local:SelectableText x:Name="NativeCaptureStatusText" Text="Scegli Elenca sorgenti Windows oppure Leggi reti Wi-Fi. Nessuna raccolta automatica." TextWrapping="Wrap" Margin="0,0,0,8"/></Border>
+   <Expander Header="Che cosa posso vedere?" Margin="0,0,0,8">
+    <ScrollViewer MaxHeight="150" VerticalScrollBarVisibility="Auto"><StackPanel>
+     <local:SelectableText Text="Cattura: traffico visibile al PC, fino a 2.048 osservazioni e 128 byte per pacchetto; gli stessi pacchetti possono apparire più volte. Conserva solo metadati di rete, non il payload. L’elenco non identifica i processi proprietari." TextWrapping="Wrap"/>
+     <local:SelectableText Text="Wi-Fi: cache radio di punti di accesso e peer ad hoc; non è l’elenco dei client del router. I dati possono essere precedenti alla lettura. Windows può richiedere il consenso per la posizione." TextWrapping="Wrap" Margin="0,6,0,0"/>
+     <local:SelectableText Text="Nessuna API supera i limiti della scheda, del driver, del canale radio o della cifratura. Questa funzione non abilita la modalità monitor. Non identifica chi osserva l’IP né certifica la sicurezza della rete." TextWrapping="Wrap" Margin="0,6,0,0"/>
+    </StackPanel></ScrollViewer>
+   </Expander>
+  </StackPanel></ScrollViewer>
+  <TabControl Grid.Row="1" x:Name="NativeResultTabs" SelectedIndex="0">
+   <TabItem Header="Osservazioni di rete">
+    <DataGrid x:Name="NativePacketsTable" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling" local:GridCopySupport.Enabled="True" MinRowHeight="34" SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="Observation_Changed">
+     <DataGrid.Columns>
+      <DataGridTextColumn Header="Ora locale" Binding="{Binding Time}" Width="115" ElementStyle="{StaticResource CaptureCell}"/>
+      <DataGridTextColumn Header="Protocollo" Binding="{Binding Protocol}" Width="150" ElementStyle="{StaticResource CaptureCell}"/>
+      <DataGridTextColumn Header="Sorgente" Binding="{Binding Source}" Width="210" ElementStyle="{StaticResource CaptureCell}"/>
+      <DataGridTextColumn Header="Destinazione" Binding="{Binding Destination}" Width="210" ElementStyle="{StaticResource CaptureCell}"/>
+      <DataGridTextColumn Header="Direzione" Binding="{Binding Direction}" Width="90" ElementStyle="{StaticResource CaptureCell}"/>
+      <DataGridTextColumn Header="Byte campionati" Binding="{Binding Bytes}" Width="110" ElementStyle="{StaticResource CaptureCell}"/>
+      <DataGridTextColumn Header="Componente (se disponibile)" Binding="{Binding ComponentText}" Width="125" ElementStyle="{StaticResource CaptureCell}"/>
+      <DataGridTextColumn Header="Codice scarto" Binding="{Binding DropReasonText}" Width="95" ElementStyle="{StaticResource CaptureCell}"/>
+     </DataGrid.Columns>
+    </DataGrid>
+   </TabItem>
+   <TabItem Header="Cache radio Wi-Fi">
+    <DataGrid x:Name="WifiBssTable" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling" local:GridCopySupport.Enabled="True" MinRowHeight="34" SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="Observation_Changed">
+     <DataGrid.Columns>
+      <DataGridTextColumn Header="Scheda" Binding="{Binding Adapter}" Width="180" ElementStyle="{StaticResource CaptureCell}"/>
+      <DataGridTextColumn Header="SSID" Binding="{Binding Ssid}" Width="190" ElementStyle="{StaticResource CaptureCell}"/>
+      <DataGridTextColumn Header="BSSID" Binding="{Binding Bssid}" Width="170" ElementStyle="{StaticResource CaptureCell}"/>
+      <DataGridTextColumn Header="RSSI (dBm)" Binding="{Binding Rssi}" Width="95" ElementStyle="{StaticResource CaptureCell}"/>
+      <DataGridTextColumn Header="Frequenza" Binding="{Binding Frequency}" Width="120" ElementStyle="{StaticResource CaptureCell}"/>
+      <DataGridTextColumn Header="Tipo" Binding="{Binding BssType}" Width="150" ElementStyle="{StaticResource CaptureCell}"/>
+     </DataGrid.Columns>
+    </DataGrid>
+   </TabItem>
+  </TabControl>
+  <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" ResizeDirection="Rows" Background="#D8E2EE"/>
+  <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Margin="0,9,0,0"><StackPanel>
+   <local:SelectableText x:Name="NativeCaptureSelectionText" Text="Seleziona una riga per leggere i dati e il loro significato." TextWrapping="Wrap"/>
+   <Expander Header="Esito della raccolta, errori e copertura" IsExpanded="True" Margin="0,10,0,0"><local:SelectableText x:Name="NativeCaptureNoteText" Text="Nessuna raccolta eseguita. Nessun file di cattura viene creato automaticamente." TextWrapping="Wrap" Margin="0,6,0,0"/></Expander>
+  </StackPanel></ScrollViewer>
+ </Grid>
+</UserControl>

@@ -1,0 +1,815 @@
+diff --git a/LEGGIMI.txt b/LEGGIMI.txt
+index dc9d762..e9d464a 100644
+--- a/LEGGIMI.txt
++++ b/LEGGIMI.txt
+@@ -1,8 +1,9 @@
+-﻿ProcessLens R22 - copertura del catalogo Windows
++﻿ProcessLens R23 - Esegui nuova attivita
+ 
+-Chiudi la precedente GUI, estrai TUTTO lo ZIP e apri AVVIA_PROCESSLENS.cmd.
++Esci dalla precedente versione: icona -> Esci da ProcessLens. La X la riduce soltanto.
++Estrai TUTTO lo ZIP in una cartella nuova e apri AVVIA_PROCESSLENS.cmd.
+ Al primo avvio vengono eseguiti test e compilazione della nuova candidata.
+-Poi lo stesso comando apre direttamente R22. Non apre il vecchio eseguibile R20.
++Poi lo stesso comando apre direttamente R23. Non apre il vecchio eseguibile R20.
+ 
+ Non sono inclusi SDK o pacchetti NuGet: ZIP leggero, nessuna nuova installazione.
+ Se R20 e stata installata correttamente, riusa lo SDK e la cache presenti in
+@@ -11,7 +12,18 @@ Altrimenti serve uno SDK .NET compatibile gia installato; la compilazione usa
+ il normale ripristino NuGet. Non vengono scaricati automaticamente SDK o driver.
+ Se manca una dipendenza il comando si ferma e mostra l'errore.
+ 
+-Sistema Windows -> Aggiorna campione:
++Novita R23: pulsante Esegui nuova attivita in alto, disponibile in tutte le sezioni.
++- Programma: nome o percorso di un eseguibile .exe/.com; Sfoglia per sceglierlo.
++- Argomenti e cartella iniziale sono facoltativi. Programma e argomenti sono separati.
++- Esegui avvia soltanto dopo il clic e chiude la finestra se Windows conferma il PID.
++- Annulla prima di Esegui non avvia nulla. Un errore resta visibile per correggere i campi.
++- Il nuovo programma eredita i privilegi di ProcessLens, normalmente amministratore.
++- La finestra non salva una cronologia dei comandi e non registra gli argomenti negli errori.
++- Per script o comandi di shell, scegli l'interprete. Esempio: programma powershell.exe,
++  argomenti -NoProfile -File "C:\Scripts\prova.ps1". L'interprete deve essere gia presente.
++- Non vengono aggiunti servizi, driver, monitor, rimappature di tasti o dipendenze.
++
++Funzioni R22 mantenute: Sistema Windows -> Aggiorna campione:
+ - catalogo ampliato da 17 a 29 componenti;
+ - totale dei processi restituiti dalla fonte, anche app;
+ - istanze del catalogo, gruppi, righe e istanze mostrate dopo i filtri;
+@@ -26,5 +38,5 @@ Nessun nuovo timer, driver o monitor in background. RAM reale non misurata qui.
+ 
+ Validazione candidata: test portabili e controlli sorgente eseguiti su Linux.
+ Compilazione WPF reale, avvio e resa DPI richiedono la verifica Windows al primo avvio.
+-Dettagli in progetto/audit/R10_R22. Per ricompilare dopo modifiche ai sorgenti,
+-elimina soltanto supporto/build-r22.ok e riapri AVVIA_PROCESSLENS.cmd.
++Dettagli in progetto/audit/R10_R23. Per ricompilare dopo modifiche ai sorgenti,
++elimina soltanto supporto/build-r23.ok e riapri AVVIA_PROCESSLENS.cmd.
+diff --git a/progetto/audit/tools/package_new_task_r23.py b/progetto/audit/tools/package_new_task_r23.py
+new file mode 100644
+index 0000000..fdf189a
+--- /dev/null
++++ b/progetto/audit/tools/package_new_task_r23.py
+@@ -0,0 +1,77 @@
++"""Package the complete lightweight R23 source candidate and verify exact scope, evidence, patch and hashes."""
++import argparse,csv,difflib,hashlib,json,shutil,subprocess,tempfile,zipfile
++from pathlib import Path
++import xml.etree.ElementTree as ET
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--shell',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True);p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()
++r=a.project.resolve();shell=a.shell.resolve();audit=r/'audit/R10_R23';sha=lambda b:hashlib.sha256(b).hexdigest()
++assert sha(a.baseline_zip.read_bytes())=='34c33e49a591e7a919b6d5466c3e37a6408cddfde86abe30d7670bb6b470669c'
++with zipfile.ZipFile(a.baseline_zip) as z:before={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++for base in [r,shell]:
++ for d in sorted(base.rglob('__pycache__'),reverse=True):shutil.rmtree(d)
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file()}
++old={n[len('progetto/'):]:b for n,b in before.items() if n.startswith('progetto/')}
++allowed = {'tests/ProcessLens.NewTaskTests/Program.cs', 'src/ProcessLens.App/ProcessLens.App.csproj', 'src/ProcessLens.App/CopyTestVisibility.cs', 'src/ProcessLens.App/MainWindow.xaml.cs', 'src/ProcessLens.Windows/WindowsNewTaskLauncher.cs', 'src/ProcessLens.Core/NewTaskLaunch.cs', 'src/ProcessLens.App/NewTaskWindow.cs', 'src/ProcessLens.App/MainWindow.xaml', 'tests/ProcessLens.NewTaskTests/ProcessLens.NewTaskTests.csproj', 'tests/ProcessLens.NewTaskUiTests/ProcessLens.NewTaskUiTests.csproj', 'tests/ProcessLens.NewTaskUiTests/Program.cs'}
++changes={n for n,b in current.items() if n.startswith(('src/','tests/')) and old.get(n)!=b}
++assert changes==allowed,(changes,allowed)
++assert b'Tests.ProcessLens.NewTaskTests' in current['build-dashboard.ps1'] and b'Tests.ProcessLens.NewTaskUiTests' in current['build-dashboard.ps1']
++assert all(n in current for n in old), 'No R22 project file may disappear'
++assert all(current[n]==b for n,b in old.items() if n.startswith(('src/ProcessLens.Windows/','src/ProcessLens.Guardian/','src/ProcessLens.MemoryAgent/','src/ProcessLens.Profiler/','src/ProcessLens.RamMonitor/')))
++for n,b in current.items():
++ if n.endswith(('.xaml','.csproj')):ET.fromstring(b)
++for name,key in [('runtime-evidence.json','source_hashes'),('wpf-typecheck-evidence.json','inputs')]:
++ e=json.loads((audit/name).read_text());assert e[key]
++ assert all(sha(current[n])==h for n,h in e[key].items()), name
++runtime=json.loads((audit/'runtime-evidence.json').read_text());assert [x['assertions'] for x in runtime['outcomes']]==[103,22,31]
++types=json.loads((audit/'wpf-typecheck-evidence.json').read_text());assert len(types['assemblies'])==7 and all(x['status']=='PASS' for x in types['assemblies'])
++e=json.loads((audit/'powershell-evidence.json').read_text());assert e['launcher_fixture_checks']==17 and len(e['stages'])==30
++assert sha((shell/'supporto/avvia.ps1').read_bytes())==e['launcher_sha256']
++assert all(x['status']=='PASS' and sha(current[x['file']])==x['sha256'] for x in e['stages'])
++assert sha(current['audit/tools/test_launcher_r23.ps1'])==e['fixture_sha256']
++(audit/'scope-evidence.json').write_text(json.dumps({'baseline_sha256':sha(a.baseline_zip.read_bytes()),'changed_production_and_test_files':sorted(changes),'native_acquisition_Guardian_MemoryAgent_profiler_RAM_monitor':'EXISTING FILES BYTE IDENTICAL TO R22; new explicit task launcher only','new_dependencies':0,'new_binary':'NOT INCLUDED; full Windows build required once','WPF_runtime_DPI_UAC_RAM':'NOT EXECUTED / NOT MEASURED'},indent=2)+'\n')
++with (audit/'string-ledger.csv').open('w',newline='') as f:
++ w=csv.writer(f);w.writerow(['file','line','before_or_after','changed_text'])
++ for n in sorted(changes):
++  for line in difflib.unified_diff(old.get(n,b'').decode('utf-8-sig').splitlines(),current[n].decode('utf-8-sig').splitlines(),n,n,n=0):
++   if line.startswith(('+','-')) and not line.startswith(('+++','---')):w.writerow([n,'see patch','after' if line[0]=='+' else 'before',line[1:]])
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file()}
++after={**{f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file() and f.name!='SHA256SUMS.txt'},**{'progetto/'+n:b for n,b in current.items()}}
++include=lambda n:not n.startswith('progetto/audit/R10_R23/') and n not in {'SHA256SUMS.txt','progetto/SHA256SUMS_R10.txt'}
++delta=sorted(n for n in set(before)|set(after) if include(n) and before.get(n)!=after.get(n))
++with (audit/'files-changed.csv').open('w',newline='') as f:
++ w=csv.writer(f);w.writerow(['file','kind','sha256_before','sha256_after'])
++ for n in delta:w.writerow([n,'removed' if n not in after else 'added' if n not in before else 'modified',sha(before[n]) if n in before else '',sha(after[n]) if n in after else ''])
++with tempfile.TemporaryDirectory(prefix='patch-r23-',dir=r.parent.parent/'test') as d:
++ t=Path(d);bdir=t/'before';adir=t/'after';bdir.mkdir();adir.mkdir()
++ for base,values in [(bdir,before),(adir,after)]:
++  for n,b in values.items():
++   if include(n):f=base/n;f.parent.mkdir(parents=True,exist_ok=True);f.write_bytes(b)
++ x=subprocess.run(['git','diff','--no-index','--no-renames','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=t,capture_output=True);assert x.returncode==1
++ lines=[]
++ for line in x.stdout.splitlines(keepends=True):
++  if line.startswith((b'diff --git ',b'--- ',b'+++ ')):
++   for prefix in [b'a/before/',b'a/after/']:line=line.replace(prefix,b'a/')
++   for prefix in [b'b/before/',b'b/after/']:line=line.replace(prefix,b'b/')
++  lines.append(line)
++ patch=b''.join(lines);path=audit/'R22_to_R23.patch';path.write_bytes(patch)
++ x=subprocess.run(['git','apply','--check',str(path)],cwd=bdir,capture_output=True);assert x.returncode==0,x.stderr
++ subprocess.run(['git','apply',str(path)],cwd=bdir,capture_output=True,check=True)
++ assert {f.relative_to(bdir).as_posix():f.read_bytes() for f in bdir.rglob('*') if f.is_file()}=={n:b for n,b in after.items() if include(n)}
++(audit/'patch-evidence.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','delta_files':len(delta),'patch_sha256':sha(patch),'qualification':'Current audit folder and recursive manifests excluded from diff only, included in final full ZIP'},indent=2)+'\n')
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt'}
++(r/'SHA256SUMS_R10.txt').write_text(''.join(sha(b)+'  '+n+'\n' for n,b in sorted(current.items())))
++current['SHA256SUMS_R10.txt']=(r/'SHA256SUMS_R10.txt').read_bytes()
++files={**{f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file() and f.name!='SHA256SUMS.txt'},**{'progetto/'+n:b for n,b in current.items()}}
++assert not any(n.endswith(('.nupkg','.deb','.dll','.exe','.pdb')) or '/setup/payload/' in n or n.endswith('build-r23.ok') for n in files)
++assert not any(n.startswith(('sdk/','runtime/','app/')) for n in files)
++assert all(len(b)<10*1024*1024 for b in files.values())
++manifest=''.join(sha(b)+'  '+n+'\n' for n,b in sorted(files.items()));files['SHA256SUMS.txt']=manifest.encode()
++out=a.output_directory.resolve();out.mkdir(exist_ok=True,parents=True);target=out/'ProcessLens-R23-nuova-attivita.zip'
++with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
++ for n,b in sorted(files.items()):z.writestr('ProcessLens-Leggero/'+n,b)
++with zipfile.ZipFile(target) as z:
++ assert z.testzip() is None
++ for line in manifest.splitlines():
++  h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/'+n))==h
++ assert {n.split('/')[1] for n in z.namelist()}=={'AVVIA_PROCESSLENS.cmd','LEGGIMI.txt','supporto','progetto','SHA256SUMS.txt'}
++result={'zip':str(target),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files)-1,'portable_assertions':156,'PowerShell_fixtures':17,'source_preflight_stages':30,'WPF_CSharp_typechecked_assemblies':7,'WPF_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'}
++(out/'verification-r23.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
+diff --git a/progetto/audit/tools/run_new_task_r23.py b/progetto/audit/tools/run_new_task_r23.py
+new file mode 100644
+index 0000000..22605ef
+--- /dev/null
++++ b/progetto/audit/tools/run_new_task_r23.py
+@@ -0,0 +1,26 @@
++"""Run actual portable component and native-parser regressions; no WPF/native Windows acquisition."""
++import argparse,hashlib,json,subprocess
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();work.mkdir(parents=True,exist_ok=True);audit=r/'audit/R10_R23';audit.mkdir(exist_ok=True)
++refs=sorted((sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll'));sha=lambda b:hashlib.sha256(b).hexdigest()
++globals=work/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))
++hashes={};outcomes=[]
++def compile(name,sources,extra=(),library=False):
++ hashes.update({f.relative_to(r).as_posix():sha(f.read_bytes()) for f in sources})
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(work/(name+'.dll'))]
++ args+=['-r:'+str(f) for f in [*refs,*extra]]+[str(globals)]+[str(f) for f in sources]
++ x=subprocess.run(args,capture_output=True,text=True,timeout=60);(audit/(name+'-build.log')).write_text(x.stdout+x.stderr)
++ if x.returncode:raise SystemExit(x.stdout+x.stderr)
++compile('ProcessLens.Core',sorted((r/'src/ProcessLens.Core').glob('*.cs')),library=True)
++for suite in ['WindowsComponentTests','SystemProcessTests','NewTaskTests']:
++ name='ProcessLens.'+suite;sources=[r/'tests'/name/'Program.cs']
++ if suite=='SystemProcessTests':sources+=[r/'src/ProcessLens.Windows/WindowsSystemProcessSource.cs']
++ if suite=='NewTaskTests':sources+=[r/'src/ProcessLens.Windows/WindowsNewTaskLauncher.cs']
++ compile(name,sources,extra=[work/'ProcessLens.Core.dll'])
++ (work/(name+'.runtimeconfig.json')).write_text(json.dumps({'runtimeOptions':{'tfm':'net8.0','framework':{'name':'Microsoft.NETCore.App','version':'8.0.32'}}}))
++ x=subprocess.run([str(sdk/'dotnet'),str(work/(name+'.dll'))],capture_output=True,text=True,timeout=45);log=x.stdout+x.stderr;(audit/(name+'-run.log')).write_text(log)
++ if x.returncode:raise SystemExit(log)
++ outcomes.append({'suite':name,'status':'PASS','assertions':sum(l.startswith('PASS ') for l in log.splitlines())})
++e={'environment':'Linux x64; direct Roslyn SDK 8.0.426 / .NET 8.0.32; no MSBuild or WPF; synthetic fixtures only','outcomes':outcomes,'source_hashes':hashes}
++(audit/'runtime-evidence.json').write_text(json.dumps(e,indent=2)+'\n');print(json.dumps(outcomes,indent=2))
+diff --git a/progetto/audit/tools/test_launcher_r23.ps1 b/progetto/audit/tools/test_launcher_r23.ps1
+new file mode 100644
+index 0000000..d33d64c
+--- /dev/null
++++ b/progetto/audit/tools/test_launcher_r23.ps1
+@@ -0,0 +1,76 @@
++﻿param([string] $Launcher)
++$ErrorActionPreference = 'Stop'
++. $Launcher -FunctionsOnly
++$count = 0
++function Check([bool] $Ok, [string] $Label) {
++    if (-not $Ok) { throw ('FAIL R23 launcher: ' + $Label) }
++    Write-Host ('PASS R23 launcher: ' + $Label); $script:count++
++}
++function Touch([string] $Path) {
++    New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
++    Set-Content -LiteralPath $Path -Value 'fixture only' -Encoding ASCII
++}
++function Make-Runtime([string] $Path, [string] $Version='8.0.32') {
++    Touch (Join-Path $Path 'dotnet.exe')
++    New-Item -ItemType Directory -Path (Join-Path $Path 'shared/Microsoft.NETCore.App/8.0.32') -Force | Out-Null
++    New-Item -ItemType Directory -Path (Join-Path $Path ('shared/Microsoft.WindowsDesktop.App/' + $Version)) -Force | Out-Null
++}
++$temporary = Join-Path ([IO.Path]::GetTempPath()) ('processlens-r23-' + [Guid]::NewGuid().ToString('N'))
++$saved = @{}
++foreach ($name in @('PATH','DOTNET_ROOT','DOTNET_ROOT_X64','NUGET_PACKAGES')) { $saved[$name] = [Environment]::GetEnvironmentVariable($name) }
++try {
++    $root = Join-Path $temporary 'bundle with space'; $profile = Join-Path $temporary 'profile with space'
++    New-Item -ItemType Directory -Path $root,$profile,(Join-Path $root 'supporto') -Force | Out-Null
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'empty package has no runnable GUI'
++    $installed = Join-Path $profile 'Programs/ProcessLens/R20'
++    Touch (Join-Path $installed 'app/win-x64/ProcessLens.exe'); Touch (Join-Path $installed 'start-installed.ps1')
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'completed old installation cannot silently substitute its old GUI'
++    $exe = Join-Path $root 'progetto/publish/win-x64/ProcessLens.exe'; Touch $exe
++    $receipt = Join-Path $root 'supporto/build-r23.ok'
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'publication without successful R23 receipt is not accepted'
++    Set-Content -LiteralPath $receipt -Value 'older version'
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'receipt for another revision is rejected'
++    Remove-Item -LiteralPath $receipt
++    $sdk = Join-Path $installed 'dotnet'; Make-Runtime $sdk
++    New-Item -ItemType Directory -Path (Join-Path $sdk 'sdk/8.0.426'),(Join-Path $installed 'packages') -Force | Out-Null
++    # Stub only the compiler entry point and project build script; no dotnet, app or service is launched.
++    function global:dotnet { throw 'fixture must not launch a real compiler' }
++    $build = Join-Path $root 'progetto/build-dashboard.ps1'
++    Set-Content -LiteralPath $build -Value 'throw "synthetic failed tests"'
++    $failed = $false
++    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('synthetic failed tests') }
++    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'failed tests cannot issue a build receipt or launch a stale publication'
++    Check ($env:NUGET_PACKAGES -eq (Join-Path $installed 'packages')) 'completed R20 cache reused without copying packages into ZIP'
++    [xml]$config = Get-Content -LiteralPath (Join-Path $root 'progetto/NuGet.Config') -Raw
++    Check ($config.configuration.packageSources.clear -ne $null -and -not $config.configuration.packageSources.add) 'R20 cache build has no configured network feed'
++    Remove-Item -LiteralPath $exe
++    Set-Content -LiteralPath $build -Value '# fixture successful script but no executable'
++    $failed = $false
++    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('senza eseguibile') }
++    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'missing executable after build remains an error'
++    Set-Content -LiteralPath $build -Value 'New-Item -ItemType Directory -Path "publish/win-x64" -Force | Out-Null; Set-Content -LiteralPath "publish/win-x64/ProcessLens.exe" -Value "fixture"'
++    Invoke-ProcessLensBuild $root $profile
++    $target = Resolve-ProcessLensLaunch $root $profile
++    Check ($target.Kind -eq 'Exe' -and $target.Entry -eq $exe -and $target.Runtime -eq $sdk) 'successful owned build resolves new publication with existing private runtime'
++    Set-Content -LiteralPath $build -Value 'throw "fast path must not rebuild"'
++    Check ((Resolve-ProcessLensLaunch $root $profile).Entry -eq $exe) 'subsequent resolution needs no build or SDK command'
++    $incomplete = Join-Path $temporary 'incomplete'; Touch (Join-Path $incomplete 'dotnet.exe')
++    Check (-not (Test-DesktopRuntime8 $incomplete)) 'missing desktop runtime is not accepted'
++    Make-Runtime $incomplete '9.0.1'
++    Check (-not (Test-DesktopRuntime8 $incomplete)) 'wrong desktop runtime major is not accepted'
++    Check ((Quote-LaunchArgument 'C:\Program Files\ProcessLens\ProcessLens.exe') -eq '"C:\Program Files\ProcessLens\ProcessLens.exe"') 'paths with spaces remain one UAC argument'
++    foreach ($bad in @('C:\bad"path', "C:\bad`npath")) {
++        $failed = $false; try { Quote-LaunchArgument $bad | Out-Null } catch { $failed = $true }
++        Check $failed 'quotes and newlines cannot create extra launch arguments'
++    }
++    $tokens = $null; $errors = $null
++    $ast = [System.Management.Automation.Language.Parser]::ParseFile($Launcher,[ref]$tokens,[ref]$errors)
++    Check ($errors.Count -eq 0) 'real PowerShell parser accepts complete launcher'
++    $commands = @($ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] },$true) | ForEach-Object { $_.GetCommandName() })
++    Check (@($commands | Where-Object { $_ -in @('Expand-Archive','Invoke-WebRequest','Install-Package','Install-Module','Set-Service','Start-Service','Stop-Service','Stop-Process') }).Count -eq 0) 'launcher installs no dependencies and changes no services or running processes'
++    Write-Host ('R23 launcher fixture complete: ' + $count + ' checks; synthetic files only, no Windows app or UAC.')
++} finally {
++    Remove-Item function:global:dotnet -ErrorAction SilentlyContinue
++    foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name,$saved[$name]) }
++    if (Test-Path -LiteralPath $temporary) { Remove-Item -LiteralPath $temporary -Recurse -Force }
++}
+diff --git a/progetto/audit/tools/typecheck_wpf_sources_r23.py b/progetto/audit/tools/typecheck_wpf_sources_r23.py
+new file mode 100644
+index 0000000..04f55b3
+--- /dev/null
++++ b/progetto/audit/tools/typecheck_wpf_sources_r23.py
+@@ -0,0 +1,44 @@
++"""Type-check real C# against WindowsDesktop reference assemblies with explicit generated-field stubs.
++This is NOT WPF markup compilation, BAML, MSBuild, or runtime validation. Stubs live outside the deliverable.
++"""
++import argparse,hashlib,json,subprocess,xml.etree.ElementTree as ET
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();out=work/'typecheck';out.mkdir(exist_ok=True);audit=r/'audit/R10_R23';sha=lambda b:hashlib.sha256(b).hexdigest()
++base={p.name:p for p in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll')};desktop=list((work/'wpf-ref').glob('*.dll'))
++assert len(desktop)>20
++for f in desktop:base[f.name]=f
++refs=list(base.values());event=sdk/'packs/Microsoft.AspNetCore.App.Ref/8.0.32/ref/net8.0/System.Diagnostics.EventLog.dll';sqlite=work/'Microsoft.Data.Sqlite.dll'
++globals=out/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))
++x='{http://schemas.microsoft.com/winfx/2006/xaml}';stubs=[];inputs={}
++for path in (r/'src/ProcessLens.App').glob('*.xaml'):
++ tree=ET.parse(path).getroot();cls=tree.get(x+'Class');assert cls
++ fields=[]
++ for e in tree.iter():
++  name=e.get(x+'Name')
++  if not name:continue
++  tag=e.tag.split('}',1)[1]
++  if e.tag.startswith('{clr-namespace:ProcessLens.App}'):typ='ProcessLens.App.'+tag
++  elif tag=='Polyline':typ='System.Windows.Shapes.Polyline'
++  else:typ='System.Windows.Controls.'+tag
++  fields.append('internal '+typ+' '+name+' = null!;')
++ ns,short=cls.rsplit('.',1);stubs.append('namespace '+ns+' { public partial class '+short+' { '+ ' '.join(fields)+' private void InitializeComponent() {} } }')
++ inputs[path.relative_to(r).as_posix()]=sha(path.read_bytes())
++stub=out/'MarkupFieldStubs.cs';stub.write_text('\n'.join(stubs));results=[]
++def compile(name,sources,extra=(),library=True):
++ for f in sources:
++  if f.is_relative_to(r):inputs[f.relative_to(r).as_posix()]=sha(f.read_bytes())
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(out/(name+'.dll'))]
++ args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
++ args+=['-r:'+str(f) for f in [*refs,event,*extra]]+[str(globals)]+[str(f) for f in sources]
++ result=subprocess.run(args,capture_output=True,text=True);log=result.stdout+result.stderr;(audit/(name+'-typecheck.log')).write_text(log)
++ print(name, 'PASS' if result.returncode==0 else 'FAIL');results.append({'assembly':name,'status':'PASS' if result.returncode==0 else 'FAIL','warning_count':log.count('warning CS')})
++ if result.returncode:raise SystemExit(log)
++core=work/'runtime/ProcessLens.Core.dll';assert core.is_file()
++compile('ProcessLens.Windows',sorted((r/'src/ProcessLens.Windows').glob('*.cs')),[core])
++compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),[core])
++extra=[core,out/'ProcessLens.Windows.dll',out/'ProcessLens.Semantics.dll',sqlite]
++compile('ProcessLens',sorted((r/'src/ProcessLens.App').rglob('*.cs'))+[stub],extra)
++for name in ['NetworkUiTests','CopyUiTests','SystemProcessUiTests','NewTaskUiTests']:
++ compile('ProcessLens.'+name,[r/'tests'/('ProcessLens.'+name)/'Program.cs'],extra+[out/'ProcessLens.dll'],False)
++(audit/'wpf-typecheck-evidence.json').write_text(json.dumps({'qualification':'C# type checking with generated-field stubs only; NOT actual WPF markup compilation or runtime','assemblies':results,'inputs':inputs,'stub_sha256':sha(stub.read_bytes()),'reference_hashes':{f.name:sha(f.read_bytes()) for f in [*desktop,event,sqlite]}},indent=2)+'\n')
+diff --git a/progetto/build-dashboard.ps1 b/progetto/build-dashboard.ps1
+index bd76b31..500cdd9 100644
+--- a/progetto/build-dashboard.ps1
++++ b/progetto/build-dashboard.ps1
+@@ -56,6 +56,10 @@ Write-Host 'Test formattazione numerica, durate e rete (it-IT/en-US)...' -Foregr
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.PresentationTests' -Project '.\tests\ProcessLens.PresentationTests\ProcessLens.PresentationTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.PresentationTests\ProcessLens.PresentationTests.csproj','-c','Release')
+ 
+ Write-Host 'Test copia testo, rapporti e tabelle...' -ForegroundColor Cyan
++Write-Host 'Test nuova attivita: validazione e processo fixture posseduto...' -ForegroundColor Cyan
++Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.NewTaskTests' -Project '.\tests\ProcessLens.NewTaskTests\ProcessLens.NewTaskTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.NewTaskTests\ProcessLens.NewTaskTests.csproj','-c','Release')
++Write-Host 'Test WPF nuova attivita: avvio simulato, nessun programma utente...' -ForegroundColor Cyan
++Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.NewTaskUiTests' -Project '.\tests\ProcessLens.NewTaskUiTests\ProcessLens.NewTaskUiTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.NewTaskUiTests\ProcessLens.NewTaskUiTests.csproj','-c','Release')
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.CopyTests' -Project '.\tests\ProcessLens.CopyTests\ProcessLens.CopyTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.CopyTests\ProcessLens.CopyTests.csproj','-c','Release')
+ Write-Host 'Test dispositivi rete: dati sintetici, riconoscimenti e layout nativo...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.NetworkDeviceTests' -Project '.\tests\ProcessLens.NetworkDeviceTests\ProcessLens.NetworkDeviceTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.NetworkDeviceTests\ProcessLens.NetworkDeviceTests.csproj','-c','Release')
+diff --git a/progetto/src/ProcessLens.App/CopyTestVisibility.cs b/progetto/src/ProcessLens.App/CopyTestVisibility.cs
+index 1e4373b..b96dd10 100644
+--- a/progetto/src/ProcessLens.App/CopyTestVisibility.cs
++++ b/progetto/src/ProcessLens.App/CopyTestVisibility.cs
+@@ -4,3 +4,4 @@ using System.Runtime.CompilerServices;
+ [assembly: InternalsVisibleTo("ProcessLens.NetworkUiTests")]
+ 
+ [assembly: InternalsVisibleTo("ProcessLens.SystemProcessUiTests")]
++[assembly: InternalsVisibleTo("ProcessLens.NewTaskUiTests")]
+diff --git a/progetto/src/ProcessLens.App/MainWindow.xaml b/progetto/src/ProcessLens.App/MainWindow.xaml
+index bd23506..f6693ae 100644
+--- a/progetto/src/ProcessLens.App/MainWindow.xaml
++++ b/progetto/src/ProcessLens.App/MainWindow.xaml
+@@ -175,6 +175,7 @@
+         <Grid Grid.Row="0" Margin="0,0,0,8">
+             <Grid.ColumnDefinitions>
+                 <ColumnDefinition Width="*"/>
++                <ColumnDefinition Width="Auto"/>
+                 <ColumnDefinition Width="330"/>
+             </Grid.ColumnDefinitions>
+ 
+@@ -187,7 +188,9 @@
+                            FontSize="12"/>
+             </StackPanel>
+ 
+-            <Border Grid.Column="1" Style="{StaticResource PanelStyle}" Padding="12,9">
++            <Button x:Name="NewTaskButton" Grid.Column="1" Content="Esegui nuova attività" Margin="12,0,12,0"
++                    Style="{StaticResource ActionButtonStyle}" VerticalAlignment="Center" Click="NewTask_Click"/>
++            <Border Grid.Column="2" Style="{StaticResource PanelStyle}" Padding="12,9">
+                 <Grid>
+                     <Grid.ColumnDefinitions>
+                         <ColumnDefinition Width="Auto"/>
+diff --git a/progetto/src/ProcessLens.App/MainWindow.xaml.cs b/progetto/src/ProcessLens.App/MainWindow.xaml.cs
+index e4e5f8d..2fa492a 100644
+--- a/progetto/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/progetto/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -82,6 +82,7 @@ public partial class MainWindow : Window
+     private Dictionary<int, DateTime>? _serviceHostScope;
+     private int _workspaceNavigation;
+     private ServiceDetailsWindow? _serviceDetailsWindow;
++    private NewTaskWindow? _newTaskWindow;
+     private bool _serviceStopBusy;
+     private bool _servicesMode;
+     private bool _guardianMode;
+@@ -826,6 +827,16 @@ public partial class MainWindow : Window
+         _processNoticeTimer.Start();
+     }
+ 
++    private void NewTask_Click(object sender, RoutedEventArgs e)
++    {
++        if (_newTaskWindow is not null) { _newTaskWindow.Activate(); return; }
++        var dialog = new NewTaskWindow { Owner = this };
++        _newTaskWindow = dialog;
++        dialog.TaskStarted += result => ShowProcessNotice("Nuova attività", result.Message);
++        dialog.Closed += (_, _) => { if (ReferenceEquals(_newTaskWindow, dialog)) _newTaskWindow = null; };
++        dialog.ShowDialog();
++    }
++
+     private async void StopHostedServiceMenuItem_Click(object sender, RoutedEventArgs e)
+     {
+         var row = MenuTargetRow(sender);
+diff --git a/progetto/src/ProcessLens.App/NewTaskWindow.cs b/progetto/src/ProcessLens.App/NewTaskWindow.cs
+new file mode 100644
+index 0000000..20ad56f
+--- /dev/null
++++ b/progetto/src/ProcessLens.App/NewTaskWindow.cs
+@@ -0,0 +1,87 @@
++using System.Windows;
++using System.Windows.Controls;
++using System.Windows.Media;
++using Microsoft.Win32;
++using ProcessLens.Core;
++using ProcessLens.Windows;
++
++namespace ProcessLens.App;
++
++// Created on demand; constructing the dialog never starts a process.
++public sealed class NewTaskWindow : Window
++{
++    private readonly INewTaskLauncher _launcher;
++    private bool _busy, _closed;
++    internal TextBox ProgramBox { get; } = Input();
++    internal TextBox ArgumentsBox { get; } = Input();
++    internal TextBox DirectoryBox { get; } = Input();
++    internal SelectableText StatusText { get; } = new() { Text = "", TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 10, 0, 0) };
++    internal Button RunButton { get; } = Action("Esegui");
++    private readonly Button _cancel = Action("Annulla"), _browse = Action("Sfoglia…");
++    public event Action<NewTaskResult>? TaskStarted;
++
++    public NewTaskWindow() : this(new WindowsNewTaskLauncher()) { }
++    internal NewTaskWindow(INewTaskLauncher launcher)
++    {
++        _launcher = launcher;
++        Title = "Esegui nuova attività";
++        Width = 650; Height = 510; MinWidth = 480; MinHeight = 420;
++        WindowStartupLocation = WindowStartupLocation.CenterOwner;
++        FontFamily = new FontFamily("Segoe UI"); Background = Brushes.White;
++        var body = new StackPanel { Margin = new Thickness(20) };
++        body.Children.Add(new TextBlock { Text = Title, FontSize = 21, FontWeight = FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
++        body.Children.Add(Note("Scegli il programma da avviare. Inserisci le opzioni nel campo Argomenti.", 6));
++        body.Children.Add(Label("Programma"));
++        var program = new Grid(); program.ColumnDefinitions.Add(new ColumnDefinition());
++        program.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
++        program.Children.Add(ProgramBox); Grid.SetColumn(_browse, 1); program.Children.Add(_browse);
++        _browse.Margin = new Thickness(8, 0, 0, 0); body.Children.Add(program);
++        ProgramBox.ToolTip = "Nome, per esempio notepad.exe, oppure percorso completo del programma.";
++        body.Children.Add(Label("Argomenti (facoltativi)")); body.Children.Add(ArgumentsBox);
++        ArgumentsBox.ToolTip = "Argomenti esatti, comprese le virgolette dei percorsi con spazi. Non aggiungere qui il nome del programma.";
++        body.Children.Add(Label("Cartella iniziale (facoltativa)")); body.Children.Add(DirectoryBox);
++        DirectoryBox.ToolTip = "Cartella di lavoro del programma. Se vuota, usa la cartella corrente di ProcessLens.";
++        body.Children.Add(Note("Privilegi: quelli di ProcessLens, quindi amministratore nell’avvio normale.", 12));
++        body.Children.Add(Note("Per comandi di shell o script, scegli cmd.exe, powershell.exe o l’interprete necessario. Nessuna cronologia dei comandi salvata da questa finestra.", 6));
++        body.Children.Add(StatusText);
++        var actions = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, 16, 0, 0) };
++        RunButton.IsDefault = true; _cancel.IsCancel = true;
++        actions.Children.Add(RunButton); actions.Children.Add(_cancel); body.Children.Add(actions);
++        Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
++        RunButton.Click += async (_, _) => await RunAsync();
++        _cancel.Click += (_, _) => Close();
++        _browse.Click += (_, _) => Browse();
++        Loaded += (_, _) => ProgramBox.Focus();
++        Closing += (_, e) => { if (_busy) e.Cancel = true; };
++        Closed += (_, _) => { _closed = true; ProgramBox.Clear(); ArgumentsBox.Clear(); DirectoryBox.Clear(); };
++    }
++
++    private static TextBox Input() => new() { MinHeight = 36, Padding = new Thickness(8, 6, 8, 6), TextWrapping = TextWrapping.Wrap, AcceptsReturn = false, MaxLength = 32760 };
++    private static TextBlock Label(string text) => new() { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 13, 0, 5), FontWeight = FontWeights.SemiBold };
++    private static TextBlock Note(string text, int margin) => new() { Text = text, TextWrapping = TextWrapping.Wrap, Foreground = Brushes.DimGray, Margin = new Thickness(0, margin, 0, 0) };
++    private static Button Action(string text) => new() {
++        Content = new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, TextAlignment = TextAlignment.Center },
++        MinHeight = 36, MinWidth = 88, Padding = new Thickness(12, 7, 12, 7), Margin = new Thickness(8, 0, 0, 0)
++    };
++    private void Browse()
++    {
++        var picker = new OpenFileDialog { Title = "Scegli il programma", Filter = "Programmi (*.exe;*.com)|*.exe;*.com", CheckFileExists = true, Multiselect = false };
++        if (picker.ShowDialog(this) == true) ProgramBox.Text = picker.FileName;
++    }
++    internal async Task RunAsync()
++    {
++        if (_busy || _closed) return;
++        if (!NewTaskRequest.TryCreate(ProgramBox.Text, ArgumentsBox.Text, DirectoryBox.Text, out var request, out var error))
++        { StatusText.Text = error; return; }
++        _busy = true; Toggle(false); StatusText.Text = "Avvio in corso…";
++        NewTaskResult result;
++        try { result = await Task.Run(() => _launcher.Start(request!)); }
++        catch (Exception ex) { result = WindowsNewTaskLauncher.Failure(ex); }
++        finally { _busy = false; if (!_closed) Toggle(true); }
++        if (_closed) return;
++        StatusText.Text = result.Message;
++        if (result.Started && result.Pid is > 0) { TaskStarted?.Invoke(result); Close(); }
++    }
++    private void Toggle(bool enabled)
++    { ProgramBox.IsEnabled = ArgumentsBox.IsEnabled = DirectoryBox.IsEnabled = _browse.IsEnabled = RunButton.IsEnabled = _cancel.IsEnabled = enabled; }
++}
+diff --git a/progetto/src/ProcessLens.App/ProcessLens.App.csproj b/progetto/src/ProcessLens.App/ProcessLens.App.csproj
+index e5fbdc3..66e5869 100644
+--- a/progetto/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/progetto/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R22-system-coverage-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R23-new-task-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+diff --git a/progetto/src/ProcessLens.Core/NewTaskLaunch.cs b/progetto/src/ProcessLens.Core/NewTaskLaunch.cs
+new file mode 100644
+index 0000000..d9a46e6
+--- /dev/null
++++ b/progetto/src/ProcessLens.Core/NewTaskLaunch.cs
+@@ -0,0 +1,32 @@
++namespace ProcessLens.Core;
++
++public sealed record NewTaskRequest(string Program, string Arguments, string WorkingDirectory)
++{
++    // Fields remain separate: no shell is added and arguments are not re-tokenized or expanded.
++    public static bool TryCreate(string program, string arguments, string directory,
++        out NewTaskRequest? request, out string error, bool expandEnvironment = true)
++    {
++        request = null; error = "";
++        program = program.Trim(); directory = directory.Trim();
++        if (expandEnvironment)
++        { program = Environment.ExpandEnvironmentVariables(program); directory = Environment.ExpandEnvironmentVariables(directory); }
++        if (program.Length >= 2 && program[0] == '"' && program[^1] == '"') program = program[1..^1];
++        if (directory.Length >= 2 && directory[0] == '"' && directory[^1] == '"') directory = directory[1..^1];
++        if (string.IsNullOrWhiteSpace(program)) { error = "Inserisci il programma da avviare."; return false; }
++        if (program.Any(char.IsControl) || program.Contains('"') || directory.Any(char.IsControl) || directory.Contains('"') ||
++            arguments.Any(c => char.IsControl(c) && c != '\t'))
++        { error = "I campi contengono caratteri non validi o interruzioni di riga."; return false; }
++        string name = program.Replace('\\', '/').Split('/')[^1];
++        string extension = System.IO.Path.GetExtension(name);
++        if (program.Contains("://", StringComparison.Ordinal) || name.Length == 0 ||
++            (extension.Length > 0 && !extension.Equals(".exe", StringComparison.OrdinalIgnoreCase) &&
++                !extension.Equals(".com", StringComparison.OrdinalIgnoreCase)))
++        { error = "Scegli un eseguibile (.exe o .com). Per uno script usa il relativo interprete e il campo Argomenti."; return false; }
++        if ((long)program.Length + arguments.Length + 4 > 32767 || directory.Length > 32760)
++        { error = "Programma, argomenti o cartella oltre il limite di lunghezza."; return false; }
++        request = new(program, arguments, directory); return true;
++    }
++}
++
++public sealed record NewTaskResult(bool Started, int? Pid, string Message);
++public interface INewTaskLauncher { NewTaskResult Start(NewTaskRequest request); }
+diff --git a/progetto/src/ProcessLens.Windows/WindowsNewTaskLauncher.cs b/progetto/src/ProcessLens.Windows/WindowsNewTaskLauncher.cs
+new file mode 100644
+index 0000000..cd02599
+--- /dev/null
++++ b/progetto/src/ProcessLens.Windows/WindowsNewTaskLauncher.cs
+@@ -0,0 +1,46 @@
++using System.ComponentModel;
++using System.Diagnostics;
++using ProcessLens.Core;
++
++namespace ProcessLens.Windows;
++
++// Invoked only by the explicit Run action. No command history, shell wrapper, monitoring or child termination.
++public sealed class WindowsNewTaskLauncher : INewTaskLauncher
++{
++    internal static ProcessStartInfo CreateStartInfo(NewTaskRequest request) => new()
++    {
++        FileName = request.Program, Arguments = request.Arguments, WorkingDirectory = request.WorkingDirectory,
++        UseShellExecute = false, ErrorDialog = false, CreateNoWindow = false
++    };
++    public NewTaskResult Start(NewTaskRequest request)
++    {
++        // Revalidate public inputs; do not rely on the UI being the sole caller.
++        if (!NewTaskRequest.TryCreate(request.Program, request.Arguments, request.WorkingDirectory, out var validated, out string error, expandEnvironment: false))
++            return new(false, null, error);
++        if (validated!.WorkingDirectory.Length > 0 && !Directory.Exists(validated.WorkingDirectory))
++            return new(false, null, "Cartella iniziale non trovata o non accessibile.");
++        try
++        {
++            using var process = Process.Start(CreateStartInfo(validated));
++            return process is null ? new(false, null, "Avvio non confermato da Windows.")
++                : new(true, process.Id, $"Attività avviata · PID {process.Id}.");
++        }
++        catch (Exception ex) when (ex is Win32Exception or InvalidOperationException or ArgumentException or IOException or UnauthorizedAccessException)
++        { return Failure(ex); }
++    }
++    public static NewTaskResult Failure(Exception error)
++    {
++        // Raw exception messages can contain the command line: retain the error code, not those arguments.
++        int? code = (error as Win32Exception)?.NativeErrorCode;
++        string message = code switch {
++            2 or 3 => "Programma o percorso non trovato.",
++            5 => "Accesso negato al programma.",
++            193 or 216 => "Formato del programma non compatibile con Windows o con questa architettura.",
++            740 => "Il programma richiede privilegi di amministratore.",
++            1223 => "Avvio annullato.",
++            _ => "Impossibile avviare il programma. Controlla programma, argomenti e cartella iniziale."
++        };
++        if (code.HasValue) message += $" Codice Windows: {code.Value}.";
++        return new(false, null, message);
++    }
++}
+diff --git a/progetto/tests/ProcessLens.NewTaskTests/ProcessLens.NewTaskTests.csproj b/progetto/tests/ProcessLens.NewTaskTests/ProcessLens.NewTaskTests.csproj
+new file mode 100644
+index 0000000..d1fc01b
+--- /dev/null
++++ b/progetto/tests/ProcessLens.NewTaskTests/ProcessLens.NewTaskTests.csproj
+@@ -0,0 +1,5 @@
++<Project Sdk="Microsoft.NET.Sdk">
++ <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
++ <ItemGroup><ProjectReference Include="../../src/ProcessLens.Core/ProcessLens.Core.csproj"/>
++ <Compile Include="../../src/ProcessLens.Windows/WindowsNewTaskLauncher.cs" Link="WindowsNewTaskLauncher.cs"/></ItemGroup>
++</Project>
+diff --git a/progetto/tests/ProcessLens.NewTaskTests/Program.cs b/progetto/tests/ProcessLens.NewTaskTests/Program.cs
+new file mode 100644
+index 0000000..69feade
+--- /dev/null
++++ b/progetto/tests/ProcessLens.NewTaskTests/Program.cs
+@@ -0,0 +1,96 @@
++using System.ComponentModel;
++using System.Diagnostics;
++using System.Reflection;
++using System.Text;
++using System.Text.Json;
++using ProcessLens.Core;
++using ProcessLens.Windows;
++
++// Only an owned fixture child is launched; no system app, network probe, shell or elevated command.
++if (args.Length > 0 && args[0] == "--child")
++{
++    string output = args[1], release = args[2];
++    var deadline = Stopwatch.StartNew();
++    while (!File.Exists(release) && deadline.Elapsed < TimeSpan.FromSeconds(8)) Thread.Sleep(10);
++    if (!File.Exists(release)) return 3;
++    File.WriteAllText(output + ".tmp", JsonSerializer.Serialize(args.Skip(3).ToArray()));
++    File.Move(output + ".tmp", output);
++    return 0;
++}
++static void Check(bool ok, string label)
++{ if (!ok) throw new Exception("FAIL new task: " + label); Console.WriteLine("PASS new task: " + label); }
++static string Quote(string value)
++{
++    var b = new StringBuilder("\""); int slash = 0;
++    foreach (char c in value)
++    {
++        if (c == '\\') { slash++; continue; }
++        if (c == '"') { b.Append('\\', 2 * slash + 1); b.Append(c); }
++        else { b.Append('\\', slash); b.Append(c); }
++        slash = 0;
++    }
++    b.Append('\\', 2 * slash); return b.Append('"').ToString();
++}
++Check(NewTaskRequest.TryCreate("notepad", "", "", out var simple, out _) && simple!.Program == "notepad",
++    "short executable names remain usable without an extension");
++const string raw = " --flag=26,0  \"a b\" --token=private & | > %USERNAME% ";
++Check(NewTaskRequest.TryCreate(" \"C:\\Program Files\\tool.exe\" ", raw, "\"C:\\Data Files\"", out var request, out _) &&
++    request!.Program == @"C:\Program Files\tool.exe" && request.Arguments == raw && request.WorkingDirectory == @"C:\Data Files",
++    "quoted executable paths normalize without rewriting argument bytes");
++var info = WindowsNewTaskLauncher.CreateStartInfo(request!);
++Check(info.FileName == request!.Program && info.Arguments == raw && info.WorkingDirectory == request.WorkingDirectory &&
++    !info.UseShellExecute && !info.RedirectStandardOutput && !info.CreateNoWindow && info.Verb.Length == 0,
++    "executable and arguments stay separate without injected shell redirect or elevation verb");
++foreach (string bad in new[] { "", "  ", "bad\n.exe", "bad\0.exe", "a\"b.exe", "thing.ps1", "script.cmd", "https://example.invalid/a", "C:\\" })
++    Check(!NewTaskRequest.TryCreate(bad, "", "", out _, out _), "invalid program rejected before launch: " + bad.Replace('\n', '?').Replace('\0', '?'));
++Check(!NewTaskRequest.TryCreate("tool.exe", "line1\r\nline2", "", out _, out _) &&
++    !NewTaskRequest.TryCreate("tool.exe", "", "bad\nfolder", out _, out _), "line breaks cannot split program argument or directory fields");
++Check(NewTaskRequest.TryCreate("TOOL.COM", "\t/a", "", out _, out _), "COM executables and actual argument tabs are supported");
++Check(NewTaskRequest.TryCreate("tool.exe", new string('a', 32755), "", out _, out _) &&
++    !NewTaskRequest.TryCreate("tool.exe", new string('a', 32756), "", out _, out _), "combined Windows command-line length has an exact upper boundary");
++string? previous = Environment.GetEnvironmentVariable("PROCESSLENS_TEST_TOOL");
++try
++{
++    Environment.SetEnvironmentVariable("PROCESSLENS_TEST_TOOL", @"C:\Tools\tool.exe");
++    Check(NewTaskRequest.TryCreate("%PROCESSLENS_TEST_TOOL%", "%PROCESSLENS_TEST_TOOL%", "", out var env, out _) &&
++        env!.Program == @"C:\Tools\tool.exe" && env.Arguments == "%PROCESSLENS_TEST_TOOL%",
++        "environment variables expand in executable field only, not in arguments");
++}
++finally { Environment.SetEnvironmentVariable("PROCESSLENS_TEST_TOOL", previous); }
++foreach (int code in new[] { 2, 3, 5, 193, 216, 740, 1223, 999 })
++{
++    var failure = WindowsNewTaskLauncher.Failure(new Win32Exception(code, "TOP_SECRET --password=private"));
++    Check(!failure.Started && failure.Pid is null && failure.Message.Contains(code.ToString()) &&
++        !failure.Message.Contains("TOP_SECRET") && !failure.Message.Contains("password"), "Windows error retained without command secrets: " + code);
++}
++Check(!WindowsNewTaskLauncher.Failure(new InvalidOperationException("TOP_SECRET")).Message.Contains("TOP_SECRET"),
++    "unexpected launcher exceptions cannot expose argument text");
++var launcher = new WindowsNewTaskLauncher();
++string temp = Path.Combine(Path.GetTempPath(), "processlens owned task " + Guid.NewGuid().ToString("N"));
++Directory.CreateDirectory(temp);
++try
++{
++    var missing = launcher.Start(new("not-a-real-processlens-program.exe", "--password=TOP_SECRET", Path.Combine(temp, "missing")));
++    Check(!missing.Started && missing.Pid is null && !missing.Message.Contains("TOP_SECRET"), "missing initial folder cannot launch or invent a PID");
++    var invalid = launcher.Start(new("wrong.ps1", "", temp));
++    Check(!invalid.Started && invalid.Pid is null, "public launcher revalidates requests independently of the UI");
++    string host = Environment.ProcessPath ?? throw new Exception("Fixture host unavailable");
++    string[] expected = { "alpha beta", "caffè 26,0", "a&b|c>", "$HOME", "%USERNAME%", "a\"b", @"C:\tail\" };
++    string output = Path.Combine(temp, "child result.json"), release = Path.Combine(temp, "allow child.txt");
++    var childArgs = new List<string>();
++    if (Path.GetFileNameWithoutExtension(host).Equals("dotnet", StringComparison.OrdinalIgnoreCase)) childArgs.Add(Assembly.GetExecutingAssembly().Location);
++    childArgs.AddRange(new[] { "--child", output, release }); childArgs.AddRange(expected);
++    Check(NewTaskRequest.TryCreate(host, string.Join(" ", childArgs.Select(Quote)), temp, out var fixture, out _), "owned fixture request can be represented without a shell");
++    var started = launcher.Start(fixture!);
++    Check(started.Started && started.Pid is > 0 && !File.Exists(output), "successful launch returns actual PID before the owned child is released");
++    File.WriteAllText(release, "go");
++    var clock = Stopwatch.StartNew();
++    while (!File.Exists(output) && clock.Elapsed < TimeSpan.FromSeconds(8)) Thread.Sleep(10);
++    Check(File.Exists(output) && JsonSerializer.Deserialize<string[]>(File.ReadAllText(output))!.SequenceEqual(expected),
++        "real owned child survives parent handle disposal and receives exact quoted Unicode and metacharacter arguments");
++    var absent = launcher.Start(new(Path.Combine(temp, "missing.exe"), "--password=TOP_SECRET", temp));
++    Check(!absent.Started && absent.Pid is null && !absent.Message.Contains("TOP_SECRET"), "failed process creation has no false success or secret argument log");
++}
++finally { Directory.Delete(temp, true); }
++Console.WriteLine("New task portable tests complete; owned fixture child only, no user program launched.");
++return 0;
+diff --git a/progetto/tests/ProcessLens.NewTaskUiTests/ProcessLens.NewTaskUiTests.csproj b/progetto/tests/ProcessLens.NewTaskUiTests/ProcessLens.NewTaskUiTests.csproj
+new file mode 100644
+index 0000000..0182c44
+--- /dev/null
++++ b/progetto/tests/ProcessLens.NewTaskUiTests/ProcessLens.NewTaskUiTests.csproj
+@@ -0,0 +1,4 @@
++<Project Sdk="Microsoft.NET.Sdk">
++ <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
++ <ItemGroup><ProjectReference Include="../../src/ProcessLens.App/ProcessLens.App.csproj"/></ItemGroup>
++</Project>
+diff --git a/progetto/tests/ProcessLens.NewTaskUiTests/Program.cs b/progetto/tests/ProcessLens.NewTaskUiTests/Program.cs
+new file mode 100644
+index 0000000..08ed11f
+--- /dev/null
++++ b/progetto/tests/ProcessLens.NewTaskUiTests/Program.cs
+@@ -0,0 +1,79 @@
++using System.Windows;
++using System.Windows.Controls;
++using System.Windows.Threading;
++using ProcessLens.App;
++using ProcessLens.Core;
++
++internal static class Program
++{
++    static void Check(bool ok, string label)
++    { if (!ok) throw new Exception("FAIL new task UI: " + label); Console.WriteLine("PASS new task UI: " + label); }
++    static void Complete(Task task)
++    {
++        var frame = new DispatcherFrame(); var dispatcher = Dispatcher.CurrentDispatcher;
++        bool timedOut = false; var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(10) };
++        timer.Tick += (_, _) => { timedOut = true; frame.Continue = false; };
++        task.ContinueWith(_ => dispatcher.BeginInvoke(new Action(() => frame.Continue = false)), TaskScheduler.Default);
++        timer.Start(); Dispatcher.PushFrame(frame); timer.Stop();
++        if (timedOut) throw new Exception("New task UI fixture timeout");
++        task.GetAwaiter().GetResult();
++    }
++    [STAThread]
++    public static void Main()
++    {
++        _ = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
++        var previous = SynchronizationContext.Current;
++        SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
++        try
++        {
++            var launcher = new Fixture(); var window = new NewTaskWindow(launcher);
++            Check(launcher.Calls == 0, "construction does not start a program");
++            Complete(window.RunAsync());
++            Check(launcher.Calls == 0 && window.StatusText.Text.Contains("Inserisci"), "empty input stays open without a launch");
++            window.ProgramBox.Text = "script.ps1"; Complete(window.RunAsync());
++            Check(launcher.Calls == 0, "validation fails before scheduling the launcher");
++            window.ProgramBox.Text = @"C:\Program Files\tool.exe"; window.ArgumentsBox.Text = "--token=TOP_SECRET";
++            launcher.Failure = true; Complete(window.RunAsync());
++            Check(launcher.Calls == 1 && window.RunButton.IsEnabled && window.StatusText.Text == "synthetic failed launch",
++                "failed launch leaves editable inputs for correction and retry");
++            launcher.Failure = false; launcher.Throw = true; Complete(window.RunAsync());
++            Check(!window.StatusText.Text.Contains("TOP_SECRET") && window.RunButton.IsEnabled,
++                "unexpected launcher error stays in dialog without leaking raw arguments");
++            launcher.Throw = false; launcher.Block = true; Task task = window.RunAsync();
++            Check(launcher.Started.Wait(TimeSpan.FromSeconds(5)), "fixture starts on worker thread");
++            Check(!window.RunButton.IsEnabled && !window.ProgramBox.IsEnabled && window.StatusText.Text.Contains("corso"),
++                "pending launch disables duplicate submission and editing");
++            Complete(window.RunAsync()); Check(launcher.Calls == 3, "second click while pending cannot launch a second program");
++            NewTaskResult? notice = null; window.TaskStarted += r => notice = r;
++            launcher.Release.Set(); Complete(task);
++            Check(notice is { Started: true, Pid: 4321 } && !notice.Message.Contains("TOP_SECRET"),
++                "confirmed start reports PID through the UI event");
++            Check(window.ProgramBox.Text.Length == 0 && window.ArgumentsBox.Text.Length == 0 && window.DirectoryBox.Text.Length == 0,
++                "closing successful dialog releases typed command fields");
++            Complete(window.RunAsync()); Check(launcher.Calls == 3, "closed dialog cannot launch again");
++            var cancelled = new NewTaskWindow(launcher); cancelled.ProgramBox.Text = "notepad.exe"; cancelled.Close();
++            Complete(cancelled.RunAsync()); Check(launcher.Calls == 3, "cancel before run never starts a program");
++            var main = new MainWindow();
++            var button = (Button)main.FindName("NewTaskButton");
++            Check(button.Content.ToString() == "Esegui nuova attività" && button.Style is not null,
++                "main window exposes a styled new-task action");
++            main.Close(); Application.Current.Shutdown();
++            launcher.Started.Dispose(); launcher.Release.Dispose();
++            Console.WriteLine("New task WPF fixture complete; no real program, native launcher, clipboard or UAC used.");
++        }
++        finally { SynchronizationContext.SetSynchronizationContext(previous); }
++    }
++    sealed class Fixture : INewTaskLauncher
++    {
++        public int Calls; public bool Failure, Throw, Block;
++        public ManualResetEventSlim Started = new(false), Release = new(false);
++        public NewTaskResult Start(NewTaskRequest request)
++        {
++            Interlocked.Increment(ref Calls);
++            if (Throw) throw new InvalidOperationException("--token=TOP_SECRET");
++            if (Failure) return new(false, null, "synthetic failed launch");
++            if (Block) { Started.Set(); if (!Release.Wait(TimeSpan.FromSeconds(5))) throw new TimeoutException(); }
++            return new(true, 4321, "Attività avviata · PID 4321.");
++        }
++    }
++}
+diff --git a/supporto/avvia.ps1 b/supporto/avvia.ps1
+index eea3705..e4f7b5e 100644
+--- a/supporto/avvia.ps1
++++ b/supporto/avvia.ps1
+@@ -16,9 +16,9 @@ function Resolve-ProcessLensLaunch([string] $Root, [string] $UserLocalAppData) {
+         if (Test-DesktopRuntime8 $candidate) { $runtime = $candidate; break }
+     }
+     $exe = Join-Path $Root 'progetto/publish/win-x64/ProcessLens.exe'
+-    $receipt = Join-Path $Root 'supporto/build-r22.ok'
++    $receipt = Join-Path $Root 'supporto/build-r23.ok'
+     if ((Test-Path -LiteralPath $exe -PathType Leaf) -and (Test-Path -LiteralPath $receipt -PathType Leaf) -and
+-        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R22-coverage') {
++        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R23-coverage') {
+         return [PSCustomObject]@{ Kind='Exe'; Entry=$exe; Runtime=$runtime }
+     }
+     return $null
+@@ -47,14 +47,14 @@ function Invoke-ProcessLensBuild([string] $Root, [string] $UserLocalAppData) {
+     if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
+         throw 'SDK .NET non trovato. Usa lo SDK 8 gia installato oppure quello della precedente installazione R20. Nessun download automatico.'
+     }
+-    Write-Host 'Primo avvio R22: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
++    Write-Host 'Primo avvio R23: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
+     Write-Host 'Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.'
+     Push-Location -LiteralPath $project
+     try { & (Join-Path $project 'build-dashboard.ps1') }
+     finally { Pop-Location }
+     $exe = Join-Path $project 'publish/win-x64/ProcessLens.exe'
+-    if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { throw 'Compilazione senza eseguibile R22. Avvio interrotto.' }
+-    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r22.ok') -Value 'ProcessLens-R22-coverage' -Encoding ASCII
++    if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { throw 'Compilazione senza eseguibile R23. Avvio interrotto.' }
++    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r23.ok') -Value 'ProcessLens-R23-coverage' -Encoding ASCII
+ }
+ function Quote-LaunchArgument([string] $Value) {
+     if ($Value.Contains('"') -or $Value -match "[`r`n]") { throw 'Percorso non valido.' }
+@@ -67,7 +67,7 @@ try {
+     if (-not $Executable) {
+         $target = Resolve-ProcessLensLaunch $root $env:LOCALAPPDATA
+         if (-not $target) { Invoke-ProcessLensBuild $root $env:LOCALAPPDATA; $target = Resolve-ProcessLensLaunch $root $env:LOCALAPPDATA }
+-        if (-not $target) { throw 'Pubblicazione R22 non disponibile dopo la compilazione.' }
++        if (-not $target) { throw 'Pubblicazione R23 non disponibile dopo la compilazione.' }
+         $Executable = $target.Entry; $RuntimeRoot = $target.Runtime
+     }
+     if (-not (Test-Path -LiteralPath $Executable -PathType Leaf)) { throw 'Eseguibile ProcessLens non trovato.' }

@@ -1,0 +1,17 @@
+PASS light launcher: missing application returns unavailable without installing or compiling
+PASS light launcher: launcher alone cannot be mistaken for installed application
+PASS light launcher: completed R20 installation reuses its own existing starter
+PASS light launcher: local publication overrides older installed copy
+PASS light launcher: local publication can reuse existing private runtime without SDK setup
+PASS light launcher: optional portable app publication takes precedence
+PASS light launcher: optional complete local runtime takes precedence
+PASS light launcher: core runtime without Desktop cannot be accepted as WPF runtime
+PASS light launcher: Desktop major version nine cannot satisfy private runtime eight
+PASS light launcher: missing runtime path is not treated as available
+PASS light launcher: paths with spaces remain one launch argument
+PASS light launcher: quote or line break cannot create a second launch argument
+PASS light launcher: quote or line break cannot create a second launch argument
+PASS light launcher: actual PowerShell parser accepts launcher syntax
+PASS light launcher: launch has no compiler package download extraction or service action
+PASS light launcher: launch adds no fixed wait prompt or process scan
+Light launcher fixture complete: 16 checks; no Windows app, UAC or clipboard used.

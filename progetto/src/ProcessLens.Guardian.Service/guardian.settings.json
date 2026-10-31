@@ -1,0 +1,9 @@
+{
+  "SampleSeconds": 15,
+  "PortScanSeconds": 60,
+  "RetentionDays": 14,
+  "MaxDatabaseMb": 256,
+  "CaptureRemoteAddresses": false,
+  "EnableEtw": true,
+  "EnablePortMonitoring": true
+}

@@ -1,0 +1,117 @@
+[
+  {
+    "file": "README.md",
+    "status": "changed",
+    "lines": 419
+  },
+  {
+    "file": "start-processlens-all.ps1",
+    "status": "changed",
+    "lines": 119
+  },
+  {
+    "file": "run-release.ps1",
+    "status": "changed",
+    "lines": 19
+  },
+  {
+    "file": "publish-release.ps1",
+    "status": "changed",
+    "lines": 38
+  },
+  {
+    "file": "build-dashboard.ps1",
+    "status": "changed",
+    "lines": 64
+  },
+  {
+    "file": "VERSION.txt",
+    "status": "changed",
+    "lines": 1
+  },
+  {
+    "file": "tests/check-memory-dashboard.ps1",
+    "status": "changed",
+    "lines": 15
+  },
+  {
+    "file": "tests/check-guardian-dashboard.ps1",
+    "status": "changed",
+    "lines": 56
+  },
+  {
+    "file": "src/ProcessLens.Windows/WindowsAllocationInspector.cs",
+    "status": "changed",
+    "lines": 330
+  },
+  {
+    "file": "src/ProcessLens.Windows/WindowsVirtualMemoryInspector.cs",
+    "status": "changed",
+    "lines": 159
+  },
+  {
+    "file": "src/ProcessLens.Windows/WindowsPhysicalMemoryReader.cs",
+    "status": "changed",
+    "lines": 381
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "status": "changed",
+    "lines": 2159
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml.cs",
+    "status": "changed",
+    "lines": 272
+  },
+  {
+    "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+    "status": "changed",
+    "lines": 26
+  },
+  {
+    "file": "src/ProcessLens.App/ProcessRow.cs",
+    "status": "changed",
+    "lines": 49
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "status": "changed",
+    "lines": 272
+  },
+  {
+    "file": "src/ProcessLens.App/ProcessIconResolver.cs",
+    "status": "changed",
+    "lines": 117
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "status": "changed",
+    "lines": 1027
+  },
+  {
+    "file": "src/ProcessLens.Core/MemoryEvidence.cs",
+    "status": "changed",
+    "lines": 67
+  },
+  {
+    "file": "src/ProcessLens.Core/WindowsAllocationEvidence.cs",
+    "status": "changed",
+    "lines": 89
+  },
+  {
+    "file": "src/ProcessLens.Semantics/IdentityResolver.cs",
+    "status": "changed",
+    "lines": 100
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "status": "changed",
+    "lines": 544
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "status": "changed",
+    "lines": 922
+  }
+]

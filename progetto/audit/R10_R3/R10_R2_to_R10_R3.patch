@@ -1,0 +1,711 @@
+--- a/CHANGELOG_R10.md
++++ b/CHANGELOG_R10.md
+@@ -1,3 +1,9 @@
++# R10 R3 — quadro generale e gerarchia dei rapporti
++
++Leggere `GERARCHIA_RAPPORTI_R10_R3.md`. Aggiunti quadro generale iniziale, capitoli numerati, titoli a capo e blocchi distinti per API, allocazioni e DLL. Testo originale conservato per la copia completa; paragrafi senza titolo mantenuti anche nella vista strutturata. I controlli si creano aprendo il capitolo. R2 resta inclusa. Acquisizione Windows e componenti protetti invariati. Build/test .NET/PowerShell, WPF e DPI: **NON ESEGUITO** qui. Manifest corrente `SHA256SUMS_R10.txt`, rigenerato per R3.
++
++---
++
+ # R10 R2 — inizializzazione del test di layout WPF
+ 
+ Leggere `HOTFIX_R10_R2.md`. Corretto il ciclo di inizializzazione del controllo isolato nella suite CopyUiTests; verifiche esplicite di template nativo, altezza, righe, wrapping e selezione. Nessun controllo disabilitato. Sorgenti applicativi C# e XAML invariati rispetto a R1. La nuova suite .NET/WPF e PowerShell resta **NON ESEGUITA** in questo ambiente. Manifest corrente: `SHA256SUMS_R10.txt`, rigenerato per R2. I risultati Windows del log utente si riferiscono alla R1.
+--- /dev/null
++++ b/GERARCHIA_RAPPORTI_R10_R3.md
+@@ -0,0 +1,55 @@
++# ProcessLens R10 R3 — lettura ordinata dei rapporti
++
++La candidata parte dalla R10 R2 già consegnata. La modifica risponde alle due schermate ricevute: il rapporto allocazioni presenta titoli troncati e lunghi blocchi consecutivi; le evidenze mescolano avvio, DLL ed esito delle letture. Non si ripete la revisione R6–R10. Le schermate non identificano con certezza la versione avviata e non dimostrano l'esecuzione della suite R2.
++
++## Prima e dopo
++
++| Prima | Dopo |
++|---|---|
++| Sintesi e dettagli poco distinguibili | Quadro generale iniziale, poi capitoli numerati |
++| Titolo allocazioni tagliato nel pannello stretto | Titolo a capo, con larghezza legata al capitolo |
++| VirtualQueryEx, PSAPI e QueryWorkingSetEx nello stesso blocco | Blocchi con etichetta API e separatori |
++| Cinque contatori PSAPI nella stessa riga | Ogni campo già presente su una riga visuale distinta |
++| Ogni allocazione adiacente alla successiva | Blocchi separati, mantenendo tipo, indirizzo, numeri e limiti |
++| DLL, finestre ed esito sotto Altre osservazioni | Capitoli Moduli e librerie, Finestre osservate, Esito delle letture |
++| Evidenze tutte distese | Quadro generale con conteggio voci/capitoli e capitoli chiusi inizialmente |
++| Parser che scartava paragrafi non preceduti da ■ | Ogni paragrafo rimane nella propria sezione; premessa e titoli senza corpo conservati |
++| Processi / Mostrati senza distinzione esplicita | Rilevati / Mostrati, con spiegazione nei tooltip |
++
++Il contenuto non viene trasformato in una nuova diagnosi. Le categorie di osservazione vengono riorganizzate nella sola GUI. Originali, numeri, fonti e limiti restano nei rapporti. I titoli provengono dal testo esistente; i nuovi titoli Quadro generale e quelli dei capitoli indicano l'organizzazione del contenuto, non il livello di affidabilità dei dati.
++
++## Copia e aggiornamento
++
++I testi dei blocchi rimangono selezionabili e in sola lettura. Copia rapporto completo usa ancora `result.Answer` originale, non una ricostruzione dei controlli visuali. Restano quindi anche paragrafi senza titolo, ritorni a capo originali e sezioni chiuse. Il testo originale delle evidenze rimane nell'espansore esistente in fondo al pannello. I separatori visuali fra campi PSAPI non cambiano i numeri o le unità.
++
++I controlli dei capitoli vengono creati aprendo il capitolo e rilasciati chiudendolo. Se le evidenze non cambiano, non si ricrea la gerarchia; se cambiano per lo stesso PID e timestamp di avvio, si conservano i capitoli aperti. La pulizia dei dettagli azzera la cache. Non vengono aggiunte acquisizioni, timer o letture di memoria. Nessun risparmio RAM misurato o promesso.
++
++## Il programma cattura tutti i processi?
++
++Il collector attuale chiama `CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)` e percorre `Process32FirstW`/`Process32NextW`, creando una riga per ogni voce enumerata. Nella vista processi il filtro Tutti e una ricerca vuota non introducono limiti numerici: la lista usa tutte le righe dello snapshot. Gli altri filtri e la ricerca restringono le righe mostrate. I 303/35 e 300/7 delle immagini sono conteggi rilevati/mostrati in istanti differenti; non provano perdite nell'enumerazione.
++
++Questo non è un monitoraggio completo di ogni avvio/uscita fra aggiornamenti. Un processo può terminare prima della lettura e alcuni contatori, percorsi o moduli possono non essere accessibili. Il collector attuale restituisce un elenco vuoto se falliscono la creazione dello snapshot o la prima enumerazione, senza un risultato di completezza distinto: la GUI non può quindi certificare che l'elenco sia sempre completo. Questo limite preesistente non viene nascosto né corretto modificando l'acquisizione in un intervento di impaginazione. Non viene aggiunta la registrazione continua degli eventi di tutti i processi.
++
++Fonte primaria Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-createtoolhelp32snapshot
++
++## Verifica e limiti
++
++Eseguiti qui: controlli strutturali Python/XML, conservazione byte per byte dei componenti protetti, replay reale delle patch, confronto SHA-256, integrità ZIP e manifest. Le nuove verifiche .NET sono fornite nella suite esistente CopyTests (paragrafi, API, numeri e copia) e CopyUiTests (titoli a capo, capitoli differiti e rilascio dei controlli).
++
++**NON ESEGUITO:** build/test .NET, script PowerShell, WPF reale, DPI 100/125/150/200%, selezione/scorrimento reali. Ambiente Linux senza dotnet e pwsh. I controlli di sorgente non dimostrano compilazione o corretto rendering WPF. I risultati positivi del log utente precedente restano storici e non qualificano la R3.
++
++Le criticità di contabilità RAM e inferenze già riportate in `COPIA_TESTI_E_REVISIONE_R10.md` e `audit/R10/review-findings.csv` restano aperte. Non vengono modificati Core, Semantics, collector Windows, Guardian, MemoryAgent, profiler, contratti o identificativi. Nessuna installazione, terminazione o profilazione eseguita.
++
++Estrarre in una cartella nuova e, dalla radice con `src` e `tests`, eseguire:
++
++```powershell
++.\build-dashboard.ps1
++```
++
++Solo se termina con successo:
++
++```powershell
++.\run-release.ps1
++```
++
++Controllare in particolare i titoli lunghi a pannello stretto, copia Unicode, apertura/chiusura capitoli, mantenimento dei capitoli durante refresh e passaggio fra PID. Tutto resta sotto un'unica radice. Manifest corrente: `SHA256SUMS_R10.txt`; audit R3: `audit/R10_R3/`. I documenti delle revisioni precedenti sono storici.
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,10 @@
+-﻿# R10 R2 — inizializzazione del test di layout WPF
++﻿# R10 R3 — quadro generale e gerarchia dei rapporti
++
++Leggere `GERARCHIA_RAPPORTI_R10_R3.md`. Aggiunti quadro generale iniziale, capitoli numerati, titoli a capo e blocchi distinti per API, allocazioni e DLL. Testo originale conservato per la copia completa; paragrafi senza titolo mantenuti anche nella vista strutturata. I controlli si creano aprendo il capitolo. R2 resta inclusa. Acquisizione Windows e componenti protetti invariati. Build/test .NET/PowerShell, WPF e DPI: **NON ESEGUITO** qui. Manifest corrente `SHA256SUMS_R10.txt`, rigenerato per R3.
++
++---
++
++# R10 R2 — inizializzazione del test di layout WPF
+ 
+ Leggere `HOTFIX_R10_R2.md`. Corretto il ciclo di inizializzazione del controllo isolato nella suite CopyUiTests; verifiche esplicite di template nativo, altezza, righe, wrapping e selezione. Nessun controllo disabilitato. Sorgenti applicativi C# e XAML invariati rispetto a R1. La nuova suite .NET/WPF e PowerShell resta **NON ESEGUITA** in questo ambiente. Manifest corrente: `SHA256SUMS_R10.txt`, rigenerato per R2. I risultati Windows del log utente si riferiscono alla R1.
+ 
+--- a/VERSION.txt
++++ b/VERSION.txt
+@@ -1 +1 @@
+-0.19.16-R10-R2-copy-review-candidate
++0.19.16-R10-R3-report-layout-candidate
+--- a/audit/tools/check_r10.py
++++ b/audit/tools/check_r10.py
+@@ -43,7 +43,8 @@
+  check('grid binding and selection preserved '+filename,len(oldgrids)==len(newgrids) and all(ET.tostring(i)==ET.tostring(j) for i,j in zip(oldgrids,newgrids)),'Only copy attached property added to tables')
+ ui=(b/'src/ProcessLens.App/MainWindow.xaml.cs').read_text(encoding='utf-8-sig')
+ ctl=(b/'src/ProcessLens.App/SelectableText.cs').read_text();grid=(b/'src/ProcessLens.App/GridCopySupport.cs').read_text()
+-check('dynamic analyses and facts selectable',ui.count('new SelectableText')==5 and 'new TextBlock' not in ui and 'LineHeight =' not in ui,'All five dynamic rendering sites changed, including RAM expanders')
++report_view=(b/'src/ProcessLens.App/ReportView.cs').read_text()
++check('dynamic analyses and facts selectable',ui.count('new SelectableText')==2 and report_view.count('new SelectableText')==2 and 'ReportView.Body' in ui and 'new TextBlock' not in ui and 'LineHeight =' not in ui,'Facts and structured report blocks use read-only selectable text; headers use wrapped native TextBlocks')
+ check('read-only copy commands',all(t in ctl for t in ['IsReadOnlyProperty.OverrideMetadata','IsUndoEnabled = false','ApplicationCommands.Copy','CopyAllCommand','_copy(SelectedText)','_copy(Text)']),'Selection, copy all, no undo history; runtime tests supplied')
+ check('scroll forwarded for growing output','OnPreviewMouseWheel' in ctl and 'parent.RaiseEvent' in ctl,'Outer detail scroll does not get trapped by growing output')
+ check('full answer snapshot copied',all(t in ui for t in ['_copyAnswerBody = result.Answer;','CopyTextFormat.Report','if (_queryBusy || _copyAnswerBody.Length == 0) return;','ProcessQueryAuditPanel.Visibility == Visibility.Visible ? ProcessQueryAuditText.Text']),'Copies original whole response, not just first visible RAM summary')
+@@ -81,5 +82,24 @@
+         'narrow.Height > wide.Height && text.LineCount > wideLines',
+         'layout and wrapping preserve original text and selection', 'copy selection remains exact after layout']),
+     'Runtime assertions provided, not executed here')
++layout=(b/'src/ProcessLens.App/ReportLayout.cs').read_text()
++check('report parser retains unheaded paragraphs', 'ReportLayout.Sections(result.Answer)' in ui and
++    '.Split(new[] { "\\n\\n" }' not in ui[ui.index('    private void RenderQueryAnswer'):ui.index('    private void ShowQueryMessage')] and
++    'else lines.Add(line);' in layout,
++    'Explicit heading parser replaces paragraph filtering; .NET content regressions supplied')
++check('overview and numbered chapters visible',all(t in ui for t in ['ProcessQueryOverviewLabel.Visibility = Visibility.Visible',
++    'ProcessQueryOverviewSourceText.Text = sections[0].Heading', 'DetailEvidenceOverviewText.Text =', '{index:00}', '{++chapter:00}']) and
++    (b/'src/ProcessLens.App/MainWindow.xaml').read_text(encoding='utf-8-sig').count('Text="QUADRO GENERALE"') == 2,
++    'Query summary and evidence overview precede separately numbered detail chapters')
++check('chapter headers wrap and bodies are lazy',all(t in report_view for t in ['TextWrapping = TextWrapping.Wrap',
++    'header.MaxWidth = Math.Max(1, item.ActualWidth - 64)', 'item.Content = content()', 'item.Content = null']),
++    'Size-constrained header; controls created on expansion and released on collapse, no timer')
++check('evidence refresh preserves active chapter',all(t in ui for t in ['_renderedEvidenceGroupsPid',
++    'string.Equals(evidence, _renderedEvidenceText, StringComparison.Ordinal)', 'expanded.Contains(groupName)', 'section.Tag = groupName']),
++    'Unchanged evidence skips rebuild; changed same-PID evidence restores open group names')
++check('all-process collection and copy sources retained',
++    (b/'src/ProcessLens.Windows/WindowsProcessCollector.cs').read_bytes()==user['src/ProcessLens.Windows/WindowsProcessCollector.cs'] and
++    '_copyAnswerBody = result.Answer;' in ui and 'ReportLayout' not in (b/'src/ProcessLens.App/CopyTextFormat.cs').read_text(),
++    'Enumerator and source report copy do not depend on visual formatting')
+ output=a.output or b/'audit/R10/structural-results.json';output.parent.mkdir(parents=True,exist_ok=True);output.write_text(json.dumps(results,ensure_ascii=False,indent=2)+'\n')
+ raise SystemExit(0 if all(r['status']=='PASS' for r in results) else 1)
+--- a/src/ProcessLens.App/MainWindow.xaml
++++ b/src/ProcessLens.App/MainWindow.xaml
+@@ -231,11 +231,12 @@
+                 <!-- Gli indicatori non possono piu' sovrapporsi ai filtri. -->
+                 <WrapPanel Margin="0,11,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+                     <StackPanel Orientation="Horizontal" Margin="0,0,17,5">
+-                        <TextBlock Text="Processi: " Foreground="#667085"/>
++                        <TextBlock Text="Rilevati: " Foreground="#667085"
++                                   ToolTip="Processi enumerati nell'ultimo snapshot Windows; non è una registrazione continua di ogni avvio."/>
+                         <local:SelectableText x:Name="ProcessCountText" Text="-" FontWeight="SemiBold"/>
+                     </StackPanel>
+                     <StackPanel Orientation="Horizontal" Margin="0,0,17,5">
+-                        <TextBlock Text="Mostrati: " Foreground="#667085"/>
++                        <TextBlock Text="Mostrati: " Foreground="#667085" ToolTip="Righe dopo il filtro di categoria e la ricerca; seleziona Tutti e svuota Cerca per vedere l'elenco rilevato."/>
+                         <local:SelectableText x:Name="VisibleCountText" Text="-" FontWeight="SemiBold"/>
+                     </StackPanel>
+                     <StackPanel Orientation="Horizontal" Margin="0,0,17,5">
+@@ -586,6 +587,9 @@
+                                                 Background="#FCEBEB" BorderBrush="#D79B9B"
+                                                 Click="CancelProfiler_Click"/>
+                                         <local:SelectableText x:Name="ProcessQueryAnswerTitleText" FontSize="14" FontWeight="SemiBold"/>
++                                        <local:SelectableText x:Name="ProcessQueryOverviewLabel" Text="QUADRO GENERALE" Visibility="Collapsed"
++                                                              FontSize="11" FontWeight="Bold" Foreground="#315B8A" Margin="0,14,0,4"/>
++                                        <local:SelectableText x:Name="ProcessQueryOverviewSourceText" FontSize="11.5" Foreground="#667085"/>
+                                         <local:SelectableText x:Name="ProcessQueryAnswerText" FontSize="13" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                                         <!-- Rapporto RAM: sintesi subito visibile, sezioni tecniche espandibili. -->
+                                         <StackPanel x:Name="ProcessQuerySectionsPanel" Margin="0,10,0,0" Visibility="Collapsed"/>
+@@ -883,9 +887,14 @@
+                                           Margin="0,0,0,8" Padding="0,3">
+                                     <Border Style="{StaticResource DetailCard}">
+                                         <StackPanel>
+-                                            <local:SelectableText Text="Le evidenze sono organizzate per argomento. La classificazione non dimostra da sola l'attività attuale."
+-                                                       FontWeight="Normal" Foreground="#667085" TextWrapping="Wrap"
+-                                                       FontSize="12" Margin="0,0,0,12"/>
++                                            <Border Background="#EEF5FF" CornerRadius="6" Padding="12" Margin="0,0,0,12">
++                                                <StackPanel>
++                                                    <local:SelectableText Text="QUADRO GENERALE" FontWeight="SemiBold" FontSize="11.5"
++                                                                          Foreground="#315B8A" Margin="0,0,0,6"/>
++                                                    <local:SelectableText x:Name="DetailEvidenceOverviewText" Text="Evidenze organizzate per argomento."
++                                                                          FontWeight="Normal" Foreground="#334155" TextWrapping="Wrap" FontSize="12.5"/>
++                                                </StackPanel>
++                                            </Border>
+                                             <StackPanel x:Name="DetailEvidenceGroupsPanel"/>
+                                             <Expander Header="Testo completo delle evidenze" IsExpanded="False" Margin="0,10,0,0">
+                                                 <local:SelectableText x:Name="DetailEvidenceText" FontFamily="Consolas" FontSize="11"
+--- a/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -19,6 +19,9 @@
+     private MemoryDashboardView? MemoryDashboard;
+     private ProcessInsight? _currentClassificationAuditInsight;
+     private ProcessInsight? _renderedClassificationAuditInsight;
++    private int? _renderedEvidenceGroupsPid;
++    private DateTime? _renderedEvidenceGroupsStartTime;
++    private string? _renderedEvidenceText;
+     private readonly WindowsProcessCollector _collector = new();
+     private readonly IProcessAnalyzer _analyzer = new ProcessIntelligenceAnalyzer();
+     private readonly IDeepProcessInspector _deepInspector = new WindowsDeepProcessInspector();
+@@ -815,28 +818,13 @@
+             var groupFacts = facts.Where(f => f.Group == group).ToList();
+             if (groupFacts.Count == 0) continue;
+ 
+-            var content = new StackPanel { Margin = new Thickness(0, 10, 0, 2) };
+-            foreach (var fact in groupFacts)
+-                AddTechnicalFact(content, fact.Label, fact.Value);
+-
+-            var section = new Expander
+-            {
+-                Header = group,
+-                IsExpanded = group == "Valutazione interna",
+-                FontWeight = FontWeights.SemiBold,
+-                Margin = new Thickness(0, 0, 0, 9),
+-                Padding = new Thickness(3, 5, 3, 5),
+-                Content = new Border
+-                {
+-                    Background = new SolidColorBrush(Color.FromRgb(248, 250, 253)),
+-                    BorderBrush = new SolidColorBrush(Color.FromRgb(222, 230, 241)),
+-                    BorderThickness = new Thickness(1),
+-                    CornerRadius = new CornerRadius(7),
+-                    Padding = new Thickness(12),
+-                    Margin = new Thickness(0, 8, 0, 0),
+-                    Child = content
+-                }
+-            };
++            var section = ReportView.Section(group, () =>
++            {
++                var content = new StackPanel { Margin = new Thickness(0, 8, 0, 0) };
++                foreach (var fact in groupFacts)
++                    AddTechnicalFact(content, fact.Label, fact.Value);
++                return content;
++            }, expanded: group == "Valutazione interna");
+             DetailClassificationAuditPanel.Children.Add(section);
+         }
+         _renderedClassificationAuditInsight = insight;
+@@ -855,6 +843,10 @@
+         DetailResourceFactsPanel.Children.Clear();
+         DetailNetworkFactsPanel.Children.Clear();
+         DetailEvidenceGroupsPanel.Children.Clear();
++        DetailEvidenceOverviewText.Text = string.Empty;
++        _renderedEvidenceGroupsPid = null;
++        _renderedEvidenceGroupsStartTime = null;
++        _renderedEvidenceText = null;
+         DetailTechnicalContextText.Text = string.Empty;
+         DetailEvidenceText.Text = string.Empty;
+         DetailExecutableText.Text = string.Empty;
+@@ -880,8 +872,19 @@
+             AddTechnicalFact(destination, fact.Label, fact.Value);
+         }
+ 
++        var evidence = DetailEvidenceText.Text;
++        bool sameProcess = _renderedEvidenceGroupsPid == _currentDetailRow?.Pid &&
++            _renderedEvidenceGroupsStartTime == _currentDetailRow?.Process.StartTime;
++        if (sameProcess && string.Equals(evidence, _renderedEvidenceText, StringComparison.Ordinal)) return;
++        var expanded = sameProcess
++            ? DetailEvidenceGroupsPanel.Children.OfType<Expander>().Where(e => e.IsExpanded)
++                .Select(e => e.Tag as string).OfType<string>().ToHashSet(StringComparer.Ordinal)
++            : new HashSet<string>(StringComparer.Ordinal);
+         DetailEvidenceGroupsPanel.Children.Clear();
+-        var evidence = DetailEvidenceText.Text;
++        DetailEvidenceOverviewText.Text = string.Empty;
++        _renderedEvidenceGroupsPid = _currentDetailRow?.Pid;
++        _renderedEvidenceGroupsStartTime = _currentDetailRow?.Process.StartTime;
++        _renderedEvidenceText = evidence;
+         if (string.IsNullOrWhiteSpace(evidence)) return;
+ 
+         var groups = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+@@ -889,39 +892,27 @@
+         {
+             var content = line.Trim().TrimStart('•').Trim();
+             if (content.Length == 0) continue;
+-            var group = ProcessDetailPresentation.EvidenceGroup(content);
++            var group = ReportLayout.EvidenceGroup(content, ProcessDetailPresentation.EvidenceGroup(content));
+             if (!groups.TryGetValue(group, out var values))
+                 groups[group] = values = new List<string>();
+             values.Add(content);
+         }
++        DetailEvidenceOverviewText.Text =
++            $"{groups.Values.Sum(v => v.Count)} voci disponibili, organizzate in {groups.Count} capitoli. " +
++            "Apri il capitolo che ti interessa. Le evidenze di classificazione non dimostrano l'attività attuale; " +
++            "il testo originale resta disponibile in fondo.";
++        int chapter = 0;
+         foreach (var groupName in new[]
+         {
+-            "Identità e applicazione", "Funzione e ambiente di esecuzione", "Avvio e relazioni", "Altre osservazioni"
++            "Identità e applicazione", "Funzione e ambiente di esecuzione", "Avvio e relazioni",
++            "Moduli e librerie", "Finestre osservate", "Esito delle letture", "Altre osservazioni"
+         })
+         {
+             if (!groups.TryGetValue(groupName, out var values)) continue;
+-            var section = new StackPanel { Margin = new Thickness(0, 0, 0, 14) };
+-            section.Children.Add(new SelectableText
+-            {
+-                Text = groupName,
+-                FontWeight = FontWeights.SemiBold,
+-                FontSize = 13,
+-                Foreground = new SolidColorBrush(Color.FromRgb(39, 64, 94)),
+-                Margin = new Thickness(0, 0, 0, 8),
+-                TextWrapping = TextWrapping.Wrap
+-            });
+-            foreach (var value in values)
+-            {
+-                section.Children.Add(new SelectableText
+-                {
+-                    Text = value,
+-                    FontSize = 12,
+-                    FontWeight = FontWeights.Normal,
+-                    Foreground = new SolidColorBrush(Color.FromRgb(51, 65, 85)),
+-                    TextWrapping = TextWrapping.Wrap,
+-                    Margin = new Thickness(0, 0, 0, 9)
+-                });
+-            }
++            string body = string.Join("\n\n", values);
++            var section = ReportView.Section($"{++chapter:00} · {groupName} ({values.Count})",
++                () => ReportView.Body(body), expanded: expanded.Contains(groupName));
++            section.Tag = groupName;
+             DetailEvidenceGroupsPanel.Children.Add(section);
+         }
+     }
+@@ -1302,6 +1293,8 @@
+         QuickQuestionMenu.IsEnabled = false;
+         ProcessQueryAnswerCard.Visibility = Visibility.Visible;
+         ProcessQuerySectionsPanel.Children.Clear();
++        ProcessQueryOverviewLabel.Visibility = Visibility.Collapsed;
++        ProcessQueryOverviewSourceText.Text = string.Empty;
+         ProcessQuerySectionsPanel.Visibility = Visibility.Collapsed;
+         ProcessQueryAnswerTitleText.Text = "Analisi della domanda…";
+         ProcessQueryAnswerText.Text = "Raccolgo le evidenze disponibili sul PID selezionato.";
+@@ -1497,65 +1490,27 @@
+     private void RenderQueryAnswer(ProcessQueryResult result)
+     {
+         ProcessQuerySectionsPanel.Children.Clear();
++        ProcessQueryOverviewLabel.Visibility = Visibility.Collapsed;
++        ProcessQueryOverviewSourceText.Text = string.Empty;
+         ProcessQuerySectionsPanel.Visibility = Visibility.Collapsed;
+-        if (!string.Equals(result.Title, "Perché occupa RAM?", StringComparison.Ordinal) ||
+-            !result.Answer.Contains("■ ", StringComparison.Ordinal))
++        if (!result.Answer.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
++            .Any(line => line.StartsWith("■ ", StringComparison.Ordinal)))
+         {
+             ProcessQueryAnswerText.Text = result.Answer;
+             return;
+         }
+ 
+-        // La sintesi e' leggibile subito; le evidenze tecniche sono in sezioni
+-        // indipendenti espandibili, anziche' in un unico muro di testo.
+-        string[] sections = result.Answer.Replace("\r\n", "\n", StringComparison.Ordinal)
+-            .Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
+-        bool summaryFound = false;
+-        foreach (string section in sections)
+-        {
+-            if (!section.StartsWith("■ ", StringComparison.Ordinal))
+-                continue;
+-
+-            int firstNewLine = section.IndexOf('\n');
+-            if (firstNewLine < 0)
+-                continue;
+-            string heading = section[2..firstNewLine].Trim();
+-            string body = section[(firstNewLine + 1)..].Trim();
+-            if (!summaryFound)
+-            {
+-                ProcessQueryAnswerText.Text = body;
+-                summaryFound = true;
+-                continue;
+-            }
+-
+-            var content = new SelectableText
+-            {
+-                Text = body,
+-                TextWrapping = TextWrapping.Wrap,
+-                FontSize = 12.5,
+-                FontWeight = FontWeights.Normal,
+-                Foreground = new SolidColorBrush(Color.FromRgb(40, 51, 67)),
+-                Margin = new Thickness(3, 9, 3, 5)
+-            };
+-            var item = new Expander
+-            {
+-                Header = heading,
+-                IsExpanded = heading.StartsWith("VALUTAZIONE", StringComparison.Ordinal),
+-                Content = content,
+-                FontSize = 12.5,
+-                FontWeight = FontWeights.SemiBold,
+-                Foreground = new SolidColorBrush(Color.FromRgb(35, 76, 120)),
+-                Background = new SolidColorBrush(Color.FromRgb(248, 250, 253)),
+-                BorderBrush = new SolidColorBrush(Color.FromRgb(220, 229, 241)),
+-                BorderThickness = new Thickness(1),
+-                Padding = new Thickness(10, 7, 10, 7),
+-                Margin = new Thickness(0, 0, 0, 7)
+-            };
+-            ProcessQuerySectionsPanel.Children.Add(item);
+-        }
+-        if (!summaryFound)
+-        {
+-            ProcessQueryAnswerText.Text = result.Answer;
+-            return;
++        // Parse only explicit headings: blank/unheaded paragraphs remain in their section.
++        // The complete original result.Answer is copied separately, without reconstruction.
++        var sections = ReportLayout.Sections(result.Answer);
++        ProcessQueryOverviewLabel.Visibility = Visibility.Visible;
++        ProcessQueryOverviewSourceText.Text = sections[0].Heading;
++        ProcessQueryAnswerText.Text = sections[0].Body;
++        for (int index = 1; index < sections.Count; index++)
++        {
++            var section = sections[index];
++            ProcessQuerySectionsPanel.Children.Add(ReportView.Section(
++                $"{index:00} · {section.Heading}", () => ReportView.Body(section.Body)));
+         }
+         ProcessQuerySectionsPanel.Visibility = ProcessQuerySectionsPanel.Children.Count > 0
+             ? Visibility.Visible : Visibility.Collapsed;
+@@ -1564,6 +1519,8 @@
+     private void ShowQueryMessage(string title, string answer, string confidence)
+     {
+         ProcessQuerySectionsPanel.Children.Clear();
++        ProcessQueryOverviewLabel.Visibility = Visibility.Collapsed;
++        ProcessQueryOverviewSourceText.Text = string.Empty;
+         ProcessQuerySectionsPanel.Visibility = Visibility.Collapsed;
+         ProcessQueryAnswerCard.Visibility = Visibility.Visible;
+         ProcessQueryAnswerTitleText.Text = title;
+@@ -1585,6 +1542,8 @@
+         ProcessQueryAuditPanel.Visibility = Visibility.Collapsed;
+         ProcessQueryAuditText.Text = string.Empty;
+         ProcessQuerySectionsPanel.Children.Clear();
++        ProcessQueryOverviewLabel.Visibility = Visibility.Collapsed;
++        ProcessQueryOverviewSourceText.Text = string.Empty;
+         ProcessQuerySectionsPanel.Visibility = Visibility.Collapsed;
+         ProcessQueryAnswerTitleText.Text = string.Empty;
+         ProcessQueryAnswerText.Text = string.Empty;
+@@ -1639,6 +1598,9 @@
+     private void ClearDetails()
+     {
+         _currentDetailRow = null;
++        _renderedEvidenceGroupsPid = null;
++        _renderedEvidenceGroupsStartTime = null;
++        _renderedEvidenceText = null;
+         _renderedClassificationFactsInsight = null;
+         _renderedClassificationFactsPid = null;
+         DetailClassificationFactsPanel.Children.Clear();
+@@ -1698,12 +1660,15 @@
+         DetailNetworkFactsPanel.Children.Clear();
+         DetailEvidenceGroupsPanel.Children.Clear();
+         DetailEvidenceText.Text = string.Empty;
++        DetailEvidenceOverviewText.Text = string.Empty;
+         ProcessQueryAnswerCard.Visibility = Visibility.Collapsed;
+         _copyAnswerBody = string.Empty;
+         CopyQueryReportButton.IsEnabled = false;
+         ProcessQueryAuditPanel.Visibility = Visibility.Collapsed;
+         ProcessQueryAuditText.Text = string.Empty;
+         ProcessQuerySectionsPanel.Children.Clear();
++        ProcessQueryOverviewLabel.Visibility = Visibility.Collapsed;
++        ProcessQueryOverviewSourceText.Text = string.Empty;
+         ProcessQuerySectionsPanel.Visibility = Visibility.Collapsed;
+         ProcessQueryAnswerTitleText.Text = string.Empty;
+         ProcessQueryAnswerText.Text = string.Empty;
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R2-copy-review-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R3-report-layout-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+--- /dev/null
++++ b/src/ProcessLens.App/ReportLayout.cs
+@@ -0,0 +1,71 @@
++namespace ProcessLens.App;
++
++// Presentation only: never adds measurements or changes the original report used for copying.
++internal static class ReportLayout
++{
++    internal sealed record Section(string Heading, string Body);
++    internal sealed record Block(string Label, string Text);
++
++    public static IReadOnlyList<Section> Sections(string text)
++    {
++        var result = new List<Section>();
++        string heading = "Quadro generale";
++        var lines = new List<string>();
++        bool hasHeading = false;
++        foreach (string line in text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n'))
++        {
++            if (line.StartsWith("■ ", StringComparison.Ordinal) && line.Length > 2)
++            {
++                if (hasHeading || lines.Any(s => !string.IsNullOrWhiteSpace(s)))
++                    result.Add(new Section(heading, string.Join("\n", lines)));
++                heading = line[2..];
++                lines.Clear();
++                hasHeading = true;
++            }
++            else lines.Add(line);
++        }
++        if (hasHeading || lines.Count > 0)
++            result.Add(new Section(heading, string.Join("\n", lines)));
++        return result;
++    }
++
++    public static IReadOnlyList<Block> Blocks(string text)
++    {
++        var result = new List<Block>();
++        foreach (string paragraph in text.Replace("\r\n", "\n", StringComparison.Ordinal)
++            .Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries))
++        {
++            foreach (string line in paragraph.Split('\n'))
++            {
++                if (string.IsNullOrWhiteSpace(line)) continue;
++                string label = "";
++                string value = line;
++                foreach (string prefix in new[] {
++                    "VirtualQueryEx:", "QueryWorkingSetEx:",
++                    "Contatori storici e Kernel Pool (PSAPI EX2):", "Guida tecnica:",
++                    "Moduli caricati (campione):", "Campione DLL osservate:",
++                    "Classi finestre:", "Deep inspection:", "Origine:", "Catena padre:" })
++                {
++                    if (!line.StartsWith(prefix, StringComparison.Ordinal)) continue;
++                    label = prefix[..^1];
++                    value = line[prefix.Length..].TrimStart(' ');
++                    // Existing PSAPI fields get separate visual lines; numbers/units stay untouched.
++                    if (prefix == "Contatori storici e Kernel Pool (PSAPI EX2):")
++                        value = value.Replace(" · ", "\n", StringComparison.Ordinal);
++                    break;
++                }
++                result.Add(new Block(label, value));
++            }
++        }
++        return result;
++    }
++
++    public static string EvidenceGroup(string line, string fallback)
++    {
++        if (line.StartsWith("Moduli caricati", StringComparison.Ordinal) ||
++            line.StartsWith("Campione DLL osservate", StringComparison.Ordinal)) return "Moduli e librerie";
++        if (line.StartsWith("Classi finestre:", StringComparison.Ordinal)) return "Finestre osservate";
++        if (line.StartsWith("Deep inspection:", StringComparison.Ordinal)) return "Esito delle letture";
++        return fallback;
++    }
++}
+--- /dev/null
++++ b/src/ProcessLens.App/ReportView.cs
+@@ -0,0 +1,57 @@
++using System.Windows;
++using System.Windows.Controls;
++using System.Windows.Media;
++
++namespace ProcessLens.App;
++
++internal static class ReportView
++{
++    public static StackPanel Body(string text)
++    {
++        var panel = new StackPanel();
++        foreach (var block in ReportLayout.Blocks(text))
++        {
++            var content = new StackPanel();
++            if (block.Label.Length > 0)
++                content.Children.Add(new SelectableText {
++                    Text = block.Label, FontSize = 11.5, FontWeight = FontWeights.SemiBold,
++                    Foreground = new SolidColorBrush(Color.FromRgb(71, 85, 105)), Margin = new Thickness(0, 0, 0, 5)
++                });
++            content.Children.Add(new SelectableText {
++                Text = block.Text, FontSize = 12.5, FontWeight = FontWeights.Normal,
++                Foreground = new SolidColorBrush(Color.FromRgb(30, 41, 59))
++            });
++            panel.Children.Add(new Border {
++                Background = Brushes.White, BorderBrush = new SolidColorBrush(Color.FromRgb(226, 232, 240)),
++                BorderThickness = new Thickness(0, 0, 0, 1), Padding = new Thickness(10, 9, 10, 11),
++                Margin = new Thickness(0, 0, 0, 6), Child = content
++            });
++        }
++        return panel;
++    }
++
++    public static Expander Section(string title, Func<UIElement> content, bool expanded = false)
++    {
++        // Native header strings can be measured on one long line. Constrain this TextBlock
++        // to the section width so long API/chapter titles wrap even in a narrow detail pane.
++        var header = new TextBlock {
++            Text = title, TextWrapping = TextWrapping.Wrap, FontSize = 13,
++            FontWeight = FontWeights.SemiBold, Foreground = new SolidColorBrush(Color.FromRgb(35, 76, 120))
++        };
++        var item = new Expander {
++            Header = header, HorizontalContentAlignment = HorizontalAlignment.Stretch,
++            Background = new SolidColorBrush(Color.FromRgb(248, 250, 253)),
++            BorderBrush = new SolidColorBrush(Color.FromRgb(220, 229, 241)), BorderThickness = new Thickness(1),
++            Padding = new Thickness(10, 9, 10, 9), Margin = new Thickness(0, 0, 0, 10)
++        };
++        item.SizeChanged += (_, _) => header.MaxWidth = Math.Max(1, item.ActualWidth - 64);
++        item.Expanded += (_, e) => {
++            if (ReferenceEquals(item, e.OriginalSource) && item.Content is null) item.Content = content();
++        };
++        item.Collapsed += (_, e) => {
++            if (ReferenceEquals(item, e.OriginalSource)) item.Content = null;
++        };
++        item.IsExpanded = expanded;
++        return item;
++    }
++}
+--- a/start-processlens-all.ps1
++++ b/start-processlens-all.ps1
+@@ -27,7 +27,7 @@
+ }
+ 
+ try {
+-    Write-Host 'ProcessLens v0.19.16 R10 R2 candidata - Avvio guidato in sequenza' -ForegroundColor Green
++    Write-Host 'ProcessLens v0.19.16 R10 R3 candidata - Avvio guidato in sequenza' -ForegroundColor Green
+     Write-Host ('Modalita: ' + $Mode)
+     Write-Host ('Cartella: ' + $PSScriptRoot)
+     $isAdmin = Test-IsAdministrator
+--- a/tests/ProcessLens.CopyTests/ProcessLens.CopyTests.csproj
++++ b/tests/ProcessLens.CopyTests/ProcessLens.CopyTests.csproj
+@@ -5,5 +5,6 @@
+   </PropertyGroup>
+   <ItemGroup>
+     <Compile Include="../../src/ProcessLens.App/CopyTextFormat.cs" Link="CopyTextFormat.cs" />
++    <Compile Include="../../src/ProcessLens.App/ReportLayout.cs" Link="ReportLayout.cs" />
+   </ItemGroup>
+ </Project>
+--- a/tests/ProcessLens.CopyTests/Program.cs
++++ b/tests/ProcessLens.CopyTests/Program.cs
+@@ -31,3 +31,29 @@
+     }
+ }
+ finally { CultureInfo.CurrentCulture = saved; }
++
++string structured = "■ DIAGNOSI IN BREVE\r\nPrima osservazione.\r\n\r\nParagrafo senza titolo: perché 🧪.\r\n\r\n■ ALLOCAZIONI WINDOWS — PROVE NATIVE E PICCHI STORICI\r\nVirtualQueryEx: 824,7 MiB virtuali impegnati.\r\nQueryWorkingSetEx: 751 pagine campionate.\r\n\r\nLimite finale da non perdere.";
++var chapters = ReportLayout.Sections(structured);
++Check(chapters.Count == 2 && chapters[0].Body.Contains("Paragrafo senza titolo: perché 🧪.", StringComparison.Ordinal),
++    "report layout retains unheaded paragraphs within the correct chapter");
++Check(string.Join("\n", chapters.Select(c => "■ " + c.Heading + "\n" + c.Body)) == structured.Replace("\r\n", "\n", StringComparison.Ordinal),
++    "report chapter split preserves every normalized source line");
++var preamble = ReportLayout.Sections("Introduzione senza titolo.\n\n■ API\nRisultato.\n\n■ SOLO TITOLO");
++Check(preamble.Count == 3 && preamble[0].Body.Contains("Introduzione senza titolo.", StringComparison.Ordinal) &&
++    preamble[2].Heading == "SOLO TITOLO" && preamble[2].Body == "",
++    "preamble and heading-only final chapter are retained");
++Check(ReportLayout.Sections("L'icona ■ nel testo non è un titolo.").Count == 1,
++    "embedded square marker does not create a false chapter");
++Check(ReportLayout.Sections("Senza marcatori\n\nAncora testo")[0].Body == "Senza marcatori\n\nAncora testo",
++    "plain reports preserve all paragraphs");
++var blocks = ReportLayout.Blocks(chapters[1].Body);
++Check(blocks.Count == 3 && blocks[0].Label == "VirtualQueryEx" && blocks[1].Label == "QueryWorkingSetEx" &&
++    blocks[2].Text == "Limite finale da non perdere.", "API sources and unheaded limits get distinct readable blocks");
++var psapi = ReportLayout.Blocks("Contatori storici e Kernel Pool (PSAPI EX2): Picco 280,4 MiB · Fault 281.714 · Pool 1,48 MiB");
++Check(psapi.Single().Text == "Picco 280,4 MiB\nFault 281.714\nPool 1,48 MiB",
++    "PSAPI visual lines retain exact numbers and units");
++Check(ReportLayout.EvidenceGroup("Moduli caricati (campione): a.dll, b.dll", "Altre osservazioni") == "Moduli e librerie" &&
++    ReportLayout.EvidenceGroup("Deep inspection: Accesso parziale", "Altre osservazioni") == "Esito delle letture" &&
++    ReportLayout.EvidenceGroup("Ruolo non verificato", "Funzione") == "Funzione", "evidence chapters distinguish modules and acquisition status without altering other groups");
++Check(CopyTextFormat.Report("RAM", structured, "", "").Contains(structured, StringComparison.Ordinal),
++    "complete copied report remains original CRLF text independent of visual hierarchy");
+--- a/tests/ProcessLens.CopyUiTests/Program.cs
++++ b/tests/ProcessLens.CopyUiTests/Program.cs
+@@ -66,6 +66,36 @@
+         ApplicationCommands.Copy.Execute(null, text);
+         Check(copied == "perché 🧪", "copy selection remains exact after layout");
+ 
++        int built = 0;
++        var chapter = ReportView.Section("01 · ALLOCAZIONI WINDOWS — PROVE NATIVE E PICCHI STORICI", () =>
++        {
++            built++;
++            return ReportView.Body("VirtualQueryEx: 824,7 MiB virtuali impegnati.\nQueryWorkingSetEx: campione parziale.");
++        });
++        Check(chapter.Content is null && built == 0, "closed chapter does not allocate text controls");
++        chapter.BeginInit();
++        chapter.EndInit();
++        chapter.Width = 360;
++        chapter.Measure(new Size(360, double.PositiveInfinity));
++        chapter.Arrange(new Rect(new Point(), chapter.DesiredSize));
++        chapter.UpdateLayout();
++        var chapterHeader = (TextBlock)chapter.Header;
++        double wideHeaderHeight = chapterHeader.ActualHeight;
++        chapter.Width = 180;
++        chapter.Measure(new Size(180, double.PositiveInfinity));
++        chapter.Arrange(new Rect(new Point(), chapter.DesiredSize));
++        chapter.UpdateLayout();
++        Check(chapterHeader.TextWrapping == TextWrapping.Wrap && chapterHeader.MaxWidth <= 180 &&
++            wideHeaderHeight > 0 && chapterHeader.ActualHeight > wideHeaderHeight,
++            "long native chapter title wraps at narrow detail-pane width");
++        chapter.IsExpanded = true;
++        Check(built == 1 && chapter.Content is StackPanel panel && panel.Children.Count == 2,
++            "opening chapter builds separate API blocks on demand");
++        chapter.IsExpanded = false;
++        Check(chapter.Content is null, "closing chapter releases generated blocks");
++        chapter.IsExpanded = true;
++        Check(built == 2, "reopened chapter recreates its current content");
++
+         var saved = CultureInfo.CurrentCulture;
+         try
+         {
+@@ -95,6 +125,9 @@
+         var window = new MainWindow();
+         Check(!window.IsLoaded && window.FindName("ProcessQueryAnswerText") is SelectableText &&
+             window.FindName("ServiceHistoryStatusText") is SelectableText, "actual window XAML has selectable analysis and log controls");
++        Check(window.FindName("ProcessQueryOverviewLabel") is SelectableText &&
++            window.FindName("DetailEvidenceOverviewText") is SelectableText,
++            "actual query and evidence panels contain initial overview controls");
+         var memory = new MemoryDashboardView();
+         var guardian = new GuardianDashboardView();
+         Check(memory.FindName("RefreshStatus") is SelectableText && guardian.FindName("StatusText") is SelectableText,
+--- a/tests/check-copy-ui-r10.ps1
++++ b/tests/check-copy-ui-r10.ps1
+@@ -29,3 +29,14 @@
+     }
+ }
+ Write-Host 'PASS R10 copy: selectable output, one-way bindings, grid copy, complete report and no automatic GUI termination. Structural checks only.'
++$layout = Get-Content (Join-Path $root 'src\ProcessLens.App\ReportLayout.cs') -Raw -Encoding UTF8
++$reportView = Get-Content (Join-Path $root 'src\ProcessLens.App\ReportView.cs') -Raw -Encoding UTF8
++foreach ($token in @('ProcessQueryOverviewLabel', 'DetailEvidenceOverviewText', 'ReportLayout.Sections(result.Answer)',
++    'ReportView.Body', '_renderedEvidenceGroupsPid', 'expanded.Contains(groupName)')) {
++    if (-not $code.Contains($token)) { throw ('FAIL report hierarchy: missing integration: ' + $token) }
++}
++foreach ($token in @('TextWrapping = TextWrapping.Wrap', 'header.MaxWidth', 'item.Content = content()', 'item.Content = null')) {
++    if (-not $reportView.Contains($token)) { throw ('FAIL report hierarchy: missing native layout/lifecycle: ' + $token) }
++}
++if (-not $layout.Contains('else lines.Add(line);')) { throw 'FAIL report hierarchy: unheaded source lines are not retained.' }
++Write-Host 'PASS R10 R3 hierarchy: overview, chapters, wrapping, source retention and lazy controls. Source checks only.'
+--- a/tests/check-structured-queries.ps1
++++ b/tests/check-structured-queries.ps1
+@@ -17,7 +17,7 @@
+     [PSCustomObject]@{ Name='vecchio picker rimosso da C#'; Passed=($code -notmatch 'QuickQuestionPicker_SelectionChanged') }
+     [PSCustomObject]@{ Name='riquadro testo in XAML'; Passed=($view -match 'ProcessQueryAnswerText') }
+     [PSCustomObject]@{ Name='pannello sezioni in XAML'; Passed=($view -match 'ProcessQuerySectionsPanel') }
+-    [PSCustomObject]@{ Name='sezioni espandibili in C#'; Passed=($code -match 'new Expander') }
++    [PSCustomObject]@{ Name='sezioni espandibili in C#'; Passed=(($code -match 'ReportView.Section') -and ((Get-Content (Join-Path $root 'src\ProcessLens.App\ReportView.cs') -Raw -Encoding UTF8) -match 'new Expander')) }
+     [PSCustomObject]@{ Name='render rapporto in C#'; Passed=($code -match 'RenderQueryAnswer') }
+     [PSCustomObject]@{ Name='sintesi rapporto RAM'; Passed=($sem -match 'DIAGNOSI IN BREVE') }
+     [PSCustomObject]@{ Name='mappa memoria virtuale'; Passed=($sem -match 'MAPPA DELLA MEMORIA VIRTUALE') }

@@ -1,0 +1,12 @@
+{
+  "source": "User request 2026-10-17: restore minimized GUI and keep app alive when X is pressed",
+  "screenshot": {
+    "file": "image(20261017-154328).png",
+    "sha256": "b2b964ad2aded9d472481488daccb44400c49693a4204389caf7f632b82349e7"
+  },
+  "screenshot_not_in_deliverable": true,
+  "screenshot_observation": "RAM threshold dialog; GUI state and exact cause of restore failure not established by this screenshot",
+  "baseline": "R10 R4 delivered candidate",
+  "Windows_R5_execution": "NON ESEGUITO",
+  "process_or_service_actions_here": 0
+}

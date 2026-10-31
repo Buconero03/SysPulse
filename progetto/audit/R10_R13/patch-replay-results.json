@@ -1,0 +1,8 @@
+{
+  "git_apply_check": "PASS",
+  "actual_git_apply": "PASS",
+  "exact_changed_files": 19,
+  "unchanged_existing_source_files": 119,
+  "deleted_prior_files": 0,
+  "scope": "R12 to R13; current audit and manifest excluded for self-reference"
+}

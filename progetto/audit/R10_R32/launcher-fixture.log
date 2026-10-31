@@ -1,0 +1,24 @@
+PASS R32 launcher: empty package has no runnable GUI
+PASS R32 launcher: completed old installation cannot silently substitute its old GUI
+PASS R32 launcher: publication without successful R31 receipt is not accepted
+PASS R32 launcher: receipt for another revision is rejected
+Primo avvio R32: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R32 launcher: failed tests cannot issue a build receipt or launch a stale publication
+PASS R32 launcher: completed R20 cache reused without copying packages into ZIP
+PASS R32 launcher: R20 cache build has no configured network feed
+Primo avvio R32: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R32 launcher: missing executable after build remains an error
+Primo avvio R32: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R32 launcher: successful owned build resolves new publication with existing private runtime
+PASS R32 launcher: subsequent resolution needs no build or SDK command
+PASS R32 launcher: missing desktop runtime is not accepted
+PASS R32 launcher: wrong desktop runtime major is not accepted
+PASS R32 launcher: paths with spaces remain one UAC argument
+PASS R32 launcher: quotes and newlines cannot create extra launch arguments
+PASS R32 launcher: quotes and newlines cannot create extra launch arguments
+PASS R32 launcher: real PowerShell parser accepts complete launcher
+PASS R32 launcher: launcher installs no dependencies and changes no services or running processes
+R32 launcher fixture complete: 17 checks; synthetic files only, no Windows app or UAC.

@@ -1,0 +1,127 @@
+[
+  {
+    "test": "all R18 files retained",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "exact four-file source/test/pipeline ledger",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "production C# and XAML retained outside exact R19 header/layout hashes",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "only production project identity changed",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "no other production or C# test changes outside exact R19 hashes",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "every existing Check assertion retained",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "all layout invariants pass",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "all unrelated fixture code retained exactly",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "all Windows stages retained in order with new source gate",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "332 retained portable assertions have unchanged current inputs",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "six current C# assemblies type-check with zero warnings",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "edited test syntax matches its actual input",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "reported R17 Windows failure retained without claiming current execution",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "reject too early queue priority",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "reject unbounded passes",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "reject oversized time budget",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "reject missing timer cleanup",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "reject missing sentinel cleanup",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "reject fake stable state",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "reject weakened height",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "reject missing original line bound",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "reject changed wrapping expectation",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "reject no Background fixture",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "old Measure-only helper is rejected",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  },
+  {
+    "test": "all XAML/project XML parses",
+    "status": "PASS",
+    "kind": "source/mutation/type-check correlation; not WPF execution"
+  }
+]

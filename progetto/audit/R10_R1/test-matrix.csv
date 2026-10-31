@@ -1,0 +1,7 @@
+test,kind,status
+button regressions (6),Python portable,PASS
+structural checks (41),Python portable,PASS
+R10 to R10 R1 patch replay,git apply + SHA256,PASS
+check-ui-format-r9.ps1 R1,PowerShell,NON ESEGUITO
+.NET build and tests,dotnet,NON ESEGUITO
+WPF and DPI,Windows,NON ESEGUITO

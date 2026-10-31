@@ -1,0 +1,12 @@
+﻿file,line_R7,before,after,reason,test
+src/ProcessLens.Semantics/ProcessQueryEngine.cs,742,"if (ContainsAny(q, ""internet"", ""rete"", ""connession"", ""porta"", ""socket"")) intents.Add(ProcessQueryIntent.Network);","if (ContainsAny(q, ""internet"", ""rete"", ""connession"", ""socket"") || Regex.IsMatch(q, @""\b(?:porta|porte|port|ports)\b"")) intents.Add(ProcessQueryIntent.Network);","Riconosce porte/porta/port/ports come parole, evitando comporta/riporta/supporta; condizioni degli altri intent invariati",ProcessLens.BehaviorTests; runtime Windows NON ESEGUITO qui
+tests/ProcessLens.BehaviorTests/Program.cs,158,"Require(partialNetwork.Answer.Contains(""AccessDenied"") && partialNetwork.Answer.Contains(""non garantisce assenza""),","Require(partialNetwork.Title == ""Porte e connessioni"" &&
+        partialNetwork.Answer.Contains(""AccessDenied"") && partialNetwork.Answer.Contains(""non garantisce assenza""),",L’asserzione verifica anche l’instradamento: non indebolisce il controllo delle note e dell’assenza non garantita,ProcessLens.BehaviorTests; runtime Windows NON ESEGUITO qui
+VERSION.txt,1,0.19.16 R7 Candidate,0.19.16 R7 R1 Candidate,Distingue hotfix dalla candidata fallita sul PC dell’utente,ProcessLens.BehaviorTests; runtime Windows NON ESEGUITO qui
+src/ProcessLens.App/ProcessLens.App.csproj,11,0.19.16-R7-candidate,0.19.16-R7-R1-candidate,"Metadati candidata, nessuna promozione stabile",ProcessLens.BehaviorTests; runtime Windows NON ESEGUITO qui
+start-processlens-all.ps1,30,v0.19.16 R7 candidata,v0.19.16 R7 R1 candidata,Banner coerente con hotfix,ProcessLens.BehaviorTests; runtime Windows NON ESEGUITO qui
+README.md,1,# R7 candidata — revisione del 14 ottobre 2026,"# R7 R1 candidata — hotfix instradamento porte
+
+Leggere prima `HOTFIX_R7_R1.md`. Gli audit R7 documentano la revisione precedente; R1 corregge il difetto emerso dal log Windows del 14 ottobre. I test R1 su Windows restano NON ESEGUITI qui.
+
+## Revisione precedente R7",Stato corrente e storico distinti,ProcessLens.BehaviorTests; runtime Windows NON ESEGUITO qui

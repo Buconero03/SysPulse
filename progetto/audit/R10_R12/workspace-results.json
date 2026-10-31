@@ -1,0 +1,147 @@
+[
+  {
+    "test": "existing source outside UI is exact or explicitly reviewed UX or network feature",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "unique WPF names MainWindow.xaml",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "selectable one-way outputs and table copy MainWindow.xaml",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "unique WPF names GuardianDashboardView.xaml",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "selectable one-way outputs and table copy GuardianDashboardView.xaml",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "unique WPF names MemoryDashboardView.xaml",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "selectable one-way outputs and table copy MemoryDashboardView.xaml",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "main buttons retain wrapped styles and no fixed heights",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "list template and selection unchanged ProcessList",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "list template and selection unchanged ServiceList",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "all data-grid bindings copy and selection unchanged GuardianDashboardView.xaml",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "all data-grid bindings copy and selection unchanged MemoryDashboardView.xaml",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "process and service column splitters are keyboard focusable",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "focus and return preserve existing pane and list width",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "secondary GUI counters start collapsed and copy remains enabled by real samples",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "analysis is earlier than identification and uptime sections",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "Guardian tabs have padded selectable and keyboard focus states",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "diagnostic translated and raw panels are selectable one-way bindings",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "diagnostic selection survives unchanged snapshots and preserves raw identity",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "diagnostic decoder only accepts exact health grammar and retains originals",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "diagnostic labels distinguish cumulative coverage and shared resident RAM",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "Windows reference uses exact name and separates identity from static role",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "Windows context clears prior report without replacing an active query",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "all clipboard calls retain the two-argument contract",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "XAML event handlers exist MainWindow",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "XAML event handlers exist GuardianDashboardView",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "XAML event handlers exist MemoryDashboardView",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "WPF regressions remain unshown and use a fake clipboard",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "new source and executable regressions wired into existing build",
+    "status": "PASS",
+    "kind": "source/XML only"
+  }
+]

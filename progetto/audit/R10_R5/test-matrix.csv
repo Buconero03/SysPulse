@@ -1,0 +1,13 @@
+test,kind,status
+structural checks (59),Python portable,PASS
+button regressions (6),Python portable,PASS
+R4 to R5 patch replay,git apply + SHA256,PASS
+CopyTests hierarchy and window lifetime policy regressions,.NET runtime,NON ESEGUITO
+CopyUiTests existing native and markup regressions; no shell icon created by tests,WPF runtime,NON ESEGUITO
+other .NET build and tests,dotnet,NON ESEGUITO
+PowerShell scripts,PowerShell,NON ESEGUITO
+WPF visual 100/125/150/200 percent DPI,Windows,NON ESEGUITO
+Tray X and restore and explicit exit,manual Windows,NON ESEGUITO
+Second launch from minimized or hidden,manual Windows,NON ESEGUITO
+Explorer recovery and session ending,manual Windows,NON ESEGUITO
+RAM difference,measurement,NON MISURATO

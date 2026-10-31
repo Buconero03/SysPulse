@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/ProcessLens.App/CopyTextFormat.cs" Link="CopyTextFormat.cs" />
+    <Compile Include="../../src/ProcessLens.App/ReportLayout.cs" Link="ReportLayout.cs" />
+    <Compile Include="../../src/ProcessLens.App/ProcessExitNotice.cs" Link="ProcessExitNotice.cs" />
+    <Compile Include="../../src/ProcessLens.App/WindowLifetimePolicy.cs" Link="WindowLifetimePolicy.cs" />
+    <Compile Include="../../src/ProcessLens.App/AuditLogPresentation.cs" Link="AuditLogPresentation.cs" />
+    <Compile Include="../../src/ProcessLens.App/ServiceNavigation.cs" Link="ServiceNavigation.cs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,26 @@
+[
+  {
+    "test": "delivered R10 failure reproduced: only direct RAM button lacks style",
+    "status": "PASS"
+  },
+  {
+    "test": "corrected R10 R1 has no layout-rule violation",
+    "status": "PASS"
+  },
+  {
+    "test": "reject MissingStyle",
+    "status": "PASS"
+  },
+  {
+    "test": "reject UnknownStyle",
+    "status": "PASS"
+  },
+  {
+    "test": "reject FixedHeight",
+    "status": "PASS"
+  },
+  {
+    "test": "direct RAM event remains wired",
+    "status": "PASS"
+  }
+]

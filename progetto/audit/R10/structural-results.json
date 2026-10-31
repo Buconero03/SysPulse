@@ -1,0 +1,332 @@
+[
+  {
+    "test": "protected components retained with exact scoped metadata-cache change",
+    "status": "PASS",
+    "detail": "75 existing protected files byte-identical; one exact cache declaration replacement, independent churn tests supplied; CPU acquisition added separately"
+  },
+  {
+    "test": "R8 R9 helper implementations retained",
+    "status": "PASS",
+    "detail": "Prior delivered memory and numeric formatting helpers retained"
+  },
+  {
+    "test": "XML well formed",
+    "status": "PASS",
+    "detail": "36 XML project/markup files; not a WPF compiler result"
+  },
+  {
+    "test": "unique names MainWindow.xaml",
+    "status": "PASS",
+    "detail": "No duplicate generated names"
+  },
+  {
+    "test": "selectable output MainWindow.xaml",
+    "status": "PASS",
+    "detail": "117 output controls with supported TextBox attributes"
+  },
+  {
+    "test": "one-way output bindings MainWindow.xaml",
+    "status": "PASS",
+    "detail": "New selectable bindings cannot write into source rows"
+  },
+  {
+    "test": "compatible output styles MainWindow.xaml",
+    "status": "PASS",
+    "detail": "No TextBlock-targeted style applied to TextBox subtype"
+  },
+  {
+    "test": "table copy enabled MainWindow.xaml",
+    "status": "PASS",
+    "detail": "0 tables; original selection modes retained"
+  },
+  {
+    "test": "unique names MemoryDashboardView.xaml",
+    "status": "PASS",
+    "detail": "No duplicate generated names"
+  },
+  {
+    "test": "selectable output MemoryDashboardView.xaml",
+    "status": "PASS",
+    "detail": "26 output controls with supported TextBox attributes"
+  },
+  {
+    "test": "one-way output bindings MemoryDashboardView.xaml",
+    "status": "PASS",
+    "detail": "New selectable bindings cannot write into source rows"
+  },
+  {
+    "test": "compatible output styles MemoryDashboardView.xaml",
+    "status": "PASS",
+    "detail": "No TextBlock-targeted style applied to TextBox subtype"
+  },
+  {
+    "test": "table copy enabled MemoryDashboardView.xaml",
+    "status": "PASS",
+    "detail": "1 tables; original selection modes retained"
+  },
+  {
+    "test": "unique names GuardianDashboardView.xaml",
+    "status": "PASS",
+    "detail": "No duplicate generated names"
+  },
+  {
+    "test": "selectable output GuardianDashboardView.xaml",
+    "status": "PASS",
+    "detail": "17 output controls with supported TextBox attributes"
+  },
+  {
+    "test": "one-way output bindings GuardianDashboardView.xaml",
+    "status": "PASS",
+    "detail": "New selectable bindings cannot write into source rows"
+  },
+  {
+    "test": "compatible output styles GuardianDashboardView.xaml",
+    "status": "PASS",
+    "detail": "No TextBlock-targeted style applied to TextBox subtype"
+  },
+  {
+    "test": "table copy enabled GuardianDashboardView.xaml",
+    "status": "PASS",
+    "detail": "7 tables; original selection modes retained"
+  },
+  {
+    "test": "process service list templates unchanged",
+    "status": "PASS",
+    "detail": "Virtualized list selection and action targets untouched"
+  },
+  {
+    "test": "strict R9 button styles and no fixed height",
+    "status": "PASS",
+    "detail": "Every main-window button checked, including direct RAM action"
+  },
+  {
+    "test": "grid binding and selection preserved GuardianDashboardView.xaml",
+    "status": "PASS",
+    "detail": "Only copy attached property added to tables"
+  },
+  {
+    "test": "grid binding and selection preserved MemoryDashboardView.xaml",
+    "status": "PASS",
+    "detail": "Only copy attached property added to tables"
+  },
+  {
+    "test": "dynamic analyses and facts selectable",
+    "status": "PASS",
+    "detail": "Facts and structured report blocks use read-only selectable text; headers use wrapped native TextBlocks"
+  },
+  {
+    "test": "read-only copy commands",
+    "status": "PASS",
+    "detail": "Selection, copy all, no undo history; runtime tests supplied"
+  },
+  {
+    "test": "scroll forwarded for growing output",
+    "status": "PASS",
+    "detail": "Outer detail scroll does not get trapped by growing output"
+  },
+  {
+    "test": "full answer snapshot copied",
+    "status": "PASS",
+    "detail": "Copies original whole response, not just first visible RAM summary"
+  },
+  {
+    "test": "copy snapshot reset and disabled",
+    "status": "PASS",
+    "detail": "New query, profiler and cleared panels cannot copy stale previous report"
+  },
+  {
+    "test": "user direct memory navigation preserved",
+    "status": "PASS",
+    "detail": "Current user feature integrated with lazy dashboard creation"
+  },
+  {
+    "test": "lazy event subscription merge fixed",
+    "status": "PASS",
+    "detail": "New user event is attached after lazy instance construction, avoiding null reference at startup"
+  },
+  {
+    "test": "R8 R9 UI integration preserved",
+    "status": "PASS",
+    "detail": "Caches, allocation buffer, formatted CPU time and multiline network retained"
+  },
+  {
+    "test": "grid snapshot values and no retarget",
+    "status": "PASS",
+    "detail": "Uses native clipboard bindings, visible columns, opening-time strings, unchanged selection"
+  },
+  {
+    "test": "clipboard contention handled",
+    "status": "PASS",
+    "detail": "Clipboard busy produces retry message, without fatal dispatcher error"
+  },
+  {
+    "test": "no forced GUI termination publish-release.ps1",
+    "status": "PASS",
+    "detail": "Automatic force-termination lines removed; no script executed here"
+  },
+  {
+    "test": "no forced GUI termination run-release.ps1",
+    "status": "PASS",
+    "detail": "Automatic force-termination lines removed; no script executed here"
+  },
+  {
+    "test": "no forced GUI termination start-processlens-all.ps1",
+    "status": "PASS",
+    "detail": "Automatic force-termination lines removed; no script executed here"
+  },
+  {
+    "test": "publish guard precedes output replacement",
+    "status": "PASS",
+    "detail": "Existing GUI must be closed by user; no automatic termination"
+  },
+  {
+    "test": "XAML event names MainWindow",
+    "status": "PASS",
+    "detail": "Declaration/name presence only; C# build still required"
+  },
+  {
+    "test": "XAML event names MemoryDashboardView",
+    "status": "PASS",
+    "detail": "Declaration/name presence only; C# build still required"
+  },
+  {
+    "test": "XAML event names GuardianDashboardView",
+    "status": "PASS",
+    "detail": "Declaration/name presence only; C# build still required"
+  },
+  {
+    "test": "test suites wired",
+    "status": "PASS",
+    "detail": "New and prior executable regressions connected to dashboard build"
+  },
+  {
+    "test": "UI tests use fake clipboard and no shown monitor",
+    "status": "PASS",
+    "detail": "Real XAML and command routing tested on Windows; NOT EXECUTED here"
+  },
+  {
+    "test": "standalone WPF test initialization precedes layout",
+    "status": "PASS",
+    "detail": "Explicit BeginInit/EndInit for a control outside the object tree; source check only"
+  },
+  {
+    "test": "WPF layout assertion retained with native template",
+    "status": "PASS",
+    "detail": "No synthetic template or weakened height assertion; actual Windows execution still required"
+  },
+  {
+    "test": "WPF wrapping and selection regressions supplied",
+    "status": "PASS",
+    "detail": "Runtime assertions provided, not executed here"
+  },
+  {
+    "test": "report parser retains unheaded paragraphs",
+    "status": "PASS",
+    "detail": "Explicit heading parser replaces paragraph filtering; .NET content regressions supplied"
+  },
+  {
+    "test": "overview and numbered chapters visible",
+    "status": "PASS",
+    "detail": "Query summary and evidence overview precede separately numbered detail chapters"
+  },
+  {
+    "test": "chapter headers wrap and bodies are lazy",
+    "status": "PASS",
+    "detail": "Size-constrained header; controls created on expansion and released on collapse, no timer"
+  },
+  {
+    "test": "evidence refresh preserves active chapter",
+    "status": "PASS",
+    "detail": "Unchanged evidence skips rebuild; changed same-PID evidence restores open group names"
+  },
+  {
+    "test": "all-process collection and copy sources retained",
+    "status": "PASS",
+    "detail": "Enumerator and source report copy do not depend on visual formatting"
+  },
+  {
+    "test": "exit notice bound to verified process object",
+    "status": "PASS",
+    "detail": "One handle for exact creation-time verification and signal wait, no enumeration-based exit inference"
+  },
+  {
+    "test": "exit watcher has read-only rights and lifecycle",
+    "status": "PASS",
+    "detail": "Read-only observation; unregister and release handle on replacement/close, at most two active watchers"
+  },
+  {
+    "test": "exit toast passive and temporary",
+    "status": "PASS",
+    "detail": "In-window notice with executable/PID; no focus change or modal success acknowledgement"
+  },
+  {
+    "test": "termination request does not become assumed exit",
+    "status": "PASS",
+    "detail": "Confirmed exit comes from the signal callback; existing native result message retained separately"
+  },
+  {
+    "test": "exit notice regressions and backend self-check supplied",
+    "status": "PASS",
+    "detail": "Independent read-only Windows self-process binding plus pure deduplication tests; NOT EXECUTED here"
+  },
+  {
+    "test": "X preserves taskbar and explicit Exit closes",
+    "status": "PASS",
+    "detail": "X minimizes with a persistent taskbar button regardless of tray availability; explicit Exit closes"
+  },
+  {
+    "test": "restore supports hidden and minimized window",
+    "status": "PASS",
+    "detail": "Tray activation and acknowledged single-instance message; older-version fallback retained"
+  },
+  {
+    "test": "native tray lifecycle handles Explorer restart",
+    "status": "PASS",
+    "detail": "No hiding without restore route; shared icon and tray entry cleaned on exit"
+  },
+  {
+    "test": "tray only attached to real application startup",
+    "status": "PASS",
+    "detail": "Unshown MainWindow test construction creates no shell icon; logout and fatal exit remain allowed"
+  },
+  {
+    "test": "hidden dashboards paused and visible dashboards resumed",
+    "status": "PASS",
+    "detail": "Only GUI polling; Guardian service, MemoryAgent and notification policy not changed"
+  },
+  {
+    "test": "actual audit panel wired to structured cards",
+    "status": "PASS",
+    "detail": "The specific RAM verification panel from the screenshot now uses structured entries"
+  },
+  {
+    "test": "audit text spacing uses supported native properties",
+    "status": "PASS",
+    "detail": "Larger body, distinct timestamp/stage, padded cards and gaps; no unsupported TextBox LineHeight"
+  },
+  {
+    "test": "audit originals copied rather than reconstructed",
+    "status": "PASS",
+    "detail": "UI adapter only; original text/file generator and diagnostic event IDs unchanged"
+  },
+  {
+    "test": "audit append and collapse preserve lifecycle",
+    "status": "PASS",
+    "detail": "Unchanged prefix keeps text selection; new source replaces rows; collapse releases cards"
+  },
+  {
+    "test": "audit parser retains limits and unknown content",
+    "status": "PASS",
+    "detail": "RAM/profiler entries, continuation lines, source location, cultures and original-copy regressions supplied; .NET NOT EXECUTED"
+  },
+  {
+    "test": "R10 R7 CPU restore self-resource source invariants",
+    "status": "PASS",
+    "detail": "13 conservative source guards; executable .NET and Windows checks supplied, not executed"
+  },
+  {
+    "test": "R10 R8 monitor and RAM service navigation source invariants",
+    "status": "PASS",
+    "detail": "13 source invariants only; Windows build and runtime still required"
+  }
+]

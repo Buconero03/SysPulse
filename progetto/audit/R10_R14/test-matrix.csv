@@ -1,0 +1,67 @@
+test,kind,status,details
+ProcessLens.BehaviorTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.CopyTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.CopyUiTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.CpuTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.DiagnosticsTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.GuardianDashboardTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.GuardianStorageTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.GuardianTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.MemoryAlertTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.MemoryEfficiencyTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.MemoryTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.NetworkDeviceTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.NetworkUiTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.OriginTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.PacketCaptureTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.PresentationTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.ProfilerFixture,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.ProfilerTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.RamMonitorTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.RefreshPolicyTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.ServiceHistoryTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.ServiceStopTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.ServiceTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.SystemProcessTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.SystemProcessUiTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.TerminationTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+ProcessLens.TerminologyTests,C# .NET/WPF,NON ESEGUITO,No .NET SDK/Windows/WPF runtime
+check-classification-hierarchy-v01914.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-classification-language-v01911.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-copy-ui-r10.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-detail-hierarchy-v01910.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-diagnostics-v01913.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-elevation.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-etw-startup-order.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-guardian-dashboard.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-memory-dashboard.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-memory-efficiency-r8.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-memory-measurement-audit.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-memory-ui-v0195.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-network-devices-r12.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-packet-capture-r13.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-powershell-syntax.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-profiler-fixture-v01912.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-profiler-isolation.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-structured-queries.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-system-processes-r14.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-terminology-ui.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-ui-format-r9.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-ui-readability.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-ux-writing-r10r11.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-windows-allocation-inspector.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-workspace-r10r10.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+check-wpf-contextmenu.ps1,PowerShell,NON ESEGUITO,PowerShell unavailable
+Sistema Windows 950x680 DIP 100% DPI,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, navigation and minimize/restore"
+Sistema Windows 950x680 DIP 125% DPI,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, navigation and minimize/restore"
+Sistema Windows 950x680 DIP 150% DPI,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, navigation and minimize/restore"
+Sistema Windows 950x680 DIP 200% DPI,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, navigation and minimize/restore"
+Sistema Windows 1180x800 DIP 100% DPI,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, navigation and minimize/restore"
+Sistema Windows 1180x800 DIP 125% DPI,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, navigation and minimize/restore"
+Sistema Windows 1180x800 DIP 150% DPI,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, navigation and minimize/restore"
+Sistema Windows 1180x800 DIP 200% DPI,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, navigation and minimize/restore"
+Live native process inventory versus self and Task Manager,Windows integration,NON ESEGUITO,Synthetic fixtures and read-only live smoke test supplied
+R14 CPU/RAM overhead,measurement,NON MISURATO,No numerical memory-overhead claim
+Historical baseline-dependent R11/R12/R13 Python CLI audits,historical,NON RIESEGUITO,Original older ZIP inputs not available after workspace maintenance; current guards checked separately
+Current R14 + resource + navigation guards,Python source/XML/mutations,PASS,60 checks; no C# execution
+R13 to R14 patch replay,git apply and byte comparison,PASS,23 changed or added files; audit metadata and manifest excluded

@@ -1,0 +1,219 @@
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Text;
+using ProcessLens.Core;
+
+namespace ProcessLens.Windows;
+
+// On-demand, read-only inventory. The normal collector, CPU sampler and Guardian are unchanged.
+public sealed class WindowsSystemProcessSource : ISystemProcessSource
+{
+    public const int MaximumBuffer = 16 * 1024 * 1024, MaximumRows = 16384;
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct UnicodeName { public ushort Length, MaximumLength; public IntPtr Buffer; }
+    // Published winternl layout. Reserved fields establish offsets; their contents are never used.
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct ProcessInfo
+    {
+        public uint NextEntryOffset, NumberOfThreads;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 48)] public byte[] Reserved1;
+        public UnicodeName ImageName;
+        public int BasePriority;
+        public IntPtr UniqueProcessId, InheritedFromUniqueProcessId;
+        public uint HandleCount, SessionId;
+        public IntPtr Reserved3;
+        public UIntPtr PeakVirtualSize, VirtualSize;
+        public uint Reserved4;
+        public UIntPtr PeakWorkingSetSize, WorkingSetSize;
+        public IntPtr Reserved5;
+        public UIntPtr QuotaPagedPoolUsage;
+        public IntPtr Reserved6;
+        public UIntPtr QuotaNonPagedPoolUsage, PagefileUsage, PeakPagefileUsage, PrivatePageCount;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)] public long[] Reserved7;
+    }
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct PerformanceInfo
+    {
+        public uint Size;
+        public UIntPtr CommitTotal, CommitLimit, CommitPeak, PhysicalTotal, PhysicalAvailable,
+            SystemCache, KernelTotal, KernelPaged, KernelNonpaged, PageSize;
+        public uint HandleCount, ProcessCount, ThreadCount;
+    }
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    private struct ToolhelpEntry
+    {
+        public uint Size, Usage, Pid;
+        public UIntPtr Heap;
+        public uint Module, Threads, Parent;
+        public int Priority;
+        public uint Flags;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public string Name;
+    }
+    [DllImport("ntdll.dll", ExactSpelling = true)]
+    private static extern int NtQuerySystemInformation(int infoClass, IntPtr data, uint length, out uint required);
+    [DllImport("psapi.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetPerformanceInfo(ref PerformanceInfo data, uint size);
+    [DllImport("kernel32.dll", SetLastError = true)] private static extern IntPtr CreateToolhelp32Snapshot(uint flags, uint pid);
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)] private static extern bool Process32FirstW(IntPtr snapshot, ref ToolhelpEntry entry);
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)] private static extern bool Process32NextW(IntPtr snapshot, ref ToolhelpEntry entry);
+    [DllImport("kernel32.dll", SetLastError = true)] private static extern IntPtr OpenProcess(uint access, bool inherit, uint pid);
+    [DllImport("kernel32.dll")] [return: MarshalAs(UnmanagedType.Bool)] private static extern bool CloseHandle(IntPtr handle);
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)] private static extern bool QueryFullProcessImageNameW(IntPtr handle, uint flags, StringBuilder path, ref uint size);
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)] private static extern bool GetProcessTimes(IntPtr handle,
+        out long creation, out long exit, out long kernel, out long user);
+
+    public SystemProcessCatalog Capture(CancellationToken cancellationToken)
+    {
+        DateTime began = DateTime.UtcNow;
+        var memory = ReadMemory();
+        IReadOnlyList<SystemProcessEntry> rows;
+        string source = "NtQuerySystemInformation · SystemProcessInformation", note = "";
+        bool partial = false;
+        try { rows = ReadNative(cancellationToken); }
+        catch (OperationCanceledException) { throw; }
+        catch (Exception ex) when (ex is Win32Exception or InvalidDataException or EntryPointNotFoundException or DllNotFoundException)
+        {
+            note = "Inventario nativo non disponibile: " + ex.Message + "\nFonte alternativa Toolhelp; le voci interne possono differire.";
+            partial = true; source = "Toolhelp · elenco alternativo";
+            try { rows = ReadToolhelp(cancellationToken); }
+            catch (OperationCanceledException) { throw; }
+            catch (Exception fallback) when (fallback is Win32Exception or InvalidDataException)
+            { return new(began, false, true, source, note + "\n" + fallback.Message, Array.Empty<SystemProcessEntry>(), memory); }
+        }
+        var enriched = new List<SystemProcessEntry>(rows.Count);
+        foreach (var row in rows)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            enriched.Add(ReadIdentity(row, began));
+        }
+        return new(began, true, partial, source, note, enriched, memory);
+    }
+
+    private static IReadOnlyList<SystemProcessEntry> ReadNative(CancellationToken cancellationToken)
+    {
+        int size = 256 * 1024;
+        for (int attempt = 0; attempt < 8; attempt++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            IntPtr buffer = Marshal.AllocHGlobal(size);
+            try
+            {
+                int status = NtQuerySystemInformation(5, buffer, (uint)size, out uint required);
+                if (status == unchecked((int)0xC0000004) || status == unchecked((int)0xC0000023))
+                {
+                    long next = Math.Max((long)size * 2, (long)required + 65536);
+                    if (next > MaximumBuffer) throw new InvalidDataException("Inventario oltre il limite di 16 MiB.");
+                    size = (int)next; continue;
+                }
+                if (status < 0) throw new InvalidDataException($"NtQuerySystemInformation: NTSTATUS 0x{status:X8}.");
+                if (required == 0 || required > size) throw new InvalidDataException("Dimensione dell'inventario non valida.");
+                return ParseNative(buffer, checked((int)required), cancellationToken);
+            }
+            finally { Marshal.FreeHGlobal(buffer); }
+        }
+        throw new InvalidDataException("Inventario variato durante la lettura; riprova.");
+    }
+    internal static IReadOnlyList<SystemProcessEntry> ParseNative(IntPtr buffer, int length, CancellationToken token)
+    {
+        int header = Marshal.SizeOf<ProcessInfo>(), offset = 0;
+        if (buffer == IntPtr.Zero || length < header || length > MaximumBuffer) throw new InvalidDataException("Buffer processi non valido.");
+        var rows = new List<SystemProcessEntry>(); var pids = new HashSet<int>();
+        while (true)
+        {
+            token.ThrowIfCancellationRequested();
+            if (offset > length - header || rows.Count >= MaximumRows) throw new InvalidDataException("Elenco processi troncato o troppo lungo.");
+            var row = Marshal.PtrToStructure<ProcessInfo>(IntPtr.Add(buffer, offset));
+            uint next = row.NextEntryOffset;
+            if (next != 0 && (next < header || next > length - offset - header || next % IntPtr.Size != 0))
+                throw new InvalidDataException("Offset processi non valido.");
+            int end = next == 0 ? length : offset + (int)next;
+            long pid = row.UniqueProcessId.ToInt64(), parent = row.InheritedFromUniqueProcessId.ToInt64();
+            if (pid < 0 || pid > int.MaxValue || parent < 0 || parent > int.MaxValue || !pids.Add((int)pid))
+                throw new InvalidDataException("PID non valido o ripetuto.");
+            var n = row.ImageName;
+            long nameOffset = n.Buffer.ToInt64() - buffer.ToInt64();
+            if ((n.Length & 1) != 0 || n.Length > 2048 || n.MaximumLength < n.Length ||
+                (n.Length > 0 && (nameOffset < offset + header || nameOffset > end - n.Length)))
+                throw new InvalidDataException("Nome processo fuori dal buffer.");
+            string name = n.Length == 0 ? (pid == 0 ? "System Idle Process" : "Nome N/D") :
+                Marshal.PtrToStringUni(n.Buffer, n.Length / 2) ?? "Nome N/D";
+            ulong workingSet = row.WorkingSetSize.ToUInt64();
+            long? resident = workingSet <= (ulong)long.MaxValue ? (long)workingSet : null;
+            // Some special entries expose zero placeholders; do not turn those into measured zero RAM.
+            if (workingSet == 0 && (pid is 0 or 4 || SystemProcessPresentation.InternalName(name))) resident = null;
+            rows.Add(new((int)pid, (int)parent, name, row.NumberOfThreads, row.HandleCount,
+                row.SessionId, resident));
+            if (next == 0) return rows;
+            offset += (int)next;
+        }
+    }
+    private static IReadOnlyList<SystemProcessEntry> ReadToolhelp(CancellationToken token)
+    {
+        IntPtr snapshot = CreateToolhelp32Snapshot(2, 0);
+        if (snapshot == new IntPtr(-1)) throw new Win32Exception(Marshal.GetLastWin32Error());
+        try
+        {
+            var entry = new ToolhelpEntry { Size = (uint)Marshal.SizeOf<ToolhelpEntry>(), Name = "" };
+            if (!Process32FirstW(snapshot, ref entry)) throw new Win32Exception(Marshal.GetLastWin32Error());
+            var rows = new List<SystemProcessEntry>();
+            do
+            {
+                token.ThrowIfCancellationRequested();
+                if (rows.Count >= MaximumRows || entry.Pid > int.MaxValue || entry.Parent > int.MaxValue)
+                    throw new InvalidDataException("Inventario Toolhelp oltre i limiti.");
+                rows.Add(new((int)entry.Pid, (int)entry.Parent, entry.Name, entry.Threads, null, null, null));
+            } while (Process32NextW(snapshot, ref entry));
+            int error = Marshal.GetLastWin32Error();
+            if (error != 18) throw new Win32Exception(error); // ERROR_NO_MORE_FILES is normal termination.
+            return rows;
+        }
+        finally { CloseHandle(snapshot); }
+    }
+    private static SystemProcessEntry ReadIdentity(SystemProcessEntry row, DateTime began)
+    {
+        if (row.Pid is 0 or 4) return row with { Access = "Voce di sistema; dettagli limitati" };
+        IntPtr handle = OpenProcess(0x1000, false, (uint)row.Pid); // QUERY_LIMITED_INFORMATION only.
+        if (handle == IntPtr.Zero) return row with { Access = "Dettagli N/D · Win32 " + Marshal.GetLastWin32Error() };
+        try
+        {
+            if (!GetProcessTimes(handle, out long creation, out _, out _, out _) || creation <= 0)
+                return row with { Access = "Avvio N/D; identità non verificabile" };
+            DateTime start;
+            try { start = DateTime.FromFileTimeUtc(creation); }
+            catch (ArgumentOutOfRangeException) { return row with { Access = "Avvio non valido" }; }
+            if (start > began) return row with { Access = "Istanza cambiata durante la lettura; aggiorna" };
+            var path = new StringBuilder(1024); uint chars = (uint)path.Capacity;
+            if (!QueryFullProcessImageNameW(handle, 0, path, ref chars))
+            {
+                int error = Marshal.GetLastWin32Error();
+                if (error != 122) return row with { Access = "Percorso N/D · Win32 " + error };
+                path = new StringBuilder(32768); chars = (uint)path.Capacity;
+                if (!QueryFullProcessImageNameW(handle, 0, path, ref chars))
+                    return row with { Access = "Percorso N/D · Win32 " + Marshal.GetLastWin32Error() };
+            }
+            string value = path.ToString();
+            if (!System.IO.Path.GetFileName(value).Equals(row.Name, StringComparison.OrdinalIgnoreCase))
+                return row with { Access = "Identità non verificabile dal percorso" };
+            return row with { Path = value, StartUtc = start, Access = "Percorso e avvio letti" };
+        }
+        finally { CloseHandle(handle); }
+    }
+    internal static long? PageBytes(ulong pages, ulong pageSize) => pageSize == 0 ||
+        pages > (ulong)long.MaxValue / pageSize ? null : (long)(pages * pageSize);
+    private static SystemMemorySnapshot ReadMemory()
+    {
+        var data = new PerformanceInfo { Size = (uint)Marshal.SizeOf<PerformanceInfo>() };
+        if (!GetPerformanceInfo(ref data, data.Size))
+            return new(null, null, null, null, null, null, "GetPerformanceInfo: Win32 " + Marshal.GetLastWin32Error());
+        ulong pageSize = data.PageSize.ToUInt64();
+        long? Bytes(UIntPtr pages) => PageBytes(pages.ToUInt64(), pageSize);
+        return new(Bytes(data.PhysicalTotal), Bytes(data.PhysicalAvailable), Bytes(data.CommitTotal),
+            Bytes(data.CommitLimit), Bytes(data.KernelPaged), Bytes(data.KernelNonpaged),
+            "Fonte: GetPerformanceInfo. Campione separato dall'inventario processi; non è una ripartizione esatta della RAM.");
+    }
+}

@@ -1,0 +1,9 @@
+{
+  "root": "ProcessLens/",
+  "source_tree": "one active source tree, same root name as prior candidates",
+  "original_uploads": "preserved",
+  "baseline_ZIPs": "preserved for exact replay and earlier regression fixtures",
+  "temporary_patch_replay": "removed after exact hash verification",
+  "generated_build_directories": "none",
+  "user_screenshots": "only hashes recorded; no screenshot copies in ZIP"
+}

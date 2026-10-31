@@ -1,0 +1,172 @@
+﻿[
+  {
+    "id": "role.chromium.renderer",
+    "kind": "role",
+    "label": "Elaborazione dei contenuti web",
+    "frameworkEquals": "Chromium/Electron",
+    "minScore": 95,
+    "summary": "Tipo renderer indicato nei parametri Chromium",
+    "meaning": "Chromium separa i contenuti web in processi renderer. Pagina e attività corrente non rilevate.",
+    "whyRunning": "Tipo dal parametro --type=renderer. Autore e motivo dell’avvio sconosciuti.",
+    "closeImpact": "La pagina o parte dei contenuti potrebbe interrompersi; il programma potrebbe ricreare il processo.",
+    "closeRisk": "BASSO / MEDIO",
+    "commandContains": [
+      {
+        "value": "--type=renderer",
+        "score": 100,
+        "evidence": "Chromium dichiara --type=renderer"
+      }
+    ]
+  },
+  {
+    "id": "role.chromium.gpu",
+    "kind": "role",
+    "label": "Processo GPU di Chromium",
+    "frameworkEquals": "Chromium/Electron",
+    "minScore": 95,
+    "summary": "Processo GPU indicato dal parametro --type=gpu-process",
+    "meaning": "Processo GPU indicato da --type=gpu-process; non specifica l’operazione grafica in corso.",
+    "whyRunning": "Componente grafico Chromium. Operazione corrente non rilevata.",
+    "closeImpact": "L'app può perdere temporaneamente accelerazione grafica e ricreare il processo.",
+    "closeRisk": "BASSO / MEDIO",
+    "commandContains": [
+      {
+        "value": "--type=gpu-process",
+        "score": 100,
+        "evidence": "Chromium dichiara --type=gpu-process"
+      }
+    ]
+  },
+  {
+    "id": "role.language-server",
+    "kind": "role",
+    "label": "Language server",
+    "minScore": 80,
+    "summary": "Possibile componente language server",
+    "meaning": "Possibile language server: completamento, diagnostica e navigazione del codice. Lavoro corrente non rilevato.",
+    "whyRunning": "Possibile componente per editor/IDE. Lavoro e motivo dell’avvio sconosciuti.",
+    "closeImpact": "L'editor può perdere temporaneamente completamento, diagnostica e navigazione finché il server non viene riavviato.",
+    "closeRisk": "BASSO / MEDIO",
+    "category": "Sviluppo",
+    "nameContains": [
+      {
+        "value": "language_server",
+        "score": 95,
+        "evidence": "nome processo contiene language_server"
+      },
+      {
+        "value": "languageserver",
+        "score": 95,
+        "evidence": "nome processo contiene languageserver"
+      }
+    ],
+    "metadataContains": [
+      {
+        "value": "language server",
+        "score": 95,
+        "evidence": "metadati dichiarano language server"
+      }
+    ]
+  },
+  {
+    "id": "role.crash-handler",
+    "kind": "role",
+    "label": "Gestore crash",
+    "minScore": 80,
+    "summary": "Possibile componente per rapporti di crash",
+    "meaning": "Possibile gestore di crash. Raccolta di rapporti non verificata.",
+    "whyRunning": "Gestione crash stimata da nome o metadati. Motivo dell’avvio e stato interno sconosciuti.",
+    "closeImpact": "L’applicazione può continuare a funzionare, ma potrebbe non registrare gli arresti anomali.",
+    "closeRisk": "BASSO",
+    "nameContains": [
+      {
+        "value": "crashpad",
+        "score": 100,
+        "evidence": "nome processo contiene crashpad"
+      },
+      {
+        "value": "crashreport",
+        "score": 90,
+        "evidence": "nome processo indica crash reporting"
+      }
+    ],
+    "metadataContains": [
+      {
+        "value": "crash handler",
+        "score": 90,
+        "evidence": "metadati indicano crash handler"
+      }
+    ]
+  },
+  {
+    "id": "role.updater",
+    "kind": "role",
+    "label": "Aggiornamento software",
+    "minScore": 75,
+    "summary": "Possibile componente di aggiornamento software",
+    "meaning": "Possibile updater. Controllo, download o installazione in corso non rilevati.",
+    "whyRunning": "Autore e motivo dell’avvio sconosciuti. Aggiornamento in corso non rilevato.",
+    "closeImpact": "Può interrompere un controllo o aggiornamento, se in corso; il riavvio dipende dall’applicazione.",
+    "closeRisk": "BASSO",
+    "category": "Background",
+    "nameContains": [
+      {
+        "value": "updater",
+        "score": 90,
+        "evidence": "nome processo contiene updater"
+      },
+      {
+        "value": "updatehelper",
+        "score": 85,
+        "evidence": "nome processo indica update helper"
+      }
+    ],
+    "metadataContains": [
+      {
+        "value": "update service",
+        "score": 85,
+        "evidence": "metadati indicano update service"
+      }
+    ]
+  },
+  {
+    "id": "role.generic.server-listener",
+    "kind": "role",
+    "label": "Processo con socket TCP LISTEN",
+    "minScore": 70,
+    "requiresDeepInspection": true,
+    "summary": "Socket TCP in ascolto rilevata da Windows",
+    "meaning": "TCP LISTEN sul PID. La lettura non misura richieste già accettate né byte trasferiti.",
+    "whyRunning": "Socket in ascolto. Motivo dell’avvio sconosciuto; richieste accettate non misurate.",
+    "closeImpact": "Può interrompere l’ascolto sulle socket del PID; altri processi o un riavvio potrebbero mantenere il servizio disponibile.",
+    "closeRisk": "MEDIO",
+    "hasTcpListen": {
+      "value": true,
+      "score": 75,
+      "evidence": "socket TCP LISTEN attribuita direttamente al PID"
+    }
+  },
+  {
+    "id": "role.generic.ui-coordinator",
+    "kind": "role",
+    "label": "Possibile processo principale",
+    "minScore": 75,
+    "minimumEvidenceCount": 2,
+    "requiresDeepInspection": true,
+    "summary": "Finestra visibile e figli omonimi rilevati",
+    "meaning": "Possibile processo principale: finestra e figli omonimi. Coordinamento non misurato.",
+    "whyRunning": "Motivo dell’avvio e durata sconosciuti.",
+    "closeImpact": "Terminarlo può chiudere l'intera applicazione e i sottoprocessi collegati.",
+    "closeRisk": "MEDIO",
+    "hasVisibleWindow": {
+      "value": true,
+      "score": 45,
+      "evidence": "finestra top-level visibile associata al PID"
+    },
+    "hasSameNameChildren": {
+      "value": true,
+      "score": 45,
+      "evidence": "lo snapshot riporta processi figli con lo stesso nome"
+    }
+  }
+]

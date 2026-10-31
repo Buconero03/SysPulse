@@ -1,0 +1,16 @@
+{
+  "git_apply_check": "PASS",
+  "actual_git_apply": "PASS",
+  "exact_changed_files": 16,
+  "existing_source_files_retained_exact": 94,
+  "existing_source_files_changed": [
+    "src/ProcessLens.App/MainWindow.xaml",
+    "src/ProcessLens.App/MainWindow.xaml.cs",
+    "src/ProcessLens.App/ProcessLens.App.csproj"
+  ],
+  "new_source_files": [
+    "ReportLayout.cs",
+    "ReportView.cs"
+  ],
+  "scope": "UI hierarchy, tests, source guards, metadata and docs. Historical/current audit and manifest excluded for self reference."
+}

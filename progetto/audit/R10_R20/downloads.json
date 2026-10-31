@@ -1,0 +1,1115 @@
+{
+  "SDK": "8.0.426",
+  "runtime": "8.0.32",
+  "architecture": "win-x64",
+  "files": [
+    {
+      "file": "dotnet-sdk-8.0.426-win-x64.zip",
+      "url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/8.0.426/dotnet-sdk-8.0.426-win-x64.zip",
+      "bytes": 285292840,
+      "sha256": "b2523f881c97e13234e9b3905fe9978831b84e52f8115ba397d31203d2e022ce",
+      "sha512": "10261657109f1c62126f106a9ac966739b025b5f6b4a9f88ab7c6e73cacce9aec771895daa3267b8da933a83c32ee91bf458dc6704e1ddcd9bcf0d5edd036abb",
+      "role": "Windows x64 SDK plus desktop runtime and reference packs"
+    },
+    {
+      "file": "nuget/microsoft.data.sqlite.8.0.20.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.data.sqlite/8.0.20/microsoft.data.sqlite.8.0.20.nupkg",
+      "bytes": 34998,
+      "sha256": "f6fb17c1f11a51458060322dc107cd6df8c6fe87c5c8507c7cc31c90af56372a",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Data.Sqlite.Core",
+          "version": "8.0.20"
+        },
+        {
+          "id": "SQLitePCLRaw.bundle_e_sqlite3",
+          "version": "2.1.6"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.data.sqlite.core.8.0.20.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.data.sqlite.core/8.0.20/microsoft.data.sqlite.core.8.0.20.nupkg",
+      "bytes": 297570,
+      "sha256": "d2f156c5c7036eafc3b3dd49c4bdb90648fdc37e5bd67a2c7eef527ad634c938",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "SQLitePCLRaw.core",
+          "version": "2.1.6"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.diagnostics.netcore.client.0.2.510501.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.diagnostics.netcore.client/0.2.510501/microsoft.diagnostics.netcore.client.0.2.510501.nupkg",
+      "bytes": 163679,
+      "sha256": "bda612812a323c7d1727e09566af97952c8bd6d2606799045ca330631fb523dc",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Logging",
+          "version": "6.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.diagnostics.tracing.traceevent.3.1.24.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.diagnostics.tracing.traceevent/3.1.24/microsoft.diagnostics.tracing.traceevent.3.1.24.nupkg",
+      "bytes": 5435432,
+      "sha256": "8d7005c88eebb4d688b0403a0e6610b70b150962a894743d0c1f43de367af108",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Win32.Registry",
+          "version": "5.0.0"
+        },
+        {
+          "id": "System.Collections.Immutable",
+          "version": "9.0.8"
+        },
+        {
+          "id": "System.Reflection.Metadata",
+          "version": "9.0.8"
+        },
+        {
+          "id": "System.Reflection.TypeExtensions",
+          "version": "4.7.0"
+        },
+        {
+          "id": "System.Runtime.CompilerServices.Unsafe",
+          "version": "6.1.2"
+        },
+        {
+          "id": "Microsoft.Diagnostics.NETCore.Client",
+          "version": "0.2.510501"
+        },
+        {
+          "id": "System.Text.Json",
+          "version": "9.0.8"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.configuration.8.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration/8.0.0/microsoft.extensions.configuration.8.0.0.nupkg",
+      "bytes": 191129,
+      "sha256": "f413ec012971ad5f229663028dd6f74e251c9b9bc56719019c023f7cd0521320",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Configuration.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Primitives",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.configuration.abstractions.8.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.abstractions/8.0.0/microsoft.extensions.configuration.abstractions.8.0.0.nupkg",
+      "bytes": 149230,
+      "sha256": "e1e0690e47fb309a334d99cec10bf071f81129019c3577b42bf905fa1e5197ca",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Primitives",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.configuration.binder.8.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.binder/8.0.0/microsoft.extensions.configuration.binder.8.0.0.nupkg",
+      "bytes": 385489,
+      "sha256": "19a9df2271b3ce83766ca78dc0e37cfc79da9abea5ed14e960b038f423570fd4",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Configuration.Abstractions",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.configuration.binder.8.0.2.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.binder/8.0.2/microsoft.extensions.configuration.binder.8.0.2.nupkg",
+      "bytes": 389312,
+      "sha256": "68607456ea02df861a74012aaf0a1a5cb739aa56b9e69b300d5db12d2991ed21",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Configuration.Abstractions",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.configuration.commandline.8.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.commandline/8.0.0/microsoft.extensions.configuration.commandline.8.0.0.nupkg",
+      "bytes": 139143,
+      "sha256": "7e63c2fe8f12fb0793b50256ca4a671879ba00a554db5c5813f09a1d853bce08",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Configuration.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.configuration.environmentvariables.8.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.environmentvariables/8.0.0/microsoft.extensions.configuration.environmentvariables.8.0.0.nupkg",
+      "bytes": 122333,
+      "sha256": "f9b8c566fa82b0c7f6151336a25ab1fdfb9bf90c1f335901863195393e470b8f",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Configuration.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.configuration.fileextensions.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.fileextensions/8.0.1/microsoft.extensions.configuration.fileextensions.8.0.1.nupkg",
+      "bytes": 144571,
+      "sha256": "89103c2fb057fdf7b92c70953a1cc14a4df419fb213fb576423da7c6912f4ad0",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Configuration.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.FileProviders.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.FileProviders.Physical",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Primitives",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.configuration.json.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.json/8.0.1/microsoft.extensions.configuration.json.8.0.1.nupkg",
+      "bytes": 160472,
+      "sha256": "27c10aff286c7d3a5e49463c17cd594c157d00f1e23d496237b77e9f6397f488",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Configuration.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration.FileExtensions",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.FileProviders.Abstractions",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.configuration.usersecrets.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.configuration.usersecrets/8.0.1/microsoft.extensions.configuration.usersecrets.8.0.1.nupkg",
+      "bytes": 141387,
+      "sha256": "c86bd67f0061c85b9d708bfdea9296690d4c20c3a2bf92c74829fef49ec3a33d",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Configuration.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration.Json",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.FileProviders.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.FileProviders.Physical",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.dependencyinjection.6.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/6.0.0/microsoft.extensions.dependencyinjection.6.0.0.nupkg",
+      "bytes": 208004,
+      "sha256": "819b8c6ae9cc255cafbdea6eccda1d18f45ce9ea8a1fffdb92cdfde7b75890f2",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "6.0.0"
+        },
+        {
+          "id": "System.Runtime.CompilerServices.Unsafe",
+          "version": "6.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.dependencyinjection.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/8.0.1/microsoft.extensions.dependencyinjection.8.0.1.nupkg",
+      "bytes": 344439,
+      "sha256": "3bd8348d64be8df1a84f7caa2b06582462fe8c64887926f09afa262830b78535",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "8.0.2"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/6.0.0/microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg",
+      "bytes": 149541,
+      "sha256": "49991ed2334a22a26fbee91db5af8c808946b2b3f611d3e4912f257cb83b26ee",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg",
+      "bytes": 276886,
+      "sha256": "ef92b31065a36d110b7332690a226e6fe96d35430c6f3e40ff529053ee5d80ff",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/8.0.2/microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg",
+      "bytes": 278862,
+      "sha256": "51f2df1100245f10da54f0bb7e813f277155117777d4fbbab902214e27372606",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/microsoft.extensions.diagnostics.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.diagnostics/8.0.1/microsoft.extensions.diagnostics.8.0.1.nupkg",
+      "bytes": 163338,
+      "sha256": "0ab68734269594c898c7a7dff5a7d3e94ed10bf3283825ccde99f62ab5e488b7",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Configuration",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Diagnostics.Abstractions",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Options.ConfigurationExtensions",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.diagnostics.abstractions.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.diagnostics.abstractions/8.0.1/microsoft.extensions.diagnostics.abstractions.8.0.1.nupkg",
+      "bytes": 154367,
+      "sha256": "7790d55e103ca89158f586e1663b13aace70e640eec45e6ff860ff59947540bd",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Options",
+          "version": "8.0.2"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.fileproviders.abstractions.8.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.fileproviders.abstractions/8.0.0/microsoft.extensions.fileproviders.abstractions.8.0.0.nupkg",
+      "bytes": 113833,
+      "sha256": "b904979ade3b5f61c6a159e26af8cb2026cfb43d9179039840c832de5d31b8c5",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Primitives",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.fileproviders.physical.8.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.fileproviders.physical/8.0.0/microsoft.extensions.fileproviders.physical.8.0.0.nupkg",
+      "bytes": 199058,
+      "sha256": "dbdcb9651435660cd53b11e4b58c72887e34915826e6e9f6c9319dbee4969d17",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.FileProviders.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.FileSystemGlobbing",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Primitives",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.filesystemglobbing.8.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.filesystemglobbing/8.0.0/microsoft.extensions.filesystemglobbing.8.0.0.nupkg",
+      "bytes": 192314,
+      "sha256": "f8ecf8d494798dd70994224e4a94082f938c04d8bed479767742541df112eec5",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/microsoft.extensions.hosting.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.hosting/8.0.1/microsoft.extensions.hosting.8.0.1.nupkg",
+      "bytes": 308451,
+      "sha256": "1452e8e9e9b4376bda5a0ebffef690871a0e813f4b2c7e58d8a5a409e5f9c50e",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Configuration.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration.Binder",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration.CommandLine",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration.EnvironmentVariables",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration.FileExtensions",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration.Json",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration.UserSecrets",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.DependencyInjection",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Diagnostics",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.FileProviders.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.FileProviders.Physical",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Hosting.Abstractions",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.Configuration",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.Console",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.Debug",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.EventLog",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.EventSource",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Options",
+          "version": "8.0.2"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.hosting.abstractions.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.hosting.abstractions/8.0.1/microsoft.extensions.hosting.abstractions.8.0.1.nupkg",
+      "bytes": 232336,
+      "sha256": "fdb2152fdbaf050855fca4268c0d598d1ef8b0c7da02505bd79b155ec1831150",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Configuration.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Diagnostics.Abstractions",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.FileProviders.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.Abstractions",
+          "version": "8.0.2"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.hosting.windowsservices.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.hosting.windowsservices/8.0.1/microsoft.extensions.hosting.windowsservices.8.0.1.nupkg",
+      "bytes": 173990,
+      "sha256": "241ad9bafd51c6925fe7047cd60f756c4d7f25080178eb67243bc0f7cae560a1",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Hosting",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.EventLog",
+          "version": "8.0.1"
+        },
+        {
+          "id": "System.ServiceProcess.ServiceController",
+          "version": "8.0.1"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.logging.6.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging/6.0.0/microsoft.extensions.logging.6.0.0.nupkg",
+      "bytes": 111767,
+      "sha256": "f16b1929119f5d6e4cb1790c98d55feac96b930f9c474d3973390e3f6294a939",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "6.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.DependencyInjection",
+          "version": "6.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.Abstractions",
+          "version": "6.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Options",
+          "version": "6.0.0"
+        },
+        {
+          "id": "System.Diagnostics.DiagnosticSource",
+          "version": "6.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.logging.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging/8.0.1/microsoft.extensions.logging.8.0.1.nupkg",
+      "bytes": 233885,
+      "sha256": "be47d5c38b50120f3a5e0d7cbfa40ed106f862ccf4363c79eddd5770dba3e885",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.DependencyInjection",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Options",
+          "version": "8.0.2"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.logging.abstractions.6.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/6.0.0/microsoft.extensions.logging.abstractions.6.0.0.nupkg",
+      "bytes": 458701,
+      "sha256": "40da9c437c7e30e2bb9576d6902cd23966bfd90c9835b74cfce1046d6375e52c",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/microsoft.extensions.logging.abstractions.8.0.2.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.abstractions/8.0.2/microsoft.extensions.logging.abstractions.8.0.2.nupkg",
+      "bytes": 801164,
+      "sha256": "707a5ef17d818186b90f3ba565fab6e2b83c3b62b92e6ab63a22e1a320158097",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "8.0.2"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.logging.configuration.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.configuration/8.0.1/microsoft.extensions.logging.configuration.8.0.1.nupkg",
+      "bytes": 144891,
+      "sha256": "13625b246d845e5bf61d458b8b5ee422400be910bdac2d84d7c0b7800c8eb9a1",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Configuration.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration.Binder",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Options.ConfigurationExtensions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Options",
+          "version": "8.0.2"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.logging.console.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.console/8.0.1/microsoft.extensions.logging.console.8.0.1.nupkg",
+      "bytes": 266136,
+      "sha256": "dad86117525b0cd8f7071d9f707ecedbab8718d78c77d3186a1e8deb4948a485",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.Configuration",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Options",
+          "version": "8.0.2"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.logging.debug.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.debug/8.0.1/microsoft.extensions.logging.debug.8.0.1.nupkg",
+      "bytes": 124342,
+      "sha256": "80a16a060e656e3cb954111c02ea10fd2b17031beb61d0583aef5d57ad1e24a8",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging",
+          "version": "8.0.1"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.logging.eventlog.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.eventlog/8.0.1/microsoft.extensions.logging.eventlog.8.0.1.nupkg",
+      "bytes": 141250,
+      "sha256": "d549043b09773a9d9bde34efa48d74847c487bd16a795572f95075b59a7a2dcf",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Options",
+          "version": "8.0.2"
+        },
+        {
+          "id": "System.Diagnostics.EventLog",
+          "version": "8.0.1"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.logging.eventsource.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.logging.eventsource/8.0.1/microsoft.extensions.logging.eventsource.8.0.1.nupkg",
+      "bytes": 171910,
+      "sha256": "108353fcf81f0780ef7fed490732f5a653d3df97b34fb9324bccbf5cc3206310",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging.Abstractions",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Logging",
+          "version": "8.0.1"
+        },
+        {
+          "id": "Microsoft.Extensions.Options",
+          "version": "8.0.2"
+        },
+        {
+          "id": "Microsoft.Extensions.Primitives",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.options.6.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options/6.0.0/microsoft.extensions.options.6.0.0.nupkg",
+      "bytes": 140038,
+      "sha256": "0f19c48068825e992bc459315ed397ab06a202da088c0f1549258272c5b41701",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "6.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Primitives",
+          "version": "6.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.options.8.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options/8.0.0/microsoft.extensions.options.8.0.0.nupkg",
+      "bytes": 492963,
+      "sha256": "9f69b82527a040a51394eb0a2d95141c728cabddba789d30f4df46f88dc5a05c",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Primitives",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.options.8.0.2.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options/8.0.2/microsoft.extensions.options.8.0.2.nupkg",
+      "bytes": 494417,
+      "sha256": "02372575d75d76d37ff5a1fda60ec2944672716b451cb8bd20f7b518684d432b",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Primitives",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.options.configurationextensions.8.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.options.configurationextensions/8.0.0/microsoft.extensions.options.configurationextensions.8.0.0.nupkg",
+      "bytes": 135412,
+      "sha256": "03905bcf0d6488d9208ab939c7c932c7083d94b4dc4a78288de0fea1ca46d512",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.Extensions.Configuration.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Configuration.Binder",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Options",
+          "version": "8.0.0"
+        },
+        {
+          "id": "Microsoft.Extensions.Primitives",
+          "version": "8.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.primitives.6.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/6.0.0/microsoft.extensions.primitives.6.0.0.nupkg",
+      "bytes": 144250,
+      "sha256": "020bf2b2cce9435d40893049164bd2cbc267c085938f5e4f7de93b4fb4e151ce",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "System.Runtime.CompilerServices.Unsafe",
+          "version": "6.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/microsoft.extensions.primitives.8.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.primitives/8.0.0/microsoft.extensions.primitives.8.0.0.nupkg",
+      "bytes": 209772,
+      "sha256": "154f2a8f70d1f1b0dd73573e59e199c7f3c265eaaa9ddc1e64cf5ea5ca578d2a",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/microsoft.net.illink.tasks.8.0.32.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.net.illink.tasks/8.0.32/microsoft.net.illink.tasks.8.0.32.nupkg",
+      "bytes": 1446375,
+      "sha256": "c10f7630218ba0b55780b4fb5e98bc3cd895659179607fcdf9a4da065358abe8",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/microsoft.netcore.app.host.win-x64.8.0.32.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.host.win-x64/8.0.32/microsoft.netcore.app.host.win-x64.8.0.32.nupkg",
+      "bytes": 5488632,
+      "sha256": "32d48bdbce29ec3c57917ca2aae2aa5fc71302702780c099b9f122842bccd789",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/microsoft.netcore.platforms.5.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.platforms/5.0.0/microsoft.netcore.platforms.5.0.0.nupkg",
+      "bytes": 39826,
+      "sha256": "2c8720d52b437102cf380069e0945722cf37eddef3d226bafbefb7485de39757",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/microsoft.win32.registry.5.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.win32.registry/5.0.0/microsoft.win32.registry.5.0.0.nupkg",
+      "bytes": 354731,
+      "sha256": "f64ca53c67ca65ce7cc85a8d29aefbb2da2672836731e1115e8cd62730dc5080",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "System.Security.AccessControl",
+          "version": "5.0.0"
+        },
+        {
+          "id": "System.Security.Principal.Windows",
+          "version": "5.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/sqlitepclraw.bundle_e_sqlite3.2.1.6.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/sqlitepclraw.bundle_e_sqlite3/2.1.6/sqlitepclraw.bundle_e_sqlite3.2.1.6.nupkg",
+      "bytes": 37656,
+      "sha256": "7590ff6d9b185e33aee3a647e58ff0821d2e8473aa2310be4bed1e70a86bef5f",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "SQLitePCLRaw.provider.e_sqlite3",
+          "version": "2.1.6"
+        },
+        {
+          "id": "SQLitePCLRaw.lib.e_sqlite3",
+          "version": "2.1.6"
+        }
+      ]
+    },
+    {
+      "file": "nuget/sqlitepclraw.core.2.1.6.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/sqlitepclraw.core/2.1.6/sqlitepclraw.core.2.1.6.nupkg",
+      "bytes": 34519,
+      "sha256": "4715a39b9d8f766315f7c7600f2d010a917df3cf81b2c45952000b2efed31ff1",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "System.Memory",
+          "version": "4.5.3"
+        }
+      ]
+    },
+    {
+      "file": "nuget/sqlitepclraw.lib.e_sqlite3.2.1.6.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/sqlitepclraw.lib.e_sqlite3/2.1.6/sqlitepclraw.lib.e_sqlite3.2.1.6.nupkg",
+      "bytes": 16588105,
+      "sha256": "b87b7977e48552449de960fb4e0d09ddef1e568c72fc533fb783c091cf4f253d",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/sqlitepclraw.provider.e_sqlite3.2.1.6.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/sqlitepclraw.provider.e_sqlite3/2.1.6/sqlitepclraw.provider.e_sqlite3.2.1.6.nupkg",
+      "bytes": 58749,
+      "sha256": "cc773f619b1def6797948f1b6b5b6fe7c1d9594222ca325ac6ad8208fd6141ef",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "SQLitePCLRaw.core",
+          "version": "2.1.6"
+        },
+        {
+          "id": "SQLitePCLRaw.core",
+          "version": "2.1.6"
+        }
+      ]
+    },
+    {
+      "file": "nuget/system.collections.immutable.9.0.8.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.collections.immutable/9.0.8/system.collections.immutable.9.0.8.nupkg",
+      "bytes": 651173,
+      "sha256": "ff9ef9ed82cb95b9032f6f7e652a13889e13a45cba1d048ac1d30f953eca610c",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/system.diagnostics.diagnosticsource.6.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.diagnostics.diagnosticsource/6.0.0/system.diagnostics.diagnosticsource.6.0.0.nupkg",
+      "bytes": 374970,
+      "sha256": "458f6e5923dd2b67e04b0963d4e1c1181568dd9bc642004937302c4b93863167",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "System.Runtime.CompilerServices.Unsafe",
+          "version": "6.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/system.diagnostics.eventlog.8.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.diagnostics.eventlog/8.0.0/system.diagnostics.eventlog.8.0.0.nupkg",
+      "bytes": 535543,
+      "sha256": "aedf3173791d769418e0711d82194178e2b881dc39c888f899c661015b64dbf6",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/system.diagnostics.eventlog.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.diagnostics.eventlog/8.0.1/system.diagnostics.eventlog.8.0.1.nupkg",
+      "bytes": 538290,
+      "sha256": "cefa9def6a7081c1a86b59c7dd94f50b498ff64e77bc52c9ebdaf9302435b1a0",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/system.io.pipelines.9.0.8.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.io.pipelines/9.0.8/system.io.pipelines.9.0.8.nupkg",
+      "bytes": 223692,
+      "sha256": "74ef38ad47290e08fa93cad366adca9b2ff2fba73f70fd456b576c095f492250",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/system.memory.4.5.3.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.memory/4.5.3/system.memory.4.5.3.nupkg",
+      "bytes": 154054,
+      "sha256": "0af97b45b45b46ef6a2b37910568dabd492c793da3859054595d523e2a545859",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/system.reflection.metadata.9.0.8.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.reflection.metadata/9.0.8/system.reflection.metadata.9.0.8.nupkg",
+      "bytes": 1114748,
+      "sha256": "e0d83e08c096bc0a1be9575010b8c609fd525327d9e5cddf3e29af5e77a13bc4",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "System.Collections.Immutable",
+          "version": "9.0.8"
+        }
+      ]
+    },
+    {
+      "file": "nuget/system.reflection.typeextensions.4.7.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.reflection.typeextensions/4.7.0/system.reflection.typeextensions.4.7.0.nupkg",
+      "bytes": 249287,
+      "sha256": "184b42197c2d3a79187a3495f937e5f83ab21aae634d4695c8bf5e32ea4c1c13",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/system.runtime.compilerservices.unsafe.6.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/6.0.0/system.runtime.compilerservices.unsafe.6.0.0.nupkg",
+      "bytes": 84343,
+      "sha256": "6c41b53e70e9eee298cff3a02ce5acdd15b04125589be0273f0566026720a762",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/system.runtime.compilerservices.unsafe.6.1.2.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/6.1.2/system.runtime.compilerservices.unsafe.6.1.2.nupkg",
+      "bytes": 75106,
+      "sha256": "5f6a7f53af3465f92beb6da873ebe0e496206c313313b98badee4355a6b25937",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/system.security.accesscontrol.5.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.security.accesscontrol/5.0.0/system.security.accesscontrol.5.0.0.nupkg",
+      "bytes": 621573,
+      "sha256": "b9e486f989fcd9ebf1c86067138f4de03fa780e0c35e0a2b9e506d4373a6c39e",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "Microsoft.NETCore.Platforms",
+          "version": "5.0.0"
+        },
+        {
+          "id": "System.Security.Principal.Windows",
+          "version": "5.0.0"
+        }
+      ]
+    },
+    {
+      "file": "nuget/system.security.principal.windows.5.0.0.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.security.principal.windows/5.0.0/system.security.principal.windows.5.0.0.nupkg",
+      "bytes": 535022,
+      "sha256": "081390c25f6f78592b28ada853c24514488a221fe9f9a24efaaf5373643ff3d6",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/system.serviceprocess.servicecontroller.8.0.1.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.serviceprocess.servicecontroller/8.0.1/system.serviceprocess.servicecontroller.8.0.1.nupkg",
+      "bytes": 296621,
+      "sha256": "d9c5d3ccd3b25ea2629c53f375527d1aeeaaac5b7271f8afbbb4470f304989cf",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "System.Diagnostics.EventLog",
+          "version": "8.0.1"
+        }
+      ]
+    },
+    {
+      "file": "nuget/system.text.encodings.web.9.0.8.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.text.encodings.web/9.0.8/system.text.encodings.web.9.0.8.nupkg",
+      "bytes": 293522,
+      "sha256": "d85cb9fd502a047bb07311cc55ebf2cd00d12119724d9953fb9a70afa3adbae5",
+      "role": "NuGet package",
+      "dependencies": []
+    },
+    {
+      "file": "nuget/system.text.json.9.0.8.nupkg",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.text.json/9.0.8/system.text.json.9.0.8.nupkg",
+      "bytes": 1877396,
+      "sha256": "084a0b3a3d0a7ae72d2b68d777ac99fbfe72c786a9b0487bfb1b091fde61ff57",
+      "role": "NuGet package",
+      "dependencies": [
+        {
+          "id": "System.IO.Pipelines",
+          "version": "9.0.8"
+        },
+        {
+          "id": "System.Text.Encodings.Web",
+          "version": "9.0.8"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "baseline": "ProcessLens-v0.19.16-R10-R9-clipboard-fix-candidate.zip",
+  "baseline_sha256": "5e4aa34fcc863015e39a136442b33139a103e5fd0d4a068d356fb5d556b92fc1",
+  "screenshot": {
+    "file": "image(20261020-111055).png",
+    "sha256": "fbc8bd8b68d244fe319a2d23935161a10677cd5e0804f10f14355b1bddf0600c",
+    "seen": "Guardian diagnostic view with dense native tabs and raw health counters",
+    "shown_GUI_version": "not established"
+  },
+  "scope": "More detail space, Windows component reference, Guardian formatting and Italian diagnostic labels",
+  "screenshot_in_deliverable": false,
+  "Windows_execution": "NON ESEGUITO",
+  "CPU_RAM_measurement": "NON MISURATO",
+  "collector_service_profiler_install_or_termination_actions": 0
+}

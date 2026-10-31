@@ -1,0 +1,31 @@
+{
+  "source": "User supplied Windows R10 R1 log, attachment 2026-10-17",
+  "log_sha256": "4770b098719a2eb041343843fc615cf22aa2fe106b227a9201f2141120f5c695",
+  "baseline_sha256": "e3a4075e25b1845b5ddd6ee1a67df0e729947926db4ab1f7af58ab0ba66a3a9e",
+  "reported_complete": [
+    "PresentationTests it-IT/en-US",
+    "CopyTests"
+  ],
+  "reported_partial": [
+    "BehaviorTests: log starts mid-suite, visible tail passes",
+    "TerminologyTests: visible portion and R7 R2 ending pass"
+  ],
+  "reported_copy_ui_pass": [
+    "read-only and no undo",
+    "copy disabled without selection",
+    "Copy enabled with selection",
+    "exact Unicode copy",
+    "Copy all preserves selection",
+    "selection unchanged"
+  ],
+  "reported_failure": {
+    "phase": "Tests.ProcessLens.CopyUiTests",
+    "assertion": "multiline output measures at finite height",
+    "type": "runtime assertion, not compiler diagnostic",
+    "desired_height": "not recorded in old test"
+  },
+  "following_stages": "NON ESEGUITE",
+  "Guardian": "Non modificato, come riportato dal launcher",
+  "R2_Windows_execution": "NON ESEGUITO",
+  "R2_runtime_fix": "Pending execution on Windows; source-level initialization correction only"
+}

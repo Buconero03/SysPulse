@@ -1,0 +1,349 @@
+<UserControl x:Class="ProcessLens.App.GuardianDashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ProcessLens.App"
+             Background="#F5F6F8" FontFamily="Segoe UI" Foreground="#202124">
+    <UserControl.Resources>
+        <Style x:Key="GuardianCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E2E5E9"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="12,9"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+        </Style>
+        <Style x:Key="GuardianTable" TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#E9EDF2"/>
+            <Setter Property="RowBackground" Value="White"/>
+            <Setter Property="AlternatingRowBackground" Value="#F8FAFC"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="EnableRowVirtualization" Value="True"/>
+            <Setter Property="EnableColumnVirtualization" Value="True"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="RowHeight" Value="32"/>
+            <Setter Property="ColumnHeaderHeight" Value="37"/>
+        </Style>
+        <Style x:Key="GuardianHeading" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#64748B"/>
+        </Style>
+        <Style x:Key="GuardianNumber" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#173F68"/>
+            <Setter Property="Margin" Value="0,6,0,2"/>
+        </Style>
+        <Style x:Key="SelectableGuardianNumber" TargetType="local:SelectableText">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#173F68"/>
+            <Setter Property="Margin" Value="0,6,0,2"/>
+        </Style>
+        <Style x:Key="GuardianTab" TargetType="TabItem">
+            <Setter Property="Padding" Value="13,9"/>
+            <Setter Property="Margin" Value="0,0,6,5"/>
+            <Setter Property="MinHeight" Value="38"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#475569"/>
+            <Setter Property="Background" Value="#F1F5F9"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="TabBorder" Background="{TemplateBinding Background}" BorderBrush="#D6DFEA"
+                                BorderThickness="1" CornerRadius="7" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" HorizontalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabBorder" Property="Background" Value="#DFEBFC"/>
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#7098CE"/>
+                                <Setter Property="Foreground" Value="#173F68"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#174E8F"/>
+                                <Setter TargetName="TabBorder" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="Guardian · storico" FontSize="21" FontWeight="SemiBold"/>
+                <TextBlock Text="ETW e SQLite · aggiornamento ogni 10 s · sola lettura"
+                           FontSize="12" Foreground="#64748B" Margin="0,4,0,0"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Intervallo" VerticalAlignment="Center" Foreground="#64748B" Margin="0,0,7,0"/>
+                <ComboBox x:Name="WindowSelector" Width="115" Height="32" SelectedIndex="2"
+                          SelectionChanged="WindowSelector_SelectionChanged" Margin="0,0,9,0">
+                    <ComboBoxItem Content="5 minuti" Tag="5"/>
+                    <ComboBoxItem Content="15 minuti" Tag="15"/>
+                    <ComboBoxItem Content="30 minuti" Tag="30"/>
+                    <ComboBoxItem Content="60 minuti" Tag="60"/>
+                </ComboBox>
+                <Button Content="Aggiorna ora" Padding="15,7" Background="#DFEDFF"
+                        BorderBrush="#B9D1ED" Click="RefreshButton_Click"/>
+            </StackPanel>
+        </Grid>
+
+        <UniformGrid Grid.Row="1" Columns="5" Margin="0,0,-10,12">
+            <Border Style="{StaticResource GuardianCard}">
+                <StackPanel><TextBlock Text="AVVII OSSERVATI" Style="{StaticResource GuardianHeading}"/>
+                    <local:SelectableText x:Name="StartedValue" Text="—" Style="{StaticResource SelectableGuardianNumber}"/>
+                    <TextBlock Text="ETW + polling · finestra selezionata" Foreground="#64748B" FontSize="10"/></StackPanel>
+            </Border>
+            <Border Style="{StaticResource GuardianCard}">
+                <StackPanel><TextBlock Text="TERMINAZIONI" Style="{StaticResource GuardianHeading}"/>
+                    <local:SelectableText x:Name="ExitedValue" Text="—" Style="{StaticResource SelectableGuardianNumber}"/>
+                    <TextBlock Text="ETW + polling" Foreground="#64748B" FontSize="10"/></StackPanel>
+            </Border>
+            <Border Style="{StaticResource GuardianCard}">
+                <StackPanel><TextBlock Text="AVVII ETW" Style="{StaticResource GuardianHeading}"/>
+                    <local:SelectableText x:Name="EtwValue" Text="—" Style="{StaticResource SelectableGuardianNumber}"/>
+                    <TextBlock Text="Eventi origine ETW" Foreground="#64748B" FontSize="10"/></StackPanel>
+            </Border>
+            <Border Style="{StaticResource GuardianCard}">
+                <StackPanel><TextBlock Text="EVENTI COMPLESSIVI" Style="{StaticResource GuardianHeading}"/>
+                    <local:SelectableText x:Name="TotalValue" Text="—" Style="{StaticResource SelectableGuardianNumber}"/>
+                    <TextBlock Text="Avvii, uscite e inventario" Foreground="#64748B" FontSize="10"/></StackPanel>
+            </Border>
+            <Border Style="{StaticResource GuardianCard}">
+                <StackPanel><TextBlock Text="SQLITE + WAL" Style="{StaticResource GuardianHeading}"/>
+                    <local:SelectableText x:Name="StorageValue" Text="—" Style="{StaticResource SelectableGuardianNumber}"/>
+                    <TextBlock Text="Dimensione su disco in MiB" Foreground="#64748B" FontSize="10"/></StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <Border Grid.Row="2" Background="#EEF4FB" CornerRadius="8" BorderBrush="#D8E4F2"
+                BorderThickness="1" Padding="11,9" Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <local:SelectableText x:Name="StatusText" Text="Seleziona Guardian per avviare la lettura dello storico."
+                           TextWrapping="Wrap" VerticalAlignment="Center" Foreground="#234970" FontSize="12"/>
+                <local:SelectableText x:Name="UpdatedText" Grid.Column="1" Text="—"
+                           VerticalAlignment="Center" Foreground="#64748B" FontSize="11" Margin="14,0,0,0"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="3" Background="White" BorderBrush="#E2E5E9" BorderThickness="1" CornerRadius="10" Padding="10">
+            <TabControl x:Name="GuardianTabs" Background="White" BorderThickness="0" ItemContainerStyle="{StaticResource GuardianTab}">
+                <TabItem Header="Eventi recenti">
+                    <Grid Margin="6,12,6,6">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <DockPanel Margin="0,0,0,12">
+                            <TextBlock Text="Cerca nel campione recente" VerticalAlignment="Center" Foreground="#64748B" Margin="0,0,12,0"/>
+                            <TextBox x:Name="EventSearchBox" Width="270" Height="30" VerticalContentAlignment="Center"
+                                     Padding="7,4" TextChanged="EventSearchBox_TextChanged"/>
+                            <local:SelectableText x:Name="EventCountText" VerticalAlignment="Center" Margin="16,0,0,0" Foreground="#64748B"/>
+                        </DockPanel>
+                        <DataGrid local:GridCopySupport.Enabled="True" x:Name="EventsTable" Grid.Row="1" Style="{StaticResource GuardianTable}" SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Ora locale" Binding="{Binding LocalTime}" Width="170"/>
+                                <DataGridTextColumn Header="Eseguibile" Binding="{Binding Name}" Width="*"/>
+                                <DataGridTextColumn Header="Evento" Binding="{Binding Kind}" Width="140"/>
+                                <DataGridTextColumn Header="PID" Binding="{Binding Pid}" Width="90"/>
+                                <DataGridTextColumn Header="PPID" Binding="{Binding ParentPid}" Width="90"/>
+                                <DataGridTextColumn Header="Origine" Binding="{Binding Source}" Width="90"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock Grid.Row="2" Text="Massimo 250 eventi più recenti nel periodo. Ricerca applicata al campione visualizzato; non a tutto lo storico."
+                                   Foreground="#64748B" FontSize="11" Margin="0,10,0,0"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Avvii e padri">
+                    <Grid Margin="6,12,6,6">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="1.6*"/></Grid.ColumnDefinitions>
+                        <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#F7FAFE" BorderBrush="#E1EAF5"
+                                BorderThickness="1" CornerRadius="7" Padding="10" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="ANDAMENTO DEGLI AVVII ETW" FontSize="11" Foreground="#475569" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                                <ItemsControl x:Name="ActivityTrendList">
+                                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="0,0,12,6">
+                                                <DockPanel LastChildFill="True" Margin="0,0,0,3">
+                                                    <TextBlock Text="{Binding TimeLocal}" FontSize="10" Foreground="#64748B"/>
+                                                    <TextBlock Text="{Binding Starts}" HorizontalAlignment="Right" DockPanel.Dock="Right" FontSize="10" FontWeight="SemiBold"/>
+                                                </DockPanel>
+                                                <ProgressBar Value="{Binding PercentOfMax}" Maximum="100" Minimum="0"
+                                                             Height="9" Foreground="#5386CF" Background="#E4EAF3" BorderThickness="0"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <TextBlock Text="Intervalli equidistanti, lunghezza della barra proporzionale al massimo osservato nel periodo. Conteggi reali indicati su ogni barra."
+                                           FontSize="10" Foreground="#64748B"/>
+                            </StackPanel>
+                        </Border>
+                        <Grid Grid.Row="1" Grid.Column="0">
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <TextBlock Text="ESEGUIBILI CON PIÙ AVVII ETW" FontWeight="SemiBold" Margin="4,0,0,10" Foreground="#475569"/>
+                            <DataGrid local:GridCopySupport.Enabled="True" x:Name="TopProcessesTable" Grid.Row="1" Style="{StaticResource GuardianTable}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Nome" Binding="{Binding Name}" Width="*"/>
+                                    <DataGridTextColumn Header="Avvii" Binding="{Binding Starts}" Width="75"/>
+                                    <DataGridTextColumn Header="/ minuto" Binding="{Binding StartsPerMinute}" Width="83"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                        <Grid Grid.Row="1" Grid.Column="2">
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                            <TextBlock Text="GENERATORI DI PROCESSI · PARENTELA PROBABILE" FontWeight="SemiBold" Margin="4,0,0,10" Foreground="#475569"/>
+                            <DataGrid local:GridCopySupport.Enabled="True" x:Name="ParentsTable" Grid.Row="1" Style="{StaticResource GuardianTable}" MouseDoubleClick="ParentsTable_MouseDoubleClick">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="PID padre" Binding="{Binding ParentPid}" Width="83"/>
+                                    <DataGridTextColumn Header="Nome ipotizzato" Binding="{Binding CandidateParent}" Width="*"/>
+                                    <DataGridTextColumn Header="Figlio" Binding="{Binding ChildName}" Width="*"/>
+                                    <DataGridTextColumn Header="Avvii" Binding="{Binding Starts}" Width="65"/>
+                                    <DataGridTextColumn Header="Evidenza / limite" Binding="{Binding Evidence}" Width="1.65*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <local:SelectableText Grid.Row="2" Text="Il PPID da solo non dimostra la parentela: Windows può riutilizzare i PID. Nessuna attribuzione è definitiva."
+                                       Foreground="#64748B" FontSize="11" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+                <TabItem x:Name="LineageTab" Header="Esplora parentela">
+                    <Grid Margin="8,12,8,8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,9">
+                            <TextBlock Text="PID da esplorare" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,9,0"/>
+                            <TextBox x:Name="LineagePidBox" Width="110" Height="30" VerticalContentAlignment="Center"
+                                     Padding="7,3" Text="" Margin="0,0,8,0"/>
+                            <Button Content="Analizza PID" Padding="13,5" Margin="0,0,8,0"
+                                    Click="AnalyzeLineage_Click"/>
+                            <Button Content="Usa padre selezionato" Padding="13,5" Margin="0,0,8,0"
+                                    Click="UseParent_Click"/>
+                            <Button Content="Esplora figlio selezionato" Padding="13,5"
+                                    Click="ExploreChild_Click"/>
+                        </StackPanel>
+                        <Border Grid.Row="1" Background="#F0F6FC" BorderBrush="#D7E6F3"
+                                BorderThickness="1" CornerRadius="7" Padding="10" Margin="0,0,0,8">
+                            <StackPanel>
+                                <local:SelectableText x:Name="LineageRootText" FontSize="14" FontWeight="SemiBold"
+                                           Text="Seleziona un PID dalla tabella dei generatori oppure inseriscilo qui." TextWrapping="Wrap"/>
+                                <local:SelectableText x:Name="LineageStatusText" Foreground="#475569" FontSize="11"
+                                           Text="Lettura manuale dallo storico; nessuna modifica ai processi." Margin="0,5,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                        <local:SelectableText Grid.Row="2" Text="Le corrispondenze PID/orario sono indizi, non prove definitive di parentela. Timestamp con precisione di un secondo; PID riutilizzabili."
+                                   Foreground="#8A520B" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                        <Grid Grid.Row="3">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="1.55*"/></Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0">
+                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                <TextBlock Text="CATENA DEGLI ANTENATI · fino a 6 livelli" FontSize="11"
+                                           FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,8"/>
+                                <DataGrid local:GridCopySupport.Enabled="True" x:Name="LineageAncestorsTable" Grid.Row="1" Style="{StaticResource GuardianTable}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Liv." Binding="{Binding Level}" Width="42"/>
+                                        <DataGridTextColumn Header="PID" Binding="{Binding Pid}" Width="75"/>
+                                        <DataGridTextColumn Header="Nome" Binding="{Binding Name}" Width="*"/>
+                                        <DataGridTextColumn Header="Stato" Binding="{Binding LinkStatus}" Width="100"/>
+                                        <DataGridTextColumn Header="Evidenza" Binding="{Binding Evidence}" Width="1.5*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                            <Grid Grid.Column="2">
+                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                <TextBlock Text="FIGLI DIRETTI OSSERVATI · doppio clic per approfondire" FontSize="11"
+                                           FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,8"/>
+                                <DataGrid local:GridCopySupport.Enabled="True" x:Name="LineageChildrenTable" Grid.Row="1" Style="{StaticResource GuardianTable}"
+                                          MouseDoubleClick="LineageChildrenTable_MouseDoubleClick">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Ora avvio" Binding="{Binding StartLocal}" Width="148"/>
+                                        <DataGridTextColumn Header="PID" Binding="{Binding Pid}" Width="64"/>
+                                        <DataGridTextColumn Header="Eseguibile" Binding="{Binding Name}" Width="*"/>
+                                        <DataGridTextColumn Header="Stato" Binding="{Binding LinkStatus}" Width="105"/>
+                                        <DataGridTextColumn Header="Evidenza" Binding="{Binding Evidence}" Width="1.65*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </Grid>
+                        <local:SelectableText Grid.Row="4" x:Name="LineageCoverageText" Foreground="#64748B"
+                                   FontSize="11" Text="I figli vengono caricati su richiesta; massimo 200 avvii per analisi."
+                                   TextWrapping="Wrap" Margin="0,8,0,0"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Risorse storiche">
+                    <Grid Margin="6,12,6,6">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <TextBlock Text="CAMPIONI AGGREGATI PER NOME ESEGUIBILE" FontWeight="SemiBold" Foreground="#475569" Margin="4,0,0,10"/>
+                        <DataGrid local:GridCopySupport.Enabled="True" x:Name="ResourcesTable" Grid.Row="1" Style="{StaticResource GuardianTable}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Eseguibile" Binding="{Binding Name}" Width="*"/>
+                                <DataGridTextColumn Header="CPU media %" Binding="{Binding AverageCpu}" Width="130"/>
+                                <DataGridTextColumn Header="CPU picco %" Binding="{Binding PeakCpu}" Width="130"/>
+                                <DataGridTextColumn Header="RAM residente max MiB" Binding="{Binding PeakResidentMiB}" Width="185"/>
+                                <DataGridTextColumn Header="Campioni" Binding="{Binding Samples}" Width="115"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <local:SelectableText Grid.Row="2" Text="Campioni per nome, non riferiti a un solo PID o al suo padre. Bucket da 5 minuti: l'intervallo è approssimato. La RAM residente include memoria condivisa."
+                                   Foreground="#64748B" FontSize="11" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Diagnostica ETW / SQLite">
+                    <Grid Margin="6,12,6,6">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*" MinHeight="45"/><RowDefinition Height="8"/><RowDefinition Height="1.3*" MinHeight="65"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <local:SelectableText x:Name="HealthSummaryText" FontWeight="SemiBold" FontSize="13"
+                                   Foreground="#234970" TextWrapping="Wrap" Margin="4,0,0,10"/>
+                        <local:SelectableText x:Name="LastEtwText" Grid.Row="1" Foreground="#475569" Margin="4,0,0,12" TextWrapping="Wrap"/>
+                        <DataGrid local:GridCopySupport.Enabled="True" x:Name="DiagnosticsTable" Grid.Row="2" Style="{StaticResource GuardianTable}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Ora locale" Binding="{Binding LocalTime}" Width="170"/>
+                                <DataGridTextColumn Header="Origine" Binding="{Binding Source}" Width="110"/>
+                                <DataGridTextColumn Header="Dettaglio" Binding="{Binding Message}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <GridSplitter Grid.Row="3" Height="6" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                      ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" Background="#D8E1EC"
+                                      ShowsPreview="True" Focusable="True" ToolTip="Ridimensiona elenco e dettaglio diagnostico"/>
+                        <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Margin="4,10,4,8">
+                                <TextBlock Text="DETTAGLIO DELLA VOCE SELEZIONATA" FontSize="11" FontWeight="SemiBold" Foreground="#64748B" Margin="0,0,0,8"/>
+                                <local:SelectableText x:Name="DiagnosticDetailsText" Text="{Binding SelectedItem.DetailText, ElementName=DiagnosticsTable, Mode=OneWay}" FontSize="13"/>
+                                <Expander Header="Limiti dei contatori" IsExpanded="False" Margin="0,12,0,8">
+                                    <local:SelectableText Text="{Binding SelectedItem.Limitations, ElementName=DiagnosticsTable, Mode=OneWay}" FontSize="12" Margin="0,8,0,0"/>
+                                </Expander>
+                                <Expander Header="Messaggio originale · selezionabile e copiabile" IsExpanded="False" Margin="0,4,0,0">
+                                    <local:SelectableText x:Name="DiagnosticOriginalText" Text="{Binding SelectedItem.OriginalMessage, ElementName=DiagnosticsTable, Mode=OneWay}"
+                                                          FontFamily="Consolas" FontSize="12" Margin="0,8,0,0"/>
+                                </Expander>
+                            </StackPanel>
+                        </ScrollViewer>
+                        <local:SelectableText Grid.Row="5" Text="Assenza di avvisi non garantisce completezza ETW. Se SQLite è indisponibile, alcune perdite possono non risultare nelle diagnostiche."
+                                   Foreground="#64748B" FontSize="11" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Border>
+    </Grid>
+</UserControl>

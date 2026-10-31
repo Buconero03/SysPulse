@@ -1,0 +1,10 @@
+{
+  "request": "Proceed with the proposed Dispositivi sulla rete feature, 20 October 2026",
+  "baseline": "ProcessLens-v0.19.16-R10-R11-R2-ux-writing-candidate.zip",
+  "baseline_sha256": "b46c5acc89186d05b872b825471845c7ff8bccf53fb0c2de928feb591dca1104",
+  "new_reader": "Windows GetIpNetTable2 / FreeMibTable; passive local cache only",
+  "network_scan_or_remote_actions_executed_here": false,
+  "Windows_dotnet_WPF_PowerShell": "NON ESEGUITO",
+  "CPU_RAM_measurement": "NON MISURATO",
+  "prior_R11_audits": "Historical results retained unchanged; current results are under R10_R12"
+}

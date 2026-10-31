@@ -1,0 +1,247 @@
+[
+  {
+    "file": "src/ProcessLens.App/ProcessIconResolver.cs",
+    "line_input": 1,
+    "before": "using System.Collections.Concurrent;\n",
+    "after": "",
+    "reason": "Cache limitata invece di una tabella senza limite"
+  },
+  {
+    "file": "src/ProcessLens.App/ProcessIconResolver.cs",
+    "line_input": 22,
+    "before": "private static readonly ConcurrentDictionary<string, ImageSource> Cache =\n        new(StringComparer.OrdinalIgnoreCase);",
+    "after": "private static readonly BoundedCache<string, ImageSource> Cache =\n        new(128, StringComparer.OrdinalIgnoreCase);",
+    "reason": "Al massimo 128 icone trattenute; miss ricaricabile da Shell senza perdere funzionalità"
+  },
+  {
+    "file": "src/ProcessLens.App/ProcessIconResolver.cs",
+    "line_input": 36,
+    "before": "Cache.TryAdd(key, icon);",
+    "after": "Cache[key] = icon;",
+    "reason": "Aggiorna cache LRU; HICON ancora distrutto in finally e BitmapSource congelata"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 28,
+    "before": "private readonly Dictionary<int, (DateTime? StartTime, ProcessSnapshot Process, ProcessInsight Insight)> _deepCache = new();",
+    "after": "private readonly BoundedCache<int, (DateTime? StartTime, ProcessSnapshot Process, ProcessInsight Insight)> _deepCache = new(8);",
+    "reason": "Al massimo 8 ispezioni complete trattenute; processi evinti riesaminati su selezione"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 32,
+    "before": "Queue<MemoryObservation> Samples",
+    "after": "MemoryObservationBuffer Samples",
+    "reason": "Storico in valori inline, senza un oggetto per ogni campione di ogni PID"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 58,
+    "before": "private readonly Dictionary<string, (DateTime CachedUtc, ServiceHistoryResult Result)> _serviceEventsCache =\n        new(StringComparer.OrdinalIgnoreCase);",
+    "after": "private readonly BoundedCache<string, (DateTime CachedUtc, ServiceHistoryResult Result)> _serviceEventsCache =\n        new(16, StringComparer.OrdinalIgnoreCase);",
+    "reason": "Al massimo 16 cronologie SCM in cache, TTL e acquisizione invariati"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 15,
+    "before": "    private ProcessInsight? _currentClassificationAuditInsight;",
+    "after": "    private ProcessRow? _currentDetailRow;\n    private ProcessInsight? _renderedClassificationFactsInsight;\n    private int? _renderedClassificationFactsPid;\n    private GuardianDashboardView? GuardianDashboard;\n    private MemoryDashboardView? MemoryDashboard;\n    private ProcessInsight? _currentClassificationAuditInsight;",
+    "reason": "Creazione dashboard e dettagli opzionali solo quando richiesti"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 121,
+    "before": "GuardianDashboard.SetActive(false);",
+    "after": "GuardianDashboard?.SetActive(false);",
+    "reason": "La chiusura non crea dashboard mai visitate"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 122,
+    "before": "MemoryDashboard.SetActive(false);",
+    "after": "MemoryDashboard?.SetActive(false);",
+    "reason": "La chiusura non crea dashboard mai visitate"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 1688,
+    "before": "        GuardianDashboard.Visibility = guardian ? Visibility.Visible : Visibility.Collapsed;\n        GuardianDashboard.SetActive(guardian);\n        MemoryDashboard.Visibility = memory ? Visibility.Visible : Visibility.Collapsed;\n        MemoryDashboard.SetActive(memory);",
+    "after": "        if (guardian && GuardianDashboard is null)\n        {\n            GuardianDashboard = new GuardianDashboardView();\n            GuardianDashboardHost.Content = GuardianDashboard;\n        }\n        if (memory && MemoryDashboard is null)\n        {\n            MemoryDashboard = new MemoryDashboardView();\n            MemoryDashboardHost.Content = MemoryDashboard;\n        }\n        GuardianDashboardHost.Visibility = guardian ? Visibility.Visible : Visibility.Collapsed;\n        GuardianDashboard?.SetActive(guardian);\n        MemoryDashboardHost.Visibility = memory ? Visibility.Visible : Visibility.Collapsed;\n        MemoryDashboard?.SetActive(memory);",
+    "reason": "Evita istanziazione iniziale di grafici, DataGrid, stili e timer delle schede non visitate; conserva vista una volta creata"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 953,
+    "before": "        DateTime cutoff = now - TimeSpan.FromMinutes(5);\n",
+    "after": "",
+    "reason": "La stessa retention di 5 minuti e 160 campioni è incapsulata nel buffer"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 964,
+    "before": "new Queue<MemoryObservation>()",
+    "after": "new MemoryObservationBuffer()",
+    "reason": "Campioni mantenuti nel backing array del buffer"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 967,
+    "before": "            state.Samples.Enqueue(new MemoryObservation(now, bytes));\n            while (state.Samples.Count > 0 &&\n                (state.Samples.Peek().TimestampUtc < cutoff || state.Samples.Count > 160))\n                state.Samples.Dequeue();",
+    "after": "            state.Samples.Add(now, bytes);",
+    "reason": "Nessuna allocazione di MemoryObservation nel polling globale"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 623,
+    "before": "        DetailClassificationFactsPanel.Children.Clear();\n        foreach (var fact in ProcessDetailPresentation.ClassificationFacts(p, i))\n            AddTechnicalFact(DetailClassificationFactsPanel, fact.Label, fact.Value);",
+    "after": "        _currentDetailRow = row;\n        RefreshClassificationFacts();",
+    "reason": "Righe di classificazione create solo a pannello aperto e quando cambia la classificazione"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 628,
+    "before": "        DetailEvidenceTechnicalText.Text =\n            i.DetectionBasis + \"\\n\" +\n            $\"Punteggio euristico interno: {i.RoleConfidencePercent}/100 (non è una probabilità)\\n\" +\n            string.Join(\"\\n\", i.Evidence);",
+    "after": "",
+    "reason": "Il rapporto grezzo viene composto solo quando si apre il relativo pannello tecnico"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 633,
+    "before": "        if (DetailClassificationAuditExpander.IsExpanded)\n            RefreshClassificationAuditGroups();",
+    "after": "        if (DetailIdentificationExpander.IsExpanded && DetailClassificationAuditExpander.IsExpanded)\n            RefreshClassificationAuditGroups();",
+    "reason": "Non costruisce controlli audit nascosti in un antenato chiuso"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 757,
+    "before": "        if (!DetailClassificationAuditExpander.IsExpanded ||",
+    "after": "        if (!DetailIdentificationExpander.IsExpanded || !DetailClassificationAuditExpander.IsExpanded ||",
+    "reason": "Limita la creazione dei controlli all’audit effettivamente richiesto"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 762,
+    "before": "        DetailClassificationAuditPanel.Children.Clear();\n        var facts = ProcessDetailPresentation.ClassificationAuditFacts(insight);",
+    "after": "        DetailEvidenceTechnicalText.Text = insight.DetectionBasis + \"\\n\" +\n            $\"Punteggio euristico interno: {insight.RoleConfidencePercent}/100 (non è una probabilità)\\n\" +\n            string.Join(\"\\n\", insight.Evidence);\n        DetailClassificationAuditPanel.Children.Clear();\n        var facts = ProcessDetailPresentation.ClassificationAuditFacts(insight);",
+    "reason": "Rapporto originale e ID non alterati, resi disponibili al primo accesso"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 683,
+    "before": "        string critical = p.IsCritical ? \"SÌ - flag critico rilevato\" : \"Flag non rilevato; stato negativo non verificato\";\n        string started = ProcessStartFormatter.FormatStart(p.StartTime);\n\n        DetailTechnicalContextText.Text =\n            $\"Nome eseguibile: {p.Name}\\n\" +\n            $\"PID: {p.Pid}\\n\" +\n            $\"Parent: {p.ParentName ?? \"N/D\"} (PID {p.ParentPid})\\n\" +\n            $\"Thread: {p.ThreadCount}\\n\" +\n            $\"CPU campione valido: {(p.CpuSampleAvailable ? \"Sì\" : \"No\")}\\n\" +\n            $\"CPU media/picco fino a 30s: {(p.CpuSampleAvailable ? $\"{p.CpuAverage30Seconds:F2}% / {p.CpuPeak30Seconds:F2}%\" : \"N/D\")}\\n\" +\n            $\"Tempo CPU accumulato: {(p.CpuCumulativeAvailable ? $\"{p.CpuCumulativeSeconds:F1}s\" : \"N/D\")}\\n\" +\n            $\"Handle: {p.HandleCount} (zero può indicare lettura non accessibile)\\n\" +\n            $\"RAM privata residente: {(p.PrivateWorkingSetAvailable ? $\"{p.PrivateWorkingSetMb:F1} MiB\" : \"N/D\")}\\n\" +\n            $\"RAM residente totale: {(p.WorkingSetAvailable ? $\"{p.WorkingSetMb:F1} MiB\" : \"N/D\")}\\n\" +\n            $\"Memoria privata impegnata / commit: {(p.PrivateCommitAvailable ? $\"{p.PrivateMb:F1} MiB\" : \"N/D\")}\\n\" +\n            $\"Critico: {critical}\\n\" +\n            $\"Avviato: {started}\\n\" +\n            $\"In esecuzione da: {ProcessStartFormatter.FormatElapsed(p.StartTime)}\\n\" +\n            $\"Identificazione funzione: {i.DetectionLabel}\\n\" +\n            $\"Punteggi regole (non probabilità): identità {i.IdentityConfidencePercent}/100, app associata {i.OwnershipConfidencePercent}/100, funzione {i.RoleConfidencePercent}/100, aggregato {i.ConfidencePercent}/100\\n\" +\n            $\"Prodotto dichiarato nei metadati: {p.ProductName ?? \"N/D\"}\\n\" +\n            $\"Descrizione file: {p.FileDescription ?? \"N/D\"}\\n\" +\n            $\"Azienda dichiarata nei metadati: {p.CompanyName ?? \"N/D\"}\\n\" +\n            $\"Package: {p.PackageFullName ?? \"N/D\"}\\n\" +\n            $\"AUMID: {p.ApplicationUserModelId ?? \"N/D\"}\\n\" +\n            $\"Analisi approfondita: {(p.IsDeepInspected ? \"Letture terminate\" : \"Non eseguita\")}\\n\" +\n            $\"Esito/limiti letture: {p.DeepInspectionNote ?? \"N/D\"}\\n\" +\n            $\"Finestra visibile: {(!p.IsDeepInspected ? \"N/D\" : p.HasVisibleWindow ? \"Rilevata\" : \"Non rilevata\")}\\n\" +\n            $\"PID - TCP listen/established: {(p.IsDeepInspected ? $\"{p.TcpListeningCount}/{p.TcpEstablishedCount}\" : \"N/D\")}\\n\" +\n            $\"PID - UDP endpoint: {(p.IsDeepInspected ? p.UdpEndpointCount.ToString() : \"N/D\")}\\n\" +\n            $\"Famiglia per nome/albero: {(p.IsDeepInspected ? $\"{p.NetworkFamilyProcessCount} processi (root PID {p.NetworkFamilyRootPid})\" : \"N/D\")}\\n\" +\n            $\"Famiglia - processi con socket: {(p.IsDeepInspected ? p.NetworkFamilyProcessesWithSockets.ToString() : \"N/D\")}\\n\" +\n            $\"Famiglia - TCP listen/established: {(p.IsDeepInspected ? $\"{p.NetworkFamilyTcpListeningCount}/{p.NetworkFamilyTcpEstablishedCount}\" : \"N/D\")}\\n\" +\n            $\"Famiglia - UDP endpoint: {(p.IsDeepInspected ? p.NetworkFamilyUdpEndpointCount.ToString() : \"N/D\")}\\n\" +\n            $\"Figli: {p.ChildCount} (omonimi: {p.SameNameChildCount})\\n\" +\n            $\"Framework: {i.Framework}\\n\" +\n            $\"Servizi: {(p.ServiceDisplayNames.Count == 0 ? \"Nessuno associato\" : string.Join(\", \", p.ServiceDisplayNames))}\\n\" +\n            $\"Catena padre: {(p.AncestorNames.Count == 0 ? \"N/D\" : string.Join(\" <- \", p.AncestorNames))}\\n\" +\n            $\"Progetto: {i.ProjectRoot ?? \"Non identificato\"}\";\n\n        DetailExecutableText.Text = p.ExecutablePath ?? \"Accesso non disponibile\";\n        var commandLineToShow = p.CommandLine ?? \"Accesso non disponibile\";\n        if (!string.Equals(DetailCommandLineText.Text, commandLineToShow, StringComparison.Ordinal))\n        {\n            DetailCommandLineText.Text = commandLineToShow;\n            DetailFormattedCommandLineText.Text = ProcessDetailPresentation.FormatCommandLine(p.CommandLine);\n        }\n        var detailEvidence = i.Evidence.ToList();\n        detailEvidence.AddRange(origin.Evidence.Select(e => $\"Origine: {e}\"));\n        if (p.IsDeepInspected)\n        {\n            if (p.ModuleNames.Count > 0)\n                detailEvidence.Add($\"Moduli caricati (campione): {string.Join(\", \", p.ModuleNames.Take(20))}\");\n            if (p.WindowClasses.Count > 0)\n                detailEvidence.Add($\"Classi finestre: {string.Join(\", \", p.WindowClasses.Take(8))}\");\n            if (!string.IsNullOrWhiteSpace(p.DeepInspectionNote))\n                detailEvidence.Add($\"Deep inspection: {p.DeepInspectionNote}\");\n        }\n\n        DetailEvidenceText.Text = detailEvidence.Count == 0\n            ? \"Nessuna evidenza aggiuntiva disponibile.\"\n            : string.Join(Environment.NewLine, detailEvidence.Select(x => $\"• {x}\"));\n        if (DetailTechnicalSectionsExpander.IsExpanded)\n            RefreshTechnicalDetailGroups();\n    }\n",
+    "after": "        if (DetailTechnicalSectionsExpander.IsExpanded)\n            UpdateTechnicalDetails(row);\n    }\n\n    private void UpdateTechnicalDetails(ProcessRow row)\n    {\n        var p = row.Process;\n        var i = row.Insight;\n        var origin = ProcessOriginAnalyzer.Analyze(p);\n        string critical = p.IsCritical ? \"SÌ - flag critico rilevato\" : \"Flag non rilevato; stato negativo non verificato\";\n        string started = ProcessStartFormatter.FormatStart(p.StartTime);\n\n        DetailTechnicalContextText.Text =\n            $\"Nome eseguibile: {p.Name}\\n\" +\n            $\"PID: {p.Pid}\\n\" +\n            $\"Parent: {p.ParentName ?? \"N/D\"} (PID {p.ParentPid})\\n\" +\n            $\"Thread: {p.ThreadCount}\\n\" +\n            $\"CPU campione valido: {(p.CpuSampleAvailable ? \"Sì\" : \"No\")}\\n\" +\n            $\"CPU media/picco fino a 30s: {(p.CpuSampleAvailable ? $\"{p.CpuAverage30Seconds:F2}% / {p.CpuPeak30Seconds:F2}%\" : \"N/D\")}\\n\" +\n            $\"Tempo CPU accumulato: {(p.CpuCumulativeAvailable ? $\"{p.CpuCumulativeSeconds:F1}s\" : \"N/D\")}\\n\" +\n            $\"Handle: {p.HandleCount} (zero può indicare lettura non accessibile)\\n\" +\n            $\"RAM privata residente: {(p.PrivateWorkingSetAvailable ? $\"{p.PrivateWorkingSetMb:F1} MiB\" : \"N/D\")}\\n\" +\n            $\"RAM residente totale: {(p.WorkingSetAvailable ? $\"{p.WorkingSetMb:F1} MiB\" : \"N/D\")}\\n\" +\n            $\"Memoria privata impegnata / commit: {(p.PrivateCommitAvailable ? $\"{p.PrivateMb:F1} MiB\" : \"N/D\")}\\n\" +\n            $\"Critico: {critical}\\n\" +\n            $\"Avviato: {started}\\n\" +\n            $\"In esecuzione da: {ProcessStartFormatter.FormatElapsed(p.StartTime)}\\n\" +\n            $\"Identificazione funzione: {i.DetectionLabel}\\n\" +\n            $\"Punteggi regole (non probabilità): identità {i.IdentityConfidencePercent}/100, app associata {i.OwnershipConfidencePercent}/100, funzione {i.RoleConfidencePercent}/100, aggregato {i.ConfidencePercent}/100\\n\" +\n            $\"Prodotto dichiarato nei metadati: {p.ProductName ?? \"N/D\"}\\n\" +\n            $\"Descrizione file: {p.FileDescription ?? \"N/D\"}\\n\" +\n            $\"Azienda dichiarata nei metadati: {p.CompanyName ?? \"N/D\"}\\n\" +\n            $\"Package: {p.PackageFullName ?? \"N/D\"}\\n\" +\n            $\"AUMID: {p.ApplicationUserModelId ?? \"N/D\"}\\n\" +\n            $\"Analisi approfondita: {(p.IsDeepInspected ? \"Letture terminate\" : \"Non eseguita\")}\\n\" +\n            $\"Esito/limiti letture: {p.DeepInspectionNote ?? \"N/D\"}\\n\" +\n            $\"Finestra visibile: {(!p.IsDeepInspected ? \"N/D\" : p.HasVisibleWindow ? \"Rilevata\" : \"Non rilevata\")}\\n\" +\n            $\"PID - TCP listen/established: {(p.IsDeepInspected ? $\"{p.TcpListeningCount}/{p.TcpEstablishedCount}\" : \"N/D\")}\\n\" +\n            $\"PID - UDP endpoint: {(p.IsDeepInspected ? p.UdpEndpointCount.ToString() : \"N/D\")}\\n\" +\n            $\"Famiglia per nome/albero: {(p.IsDeepInspected ? $\"{p.NetworkFamilyProcessCount} processi (root PID {p.NetworkFamilyRootPid})\" : \"N/D\")}\\n\" +\n            $\"Famiglia - processi con socket: {(p.IsDeepInspected ? p.NetworkFamilyProcessesWithSockets.ToString() : \"N/D\")}\\n\" +\n            $\"Famiglia - TCP listen/established: {(p.IsDeepInspected ? $\"{p.NetworkFamilyTcpListeningCount}/{p.NetworkFamilyTcpEstablishedCount}\" : \"N/D\")}\\n\" +\n            $\"Famiglia - UDP endpoint: {(p.IsDeepInspected ? p.NetworkFamilyUdpEndpointCount.ToString() : \"N/D\")}\\n\" +\n            $\"Figli: {p.ChildCount} (omonimi: {p.SameNameChildCount})\\n\" +\n            $\"Framework: {i.Framework}\\n\" +\n            $\"Servizi: {(p.ServiceDisplayNames.Count == 0 ? \"Nessuno associato\" : string.Join(\", \", p.ServiceDisplayNames))}\\n\" +\n            $\"Catena padre: {(p.AncestorNames.Count == 0 ? \"N/D\" : string.Join(\" <- \", p.AncestorNames))}\\n\" +\n            $\"Progetto: {i.ProjectRoot ?? \"Non identificato\"}\";\n\n        DetailExecutableText.Text = p.ExecutablePath ?? \"Accesso non disponibile\";\n        var commandLineToShow = p.CommandLine ?? \"Accesso non disponibile\";\n        if (!string.Equals(DetailCommandLineText.Text, commandLineToShow, StringComparison.Ordinal))\n        {\n            DetailCommandLineText.Text = commandLineToShow;\n            DetailFormattedCommandLineText.Text = ProcessDetailPresentation.FormatCommandLine(p.CommandLine);\n        }\n        var detailEvidence = i.Evidence.ToList();\n        detailEvidence.AddRange(origin.Evidence.Select(e => $\"Origine: {e}\"));\n        if (p.IsDeepInspected)\n        {\n            if (p.ModuleNames.Count > 0)\n                detailEvidence.Add($\"Moduli caricati (campione): {string.Join(\", \", p.ModuleNames.Take(20))}\");\n            if (p.WindowClasses.Count > 0)\n                detailEvidence.Add($\"Classi finestre: {string.Join(\", \", p.WindowClasses.Take(8))}\");\n            if (!string.IsNullOrWhiteSpace(p.DeepInspectionNote))\n                detailEvidence.Add($\"Deep inspection: {p.DeepInspectionNote}\");\n        }\n\n        DetailEvidenceText.Text = detailEvidence.Count == 0\n            ? \"Nessuna evidenza aggiuntiva disponibile.\"\n            : string.Join(Environment.NewLine, detailEvidence.Select(x => $\"• {x}\"));\n        if (DetailTechnicalSectionsExpander.IsExpanded)\n            RefreshTechnicalDetailGroups();\n    }\n",
+    "reason": "Compone contesto/evidenze e controlli tecnici solo quando la sezione è aperta"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 803,
+    "before": "        RefreshTechnicalDetailGroups();\n    }\n\n    private void RefreshTechnicalDetailGroups()",
+    "after": "        if (_currentDetailRow is { } row) UpdateTechnicalDetails(row);\n    }\n\n    private void DetailTechnicalSections_Collapsed(object sender, RoutedEventArgs e)\n    {\n        if (!ReferenceEquals(sender, e.OriginalSource)) return;\n        DetailIdentityFactsPanel.Children.Clear();\n        DetailResourceFactsPanel.Children.Clear();\n        DetailNetworkFactsPanel.Children.Clear();\n        DetailEvidenceGroupsPanel.Children.Clear();\n        DetailTechnicalContextText.Text = string.Empty;\n        DetailEvidenceText.Text = string.Empty;\n        DetailExecutableText.Text = string.Empty;\n        DetailCommandLineText.Text = string.Empty;\n        DetailFormattedCommandLineText.Text = string.Empty;\n    }\n\n    private void RefreshTechnicalDetailGroups()",
+    "reason": "La chiusura rilascia i controlli costruiti; riapertura usa l’ultimo snapshot"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 749,
+    "before": "    private void DetailClassificationAudit_Expanded(object sender, RoutedEventArgs e)",
+    "after": "    private void DetailIdentification_Expanded(object sender, RoutedEventArgs e)\n    {\n        if (!ReferenceEquals(sender, e.OriginalSource)) return;\n        RefreshClassificationFacts();\n        RefreshClassificationAuditGroups();\n    }\n\n    private void DetailIdentification_Collapsed(object sender, RoutedEventArgs e)\n    {\n        if (!ReferenceEquals(sender, e.OriginalSource)) return;\n        DetailClassificationFactsPanel.Children.Clear();\n        DetailClassificationAuditPanel.Children.Clear();\n        DetailEvidenceTechnicalText.Text = string.Empty;\n        _renderedClassificationFactsInsight = null;\n        _renderedClassificationFactsPid = null;\n        _renderedClassificationAuditInsight = null;\n    }\n\n    private void RefreshClassificationFacts()\n    {\n        if (!DetailIdentificationExpander.IsExpanded || _currentDetailRow is not { } row) return;\n        if (_renderedClassificationFactsPid == row.Pid &&\n            ReferenceEquals(_renderedClassificationFactsInsight, row.Insight)) return;\n        DetailClassificationFactsPanel.Children.Clear();\n        foreach (var fact in ProcessDetailPresentation.ClassificationFacts(row.Process, row.Insight))\n            AddTechnicalFact(DetailClassificationFactsPanel, fact.Label, fact.Value);\n        _renderedClassificationFactsInsight = row.Insight;\n        _renderedClassificationFactsPid = row.Pid;\n    }\n\n    private void DetailClassificationAudit_Expanded(object sender, RoutedEventArgs e)",
+    "reason": "Riusa la classificazione invariata e rilascia i controlli su chiusura; snapshot sempre corrente"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "line_input": 1556,
+    "before": "    private void ClearDetails()\n    {",
+    "after": "    private void ClearDetails()\n    {\n        _currentDetailRow = null;\n        _renderedClassificationFactsInsight = null;\n        _renderedClassificationFactsPid = null;\n        DetailClassificationFactsPanel.Children.Clear();",
+    "reason": "Rimuove riferimenti all’istanza selezionata precedente"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "line_input": 234,
+    "before": "        <local:GuardianDashboardView x:Name=\"GuardianDashboard\" Grid.Row=\"2\" Visibility=\"Collapsed\"/>",
+    "after": "        <ContentControl x:Name=\"GuardianDashboardHost\" Grid.Row=\"2\" Visibility=\"Collapsed\"/>",
+    "reason": "Host vuoto al posto della creazione immediata della dashboard"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "line_input": 235,
+    "before": "        <local:MemoryDashboardView x:Name=\"MemoryDashboard\" Grid.Row=\"2\" Visibility=\"Collapsed\"/>",
+    "after": "        <ContentControl x:Name=\"MemoryDashboardHost\" Grid.Row=\"2\" Visibility=\"Collapsed\"/>",
+    "reason": "Host vuoto al posto della creazione immediata della dashboard"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "line_input": 587,
+    "before": "<Expander Header=\"Come è stato riconosciuto\"",
+    "after": "<Expander x:Name=\"DetailIdentificationExpander\" Expanded=\"DetailIdentification_Expanded\"\n                                          Collapsed=\"DetailIdentification_Collapsed\" Header=\"Come è stato riconosciuto\"",
+    "reason": "Classificazione e audit realizzati a richiesta"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "line_input": 777,
+    "before": "Expanded=\"DetailTechnicalSections_Expanded\"",
+    "after": "Expanded=\"DetailTechnicalSections_Expanded\" Collapsed=\"DetailTechnicalSections_Collapsed\"",
+    "reason": "Rilascia UI tecnica generata su chiusura del pannello"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "line_input": 279,
+    "before": "ScrollViewer.HorizontalScrollBarVisibility=\"Disabled\"\n                              ItemContainerStyle=\"{StaticResource ProcessListItemStyle}\"",
+    "after": "ScrollViewer.HorizontalScrollBarVisibility=\"Disabled\"\n                              ScrollViewer.CanContentScroll=\"True\" VirtualizingPanel.IsVirtualizing=\"True\"\n                              VirtualizingPanel.VirtualizationMode=\"Recycling\"\n                              ItemContainerStyle=\"{StaticResource ProcessListItemStyle}\"",
+    "reason": "Ricicla i contenitori della lista senza rimuovere processi dai dati"
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "line_input": 900,
+    "before": "SelectionChanged=\"ServiceList_SelectionChanged\" ScrollViewer.HorizontalScrollBarVisibility=\"Disabled\"",
+    "after": "SelectionChanged=\"ServiceList_SelectionChanged\" ScrollViewer.HorizontalScrollBarVisibility=\"Disabled\"\n                              ScrollViewer.CanContentScroll=\"True\" VirtualizingPanel.IsVirtualizing=\"True\"\n                              VirtualizingPanel.VirtualizationMode=\"Recycling\"",
+    "reason": "Ricicla righe dei servizi, dati SCM e azioni invariati"
+  },
+  {
+    "file": "tests/check-guardian-dashboard.ps1",
+    "line_input": 19,
+    "before": "GuardianDashboard.SetActive(guardian)",
+    "after": "GuardianDashboard?.SetActive(guardian)",
+    "reason": "Aggiorna controllo del collegamento alla vista ora facoltativa"
+  },
+  {
+    "file": "tests/check-memory-dashboard.ps1",
+    "line_input": 9,
+    "before": "'MemoryDashboard.SetActive'",
+    "after": "'MemoryDashboard\\?\\.SetActive'",
+    "reason": "Controlla il collegamento null-safe della vista caricata su richiesta"
+  },
+  {
+    "file": "tests/check-memory-dashboard.ps1",
+    "line_input": 10,
+    "before": "$m -notmatch 'MemoryDashboardView'",
+    "after": "$m -notmatch 'MemoryDashboardHost'",
+    "reason": "XAML contiene host; l’istanza MemoryDashboardView è creata in MainWindow al primo accesso"
+  },
+  {
+    "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+    "line_input": 11,
+    "before": "<InformationalVersion>0.19.16-R7-R2-candidate</InformationalVersion>",
+    "after": "<InformationalVersion>0.19.16-R8-memory-candidate</InformationalVersion>\n    <UseAppHost>true</UseAppHost>\n    <AssemblyTitle>ProcessLens</AssemblyTitle>",
+    "reason": "Nome dell’eseguibile e metadati espliciti per il lancio diretto"
+  },
+  {
+    "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+    "line_input": 13,
+    "before": "<Description>Windows process intelligence and Task Manager alternative</Description>",
+    "after": "<Description>ProcessLens</Description>",
+    "reason": "Descrizione applicazione riconoscibile; non rinomina dotnet.exe di sistema"
+  },
+  {
+    "file": "VERSION.txt",
+    "line_input": 1,
+    "before": "0.19.16 R7 R2 Candidate - Contextual Terminology Review; Windows validation pending",
+    "after": "0.19.16 R8 Candidate - Bounded UI Memory; Windows measurements pending",
+    "reason": "Nuova candidata, nessun risparmio RAM dichiarato senza misura"
+  },
+  {
+    "file": "start-processlens-all.ps1",
+    "line_input": 30,
+    "before": "v0.19.16 R7 R2 candidata",
+    "after": "v0.19.16 R8 candidata",
+    "reason": "Banner coerente con candidata ottimizzata"
+  }
+]

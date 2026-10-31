@@ -1,0 +1,12 @@
+{
+  "baseline_sha256": "0bd674ef0c3f16af8f57cf77e6fabf9d613b57a568e9aecf7b0ea3dc6e821037",
+  "changed_production_and_test_files": [
+    "src/ProcessLens.App/ProcessLens.App.csproj",
+    "src/ProcessLens.Core/NewTaskLaunch.cs",
+    "tests/ProcessLens.NewTaskTests/Program.cs"
+  ],
+  "native_acquisition_Guardian_MemoryAgent_profiler_RAM_monitor": "BYTE IDENTICAL TO R23",
+  "new_dependencies": 0,
+  "new_binary": "NOT INCLUDED; full Windows build required once",
+  "WPF_runtime_DPI_UAC_RAM": "NOT EXECUTED / NOT MEASURED"
+}

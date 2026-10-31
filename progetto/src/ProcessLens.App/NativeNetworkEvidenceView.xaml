@@ -1,0 +1,62 @@
+<UserControl x:Class="ProcessLens.App.NativeNetworkEvidenceView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:local="clr-namespace:ProcessLens.App">
+ <UserControl.Resources>
+  <Style x:Key="NativeAction" TargetType="Button">
+   <Setter Property="Background" Value="#F8FAFC"/><Setter Property="Foreground" Value="#1F2937"/>
+   <Setter Property="BorderBrush" Value="#CBD5E1"/><Setter Property="BorderThickness" Value="1"/>
+   <Setter Property="MinHeight" Value="36"/><Setter Property="Padding" Value="12,8"/><Setter Property="Margin" Value="0,0,8,6"/>
+   <Setter Property="ContentTemplate"><Setter.Value><DataTemplate><TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center"/></DataTemplate></Setter.Value></Setter>
+  </Style>
+  <Style x:Key="NativeCell" TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/><Setter Property="Padding" Value="5"/></Style>
+ </UserControl.Resources>
+ <Grid Margin="0,10,0,0">
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="2*" MinHeight="100"/><RowDefinition Height="7"/><RowDefinition Height="*" MinHeight="95"/></Grid.RowDefinitions>
+  <ScrollViewer MaxHeight="220" VerticalScrollBarVisibility="Auto"><StackPanel>
+   <TextBlock Text="Eventi e blocchi registrati sul PC" FontSize="21" FontWeight="SemiBold"/>
+   <local:SelectableText Text="Leggi il registro Security, poi seleziona una riga: sotto trovi significato, dati registrati e verifiche utili." TextWrapping="Wrap" Margin="0,5,0,8"/>
+   <WrapPanel Margin="0,0,0,6"><TextBlock Text="Intervallo:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+    <ComboBox x:Name="NativeEventWindowBox" SelectedIndex="0" MinWidth="150" Margin="0,0,12,0"><ComboBoxItem Content="Ultimi 15 minuti"/><ComboBoxItem Content="Ultima ora"/></ComboBox>
+    <CheckBox x:Name="NativePacketDropsBox" Content="Includi scarti di pacchetti (5152)" VerticalAlignment="Center" ToolTip="Legge gli scarti già registrati. Non abilita l'audit e non crea nuovi eventi."/></WrapPanel>
+   <WrapPanel>
+    <Button x:Name="ReadNativeNetworkButton" Background="#175CD3" Foreground="White" BorderBrush="#175CD3" Content="Leggi eventi Windows" Style="{StaticResource NativeAction}" Click="Read_Click"/>
+    <Button x:Name="CopyNativeNetworkButton" Content="Copia rapporto" Style="{StaticResource NativeAction}" Click="Copy_Click" IsEnabled="False"/>
+   </WrapPanel>
+   <Border Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="7" Padding="10,8" Margin="0,4,0,8"><local:SelectableText x:Name="NativeNetworkStatusText" Text="Nessuna lettura eseguita." TextWrapping="Wrap" Margin="0,0,0,7"/></Border>
+   <local:SelectableText x:Name="NativeEventCountsText" Text="Conteggi N/D · nessuna lettura" TextWrapping="Wrap" Margin="0,0,0,8"/>
+   <Expander Header="Fonti, copertura e motivo degli eventuali dati mancanti" IsExpanded="False" Margin="0,0,0,8">
+    <ScrollViewer MaxHeight="160" VerticalScrollBarVisibility="Auto">
+     <StackPanel>
+      <local:SelectableText x:Name="NativeNetworkCoverageText" Text="Configurazione audit: N/D" TextWrapping="Wrap"/>
+      <local:SelectableText Text="Massimo 256 eventi. Se l'audit è disabilitato o il registro non è accessibile, gli eventi possono mancare. La configurazione attuale non descrive tutto il passato. Un blocco non dimostra un'intrusione; zero eventi non certifica una rete sicura. Il conteggio dei dispositivi resta nella scheda Cache: i client del router e l'ascolto passivo non sono verificabili da questa lettura."
+          TextWrapping="Wrap" Margin="0,7,0,0"/>
+     </StackPanel>
+    </ScrollViewer>
+   </Expander>
+   <Expander Header="Come attivare la raccolta" Margin="0,0,0,8">
+    <ScrollViewer MaxHeight="170" VerticalScrollBarVisibility="Auto"><local:SelectableText x:Name="NativeNetworkSetupText" Text="Leggi gli eventi per visualizzare i comandi di configurazione." TextWrapping="Wrap"/></ScrollViewer>
+   </Expander>
+  </StackPanel></ScrollViewer>
+  <Grid Grid.Row="1"><DataGrid x:Name="NativeNetworkEventsTable" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+    EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"
+    local:GridCopySupport.Enabled="True" SelectionMode="Single" SelectionUnit="FullRow" MinRowHeight="34" SelectionChanged="Event_Changed">
+   <DataGrid.Columns>
+    <DataGridTextColumn Header="Ora locale" Binding="{Binding Time}" Width="155" ElementStyle="{StaticResource NativeCell}"/>
+    <DataGridTextColumn Header="ID" Binding="{Binding EventId}" Width="60" ElementStyle="{StaticResource NativeCell}"/>
+    <DataGridTextColumn Header="Evento" Binding="{Binding Event}" Width="200" ElementStyle="{StaticResource NativeCell}"/>
+    <DataGridTextColumn Header="IP sorgente" Binding="{Binding SourceAddress}" Width="150" ElementStyle="{StaticResource NativeCell}"/>
+    <DataGridTextColumn Header="IP destinazione" Binding="{Binding DestinationAddress}" Width="150" ElementStyle="{StaticResource NativeCell}"/>
+    <DataGridTextColumn Header="Porta dest." Binding="{Binding DestinationPort}" Width="80" ElementStyle="{StaticResource NativeCell}"/>
+    <DataGridTextColumn Header="Direzione" Binding="{Binding Direction}" Width="110" ElementStyle="{StaticResource NativeCell}"/>
+    <DataGridTextColumn Header="PID all'epoca" Binding="{Binding PidText}" Width="85" ElementStyle="{StaticResource NativeCell}"/>
+   </DataGrid.Columns>
+  </DataGrid>
+   <Border x:Name="NativeEventEmptyBorder" Background="#F8FAFC" Margin="0,36,0,0" Padding="20" IsHitTestVisible="False"><local:SelectableText x:Name="NativeEventEmptyText" Text="Nessuna lettura eseguita. Premi Leggi eventi Windows." TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="540"/></Border>
+  </Grid>
+  <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" Background="#D8E2EE" ResizeDirection="Rows"/>
+  <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Margin="0,9,0,0">
+   <local:SelectableText x:Name="NativeNetworkSelectionText" Text="Seleziona un evento per leggere i dettagli." TextWrapping="Wrap"/>
+  </ScrollViewer>
+ </Grid>
+</UserControl>

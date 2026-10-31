@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "qualification": "Roslyn syntax parsing only, not markup compilation",
+  "source_hashes": {
+    "src/ProcessLens.App/NativeCaptureView.xaml.cs": "b5fc0a05c83293d1de137c3f77f00f3c4e6126fddf15083c3903efc46e0a91b0",
+    "src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs": "3a9883c793b90fcd592717cc5af6474b383a59587f5b1905365c1de185e13ba0",
+    "src/ProcessLens.Core/NativeCaptureEvidence.cs": "11a5c654668a04569d99a43277466eeb6b63cbb6354a371bd70531fdb6d850a3",
+    "src/ProcessLens.Core/NetworkEvidenceStatus.cs": "60bbc05198489036e4f609dba8a94fa7d9f0c3d8636698c66bfa6d70d0fed4f4",
+    "src/ProcessLens.Windows/WindowsCompatibleCapture.cs": "388e3cb64b16c143a46583c704ab44109b9607e26fc802467feee07ce0cee168",
+    "tests/ProcessLens.CompatibleCaptureTests/Program.cs": "542738e102bbb9f422590ae52a44fcbfae0bbe539b0b5e9bdaf3eef0992d0401",
+    "tests/ProcessLens.NetworkUiTests/Program.cs": "fc40b40a859bbc47e683ade7728c409c02320a2114283714c3c3efab18618799"
+  }
+}

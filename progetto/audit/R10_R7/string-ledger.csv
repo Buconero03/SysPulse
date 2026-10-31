@@ -1,0 +1,10 @@
+﻿before,after,scope,reason_limit
+X hides when icon was registered,X minimizes and preserves taskbar button,Window close policy,Independent restore route even if tray callbacks fail
+Apri ProcessLens,Mostra ProcessLens,Tray menu,Explicit show action; existing Esci still exits
+CPU refresh 15/45 s,Separate CPU-only refresh about 2 s,GUI values,Actual per-PID monotonic interval and machine logical count; no identical-frame Task Manager claim
+Old CPU may overwrite at metadata refresh,Only current identity-matched fast sample may be overlaid,CPU publication,"Unknown creation, access failure and old samples become N/D"
+Campione CPU non disponibile: dati iniziali oppure accesso negato.,Campione CPU non disponibile: servono due letture confrontabili della stessa istanza; dato assente o intervallo interrotto.,Detail CPU,Do not claim access denied from a missing rate
+No persistent GUI resources row,"GUI ProcessLens: PID, CPU, private resident and total resident RAM",Self measurement,Private commit is separate in copy/tooltip; external agents excluded
+No self-resource copy,Copia risorse GUI,Header action,Snapshot contains UTC timestamp and informational version
+Unbounded file-path metadata cache,512 cached paths maximum,Memory retention,Evicted metadata can be loaded again; RAM savings not measured
+Original R7/R8 memory-only measure script,New measure-processlens-resources.ps1 alongside original,Verification,"CPU and distinct memory counters, same process instance, available counts/median/sampled peak"

@@ -1,0 +1,44 @@
+ProcessLens R34 — rete, spiegazioni e log
+
+AVVIO
+Chiudi la precedente versione con Esci. Estrai tutto in una cartella nuova.
+Apri ProcessLens-Leggero e avvia AVVIA_PROCESSLENS.cmd.
+Il primo avvio esegue test e compilazione con lo SDK .NET 8 gia presente.
+Nessun download o installazione automatica di SDK, driver o servizi.
+
+RETE
+Dispositivi osservati: Aggiorna elenco legge la cache Windows IPv4/IPv6.
+Il riepilogo distingue voci con MAC, voci raggiungibili di recente e nomi salvati.
+Elenco mai letto, rilasciato, vuoto e non disponibile hanno messaggi distinti.
+Dopo un cambio di scheda, l'ora della vecchia lettura non resta come dato corrente.
+
+Traffico e Wi-Fi: elenca le sorgenti, scegli una sorgente, poi cattura per 20 s.
+Leggi reti Wi-Fi legge separatamente la cache radio. Seleziona una riga per la spiegazione.
+La cattura IP locale richiede amministratore; la lettura Wi-Fi dipende da scheda, driver, servizi e autorizzazioni Windows.
+
+Eventi e blocchi: scegli ultimi 15 minuti o ultima ora, poi Leggi eventi Windows.
+Legge gli eventi Security 5157, 5155, 5159 e 4625 tipi 3/10.
+Includi scarti di pacchetti aggiunge la lettura dei 5152 gia registrati.
+Per ogni evento: significato, dati originali essenziali e verifiche utili.
+Le letture restano limitate a 256 record, 3 secondi di enumerazione e 1 Mi caratteri XML.
+I criteri di audit e il firewall non vengono modificati. I comandi facoltativi sono nella guida.
+
+LOG
+Apri Log delle operazioni di rete - sessione, in fondo alla sezione Rete.
+Riporta fonte, fase, esito, durata, conteggi, copertura ed errori; e copiabile.
+Conserva 128 righe con messaggi limitati a 1200 caratteri. Nessuna scrittura automatica su disco.
+I rapporti completi restano copiabili nelle rispettive schede.
+
+COPERTURA
+Le viste descrivono quello che Windows restituisce al PC, non tutti i client del router.
+Piu categorie leggibili non garantiscono eventi presenti: dipendono dall'audit e dai registri disponibili.
+Non viene superato il limite hardware/driver del Wi-Fi; nessuna modalita monitor aggiunta.
+Non e un rilevatore certo di intrusioni o di ascolto passivo.
+
+VERIFICHE
+341 asserzioni eseguite su dati sintetici e API simulate, senza acquisizioni reali.
+44 controlli statici PowerShell e 17 prove del launcher superati.
+9 assembly WindowsDesktop controllati come C# con campi XAML simulati.
+BAML, interfaccia WPF, DPI, acquisizione reale e RAM restano da verificare su Windows.
+Icone, tray, processi, contatori CPU/RAM e Guardian conservano il codice della R33 R1.
+Dettagli e prova Windows: progetto/audit/R10_R34/REVIEW.md.

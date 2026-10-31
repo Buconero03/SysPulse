@@ -1,0 +1,72 @@
+[
+  {
+    "test": "candidate satisfies all resource guards",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  },
+  {
+    "test": "reject hidden only restore route",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  },
+  {
+    "test": "reject lost icon detection removed",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  },
+  {
+    "test": "reject CPU tick becomes busy loop",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  },
+  {
+    "test": "reject stale generation accepted",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  },
+  {
+    "test": "reject handle not released",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  },
+  {
+    "test": "reject partial processor group labelled total",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  },
+  {
+    "test": "reject creation verification removed",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  },
+  {
+    "test": "reject long pause accepted",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  },
+  {
+    "test": "reject unbounded metadata retained",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  },
+  {
+    "test": "reject EX2 prefix sentinel removed",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  },
+  {
+    "test": "reject passive report opens all access",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  },
+  {
+    "test": "reject forced garbage collection introduced",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  },
+  {
+    "test": "reject CPU tests skipped",
+    "status": "PASS",
+    "scope": "Python source guard, not C# execution"
+  }
+]

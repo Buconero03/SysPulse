@@ -1,0 +1,104 @@
+--- /dev/null
++++ b/HOTFIX_R7_R1.md
+@@ -0,0 +1,21 @@
++# ProcessLens v0.19.16 R7 R1 — correzione domanda sulle porte
++
++Base: R7 candidata, audit precedente conservato. Non è una release stabile.
++
++Il log Windows fornito dall’utente conferma che MemoryTests (incluse culture it-IT/en-US e regressioni R7) è passato. BehaviorTests ha superato i controlli precedenti e le prime tre regressioni R7, poi è fallito su «partial network acquisition». Le fasi successive sono NON ESEGUITE; il codice PL-BUILD-5002 è il contenitore diagnostico della fase fallita, non un errore di sintassi del compilatore.
++
++La domanda «Ha porte aperte?» non corrispondeva a nessun intent: il matcher cercava «porta», ma non «porte». Veniva restituito Help(), quindi mancavano AccessDenied e il limite sull’assenza di socket. La stessa domanda è proposta dalla GUI e dall’aiuto: non è un semplice errore del test.
++
++R1 riconosce porta/porte/port/ports con confini di parola. Mantiene gli altri indicatori di rete e gli altri intent. Evita anche i falsi positivi «comporta», «riporta», «supporta». Il test precedente è conservato e rafforzato con il titolo della risposta; aggiunti casi sul plurale, maiuscole, inglese e parole con porta interna.
++
++La modifica funzionale è una riga in ProcessQueryEngine; nessun collector, contatore, contratto, ID knowledge, Guardian, MemoryAgent, profiler o diagnostica strutturata modificato. I metadati/banner identificano R7 R1. Gli audit sotto audit/R7 e audit/prior sono storici della revisione precedente; il delta attuale è in audit/R7_R1. Il manifest SHA256SUMS_R7.txt è rigenerato e copre la candidata attuale. Nessuna installazione/profilazione/terminazione eseguita.
++
++Verifiche locali: controlli strutturali e casi di riconoscimento della parola eseguiti con Python; questi ultimi verificano la forma del predicato, non eseguono ProcessQueryEngine. Build, test .NET/PowerShell/WPF della R1 NON ESEGUITI qui: ambiente Linux senza dotnet/pwsh. Gli esiti del log dell’utente riguardano R7 prima della correzione e non sono attribuiti alla R1.
++
++Su Windows, estrarre nuovamente il pacchetto completo aggiornato senza mescolare file precedenti, aprire PowerShell nella radice contenente src e tests ed eseguire:
++
++```powershell
++dotnet run --project .\tests\ProcessLens.BehaviorTests\ProcessLens.BehaviorTests.csproj -c Release
++```
++
++Se exit code 0, rieseguire `AVVIA-TUTTO.cmd` per completare la sequenza interrotta; la verifica completa senza avviare la GUI è `verify-candidate-r7.ps1`. Non serve installare o riavviare Guardian per questo hotfix. La verifica visuale WPF/DPI resta da completare.
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,8 @@
+-﻿# R7 candidata — revisione del 14 ottobre 2026
++﻿# R7 R1 candidata — hotfix instradamento porte
++
++Leggere prima `HOTFIX_R7_R1.md`. Gli audit R7 documentano la revisione precedente; R1 corregge il difetto emerso dal log Windows del 14 ottobre. I test R1 su Windows restano NON ESEGUITI qui.
++
++## Revisione precedente R7
+ 
+ Questa copia prosegue dalla v0.19.16 R6. Build/test Windows e verifica visuale NON ESEGUITI; non è una release stabile. Leggere `RAPPORTO_REVISIONE_R6_R7.md`, `PROBLEMI_APERTI_R7.md` e `VALIDAZIONE_WINDOWS_R7.md`. `SHA256SUMS_R7.txt` è il manifest della candidata; i manifesti precedenti sono storici.
+ 
+--- a/VERSION.txt
++++ b/VERSION.txt
+@@ -1 +1 @@
+-0.19.16 R7 Candidate - Contextual Terminology Review; Windows validation pending
++0.19.16 R7 R1 Candidate - Contextual Terminology Review; Windows validation pending
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R7-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R7-R1-candidate</InformationalVersion>
+     <Product>ProcessLens</Product>
+     <Description>Windows process intelligence and Task Manager alternative</Description>
+     <Company>ProcessLens</Company>
+--- a/src/ProcessLens.Semantics/ProcessQueryEngine.cs
++++ b/src/ProcessLens.Semantics/ProcessQueryEngine.cs
+@@ -739,7 +739,7 @@
+             (!cpuQuestion && ContainsAny(q, "percentuale"))) intents.Add(ProcessQueryIntent.Progress);
+         if (ContainsAny(q, "quanto manca", "quando finir", "quando finisc", "tempo alla fine", "eta", "tra quanto")) intents.Add(ProcessQueryIntent.Eta);
+         if (ContainsAny(q, "bloccato", "bloccata", "fermo", "ferma", "stall", "risponde")) intents.Add(ProcessQueryIntent.Health);
+-        if (ContainsAny(q, "internet", "rete", "connession", "porta", "socket")) intents.Add(ProcessQueryIntent.Network);
++        if (ContainsAny(q, "internet", "rete", "connession", "socket") || Regex.IsMatch(q, @"\b(?:porta|porte|port|ports)\b")) intents.Add(ProcessQueryIntent.Network);
+         if (ContainsAny(q, "chi lo ha avviato", "chi l'ha avviato", "chi ha avviato", "origine", "processo padre", "parent", "da chi", "da dove", "dove è partito", "dove e partito", "chi l'ha lanciato", "chi lo ha lanciato", "perché è partito", "perche e partito", "cosa lo ha avviato")) intents.Add(ProcessQueryIntent.Origin);
+         if (ContainsAny(q, "perché è aperto", "perche e aperto", "perché è attivo", "perche e attivo", "perché gira", "perche gira")) intents.Add(ProcessQueryIntent.WhyRunning);
+         if (ContainsAny(q, "posso chiuder", "se lo chiudo", "termin", "kill", "sicuro chiud")) intents.Add(ProcessQueryIntent.Termination);
+--- a/start-processlens-all.ps1
++++ b/start-processlens-all.ps1
+@@ -27,7 +27,7 @@
+ }
+ 
+ try {
+-    Write-Host 'ProcessLens v0.19.16 R7 candidata - Avvio guidato in sequenza' -ForegroundColor Green
++    Write-Host 'ProcessLens v0.19.16 R7 R1 candidata - Avvio guidato in sequenza' -ForegroundColor Green
+     Write-Host ('Modalita: ' + $Mode)
+     Write-Host ('Cartella: ' + $PSScriptRoot)
+     $isAdmin = Test-IsAdministrator
+--- a/tests/ProcessLens.BehaviorTests/Program.cs
++++ b/tests/ProcessLens.BehaviorTests/Program.cs
+@@ -155,7 +155,8 @@
+ {
+     IsDeepInspected = true, DeepInspectionNote = "TCP non enumerabile: AccessDenied"
+ }, "Ha porte aperte?");
+-Require(partialNetwork.Answer.Contains("AccessDenied") && partialNetwork.Answer.Contains("non garantisce assenza"),
++Require(partialNetwork.Title == "Porte e connessioni" &&
++        partialNetwork.Answer.Contains("AccessDenied") && partialNetwork.Answer.Contains("non garantisce assenza"),
+     "R7 partial network acquisition preserves error and does not assert absence");
+ var listenerWithFamily = QueryR7(baseline with
+ {
+@@ -190,3 +191,17 @@
+     CpuPeak30Seconds = 2 }, "Perché usa CPU?").Answer.Contains("fino a 30 s"),
+     "R7 CPU window is bounded and may be shorter than thirty seconds");
+ Console.WriteLine("R7 behavior source and inference regressions passed.");
++
++// R7 R1: the exact UI suggestion must reach Network, including plural ports.
++foreach (string question in new[] { "Ha porte aperte?", "Ha una porta aperta?", "Quali PORTE sono aperte?", "Open port?", "Open ports?" })
++{
++    var answer = QueryR7(baseline with { IsDeepInspected = true, DeepInspectionNote = "TCP non enumerabile: AccessDenied" }, question);
++    Require(answer.Title == "Porte e connessioni" && answer.Answer.Contains("AccessDenied") &&
++        answer.Answer.Contains("non garantisce assenza"), "R7 R1 port wording reaches network: " + question);
++}
++foreach (string question in new[] { "Il consumo di RAM comporta problemi?", "Riporta il consumo di RAM", "Supporta il confronto RAM?" })
++{
++    var answer = QueryR7(baseline, question);
++    Require(answer.Title == "Perché occupa RAM?", "R7 R1 embedded porta does not add Network: " + question);
++}
++Console.WriteLine("R7 R1 network question routing regressions passed.");

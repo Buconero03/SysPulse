@@ -1,0 +1,117 @@
+[
+  {
+    "test": "protected-bytes",
+    "status": "PASS",
+    "detail": "80 source files unchanged from the user ZIP, including all Core, Semantics and Windows acquisition"
+  },
+  {
+    "test": "XML-well-formed",
+    "status": "PASS",
+    "detail": "31 XML files; not WPF compilation"
+  },
+  {
+    "test": "lazy-dashboard-hosts",
+    "status": "PASS",
+    "detail": "No eager dashboard view instances in startup XAML"
+  },
+  {
+    "test": "lazy-dashboard-lifecycle",
+    "status": "PASS",
+    "detail": "First-visit construction, no construction on window close"
+  },
+  {
+    "test": "list-recycling",
+    "status": "PASS",
+    "detail": "Data retained; UI containers recycled"
+  },
+  {
+    "test": "unique-XAML-names MainWindow.xaml",
+    "status": "PASS",
+    "detail": "No duplicated generated control name"
+  },
+  {
+    "test": "unique-XAML-names MemoryDashboardView.xaml",
+    "status": "PASS",
+    "detail": "No duplicated generated control name"
+  },
+  {
+    "test": "unique-XAML-names GuardianDashboardView.xaml",
+    "status": "PASS",
+    "detail": "No duplicated generated control name"
+  },
+  {
+    "test": "unique-XAML-names App.xaml",
+    "status": "PASS",
+    "detail": "No duplicated generated control name"
+  },
+  {
+    "test": "event DetailIdentification_Expanded",
+    "status": "PASS",
+    "detail": "XAML handler is wired"
+  },
+  {
+    "test": "event DetailIdentification_Collapsed",
+    "status": "PASS",
+    "detail": "XAML handler is wired"
+  },
+  {
+    "test": "event DetailTechnicalSections_Collapsed",
+    "status": "PASS",
+    "detail": "XAML handler is wired"
+  },
+  {
+    "test": "deferred-technical-render",
+    "status": "PASS",
+    "detail": "Technical strings and visual rows are built on request"
+  },
+  {
+    "test": "deferred-classification",
+    "status": "PASS",
+    "detail": "Collapsed details avoid UI allocation; unchanged classification reuses rows"
+  },
+  {
+    "test": "bounded-caches",
+    "status": "PASS",
+    "detail": "Deep 8; service histories 16; icons 128; no counters discarded"
+  },
+  {
+    "test": "global-sample-allocation",
+    "status": "PASS",
+    "detail": "Observation objects only materialized for requested trend"
+  },
+  {
+    "test": "input-customizations-retained",
+    "status": "PASS",
+    "detail": "Five of seven customized files unchanged; MainWindow diff preserves labels/styles"
+  },
+  {
+    "test": "no-profiling-or-trim",
+    "status": "PASS",
+    "detail": "No GC forcing or working set trimming introduced"
+  },
+  {
+    "test": "test-and-build-wiring",
+    "status": "PASS",
+    "detail": "Executable .NET regressions provided, NOT RUN here"
+  },
+  {
+    "test": "apphost-identity",
+    "status": "PASS",
+    "detail": "Apphost and application metadata explicit"
+  },
+  {
+    "test": "delimiter-balance BoundedCache.cs",
+    "status": "PASS",
+    "detail": "Basic balance only; not C# compilation"
+  },
+  {
+    "test": "delimiter-balance MemoryObservationBuffer.cs",
+    "status": "PASS",
+    "detail": "Basic balance only; not C# compilation"
+  },
+  {
+    "test": "delimiter-balance Program.cs",
+    "status": "PASS",
+    "detail": "Basic balance only; not C# compilation"
+  }
+]

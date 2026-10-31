@@ -1,0 +1,24 @@
+{
+  "baseline_sha256": "cfc9b8bbea861833efd74defc7efeae76d1c649258b095ce371b8e239a085d30",
+  "scope": "R14 R3: install the WPF dispatcher synchronization context before asynchronous test operations; production code unchanged except candidate identity",
+  "files": [
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256_before": "4172fcdb350c170ff652343394c72c040413e932090c9ba0977e88ba4bc430dd",
+      "sha256_after": "2782620b95075cf949a338614014a01ecd94dd43a8f5938c10c04ae502db736d",
+      "scope": "candidate version"
+    },
+    {
+      "file": "tests/ProcessLens.NetworkUiTests/Program.cs",
+      "sha256_before": "f6f7ee5f99c23f707e3d83620e7a731454499d4a740095bd352927cd617c6ae8",
+      "sha256_after": "4932a765cedb320f13b3a6cba5f7d4263cab92f07d643856f5955286a8968e39",
+      "scope": "headless WPF fixture context, forced asynchronous ownership preflight and context restoration"
+    },
+    {
+      "file": "tests/ProcessLens.SystemProcessUiTests/Program.cs",
+      "sha256_before": "cded4d9b02eb2140146393e2966e043e1eab86befb50077c31b052abbe1f0552",
+      "sha256_after": "1328c10b583921400ca90b1792e59226dbcd60245c0456e7fd5289ac14ac5775",
+      "scope": "headless WPF fixture context, forced asynchronous ownership preflight and context restoration"
+    }
+  ]
+}

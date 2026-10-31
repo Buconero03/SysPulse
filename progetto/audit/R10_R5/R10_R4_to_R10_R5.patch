@@ -1,0 +1,506 @@
+--- a/CHANGELOG_R10.md
++++ b/CHANGELOG_R10.md
+@@ -1,3 +1,9 @@
++# R10 R5 — riapertura della finestra e icona vicino all’orologio
++
++Leggere `RIPRISTINO_FINESTRA_R10_R5.md`. – minimizza nella barra; X nasconde nella tray; clic sull’icona o Apri ProcessLens ripristina; Esci da ProcessLens chiude davvero. Un secondo avvio richiede il ripristino dell’istanza esistente. Dashboard GUI sospese da nascosto/minimizzato; componenti esterni invariati. Build/test .NET/PowerShell e WPF/tray reali **NON ESEGUITI** qui. Manifest corrente `SHA256SUMS_R10.txt`. Le revisioni precedenti restano incluse.
++
++---
++
+ # R10 R4 — notifica di chiusura del processo
+ 
+ Leggere `NOTIFICA_CHIUSURA_R10_R4.md`. Piccolo avviso nella finestra quando Windows segnala la fine del processo selezionato o di quello oggetto della richiesta esplicita. Nome e PID, durata 8 secondi, nessuno spostamento del focus. Richiesta accettata e uscita confermata restano distinte. R3 inclusa; componenti protetti e terminazione nativa invariati. Build/test .NET/PowerShell, WPF e DPI: **NON ESEGUITO** qui. Manifest corrente `SHA256SUMS_R10.txt`.
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,10 @@
+-﻿# R10 R4 — notifica di chiusura del processo
++﻿# R10 R5 — riapertura della finestra e icona vicino all’orologio
++
++Leggere `RIPRISTINO_FINESTRA_R10_R5.md`. – minimizza nella barra; X nasconde nella tray; clic sull’icona o Apri ProcessLens ripristina; Esci da ProcessLens chiude davvero. Un secondo avvio richiede il ripristino dell’istanza esistente. Dashboard GUI sospese da nascosto/minimizzato; componenti esterni invariati. Build/test .NET/PowerShell e WPF/tray reali **NON ESEGUITI** qui. Manifest corrente `SHA256SUMS_R10.txt`. Le revisioni precedenti restano incluse.
++
++---
++
++# R10 R4 — notifica di chiusura del processo
+ 
+ Leggere `NOTIFICA_CHIUSURA_R10_R4.md`. Piccolo avviso nella finestra quando Windows segnala la fine del processo selezionato o di quello oggetto della richiesta esplicita. Nome e PID, durata 8 secondi, nessuno spostamento del focus. Richiesta accettata e uscita confermata restano distinte. R3 inclusa; componenti protetti e terminazione nativa invariati. Build/test .NET/PowerShell, WPF e DPI: **NON ESEGUITO** qui. Manifest corrente `SHA256SUMS_R10.txt`.
+ 
+--- /dev/null
++++ b/RIPRISTINO_FINESTRA_R10_R5.md
+@@ -0,0 +1,60 @@
++# R10 R5 — riduzione a icona, chiusura nella tray e riapertura
++
++La candidata riprende la R10 R4. L'utente segnala che la finestra non torna visibile dopo la riduzione e chiede che la X riduca il programma invece di terminarlo. La schermata allegata mostra l'avviso RAM; da sola non stabilisce lo stato della finestra principale o la causa della mancata riapertura. L'avviso appartiene al percorso di allarme RAM, che non viene modificato.
++
++| Comando | Comportamento previsto |
++|---|---|
++| Pulsante – della finestra | Minimizza normalmente nella barra delle applicazioni |
++| Clic sulla finestra minimizzata nella barra | Ripristino standard di Windows |
++| X o Alt+F4 | Nasconde la finestra nell'area di notifica; ProcessLens resta avviato |
++| Clic sull'icona ProcessLens vicino all'orologio | Riapre la finestra |
++| Tasto destro sull'icona → Apri ProcessLens | Riapre la finestra |
++| Nuovo avvio con l'istanza già attiva | Messaggio alla finestra esistente e ripristino; nessuna seconda GUI |
++| Tasto destro sull'icona → Esci da ProcessLens | Chiude realmente la GUI e rilascia l'icona |
++
++Windows può collocare l'icona fra quelle nascoste nel menu **∧** vicino all'orologio. L'icona usa il simbolo applicazione condiviso di Windows e il tooltip ProcessLens. La posizione e la visibilità dell'icona nell'area principale sono decise dalla Shell e dalle preferenze dell'utente.
++
++## Correzione e ripristino
++
++Il ramo precedente non implementava l'icona nell'area di notifica; la riattivazione cercava `Process.MainWindowHandle`, che non è un percorso affidabile per finestre nascoste. La nuova GUI registra una richiesta di ripristino sulla propria finestra nativa. Il secondo avvio enumera le finestre di primo livello, incluse quelle nascoste, cerca il titolo ProcessLens e invia tale richiesta con un timeout, richiedendo un riscontro. Il destinatario accoda il ripristino sul Dispatcher, mostra la stessa finestra, ripristina lo stato normale o massimizzato precedente e richiede l'attivazione. Il riscontro conferma la presa in carico, non una verifica visiva del foreground. L'accodamento evita di chiamare Show in modo rientrante mentre WPF sta elaborando Closing. Il percorso precedente resta come fallback per un'istanza di una revisione più vecchia, limitato al titolo esatto ProcessLens per non selezionare un altro dialogo ospitato da dotnet.
++
++L'istanza primaria usa `OnExplicitShutdown`. Il controller intercetta la X e annulla la chiusura; Esci, fine sessione Windows ed errori fatali consentono invece la chiusura effettiva. Il controller è creato soltanto da App all'avvio reale. Costruire MainWindow nella suite WPF non aggiunge icone e non cambia il comportamento Close del test.
++
++L'icona viene registrata tramite `Shell_NotifyIconW`; clic, menu e richiesta di ripristino arrivano all'hook della finestra WPF. Alla ricreazione della taskbar si tenta di aggiungerla nuovamente. Se la registrazione fallisce, la X minimizza nella barra delle applicazioni anziché nascondere l'unico modo di riapertura. Se la taskbar viene ricreata e l'icona non può essere ripristinata mentre la finestra è nascosta, la finestra viene resa nuovamente visibile. L'icona viene rimossa all'uscita; l'icona di sistema condivisa non viene distrutta.
++
++Limitazioni: il protocollo di ripristino richiede la stessa sessione/desktop e può essere soggetto alle restrizioni di integrità di Windows, per esempio avvio non elevato contro istanza elevata. Non viene richiesta elevazione automatica. Un'istanza bloccata che non risponde entro il timeout non viene dichiarata riattivata. Le schermate ricevute non dimostrano l'esecuzione delle build precedenti e il comportamento reale della Shell richiede verifica Windows.
++
++## Attività e componenti
++
++Le dashboard GUI già create vengono disattivate quando la finestra è nascosta o minimizzata e riattivate solo nella scheda pertinente quando torna visibile. Il polling principale aveva già il controllo IsVisible/WindowState. Non si introducono timer di polling per la tray. Le operazioni già in corso non vengono terminate per il solo nascondimento della finestra.
++
++Collector, Core, Semantics, Guardian, MemoryAgent, profiler, regole di allarme RAM, osservatore di uscita R4 e terminazione nativa restano invariati. Esci chiude la GUI e le sue risorse; non disinstalla o termina Guardian e MemoryAgent. Non viene promessa né misurata una riduzione RAM.
++
++## Verifica
++
++Eseguiti qui: controlli strutturali Python/XML, regressioni portabili già presenti, confronto byte dei componenti conservati, replay reale della patch, ZIP e manifest SHA-256. Test puri aggiunti alla suite esistente per X con tray, fallback senza tray, uscita esplicita e sospensione/ripresa del polling GUI.
++
++**NON ESEGUITO:** compilazione e test .NET, PowerShell, tray reale, messaggi nativi di ripristino, menu con mouse/tastiera, session ending, Explorer restart, DPI e focus. Ambiente Linux senza dotnet/pwsh. Nessun programma dell'utente, processo o servizio è stato avviato, fermato o riavviato qui. Le verifiche di sorgente non sostituiscono questi scenari.
++
++Prima della build uscire dalla vecchia GUI: la pubblicazione già esistente rifiuta di sostituire i file mentre ProcessLens è in esecuzione. Usare la chiusura normale della vecchia revisione; nella R5 usare Esci da ProcessLens. Non occorrono chiusure forzate automatiche. Poi estrarre in una cartella nuova:
++
++```powershell
++.\build-dashboard.ps1
++```
++
++Se riesce, avviare la nuova candidata. Una vecchia istanza rimasta avviata verrebbe riattivata dal protocollo single-instance invece di aprire la nuova GUI.
++
++```powershell
++.\run-release.ps1
++```
++
++Verifiche manuali: –/ripristino; X/clic tray; menu Apri/Esci; X da massimizzato e ripristino; nuovo avvio da minimizzato e da nascosto; mantenimento PID della GUI; sospensione/ripresa delle dashboard. Il riavvio di Explorer e la fine sessione sono scenari manuali da eseguire solo quando opportuno, non azioni della suite.
++
++Audit corrente `audit/R10_R5/`, con prima/dopo e registro stringhe. Manifest corrente `SHA256SUMS_R10.txt`. Una sola radice del progetto; revisioni precedenti storiche e criticità RAM aperte conservate.
++
++Fonti primarie:
++
++- https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
++- https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ns-shellapi-notifyicondataw
++- https://learn.microsoft.com/en-us/windows/win32/shell/taskbar
++- https://learn.microsoft.com/en-us/dotnet/api/system.windows.application.shutdownmode
+--- a/VERSION.txt
++++ b/VERSION.txt
+@@ -1 +1 @@
+-0.19.16-R10-R4-exit-notice-candidate
++0.19.16-R10-R5-tray-restore-candidate
+--- a/audit/tools/check_r10.py
++++ b/audit/tools/check_r10.py
+@@ -121,5 +121,24 @@
+     'read-only Windows exit watch binds to this test process', 'native handle rejects a different creation timestamp',
+     'ProcessNoticeCard']) and 'reused PID with a different creation timestamp' in (b/'tests/ProcessLens.CopyTests/Program.cs').read_text(),
+     'Independent read-only Windows self-process binding plus pure deduplication tests; NOT EXECUTED here')
++tray=(b/'src/ProcessLens.App/TrayWindowController.cs').read_text()
++app=(b/'src/ProcessLens.App/App.xaml.cs').read_text()
++check('X hides and explicit Exit closes',all(t in tray for t in ['WindowLifetimePolicy.Close(', 'e.Cancel = true;',
++    '_window.Hide();', 'Esci da ProcessLens', 'AllowExit(); _shutdown();', '_window.WindowState = WindowState.Minimized;']),
++    'Closing route depends on tray availability; Exit bypasses hiding')
++check('restore supports hidden and minimized window',all(t in tray for t in ['Apri ProcessLens',
++    '_window.ShowInTaskbar = true;', '_window.Show();', '_window.WindowState = restoreState;', '_window.Activate();']) and
++    'TrayWindowController.TryRestoreExisting()' in app and 'SendMessageTimeoutW' in tray,
++    'Tray activation and acknowledged single-instance message; older-version fallback retained')
++check('native tray lifecycle handles Explorer restart',all(t in tray for t in ['Shell_NotifyIconW(0, ref data)',
++    'Shell_NotifyIconW(2, ref data)', 'TaskbarCreated', 'if (!EnsureTray() && !_window.IsVisible) RequestRestore();',
++    'if (data.Icon == IntPtr.Zero) return false;']), 'No hiding without restore route; shared icon and tray entry cleaned on exit')
++check('tray only attached to real application startup','new TrayWindowController(window' in app and
++    'new TrayWindowController' not in ui and 'ShutdownMode = ShutdownMode.OnExplicitShutdown;' in app and
++    'SessionEnding +=' in app, 'Unshown MainWindow test construction creates no shell icon; logout and fatal exit remain allowed')
++check('hidden dashboards paused and visible dashboards resumed',
++    'window.SetDashboardWindowVisibility' in app and 'WindowLifetimePolicy.PollingActive' in tray and
++    'GuardianDashboard?.SetActive(active && _guardianMode);' in ui and 'MemoryDashboard?.SetActive(active && _memoryMode);' in ui,
++    'Only GUI polling; Guardian service, MemoryAgent and notification policy not changed')
+ output=a.output or b/'audit/R10/structural-results.json';output.parent.mkdir(parents=True,exist_ok=True);output.write_text(json.dumps(results,ensure_ascii=False,indent=2)+'\n')
+ raise SystemExit(0 if all(r['status']=='PASS' for r in results) else 1)
+--- a/src/ProcessLens.App/App.xaml.cs
++++ b/src/ProcessLens.App/App.xaml.cs
+@@ -12,9 +12,11 @@
+ {
+     private Mutex? _singleInstanceMutex;
+     private bool _fatalErrorDisplayed;
++    private TrayWindowController? _windowController;
+ 
+     public App()
+     {
++        SessionEnding += (_, _) => _windowController?.AllowExit();
+         DispatcherUnhandledException += HandleDispatcherException;
+         AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+             AppDiagnostics.Record("Eccezione non gestita dal processo", e.ExceptionObject as Exception);
+@@ -37,7 +39,7 @@
+             {
+                 bool activated = ActivateExistingWindow();
+                 AppDiagnostics.Record(activated
+-                    ? "Single-instance mutex exists; existing window activated"
++                    ? "Istanza esistente: richiesta di ripristino accolta"
+                     : "Single-instance mutex exists, but no visible ProcessLens window found");
+                 if (!activated)
+                 {
+@@ -51,9 +53,11 @@
+             }
+ 
+             base.OnStartup(e);
++            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+             AppDiagnostics.Record("Creazione finestra principale e caricamento XAML");
+             var window = new MainWindow();
+             MainWindow = window;
++            _windowController = new TrayWindowController(window, () => Shutdown(), window.SetDashboardWindowVisibility);
+             AppDiagnostics.Record("Finestra principale creata: apertura in corso");
+             window.Show();
+             AppDiagnostics.Record("Richiesta apertura finestra completata (visibilita da verificare)");
+@@ -62,6 +66,7 @@
+         {
+             AppDiagnostics.Record("Avvio interrotto da un errore", ex);
+             ShowFatalError(ex, "Errore durante l'avvio");
++            _windowController?.AllowExit();
+             Shutdown(1);
+         }
+     }
+@@ -71,6 +76,7 @@
+         AppDiagnostics.Record("Errore non gestito dal thread della GUI", e.Exception);
+         ShowFatalError(e.Exception, "Errore dell'interfaccia");
+         e.Handled = true;
++        _windowController?.AllowExit();
+         Shutdown(1);
+     }
+ 
+@@ -94,6 +100,7 @@
+ 
+     protected override void OnExit(ExitEventArgs e)
+     {
++        _windowController?.Dispose();
+         AppDiagnostics.Record("Chiusura GUI; codice di uscita " + e.ApplicationExitCode);
+         try
+         {
+@@ -114,12 +121,16 @@
+     {
+         try
+         {
++            // MainWindowHandle can omit hidden windows. The acknowledged message reaches
++            // the existing GUI even when it is hidden or was launched through dotnet.
++            if (TrayWindowController.TryRestoreExisting()) return true;
+             using var current = Process.GetCurrentProcess();
+             foreach (var process in Process.GetProcessesByName(current.ProcessName))
+             {
+                 using (process)
+                 {
+                     if (process.Id == current.Id) continue;
++                    if (!string.Equals(process.MainWindowTitle, "ProcessLens", StringComparison.Ordinal)) continue;
+                     IntPtr hwnd = process.MainWindowHandle;
+                     if (hwnd == IntPtr.Zero) continue;
+                     if (IsIconic(hwnd)) ShowWindowAsync(hwnd, SW_RESTORE);
+--- a/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -217,6 +217,13 @@
+         {
+             _refreshing = false;
+         }
++    }
++
++    internal void SetDashboardWindowVisibility(bool active)
++    {
++        if (_windowClosed) return;
++        GuardianDashboard?.SetActive(active && _guardianMode);
++        MemoryDashboard?.SetActive(active && _memoryMode);
+     }
+ 
+ 
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R4-exit-notice-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R5-tray-restore-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+--- /dev/null
++++ b/src/ProcessLens.App/TrayWindowController.cs
+@@ -0,0 +1,211 @@
++using System.ComponentModel;
++using System.Runtime.InteropServices;
++using System.Text;
++using System.Windows;
++using System.Windows.Controls;
++using System.Windows.Controls.Primitives;
++using System.Windows.Interop;
++
++namespace ProcessLens.App;
++
++// Instantiated by the real App only. Constructing MainWindow in tests adds no tray icon.
++internal sealed class TrayWindowController : IDisposable
++{
++    private const int TrayMessage = 0x8000 + 69;
++    private static readonly uint RestoreMessage = RegisterWindowMessageW("ProcessLens.RestoreWindow.v1");
++    private static readonly uint TaskbarCreated = RegisterWindowMessageW("TaskbarCreated");
++    private readonly Window _window;
++    private readonly HwndSource _source;
++    private readonly IntPtr _hwnd;
++    private readonly ContextMenu _menu;
++    private readonly Action _shutdown;
++    private readonly Action<bool> _activity;
++    private WindowState _restoreState = WindowState.Normal;
++    private bool _trayPresent, _exitRequested, _disposed;
++    private bool? _lastActive;
++
++    public TrayWindowController(Window window, Action shutdown, Action<bool> activity)
++    {
++        _window = window; _shutdown = shutdown; _activity = activity;
++        _hwnd = new WindowInteropHelper(window).EnsureHandle();
++        _source = HwndSource.FromHwnd(_hwnd) ?? throw new InvalidOperationException("Finestra Windows non disponibile.");
++        _source.AddHook(WindowMessage);
++        _menu = new ContextMenu { Placement = PlacementMode.MousePoint };
++        var open = new MenuItem { Header = "Apri ProcessLens" };
++        open.Click += (_, _) => RequestRestore();
++        var exit = new MenuItem { Header = "Esci da ProcessLens" };
++        exit.Click += (_, _) => { AllowExit(); _shutdown(); };
++        _menu.Items.Add(open); _menu.Items.Add(new Separator()); _menu.Items.Add(exit);
++        window.Closing += Closing;
++        window.Closed += Closed;
++        window.StateChanged += StateChanged;
++        window.IsVisibleChanged += VisibilityChanged;
++        EnsureTray();
++    }
++
++    public void AllowExit() => _exitRequested = true;
++
++    private void Closing(object? sender, CancelEventArgs e)
++    {
++        var action = WindowLifetimePolicy.Close(_exitRequested, _exitRequested || EnsureTray());
++        if (action == WindowCloseAction.Exit) return;
++        e.Cancel = true;
++        if (action == WindowCloseAction.HideToTray)
++        {
++            _window.ShowInTaskbar = false;
++            _window.Hide();
++        }
++        else
++        {
++            // Never hide the only restore route when the shell cannot create the icon.
++            _window.ShowInTaskbar = true;
++            _window.WindowState = WindowState.Minimized;
++        }
++        UpdateActivity();
++    }
++
++    private void Closed(object? sender, EventArgs e) => Dispose();
++    private void StateChanged(object? sender, EventArgs e)
++    {
++        if (_window.WindowState != WindowState.Minimized) _restoreState = _window.WindowState;
++        UpdateActivity();
++    }
++    private void VisibilityChanged(object sender, DependencyPropertyChangedEventArgs e) => UpdateActivity();
++    private void UpdateActivity()
++    {
++        bool active = WindowLifetimePolicy.PollingActive(_window.IsVisible, _window.WindowState == WindowState.Minimized);
++        if (_lastActive == active) return;
++        _lastActive = active;
++        _activity(active);
++    }
++
++    private void Restore()
++    {
++        if (_disposed || _exitRequested) return;
++        var restoreState = _restoreState;
++        _menu.IsOpen = false;
++        _window.ShowInTaskbar = true;
++        _window.Show();
++        _window.WindowState = restoreState;
++        _window.Activate();
++        UpdateActivity();
++    }
++
++    private void RequestRestore()
++    {
++        if (_disposed || _exitRequested || _window.Dispatcher.HasShutdownStarted) return;
++        // Do not call Show reentrantly from a native message received during WPF Closing.
++        _window.Dispatcher.BeginInvoke(new Action(Restore));
++    }
++
++    private IntPtr WindowMessage(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
++    {
++        if (RestoreMessage != 0 && message == RestoreMessage)
++        {
++            if (_disposed || _exitRequested) return IntPtr.Zero;
++            RequestRestore(); handled = true; return new IntPtr(1);
++        }
++        if (TaskbarCreated != 0 && message == TaskbarCreated)
++        {
++            _trayPresent = false;
++            if (!EnsureTray() && !_window.IsVisible) RequestRestore();
++        }
++        if (message == TrayMessage)
++        {
++            int notification = (int)(lParam.ToInt64() & 0xFFFF);
++            if (notification is 0x0202 or 0x0203 or 0x0400 or 0x0401) RequestRestore();
++            else if (notification is 0x0205 or 0x007B)
++            {
++                SetForegroundWindow(_hwnd);
++                _menu.IsOpen = true;
++            }
++            handled = true;
++        }
++        return IntPtr.Zero;
++    }
++
++    private NotifyIconData IconData() => new()
++    {
++        Size = (uint)Marshal.SizeOf<NotifyIconData>(), Window = _hwnd, Id = 1,
++        Flags = 1 | 2 | 4 | 0x80, CallbackMessage = TrayMessage,
++        Icon = LoadIconW(IntPtr.Zero, new IntPtr(32512)), Tip = "ProcessLens — clic per riaprire",
++        Info = "", InfoTitle = ""
++    };
++
++    private bool EnsureTray()
++    {
++        if (_disposed) return false;
++        if (_trayPresent) return true;
++        var data = IconData();
++        if (data.Icon == IntPtr.Zero) return false;
++        _trayPresent = Shell_NotifyIconW(0, ref data); // NIM_ADD
++        if (_trayPresent)
++        {
++            data.Version = 4;
++            Shell_NotifyIconW(4, ref data); // NIM_SETVERSION; legacy mouse messages remain supported.
++        }
++        return _trayPresent;
++    }
++
++    public void Dispose()
++    {
++        if (_disposed) return;
++        _disposed = true;
++        _menu.IsOpen = false;
++        _window.Closing -= Closing; _window.Closed -= Closed;
++        _window.StateChanged -= StateChanged; _window.IsVisibleChanged -= VisibilityChanged;
++        if (!_source.IsDisposed) _source.RemoveHook(WindowMessage);
++        if (_trayPresent)
++        {
++            var data = IconData();
++            Shell_NotifyIconW(2, ref data); // NIM_DELETE; LoadIcon returns a shared system icon.
++            _trayPresent = false;
++        }
++    }
++
++    public static bool TryRestoreExisting()
++    {
++        if (RestoreMessage == 0) return false;
++        bool restored = false;
++        EnumWindows((hwnd, _) =>
++        {
++            GetWindowThreadProcessId(hwnd, out uint pid);
++            if (pid == Environment.ProcessId) return true;
++            var title = new StringBuilder(128);
++            GetWindowTextW(hwnd, title, title.Capacity);
++            if (!string.Equals(title.ToString(), "ProcessLens", StringComparison.Ordinal)) return true;
++            AllowSetForegroundWindow(pid);
++            if (SendMessageTimeoutW(hwnd, RestoreMessage, IntPtr.Zero, IntPtr.Zero, 2, 500, out var result) != IntPtr.Zero &&
++                result == new IntPtr(1)) { restored = true; return false; }
++            return true;
++        }, IntPtr.Zero);
++        return restored;
++    }
++
++    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
++    private struct NotifyIconData
++    {
++        public uint Size; public IntPtr Window; public uint Id, Flags, CallbackMessage; public IntPtr Icon;
++        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)] public string Tip;
++        public uint State, StateMask;
++        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string Info;
++        public uint Version;
++        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)] public string InfoTitle;
++        public uint InfoFlags; public Guid Guid; public IntPtr BalloonIcon;
++    }
++    private delegate bool EnumWindowCallback(IntPtr hwnd, IntPtr parameter);
++    [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
++    [return: MarshalAs(UnmanagedType.Bool)] private static extern bool Shell_NotifyIconW(uint message, ref NotifyIconData data);
++    [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern uint RegisterWindowMessageW(string text);
++    [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern IntPtr LoadIconW(IntPtr instance, IntPtr name);
++    [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)]
++    private static extern bool SetForegroundWindow(IntPtr hwnd);
++    [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)]
++    private static extern bool AllowSetForegroundWindow(uint pid);
++    [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)]
++    private static extern bool EnumWindows(EnumWindowCallback callback, IntPtr parameter);
++    [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint pid);
++    [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern int GetWindowTextW(IntPtr hwnd, StringBuilder text, int max);
++    [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern IntPtr SendMessageTimeoutW(
++        IntPtr hwnd, uint message, IntPtr wParam, IntPtr lParam, uint flags, uint timeout, out IntPtr result);
++}
+--- /dev/null
++++ b/src/ProcessLens.App/WindowLifetimePolicy.cs
+@@ -0,0 +1,11 @@
++namespace ProcessLens.App;
++
++internal enum WindowCloseAction { Exit, HideToTray, MinimizeToTaskbar }
++
++internal static class WindowLifetimePolicy
++{
++    public static WindowCloseAction Close(bool exitRequested, bool trayAvailable) =>
++        exitRequested ? WindowCloseAction.Exit : trayAvailable
++            ? WindowCloseAction.HideToTray : WindowCloseAction.MinimizeToTaskbar;
++    public static bool PollingActive(bool visible, bool minimized) => visible && !minimized;
++}
+--- a/start-processlens-all.ps1
++++ b/start-processlens-all.ps1
+@@ -27,7 +27,7 @@
+ }
+ 
+ try {
+-    Write-Host 'ProcessLens v0.19.16 R10 R4 candidata - Avvio guidato in sequenza' -ForegroundColor Green
++    Write-Host 'ProcessLens v0.19.16 R10 R5 candidata - Avvio guidato in sequenza' -ForegroundColor Green
+     Write-Host ('Modalita: ' + $Mode)
+     Write-Host ('Cartella: ' + $PSScriptRoot)
+     $isAdmin = Test-IsAdministrator
+--- a/tests/ProcessLens.CopyTests/ProcessLens.CopyTests.csproj
++++ b/tests/ProcessLens.CopyTests/ProcessLens.CopyTests.csproj
+@@ -7,5 +7,6 @@
+     <Compile Include="../../src/ProcessLens.App/CopyTextFormat.cs" Link="CopyTextFormat.cs" />
+     <Compile Include="../../src/ProcessLens.App/ReportLayout.cs" Link="ReportLayout.cs" />
+     <Compile Include="../../src/ProcessLens.App/ProcessExitNotice.cs" Link="ProcessExitNotice.cs" />
++    <Compile Include="../../src/ProcessLens.App/WindowLifetimePolicy.cs" Link="WindowLifetimePolicy.cs" />
+   </ItemGroup>
+ </Project>
+--- a/tests/ProcessLens.CopyTests/Program.cs
++++ b/tests/ProcessLens.CopyTests/Program.cs
+@@ -71,3 +71,14 @@
+     notices.Confirm(new ProcessExitIdentity(2, 0, "N/D")) is null, "missing identity cannot produce a confirmed exit notice");
+ for (int n = 0; n < 32; n++) notices.Confirm(instance with { Pid = 2000 + n });
+ Check(!notices.WasShown(instance), "exit-notice deduplication history stays bounded");
++
++Check(WindowLifetimePolicy.Close(false, true) == WindowCloseAction.HideToTray,
++    "window X hides to tray while keeping the app alive");
++Check(WindowLifetimePolicy.Close(false, false) == WindowCloseAction.MinimizeToTaskbar,
++    "unavailable tray preserves a taskbar restore route");
++Check(WindowLifetimePolicy.Close(true, true) == WindowCloseAction.Exit &&
++    WindowLifetimePolicy.Close(true, false) == WindowCloseAction.Exit,
++    "explicit Exit and session ending can close with or without a tray icon");
++Check(WindowLifetimePolicy.PollingActive(true, false) && !WindowLifetimePolicy.PollingActive(true, true) &&
++    !WindowLifetimePolicy.PollingActive(false, false) && !WindowLifetimePolicy.PollingActive(false, true),
++    "UI polling resumes only for a visible non-minimized window");
+--- a/tests/check-copy-ui-r10.ps1
++++ b/tests/check-copy-ui-r10.ps1
+@@ -50,3 +50,14 @@
+     if (-not $watch.Contains($token)) { throw ('FAIL exit notice: missing verified read-only signal: ' + $token) }
+ }
+ Write-Host 'PASS R10 R4 exit notice: verified instance, Windows exit signal and bounded UI lifecycle. Source checks only.'
++$tray = Get-Content (Join-Path $root 'src\ProcessLens.App\TrayWindowController.cs') -Raw -Encoding UTF8
++$app = Get-Content (Join-Path $root 'src\ProcessLens.App\App.xaml.cs') -Raw -Encoding UTF8
++foreach ($token in @('WindowLifetimePolicy.Close(', 'e.Cancel = true;', '_window.Hide();',
++    'Apri ProcessLens', 'Esci da ProcessLens', '_window.Show();', 'TaskbarCreated', 'SendMessageTimeoutW')) {
++    if (-not $tray.Contains($token)) { throw ('FAIL tray lifecycle: missing restore/exit route: ' + $token) }
++}
++if (-not $app.Contains('ShutdownMode = ShutdownMode.OnExplicitShutdown;') -or
++    -not $app.Contains('new TrayWindowController(window') -or -not $app.Contains('TrayWindowController.TryRestoreExisting()')) {
++    throw 'FAIL tray lifecycle: startup or existing-instance restore not wired.'
++}
++Write-Host 'PASS R10 R5 lifecycle: hide, restore, explicit exit and shell recovery wired. Source checks only.'

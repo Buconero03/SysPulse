@@ -1,0 +1,10 @@
+  Determining projects to restore...
+  Restored /workspace/scratch/3c80859a1061/ProcessLens/r34/ProcessLens-Leggero/progetto/tests/ProcessLens.CopyTests/ProcessLens.CopyTests.csproj (in 101 ms).
+  ProcessLens.CopyTests -> /workspace/scratch/3c80859a1061/ProcessLens/r34-test/CopyTests/bin/ProcessLens.CopyTests/release/ProcessLens.CopyTests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.94
+

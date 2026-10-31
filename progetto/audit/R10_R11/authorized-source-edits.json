@@ -1,0 +1,151 @@
+{
+  "baseline_sha256": "622664bf767505d06fab1ed76626415296d3b719803a8bbdc667e34170838eda",
+  "scope": "User-requested UX wording and log presentation; native collectors and machine schemas unchanged",
+  "files": [
+    {
+      "file": "src/ProcessLens.App/AuditLogPresentation.cs",
+      "sha256_before": "477c95db2b5bfe9b3f38da8141fc8a6a85199c763305ede0e7e9702f4676cd2c",
+      "sha256_after": "f03ae644ee8cdebc3e7aa6b07527f9ba0cc8d7fb9446434fedcd7429abb66f84"
+    },
+    {
+      "file": "src/ProcessLens.App/AuditLogView.cs",
+      "sha256_before": "01d77900b8a1b9f7605d3e813fc13ed691ea9d77dee59c5ebdae4aec21018770",
+      "sha256_after": "2b4ae1321511cea73b2e88df25ab37ddbc3255c90bff6005c77564fccb3216f6"
+    },
+    {
+      "file": "src/ProcessLens.App/GuardianDashboardView.xaml.cs",
+      "sha256_before": "c38b26bfde79fadc3c1261dad7b6feb4f3a2e3e66c46bd13398aa33bfd9a3667",
+      "sha256_after": "f5c0938eed283efa4b88055319d91247a97ac171865d3ffb4dd07976238ec4a0"
+    },
+    {
+      "file": "src/ProcessLens.App/GuardianDiagnosticPresentation.cs",
+      "sha256_before": "cf59323e3939f2e8f5af32fc6c725b8e3da66e657d50b907f720ebd5db533820",
+      "sha256_after": "68582244716f3b2dd0a12b3ed30811d8ff1a6d45b77183dc874fb2cddd1366c3"
+    },
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml",
+      "sha256_before": "7723a00b8929a04fa61860af7295695148d467eb2b704a405cdbb8027507e253",
+      "sha256_after": "26aeaefc78b62a8561f13f70d1694ad675a0c659c544dec1538c255dee763f00"
+    },
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+      "sha256_before": "fbe1412d91e3ce2406b3cd9e7ae8d27b0c365da914467604de8dbecfdea7c774",
+      "sha256_after": "9194dd192a810606da9102c88ac0347f2422e3cf255d88db16ce6eee2e586982"
+    },
+    {
+      "file": "src/ProcessLens.App/MemoryAnalysisAudit.cs",
+      "sha256_before": "4dbc4016fa962c96d130e96bc66941a6ea47a86dcbc640b089315e8d331eba95",
+      "sha256_after": "4e4d988b05e5c0596fd757f2073dcfa53fdb47b1c909cf0e1bf1270a6a3fa5b2"
+    },
+    {
+      "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+      "sha256_before": "0e71f223f8384250efa0004213309abc717a8cf38a07609a28271bf2d26d5e29",
+      "sha256_after": "bf2b5a45ad618facb28718a4ac80b9d051837b3bf0f3f5ee4142303f36508720"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256_before": "485b69a79e8159f1273f257c9972e6f3085545e6782411ea403eea7d723c0be2",
+      "sha256_after": "c6b5c1fdb0330478382c36e0c831783caad3fcd0af55589086bea81d2487af7a"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessRow.cs",
+      "sha256_before": "6e11d12218e8150841f22f26eefe7e1d4abefd977b1cb6c0b2ff99d93505a8bf",
+      "sha256_after": "ccf32bd0e3e640b4d74e63267ac9d94e70ddac0435151cfc4974ca4e89e5a5e9"
+    },
+    {
+      "file": "src/ProcessLens.App/ReportLayout.cs",
+      "sha256_before": "664230d7ac4a90c310fee787f054c53d329285e66f9090219ee88f68e319d505",
+      "sha256_after": "adb4422ab3212798bddf098a2202e0ab273c7c05feb1c6ad3b1fe71b1997064a"
+    },
+    {
+      "file": "src/ProcessLens.App/WindowsComponentContext.cs",
+      "sha256_before": "4a99cad573c2d66442d169541994024a56e2b64ccb65006d43e860deaf5576fd",
+      "sha256_after": "1b0e14954516675dac8364d6c12b95425f749d10f63ca4274c2142b6620bb66e"
+    },
+    {
+      "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+      "sha256_before": "a931e319a970d8d498034eca40548ea7e3c6aac13e1b042f0632a4546a837e00",
+      "sha256_after": "8901337e91d83285518ec0b6746b6a2d336de86e469f5ba7d36f11e49db2f66f"
+    },
+    {
+      "file": "src/ProcessLens.Core/ProcessMemoryGuide.cs",
+      "sha256_before": "d4f3bbf5376c24ba19c97ce1bc220b540a267d564f946e1c92c26fd906a1ff99",
+      "sha256_after": "02a42a8afd5df279c77ba32853e04859849d87a2d6a285805fc0b1ae0960a3f9"
+    },
+    {
+      "file": "src/ProcessLens.Core/ProcessSnapshot.cs",
+      "sha256_before": "9bfbf052b93c7fb8c13b788df7383c1a963a17d828b3210115d7e1d2a50947f4",
+      "sha256_after": "e64c0621a77761c4a712f0a3ae52a1bdbd6a37cca323732f60576499118de8cc"
+    },
+    {
+      "file": "src/ProcessLens.Core/ProcessTerminology.cs",
+      "sha256_before": "17120a75d2d26f25ec71416a68a3a87e5d1003cbd17433d6e065eddf6fbe4cd8",
+      "sha256_after": "2a4932a5ff4127b1f7c391e8a6b0726c628c939d394545c34c0c287aeec5d570"
+    },
+    {
+      "file": "src/ProcessLens.Core/ServiceExplanation.cs",
+      "sha256_before": "edebddc0bea5e2859284325c017921e6ec859e3d11d29ef6ef456d661f9cc992",
+      "sha256_after": "164db2905285666120080e1914b46262c036397ede97f79bf8311ee6c2ce3edb"
+    },
+    {
+      "file": "src/ProcessLens.Core/ServiceHistoryInterpretation.cs",
+      "sha256_before": "aae542716c35e6995915a48bcc6b12034e712e742e931e6042e37ea1bc64cc3d",
+      "sha256_after": "fb16d2e11c7fedc5261e0a2310ed81b56c6395e5787c86bbb1c9c0afd912af49"
+    },
+    {
+      "file": "src/ProcessLens.Core/StructuredDiagnostics.cs",
+      "sha256_before": "82c8a1833756dc47619e336a79c7d236da030afc1db791eb78d4e42996f03506",
+      "sha256_after": "8e3485364fd3d7b54eea9d5cdcead89d1e38a6536b4bd515ee3a34679a2cfb97"
+    },
+    {
+      "file": "src/ProcessLens.Core/WindowsAllocationEvidence.cs",
+      "sha256_before": "be2caafc23155f90b0831237fc556c5884c5b0dc040f0ae20c993552fc3d7142",
+      "sha256_after": "e518ec5bf4c796cf47feca7c1fd34ab2f7971452010c0463fc4b67553e505007"
+    },
+    {
+      "file": "src/ProcessLens.RamMonitor/LogSession.cs",
+      "sha256_before": "e89e943f5b39f4acf4ddc737974ca935f80664090c998432b2a07cd85f17c663",
+      "sha256_after": "e1ec08db1892723965b94230a4bbd9ea5e3c06d0695502e71d5e48576fc03aaa"
+    },
+    {
+      "file": "src/ProcessLens.RamMonitor/ProcessLens.RamMonitor.csproj",
+      "sha256_before": "4987d8628b8714f1ff3d002bf4edd8c794149167439a70073e287b3d87edd6ac",
+      "sha256_after": "c6317718c73014bdb6b3a34fdfe8bac2f3e307ffdbc400cc6d8d619e29811be4"
+    },
+    {
+      "file": "src/ProcessLens.RamMonitor/Program.cs",
+      "sha256_before": "9e22a72a716085cffa20314d1f6d3a3ecbc63a051855b36a6a3c47db1e5130f8",
+      "sha256_after": "e5ae049fae33d4a66f8212f6dfa442a4762290defff3bf602f289db8b8b51de7"
+    },
+    {
+      "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+      "sha256_before": "780185717064556e17551b3dfe64a5f275d35a2909f526dec773e16f24a94eb2",
+      "sha256_after": "9ed6c624e3b95aa5585e15b63719c823a6e65804c06628fdc397530f4c612faa"
+    },
+    {
+      "file": "src/ProcessLens.Semantics/ProcessIntelligenceAnalyzer.cs",
+      "sha256_before": "767124d255497e7ff58bcef673ca1dfc464b57e20161a01d7208e473579e0ccb",
+      "sha256_after": "66357c0d3a588a2beb5121baba90aea78090ae84e029d3a8debfc33662af569f"
+    },
+    {
+      "file": "src/ProcessLens.Semantics/ProcessOriginAnalyzer.cs",
+      "sha256_before": "390b6e76aaf515c2ac3531f386a701a90cb27a45d491bd97a9ec16807aa0c508",
+      "sha256_after": "2c5ee23614e9b496fae1fe7de68b6aa2e58740435e90b6dd48cfb9e6e0efc09a"
+    },
+    {
+      "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+      "sha256_before": "0b682a2756a69f561884df54feaebdfa35bb624a728e715536f98c158c995097",
+      "sha256_after": "61ee5cfb7b208308d9332fda8442ad29eed0838b034a03334365f4d214cf09e9"
+    },
+    {
+      "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+      "sha256_before": "1bf0f6221288bb4441a3d2040b48c97fb8f34a5a24acec6008716b8fb0c79171",
+      "sha256_after": "4ce5c2a49fa2f5bb38706d001ffb42c51918573f4fc8208ce538e6dd9fdcfbbc"
+    },
+    {
+      "file": "src/ProcessLens.Semantics/knowledge/role-signatures.json",
+      "sha256_before": "f295091cc00c8d24dd086b39dcb0dc534bf3c52153415f334764c882cf4b751c",
+      "sha256_after": "195f1bcdf0451cc371783c5bc0a4c34a9a82d56557269df30584a85a9c18d37e"
+    }
+  ]
+}

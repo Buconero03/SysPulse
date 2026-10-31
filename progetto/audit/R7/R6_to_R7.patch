@@ -1,0 +1,1759 @@
+--- /dev/null
++++ b/CHANGELOG_R7.md
+@@ -0,0 +1,15 @@
++# Changelog R6 → R7 candidata
++
++- Descrizioni di runtime/ruolo da parametri e nomi, separate dal lavoro corrente e dalla causa storica dell’avvio.
++- Knowledge e fallback C# coerenti su updater, crash handler, main/coordinator, TCP e GPU; predicati e ID conservati.
++- Associazioni proposte e metadati dichiarati; punteggi interni distinti dalle probabilità.
++- Rete: socket rilevate, non volume di traffico/delega; note e limiti di zero; ascolto TCP distinto da connessioni/UDP.
++- CPU: N/D quando disponibile il flag; finestra fino a 30 secondi; nessuna salute certa da campioni parziali.
++- Memoria: saldo distinto da monotonia, soglie con uguaglianza corretta, contatori equivalenti e stessa istanza per confronto.
++- Progresso/ETA: testo riconosciuto e fonte; stima condizionata e scenario aritmetico senza calibrazione statistica.
++- Servizi: descritta la capacità SCM già presente e lo stato del solo servizio; nessun cambiamento di controller/policy.
++- GUI: titoli a capo, terna memoria con minimi comuni e guida RAM più breve; verifica visuale Windows ancora da eseguire.
++- Quattro suite aggiornate/ampliate; aggiunto verificatore Windows completo senza avviare GUI, fixture, profilazioni o installazioni.
++- Audit originale conservato, matrice di 3.406 riferimenti, 41 decisioni prioritarie, continuità glossario di 95 voci, diff e manifest.
++
++**Stato:** 20 controlli strutturali Python PASS. Test .NET/PowerShell, build e visuale WPF **NON ESEGUITI**. R7 non è una release stabile.
+--- /dev/null
++++ b/PROBLEMI_APERTI_R7.md
+@@ -0,0 +1,16 @@
++# Problemi e verifiche ancora aperti — R7
++
++| ID | Problema / prova nel sorgente R6 e R7 | Trattamento R7 | Verifica richiesta |
++|---|---|---|---|
++| OPEN-01 | `WindowsDeepProcessInspector.ReadTcpForPids/ReadUdpForPids` può ritornare su errori API senza segnalare disponibilità distinta; `IsDeepInspected` significa letture terminate, non tutte riuscite. | Messaggi su zero limitati alle letture disponibili; note mostrate nelle query. Collector e campi invariati. | Disegnare flag/errori per protocollo e famiglia di indirizzi; autorizzazione di ambito e test indipendenti prima di cambiare contratti. |
++| OPEN-02 | `ResolveSameExecutableFamily` usa nomi/albero; non autentica lo stesso file e non risolve tutti i casi di PID riutilizzato. `RoleHint` è una classificazione. | Descrizioni di famiglia/delega qualificate; non cambiate acquisizione e role hint. | Snapshot controllati con riuso PID e nomi/percorso diversi; eventuale evoluzione collector separata. |
++| OPEN-03 | `TrackCpuHistory` conserva queue per PID; non contiene StartTime. `SemanticIdentityKey` non incorpora gli orari di avvio degli antenati. | Nessuna deduzione di salute certa. Nessuna riscrittura di caching/storici in questa revisione. | Test indipendenti su riuso PID, cache e validità dell’istanza; poi patch dedicata. |
++| OPEN-04 | `HandleCount` e `IsCritical` non dispongono di flag espliciti di disponibilità; zero/false possono derivare da fallback. | I flag disponibili per CPU/memoria rispettati; handle zero e flag critico negativo qualificati; nessun nuovo campo API. | Test su accesso negato e processo protetto; distinguere dato osservato da default nel modello. |
++| OPEN-05 | Regex/Contains riconoscono nomi di tool/file anche fra argomenti; `pip*` e `ipykernel*` possono corrispondere a nomi diversi. Un testo di progresso può essere obiettivo, configurazione o fase. | Sintesi basate sul testo e limiti espliciti; ETA condizionato senza calibrazione. Nessun parser command line riscritto. | Corpus con parametri-esca, quoting, opzioni e moduli omonimi; riconoscimento tokenizzato separato. |
++| OPEN-06 | `SameProgressSeries` permette campioni senza StartTime e discrimina per fonte/unità, non ID del lavoro. | La stima è dichiarata condizionata e non prova il completamento. | Test di cambio lavoro/istanza; requisito di identità e job esplicito se si vuole un’ETA affidabile. |
++| OPEN-07 | `GuardianActivityAnalyzer.cs` e `GuardianStore.cs` dividono resident_peak per 1048576 ma in due rapporti scrivono MB. | Segnalazione confermata; file Guardian conservati byte per byte. | Patch editoriale Guardian separata con test di report e consenso d’ambito; non modificare DB o contatori. |
++| OPEN-08 | MinWidth/MinHeight, colonne, etichette a capo, menu e dati lunghi non renderizzati in WPF. | Migliorie strutturali con controlli XML, senza dichiarazione visuale. | Screenshot e misure su Windows a 100/125/150%, 1180×800 e minimo 950×680 DIP. Registrare limiti di area utile. |
++| OPEN-09 | Mancano .NET/PowerShell/Windows: test e build non eseguiti. | Procedura riproducibile + matrice esatti; nessuna release stabile. | Eseguire `verify-candidate-r7.ps1`, verificare tutti i log e completare manuali. |
++| OPEN-10 | Nomi di moduli/metadata/package e flag non provano firma, autenticità, intenzione o funzione corrente. | Etichette «proposto», «compatibile», fonte dichiarata e limiti; nessuna autenticazione aggiunta. | Verificare con esempi di metadati ingannevoli; non usare classificazione come diagnosi malware. |
++
++Questi problemi sono emersi dall’esame del contesto, non da un conteggio lessicale. Non tutti richiedono una modifica nel perimetro editoriale: alcuni richiedono evoluzione del modello/collector. Il registro delle 41 priorità R6 è un documento distinto; la voce Guardian negativa sull’ordine dei timestamp è un limite corretto, non un bug.
+--- /dev/null
++++ b/RAPPORTO_REVISIONE_R6_R7.md
+@@ -0,0 +1,78 @@
++# ProcessLens v0.19.16 R7 — candidata per verifica
++
++**Base:** v0.19.16 R6 candidata. **Data:** 14 ottobre 2026.
++**Stato:** revisione di sorgente e controlli strutturali eseguiti; build, suite .NET/PowerShell, scenari Windows e verifica visuale WPF **NON ESEGUITI**. Nessuna promozione stabile.
++
++## Continuità e ambito
++
++Sono stati riutilizzati l’inventario R6 di 3.406 voci, le decisioni R5/R6, il glossario di 95 voci e l’handoff. Le 34 correzioni R6 non sono state riapplicate alla baseline R5. Gli archivi consegnati restano originali; la candidata è una copia della R6.
++
++La verifica ha seguito le descrizioni lungo i rami del classificatore, le precedenze della knowledge base, i formatter Core, le risposte alle query, i binding della GUI, i servizi, le misure CPU/memoria, l’origine, la rete, le descrizioni GPU, gli avvisi e la diagnostica. Sono inclusi i percorsi senza alert lessicale. Test, codici, SQL e stringhe interne sono distinti dal linguaggio normale dell’applicazione. La tabella di copertura comprende anche script CMD, controlli PowerShell e file non presenti nell’inventario iniziale.
++
++La matrice completa conserva **3.406 riferimenti R6**, con testo originario, contesto/riga R7, prova, decisione, rischio e test. È una matrice di continuità, non un nuovo conteggio di messaggi R7: gli estratti ereditati possono spezzare stringhe interpolate o ripetere una posizione. La colonna `contesto_R7` contiene la riga completa del sorgente, non un nodo AST. Le nuove stringhe e i nuovi test sono tracciati anche nel diff completo. Non si dichiara di aver validato 3.406 messaggi mediante esecuzione né di aver provato tutti i percorsi Windows.
++
++## Correzioni principali
++
++| Prima in R6 | Dopo in R7 | Prova e motivo |
++|---|---|---|
++| «Una build o IDE .NET lo ha avviato…» | «VBCSCompiler.dll è indicato nei parametri… richiesta originaria e riuso corrente non osservati» | `ClassifyDotNet` riconosce un nome DLL, non il richiedente dell’avvio. |
++| «Avviato da [padre] per eseguire…» | Modulo/script indicato e padre riportato; motivo non osservato | PPID/nome non identificano autore e intenzione; compatibilità temporale non è prova del creatore. |
++| «Esegue script/assembly…» nella sintesi | «Script/assembly/file indicato…» | Parametri di avvio distinti dall’istruzione corrente. |
++| Updater: «Controlla o applica aggiornamenti…» | «Possibile componente di aggiornamento software» | Nome o metadati non dimostrano aggiornamento in corso. |
++| Crash handler: «Rimane pronto…» | Nome/metadati compatibili, stato interno non osservato | La regola non misura readiness o un crash. |
++| «Coordina l’applicazione…» da finestra + figli | Finestra e figli omonimi, possibile processo principale | Non vengono osservate attività di coordinamento; confronto dei nomi diverso dall’identità dei file. |
++| «Rete delegata rilevata» / «più attivo in rete» | Ruolo suggerito e PID con più connessioni rilevate | Tabelle socket non provano delega né quantità di traffico. |
++| «Questo PID non possiede socket proprie» | Nessuna ESTABLISHED/UDP rilevata; LISTEN separato | Il ramo poteva essere raggiunto anche con una socket LISTEN presente. |
++| CPU non disponibile mostrata come zero in alcuni dettagli/health | N/D nei dettagli; dati insufficienti nella risposta sul blocco | Flag di disponibilità già esistenti rispettati. Nessuna nuova acquisizione. |
++| «Progresso misurato» da titolo/command line | «Possibile indicatore testuale» con fonte e limiti | Un parametro può essere iniziale o un obiettivo; il titolo può riferirsi a una fase. |
++| ETA «ALTA/MEDIA» e «intervallo prudente» | Stima condizionata a due campioni testuali; scenario aritmetico −25%/+35%, non confidenza | Le soglie precedenti non calibravano attendibilità e intervallo. La formula è conservata. |
++| «Tendenza stabile» / «sta diminuendo» dal saldo | Saldo quasi invariato/in diminuzione; possibili oscillazioni intermedie | Delta iniziale/finale non prova monotonia o stabilità. |
++| «ProcessLens non modifica i servizi» | Arresto SCM su richiesta e conferma, senza terminare forzatamente il PID | GUI già dotata di `RequestStopServiceAsync`; testo precedente obsoleto. |
++| «Oltre il 75/90%», ramo ≥75/90 | «Almeno il 75/90%» | Etichetta coerente anche all’uguaglianza. Policy 85/80 invariata. |
++| Working Set confrontabile direttamente con Task Manager / Processi | Stessa istanza, contatore e intervallo; possibili colonne/aggregazioni diverse | Il contatore rimane esattamente Private Working Set; nessuna equivalenza universale promessa. |
++| «Nativo / non determinato» | «Runtime non determinato» | Mancato riconoscimento non prova codice nativo. |
++
++Il registro `audit/R7/CHANGELOG_DETTAGLIATO.csv` descrive **235 modifiche guardate**, che non sono 227 difetti indipendenti: una correzione può interessare più frasi o occorrenze. Il diff completo comprende i sorgenti, i test, il verificatore Windows e la documentazione della revisione; gli audit sono aggiuntivi.
++
++## Le 41 priorità R6
++
++Tutte le 41 voci hanno un riferimento stabile e una decisione in `audit/R7/DECISIONI_41_PRIORITA_R6.csv`:
++
++- 20 voci ricadono nelle correzioni R7;
++- 18 sono conservate con limite esplicito: punteggi tecnici non probabilistici, domande legittime, intent o limiti negativi;
++- 1 voce Guardian è conservata come componente escluso: il limite sull’ordine nello stesso secondo è corretto;
++- 2 voci sono asserzioni di test conservate, non messaggi normali dell’applicazione.
++
++Queste categorie si riferiscono alle **voci dello screening**, non al numero di bug. La revisione ha individuato problemi anche fuori dalle 41 voci. I punteggi 0–100 e gli identificativi delle regole rimangono nel pannello tecnico; il rapporto normale non trasforma il punteggio in probabilità o forza astratta degli indizi.
++
++## Confini preservati
++
++Confronto byte per byte dei componenti protetti in `audit/R7/static-results.json`: Guardian, MemoryAgent, collector Windows, profiler, reader/view Guardian, modelli/policy protetti e diagnostica strutturata invariati. Contatori, campi dei modelli pubblici, ID `knowledge:`, ID delle regole, punteggi, categorie, condizioni di matching, SQL e codici diagnostici non modificati. Nel JSON cambiano esclusivamente descrizioni/etichette ed evidenze editoriali.
++
++Le variazioni di controllo sono circoscritte alla presentazione: guardia sui dati CPU mancanti, selezione della dicitura N/D e qualificazione di progresso/ETA. Il prefisso della sintesi Python e il formatter che ne ricava il nome sono aggiornati insieme. I contatori non vengono ricostruiti o stimati.
++
++Nessuna profilazione, installazione, terminazione, avvio di servizio o acquisizione su processi reali eseguita. Il verificatore Windows compila i componenti e la fixture ma non avvia la fixture, non lancia la GUI e non installa servizi/agenti/tool.
++
++## Verifiche e limiti
++
++**20 controlli Python strutturali: PASS.** Sono verificati XML ben formato, nomi XAML univoci, invarianti dei modelli e dei predicati JSON, byte dei componenti esclusi, collegamenti/diciture mirati, versioni e assenza di azioni operative nel verificatore. Questi controlli non sono una compilazione C# né un parser completo PowerShell/XAML.
++
++Aggiornati i test dipendenti dalle stringhe in TerminologyTests, BehaviorTests e MemoryTests; aggiunte regressioni anche in ServiceTests. Coprono i nuovi limiti su avvio, nomi updater/crashpad, coordinating inference, disponibilità CPU, rete parziale/LISTEN, progresso testuale, ETA condizionato, oscillazioni di memoria, soglie e capacità SCM. Il loro esito è **NON ESEGUITO**. La procedura esegue anche TerminologyTests senza la knowledge copiata per esercitare i fallback C#.
++
++**Build .NET, tutti i test .NET, PowerShell, WPF, AVVIA-TUTTO e layout a DPI 100/125/150%: NON ESEGUITI.** Sistema Linux, `dotnet` e `pwsh` assenti. Non sono stati installati prerequisiti.
++
++Le etichette di sezione possono andare a capo; la terna memoria usa altezze minime comuni lasciando la crescita naturale; il titolo della guida RAM è abbreviato. Questa è prevenzione strutturale, **non una verifica visuale**. Rimangono da verificare dimensioni minime, menu, scrollbar, testi lunghi, DPI e schermi dove la dimensione minima della finestra supera l’area utile.
++
++Vedere `VALIDAZIONE_WINDOWS_R7.md`, `audit/R7/test-matrix.csv` e `PROBLEMI_APERTI_R7.md`. R7 rimane candidata finché build, suite e verifiche visuali non sono completate.
++
++## Fonti e prove
++
++La prima prova è il sorgente della R6 e il predicato effettivamente usato da ciascun ramo. Documentazione primaria consultata per confermare i confini, senza attribuire a Microsoft le proposte editoriali del glossario:
++
++- [PROCESS_MEMORY_COUNTERS_EX2](https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex2): PrivateWorkingSetSize, WorkingSetSize e PrivateUsage in byte; commit diverso dalla residenza.
++- [Working Set](https://learn.microsoft.com/en-us/windows/win32/memory/working-set): pagine residenti e memoria condivisibile.
++- [MIB_TCPROW_OWNER_PID](https://learn.microsoft.com/en-us/windows/win32/api/tcpmib/ns-tcpmib-mib_tcprow_owner_pid): stato, indirizzi, porte e PID; nessun contatore di byte in questa struttura.
++- [UpdateProcThreadAttribute](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute): un processo diverso dal chiamante può essere specificato come padre.
++- [MEMORYSTATUSEX](https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-memorystatusex): memoria fisica totale/disponibile.
++
++La conclusione applicativa «questo dato non prova l’operazione interna» deriva dal confronto tra queste capacità e i campi realmente letti da ProcessLens; è un’analisi del progetto, non una frase certificata dalla documentazione.
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,12 @@
+-﻿**v0.19.16 R6 Candidate:** revisione delle affermazioni causali, dei termini CPU e delle descrizioni di rete TCP senza modificare contatori o componenti protetti. Vedi `REVISIONE_TERMINOLOGICA_V01916_R6.md`. Build Windows e test .NET ancora da verificare.
++﻿# R7 candidata — revisione del 14 ottobre 2026
++
++Questa copia prosegue dalla v0.19.16 R6. Build/test Windows e verifica visuale NON ESEGUITI; non è una release stabile. Leggere `RAPPORTO_REVISIONE_R6_R7.md`, `PROBLEMI_APERTI_R7.md` e `VALIDAZIONE_WINDOWS_R7.md`. `SHA256SUMS_R7.txt` è il manifest della candidata; i manifesti precedenti sono storici.
++
++Sorgenti, audit, test e risultati vanno conservati sotto questa unica directory radice. Non installare/avviare componenti operativi per la sola verifica della candidata.
++
++---
++
++**v0.19.16 R6 Candidate:** revisione delle affermazioni causali, dei termini CPU e delle descrizioni di rete TCP senza modificare contatori o componenti protetti. Vedi `REVISIONE_TERMINOLOGICA_V01916_R6.md`. Build Windows e test .NET ancora da verificare.
+ 
+ **v0.19.16 R3 Candidate:** correzione visibilita etichette CPU/RAM, layout e tooltip per metriche fisiche senza modificare i contatori Windows. Vedi `HOTFIX_UI_METRIC_SPACING_V01916_R3.md`. Test su Windows da ripetere.
+ 
+--- /dev/null
++++ b/VALIDAZIONE_WINDOWS_R7.md
+@@ -0,0 +1,74 @@
++# Verifica Windows — ProcessLens R7 candidata
++
++## Prerequisiti e stato
++
++Su Work/Linux: **NON ESEGUITO** per tutti i comandi .NET/PowerShell/WPF riportati qui. SDK .NET 8 compatibile e .NET Desktop Runtime devono già essere disponibili su Windows; nessuna installazione viene eseguita dagli strumenti nuovi. Conservare la R6 originale.
++
++Estrarre l’unico ZIP R7 in una directory radice propria; sorgenti, audit, test e risultati restano in quella radice. Non copiare gli audit nella home e non creare una successione di ZIP intermedi. La versione R7 è candidata e non sostituisce automaticamente una distribuzione stabile.
++
++## Suite e build senza avviare componenti operativi
++
++Da PowerShell nella radice estratta:
++
++```powershell
++powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\verify-candidate-r7.ps1
++```
++
++Il verificatore controlla tutti gli script `tests/check-*.ps1`, esegue tutti i progetti di test, compila soltanto la fixture del profiler e compila tutti i progetti `src`. Compila anche Guardian/MemoryAgent/Profiler, **senza installarli o avviarli**. Esegue il test terminologico anche senza la knowledge copiata; il backup è ripristinato in `finally`. Non tocca la knowledge di sorgente. Output e exit code sono salvati in `verification-r7/test-results.csv` e nei log dello stesso sottoalbero. Esito diverso da zero o controllo non eseguito impediscono una conclusione positiva.
++
++Verifiche rapide riproducibili:
++
++```powershell
++dotnet run --project .\tests\ProcessLens.TerminologyTests\ProcessLens.TerminologyTests.csproj -c Release
++dotnet run --project .\tests\ProcessLens.BehaviorTests\ProcessLens.BehaviorTests.csproj -c Release
++dotnet run --project .\tests\ProcessLens.MemoryTests\ProcessLens.MemoryTests.csproj -c Release
++dotnet run --project .\tests\ProcessLens.ServiceTests\ProcessLens.ServiceTests.csproj -c Release
++```
++
++Controllare `$LASTEXITCODE` dopo ciascun comando. Il verificatore lo registra automaticamente; un messaggio stampato dal test non sostituisce l’exit code.
++
++## Pubblicazione e avvio per controllo manuale
++
++Solo dopo la suite positiva, usare il flusso esistente:
++
++```powershell
++.\build-dashboard.ps1
++.\AVVIA-TUTTO.cmd
++```
++
++`build-dashboard.ps1` pubblica i binari senza installare servizi o attivare gli avvisi. Il launcher può chiedere l’attivazione facoltativa degli avvisi: per questa revisione premere Invio alla richiesta `ATTIVA`. Non invocare installer/upgrade Guardian, `PROFILA`, `-RunCapture` o operazioni di terminazione. Il programma può richiedere UAC secondo il manifest esistente. Non interpretare la mera creazione del processo come prova della finestra o dei dati.
++
++## Matrice manuale da compilare
++
++| Scenario | Dati / comportamento da verificare | Esito iniziale |
++|---|---|---|
++| DPI 100%, 125%, 150%; 1180×800 e minimo 950×680 DIP | Niente sovrapposizioni; nomi lunghi, badge, testo della terna memoria, menu e guida leggibili; scroll e tastiera utilizzabili. A 150% il minimo può eccedere lo schermo: registrare area utile e limite. | NON ESEGUITO |
++| Python/Conda: script, `-m`, `-c`, multiprocessing | Padre proposto senza attribuire l’avvio a Conda; script/modulo dal testo, nessun codice inline o credenziale in sintesi. | NON ESEGUITO |
++| Node, .NET/MSBuild/Roslyn, Java, PowerShell | Parametri riconosciuti, esecuzione interna e richiedente non inventati; XML/API/contratti invariati. | NON ESEGUITO |
++| Chromium/Electron: renderer, GPU, utility Node/network | Parametri come fonte; GPU non significa utilizzo GPU misurato; servizio interno distinto da SCM. | NON ESEGUITO |
++| TCP LISTEN, ESTABLISHED, UDP, solo socket di famiglia | Conteggi distinti; nessuna prova di byte, richieste, delega o reachability; LISTEN non sparisce se la famiglia ha rete. | NON ESEGUITO |
++| Processo protetto o lettura negata/parziale | N/D per contatori disponibili; zero socket non garantisce assenza; limiti consultabili. Documentare eventuali default non distinguibili. | NON ESEGUITO |
++| Memoria: PWS, WS totale, commit; tre campioni con picco intermedio | MiB e nome contatore esatti; no somme doppie; saldo diverso da stabilità; limite runtime esplicito. | NON ESEGUITO |
++| CPU primo campione, media breve, bassa/alta | N/D senza campioni; finestra fino a 30 s; CPU non misura progresso e non esclude blocchi. | NON ESEGUITO |
++| Servizio automatico/manuale/arrestato e host condiviso | Configurazione distinta da causa; capacità di arresto su conferma descritta correttamente. Aprire e annullare dialogo, senza arrestare. | NON ESEGUITO |
++| Query progresso/ETA e testo-obiettivo | Fonte del valore esplicita; niente confidenza statistica o certezza del lavoro corrente. | NON ESEGUITO |
++| Guardian e agente già presenti | Consultazione soltanto; schema/log/codici/policy conservati; nessun riavvio o installazione per il controllo. | NON ESEGUITO |
++
++Conservare screenshot solo dell’applicazione e dati sintetici, senza percorsi/credenziali personali. Inserire esiti, timestamp, versione Windows/.NET e dimensioni reali in `verification-r7/`. Nessuna promozione automatica alla fine della procedura.
++
++## Integrità
++
++`SHA256SUMS_R7.txt` copre tutti i file dello ZIP eccetto il manifest stesso. I manifesti precedenti sono documentazione storica della base; non vanno usati per verificare R7.
++
++```powershell
++$bad = @()
++Get-Content .\SHA256SUMS_R7.txt | ForEach-Object {
++    if ($_ -match '^([0-9a-f]{64})  (.+)$') {
++        $expected = $Matches[1]; $file = $Matches[2]
++        if (-not (Test-Path -LiteralPath $file) -or (Get-FileHash -Algorithm SHA256 -LiteralPath $file).Hash.ToLowerInvariant() -ne $expected) { $bad += $file }
++    }
++}
++if ($bad.Count) { throw ('Hash non validi: ' + ($bad -join ', ')) }
++```
++
++Il diff `audit/R7/R6_to_R7.patch` usa percorsi `a/` e `b/`; se si preferisce applicarlo alla R6 invece dell’estrazione completa, usare una copia pulita R6 e `git apply --check` prima di `git apply`. La candidata completa è la consegna principale.
+--- a/VERSION.txt
++++ b/VERSION.txt
+@@ -1 +1 @@
+-0.19.16 R6 Candidate - Terminology Review & Evidence Boundaries
++0.19.16 R7 Candidate - Contextual Terminology Review; Windows validation pending
+--- a/diagnose-dotnet-hosts.ps1
++++ b/diagnose-dotnet-hosts.ps1
+@@ -13,6 +13,6 @@
+ 
+ Write-Host ''
+ Write-Host 'Nota:' -ForegroundColor Cyan
+-Write-Host '- ProcessLens v0.3 deve apparire come ProcessLens.exe.'
++Write-Host '- La GUI ProcessLens deve apparire come ProcessLens.exe.'
+ Write-Host '- VBCSCompiler/MSBuild sono build server .NET, non finestre ProcessLens.'
+ Write-Host '- Per chiudere i build server dopo una compilazione: dotnet build-server shutdown'
+--- a/src/ProcessLens.App/MainWindow.xaml
++++ b/src/ProcessLens.App/MainWindow.xaml
+@@ -21,6 +21,7 @@
+         </Style>
+ 
+         <Style x:Key="SectionLabel" TargetType="TextBlock">
++            <Setter Property="TextWrapping" Value="Wrap"/>
+             <Setter Property="FontSize" Value="11"/>
+             <Setter Property="FontWeight" Value="SemiBold"/>
+             <Setter Property="Foreground" Value="#6B7280"/>
+@@ -172,7 +173,7 @@
+                              Background="Transparent"
+                              FontSize="14"
+                              VerticalContentAlignment="Center"
+-                             ToolTip="Cerca per nome, PID, attivita, progetto o processo padre"
++                             ToolTip="Cerca per nome, PID, tipo suggerito, progetto o padre"
+                              TextChanged="SearchBox_TextChanged"/>
+                 </Grid>
+             </Border>
+@@ -447,7 +448,7 @@
+                             <StackPanel>
+                                 <TextBlock Text="PROCESSO PADRE E AVVIO" Style="{StaticResource SectionLabel}"/>
+                                 <TextBlock x:Name="DetailOriginSummaryText" Text="Seleziona un processo." FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"/>
+-                                <TextBlock Text="AZIONE IDENTIFICABILE DAI DATI" Foreground="#667085" FontSize="11" Margin="0,10,0,3"/>
++                                <TextBlock Text="COMANDO RICONOSCIUTO E LIMITI" Foreground="#667085" FontSize="11" Margin="0,10,0,3"/>
+                                 <TextBlock x:Name="DetailOriginOperationText" TextWrapping="Wrap" FontSize="13"/>
+                                 <Expander Header="Mostra la catena di avvio" Margin="0,9,0,0">
+                                     <TextBlock x:Name="DetailOriginChainText" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Margin="0,7,0,4"/>
+@@ -522,7 +523,7 @@
+                                                       Click="QuickQuestionMenuItem_Click"/>
+                                             <Separator/>
+                                             <MenuItem Header="ORIGINE E SICUREZZA" IsEnabled="False" FontWeight="SemiBold"/>
+-                                            <MenuItem Header="Chi ha avviato il processo?" Tag="Chi lo ha avviato? Da dove è partito?"
++                                            <MenuItem Header="Processo padre e origine" Tag="Chi lo ha avviato? Da dove è partito?"
+                                                       Click="QuickQuestionMenuItem_Click"/>
+                                             <MenuItem Header="Posso chiuderlo?" Tag="Posso chiuderlo?"
+                                                       Click="QuickQuestionMenuItem_Click"/>
+@@ -684,23 +685,23 @@
+                                         <ColumnDefinition Width="*"/>
+                                     </Grid.ColumnDefinitions>
+                                     <StackPanel Grid.Column="0" Margin="0,0,7,0">
+-                                        <TextBlock Text="RAM PRIVATA RESIDENTE" FontSize="10" Foreground="#667085" TextWrapping="Wrap"/>
++                                        <TextBlock Text="RAM PRIVATA RESIDENTE" FontSize="10" Foreground="#667085" TextWrapping="Wrap" MinHeight="40"/>
+                                         <TextBlock x:Name="DetailPrivateWorkingSetText" FontSize="15" FontWeight="SemiBold" Text="N/D"/>
+                                     </StackPanel>
+                                     <StackPanel Grid.Column="1" Margin="0,0,7,0">
+-                                        <TextBlock Text="RAM RESIDENTE TOTALE" FontSize="10" Foreground="#667085" TextWrapping="Wrap"/>
++                                        <TextBlock Text="RAM RESIDENTE TOTALE" FontSize="10" Foreground="#667085" TextWrapping="Wrap" MinHeight="40"/>
+                                         <TextBlock x:Name="DetailWorkingSetText" FontSize="15" FontWeight="SemiBold" Text="N/D"/>
+                                     </StackPanel>
+                                     <StackPanel Grid.Column="2">
+-                                        <TextBlock Text="MEMORIA PRIVATA IMPEGNATA" FontSize="10" Foreground="#667085" TextWrapping="Wrap"/>
++                                        <TextBlock Text="MEMORIA PRIVATA IMPEGNATA" FontSize="10" Foreground="#667085" TextWrapping="Wrap" MinHeight="40"/>
+                                         <TextBlock x:Name="DetailPrivateCommitText" FontSize="15" FontWeight="SemiBold" Text="N/D"/>
+                                     </StackPanel>
+                                 </Grid>
+                                 <TextBlock x:Name="DetailMemoryExplanationText" FontSize="11" Foreground="#667085" TextWrapping="Wrap"/>
+                                 <TextBlock x:Name="DetailMemoryTrendText" FontSize="11" Foreground="#235E93" TextWrapping="Wrap" Margin="0,7,0,0"/>
+-                                <TextBlock Text="Il commit privato non coincide necessariamente con la RAM usata. Per confrontare due programmi, seleziona esattamente lo stesso PID e una metrica equivalente." FontSize="11" Foreground="#667085" TextWrapping="Wrap" Margin="0,6,0,0"/>
++                                <TextBlock Text="Il commit privato non coincide necessariamente con la RAM usata. Per confrontare ProcessLens con un altro monitor, seleziona la stessa istanza del PID, lo stesso contatore e un intervallo comparabile." FontSize="11" Foreground="#667085" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                 <Expander x:Name="DetailMemoryGuideExpander"
+-                                          Header="Che cosa significa RAM privata? · Spiegazione dettagliata"
++                                          Header="Che cosa significa RAM privata?"
+                                           IsExpanded="False" Margin="0,12,0,0"
+                                           ToolTip="Apri una guida alle tre misure di memoria del PID selezionato.">
+                                     <Border Padding="10" Background="White" BorderBrush="#D9E2ED"
+@@ -738,7 +739,7 @@
+ 
+                         <Border Style="{StaticResource DetailCard}" Background="#F0F7FF" BorderBrush="#C8DDF4">
+                             <StackPanel>
+-                                <TextBlock Text="ANALISI CPU · ULTIMI 30 SECONDI" Style="{StaticResource SectionLabel}"/>
++                                <TextBlock Text="ANALISI CPU · FINO A 30 SECONDI" Style="{StaticResource SectionLabel}"/>
+                                 <Grid Margin="0,8,0,8">
+                                     <Grid.ColumnDefinitions>
+                                         <ColumnDefinition Width="*"/>
+@@ -762,7 +763,7 @@
+ 
+                         <Border Style="{StaticResource DetailCard}">
+                             <StackPanel>
+-                                <TextBlock Text="ATTIVITÀ OSSERVATA ADESSO" Style="{StaticResource SectionLabel}"/>
++                                <TextBlock Text="DATI NELLE LETTURE DISPONIBILI" Style="{StaticResource SectionLabel}"/>
+                                 <TextBlock x:Name="DetailRuntimeStateText" Text="-" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                 <TextBlock x:Name="DetailNetworkStateText" Text="-" FontSize="13" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                                 <TextBlock x:Name="DetailWindowStateText" Text="-" FontSize="13" Margin="0,4,0,0" TextWrapping="Wrap"/>
+--- a/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -598,7 +598,7 @@
+         DetailStartTimeText.Text = ProcessStartFormatter.FormatStart(p.StartTime);
+         DetailUptimeText.Text = ProcessStartFormatter.FormatElapsed(p.StartTime);
+         DeepInspectionStatusText.Text = p.IsDeepInspected
+-            ? "Analisi approfondita Windows completata"
++            ? "Letture Windows terminate; verificare i limiti nei dettagli"
+             : (_deepInspectionInProgress.Contains(p.Pid) ? "Analisi approfondita in corso…" : "Analisi rapida; selezione = analisi approfondita");
+ 
+         DetailOwnerText.Text = i.OwnerApp;
+@@ -660,13 +660,13 @@
+         DetailMemoryTrendText.Text = memoryTrend?.HasTrend == true
+             ? $"Ultimi {memoryTrend.Seconds / 60:F1} min · {memoryTrend.Metric}: " +
+               $"Δ {memoryTrend.DeltaMb:+0.0;-0.0;0.0} MiB · min {memoryTrend.MinimumMb:F1} · picco {memoryTrend.PeakMb:F1} MiB ({memoryTrend.Samples} campioni)"
+-            : "Andamento RAM: raccolta campioni in corso (almeno 20 s).";
++            : "Andamento memoria non disponibile: servono almeno tre campioni confrontabili in almeno 20 s.";
+         DetailProjectShortText.Text = i.ProjectRoot is null ? "Non identificato" : ShortenPath(i.ProjectRoot, 34);
+         DetailRuntimeStateText.Text = !p.CpuSampleAvailable ? "CPU: dato non disponibile in questo intervallo." : p.CpuPercent switch
+         {
+-            >= 10 => $"CPU molto attiva: {p.CpuPercent:F1}% in questo intervallo.",
+-            >= 2 => $"CPU attiva: {p.CpuPercent:F1}% in questo intervallo.",
+-            >= 0.2 => $"Attività CPU leggera: {p.CpuPercent:F1}% in questo intervallo.",
++            >= 10 => $"CPU misurata ≥10%: {p.CpuPercent:F1}% in questo intervallo.",
++            >= 2 => $"CPU misurata ≥2%: {p.CpuPercent:F1}% in questo intervallo.",
++            >= 0.2 => $"CPU misurata ≥0,2%: {p.CpuPercent:F1}% in questo intervallo.",
+             _ => $"CPU misurata molto bassa: {p.CpuPercent:F1}% in questo intervallo; non indica inattività complessiva."
+         };
+ 
+@@ -677,10 +677,10 @@
+         DetailWindowStateText.Text = p.IsDeepInspected
+             ? (p.HasVisibleWindow
+                 ? $"Interfaccia: possiede almeno una finestra visibile{(p.WindowTitles.Count > 0 ? $" — {p.WindowTitles[0]}" : string.Empty)}"
+-                : "Interfaccia: nessuna finestra top-level visibile associata al PID.")
++                : "Interfaccia: nessuna finestra top-level visibile rilevata nelle letture disponibili.")
+             : "Interfaccia: verrà controllata nell'analisi approfondita.";
+ 
+-        string critical = p.IsCritical ? "SÌ - processo critico" : "No";
++        string critical = p.IsCritical ? "SÌ - flag critico rilevato" : "Flag non rilevato; stato negativo non verificato";
+         string started = ProcessStartFormatter.FormatStart(p.StartTime);
+ 
+         DetailTechnicalContextText.Text =
+@@ -689,9 +689,9 @@
+             $"Parent: {p.ParentName ?? "N/D"} (PID {p.ParentPid})\n" +
+             $"Thread: {p.ThreadCount}\n" +
+             $"CPU campione valido: {(p.CpuSampleAvailable ? "Sì" : "No")}\n" +
+-            $"CPU media/picco 30s: {p.CpuAverage30Seconds:F2}% / {p.CpuPeak30Seconds:F2}%\n" +
+-            $"Tempo CPU accumulato: {p.CpuCumulativeSeconds:F1}s\n" +
+-            $"Handle: {p.HandleCount}\n" +
++            $"CPU media/picco fino a 30s: {(p.CpuSampleAvailable ? $"{p.CpuAverage30Seconds:F2}% / {p.CpuPeak30Seconds:F2}%" : "N/D")}\n" +
++            $"Tempo CPU accumulato: {(p.CpuCumulativeAvailable ? $"{p.CpuCumulativeSeconds:F1}s" : "N/D")}\n" +
++            $"Handle: {p.HandleCount} (zero può indicare lettura non accessibile)\n" +
+             $"RAM privata residente: {(p.PrivateWorkingSetAvailable ? $"{p.PrivateWorkingSetMb:F1} MiB" : "N/D")}\n" +
+             $"RAM residente totale: {(p.WorkingSetAvailable ? $"{p.WorkingSetMb:F1} MiB" : "N/D")}\n" +
+             $"Memoria privata impegnata / commit: {(p.PrivateCommitAvailable ? $"{p.PrivateMb:F1} MiB" : "N/D")}\n" +
+@@ -700,19 +700,20 @@
+             $"In esecuzione da: {ProcessStartFormatter.FormatElapsed(p.StartTime)}\n" +
+             $"Identificazione funzione: {i.DetectionLabel}\n" +
+             $"Punteggi regole (non probabilità): identità {i.IdentityConfidencePercent}/100, app associata {i.OwnershipConfidencePercent}/100, funzione {i.RoleConfidencePercent}/100, aggregato {i.ConfidencePercent}/100\n" +
+-            $"Prodotto: {p.ProductName ?? "N/D"}\n" +
++            $"Prodotto dichiarato nei metadati: {p.ProductName ?? "N/D"}\n" +
+             $"Descrizione file: {p.FileDescription ?? "N/D"}\n" +
+-            $"Azienda: {p.CompanyName ?? "N/D"}\n" +
++            $"Azienda dichiarata nei metadati: {p.CompanyName ?? "N/D"}\n" +
+             $"Package: {p.PackageFullName ?? "N/D"}\n" +
+             $"AUMID: {p.ApplicationUserModelId ?? "N/D"}\n" +
+-            $"Analisi approfondita: {(p.IsDeepInspected ? "Sì" : "No")}\n" +
+-            $"Finestra visibile: {(p.HasVisibleWindow ? "Sì" : "No")}\n" +
+-            $"PID - TCP listen/established: {p.TcpListeningCount}/{p.TcpEstablishedCount}\n" +
+-            $"PID - UDP endpoint: {p.UdpEndpointCount}\n" +
+-            $"Famiglia stesso eseguibile: {p.NetworkFamilyProcessCount} processi (root PID {p.NetworkFamilyRootPid})\n" +
+-            $"Famiglia - processi con socket: {p.NetworkFamilyProcessesWithSockets}\n" +
+-            $"Famiglia - TCP listen/established: {p.NetworkFamilyTcpListeningCount}/{p.NetworkFamilyTcpEstablishedCount}\n" +
+-            $"Famiglia - UDP endpoint: {p.NetworkFamilyUdpEndpointCount}\n" +
++            $"Analisi approfondita: {(p.IsDeepInspected ? "Letture terminate" : "Non eseguita")}\n" +
++            $"Esito/limiti letture: {p.DeepInspectionNote ?? "N/D"}\n" +
++            $"Finestra visibile: {(!p.IsDeepInspected ? "N/D" : p.HasVisibleWindow ? "Rilevata" : "Non rilevata")}\n" +
++            $"PID - TCP listen/established: {(p.IsDeepInspected ? $"{p.TcpListeningCount}/{p.TcpEstablishedCount}" : "N/D")}\n" +
++            $"PID - UDP endpoint: {(p.IsDeepInspected ? p.UdpEndpointCount.ToString() : "N/D")}\n" +
++            $"Famiglia per nome/albero: {(p.IsDeepInspected ? $"{p.NetworkFamilyProcessCount} processi (root PID {p.NetworkFamilyRootPid})" : "N/D")}\n" +
++            $"Famiglia - processi con socket: {(p.IsDeepInspected ? p.NetworkFamilyProcessesWithSockets.ToString() : "N/D")}\n" +
++            $"Famiglia - TCP listen/established: {(p.IsDeepInspected ? $"{p.NetworkFamilyTcpListeningCount}/{p.NetworkFamilyTcpEstablishedCount}" : "N/D")}\n" +
++            $"Famiglia - UDP endpoint: {(p.IsDeepInspected ? p.NetworkFamilyUdpEndpointCount.ToString() : "N/D")}\n" +
+             $"Figli: {p.ChildCount} (omonimi: {p.SameNameChildCount})\n" +
+             $"Framework: {i.Framework}\n" +
+             $"Servizi: {(p.ServiceDisplayNames.Count == 0 ? "Nessuno associato" : string.Join(", ", p.ServiceDisplayNames))}\n" +
+@@ -1243,7 +1244,7 @@
+                 if (row.Process.PrivateWorkingSetAvailable)
+                     AuditStep("PSAPI", $"RAM privata residente {row.Process.PrivateWorkingSetMb:F1} MiB (misura Windows).");
+                 if (row.Process.WorkingSetAvailable)
+-                    AuditStep("PSAPI", $"Working Set totale {row.Process.WorkingSetMb:F1} MiB (incluse pagine condivise).");
++                    AuditStep("PSAPI", $"Working Set totale {row.Process.WorkingSetMb:F1} MiB (incluse pagine condivisibili).");
+                 if (row.Process.PrivateCommitAvailable)
+                     AuditStep("PSAPI", $"Commit privato {row.Process.PrivateMb:F1} MiB (NON RAM fisica).");
+                 var elapsed = System.Diagnostics.Stopwatch.StartNew();
+@@ -1365,7 +1366,7 @@
+         RenderQueryAnswer(result);
+         ProcessQueryConfidenceText.Text = string.IsNullOrWhiteSpace(result.Confidence)
+             ? string.Empty
+-            : $"Esito della valutazione: {result.Confidence}";
++            : $"Base e limiti della risposta: {result.Confidence}";
+         ProcessQueryEvidenceText.Text = result.Evidence.Count == 0
+             ? string.Empty
+             : "Evidenze: " + string.Join(" · ", result.Evidence.Take(5));
+@@ -1521,7 +1522,7 @@
+                 .FirstOrDefault(x => x.RoleHint.Contains("Servizio di rete", StringComparison.OrdinalIgnoreCase));
+             if (networkOwner is not null)
+             {
+-                result += $" Rete delegata rilevata: PID {networkOwner.Pid} ({networkOwner.RoleHint}) " +
++                result += $" Ruolo di rete suggerito dai parametri: PID {networkOwner.Pid} ({networkOwner.RoleHint}) " +
+                           $"ha {networkOwner.TcpEstablishedCount} TCP stabilite e {networkOwner.UdpEndpointCount} UDP.";
+             }
+             else
+@@ -1532,11 +1533,11 @@
+                     .ThenByDescending(x => x.TcpEstablishedCount)
+                     .FirstOrDefault();
+                 if (busiest is not null)
+-                    result += $" Processo correlato più attivo in rete: PID {busiest.Pid} ({busiest.RoleHint}).";
++                    result += $" Processo correlato con più connessioni TCP pubbliche/stabilite rilevate: PID {busiest.Pid} ({busiest.RoleHint}).";
+             }
+         }
+ 
+-        return result;
++        return result + " Conteggi nelle letture disponibili, non byte trasferiti; consultare i limiti di acquisizione.";
+     }
+ 
+     private static string ShortenPath(string path, int maxLength)
+@@ -1695,7 +1696,7 @@
+         if (guardian || memory) SearchBox.Clear();
+         SearchBox.IsEnabled = !(guardian || memory);
+         SearchBox.ToolTip = services ? "Cerca servizi per nome, descrizione, stato, tipo di avvio o PID" :
+-            "Cerca processi per nome, PID, attività o processo padre";
++            "Cerca processi per nome, PID, tipo suggerito o processo padre";
+         NavServicesButton.Background = services ? new SolidColorBrush(Color.FromRgb(225,236,252)) : Brushes.White;
+         NavProcessesButton.Background = (!services && !guardian && !memory) ? new SolidColorBrush(Color.FromRgb(225,236,252)) : Brushes.White;
+         NavGuardianButton.Background = guardian ? new SolidColorBrush(Color.FromRgb(225,236,252)) : Brushes.White;
+@@ -1935,7 +1936,7 @@
+             $"Service type: 0x{service.ServiceType:X}",
+             $"Account: {service.AccountName ?? "N/D"}",
+             $"ImagePath: {service.BinaryPath ?? "N/D"}",
+-            $"Avvio (registro): {service.StartupLabel}"
++            $"Avvio configurato (SCM): {service.StartupLabel}"
+         });
+     }
+ 
+--- a/src/ProcessLens.App/MemoryDashboardView.xaml
++++ b/src/ProcessLens.App/MemoryDashboardView.xaml
+@@ -117,7 +117,7 @@
+             </Grid>
+         </Border>
+ 
+-        <!-- 3. Classifica: la RAM residente include pagine condivise. -->
++        <!-- 3. Classifica: la RAM residente include pagine condivisibili. -->
+         <Border Grid.Row="2" Background="White" BorderBrush="#E2E5E9"
+                 BorderThickness="1" CornerRadius="12" Padding="14" MinHeight="0">
+             <Grid>
+@@ -149,7 +149,7 @@
+                                             ElementStyle="{StaticResource MemoryNumericCell}"/>
+                     </DataGrid.Columns>
+                 </DataGrid>
+-                <TextBlock Grid.Row="2" Text="RAM residente: include pagine condivise; non sommare le righe. Commit privato: memoria impegnata, non RAM fisica. Nessun processo viene modificato."
++                <TextBlock Grid.Row="2" Text="RAM residente: include pagine condivisibili; non sommare le righe. Commit privato: memoria impegnata, non RAM fisica. Nessun processo viene modificato."
+                            Foreground="#64748B" FontSize="11" TextWrapping="Wrap" Margin="0,9,0,0"/>
+             </Grid>
+         </Border>
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -7,7 +7,8 @@
+     <ImplicitUsings>enable</ImplicitUsings>
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+-    <Version>0.19.14</Version>
++    <Version>0.19.16</Version>
++    <InformationalVersion>0.19.16-R7-candidate</InformationalVersion>
+     <Product>ProcessLens</Product>
+     <Description>Windows process intelligence and Task Manager alternative</Description>
+     <Company>ProcessLens</Company>
+--- a/src/ProcessLens.App/ProcessRow.cs
++++ b/src/ProcessLens.App/ProcessRow.cs
+@@ -32,18 +32,18 @@
+         ? $"Avvio: {ProcessStartFormatter.FormatStart(Process.StartTime)}"
+         : "Avvio: non disponibile";
+     public string UptimeLabel => Process.StartTime.HasValue
+-        ? $"Attivo da {ProcessStartFormatter.FormatElapsed(Process.StartTime)}"
++        ? $"In esecuzione da {ProcessStartFormatter.FormatElapsed(Process.StartTime)}"
+         : "Durata non disponibile";
+     public string DetectionLabel => Insight.DetectionLabel;
+     public int Confidence => Insight.ConfidencePercent;
+     public string CloseRisk => Insight.CloseRisk;
+     public string Framework => Insight.Framework;
+     public string RoleConfidenceLabel => Insight.RoleConfidenceLabel;
+-    public string RuntimeCpuState => CpuPercent switch
++    public string RuntimeCpuState => !Process.CpuSampleAvailable ? "CPU N/D" : CpuPercent switch
+     {
+-        >= 10 => "CPU molto attiva",
+-        >= 2 => "CPU attiva",
+-        >= 0.2 => "CPU con attività leggera",
++        >= 10 => "CPU misurata ≥10%",
++        >= 2 => "CPU misurata ≥2%",
++        >= 0.2 => "CPU misurata ≥0,2%",
+         _ => "CPU misurata molto bassa"
+     };
+ }
+--- a/src/ProcessLens.Core/MemoryDashboardPresentation.cs
++++ b/src/ProcessLens.Core/MemoryDashboardPresentation.cs
+@@ -15,11 +15,11 @@
+         if (double.IsNaN(percent) || double.IsInfinity(percent) || percent < 0 || percent > 100)
+             return new("Stato RAM non disponibile", "La percentuale ricevuta non è valida.", "#475569", "#E2E8F0");
+         if (percent >= 90)
+-            return new("RAM quasi satura", "Oltre il 90% della memoria fisica è in uso. Potrebbero verificarsi rallentamenti; questo dato da solo non dimostra attività di paging.", "#B91C1C", "#FEE2E2");
++            return new("RAM quasi satura", "Almeno il 90% della memoria fisica è in uso. Potrebbero verificarsi rallentamenti; questo dato da solo non dimostra attività di paging.", "#B91C1C", "#FEE2E2");
+         if (percent >= 85)
+             return new("Utilizzo RAM elevato", "L'uso della memoria fisica ha raggiunto la soglia degli avvisi (85%). Non è una diagnosi della causa.", "#B45309", "#FEF3C7");
+         if (percent >= 75)
+-            return new("Utilizzo RAM da osservare", "Oltre il 75% della memoria fisica è utilizzato. Controlla l'andamento se il sistema rallenta.", "#A16207", "#FEF9C3");
+-        return new("Utilizzo RAM nella fascia ordinaria", "Il livello di utilizzo non supera la soglia visiva di attenzione (75%).", "#047857", "#D1FAE5");
++            return new("Utilizzo RAM da osservare", "Almeno il 75% della memoria fisica è utilizzato. Controlla l'andamento se il sistema rallenta.", "#A16207", "#FEF9C3");
++        return new("Utilizzo RAM sotto soglia di attenzione", "Il livello di utilizzo è inferiore alla soglia visiva di attenzione (75%); non è una baseline del sistema.", "#047857", "#D1FAE5");
+     }
+ }
+--- a/src/ProcessLens.Core/ProcessDetailPresentation.cs
++++ b/src/ProcessLens.Core/ProcessDetailPresentation.cs
+@@ -63,8 +63,8 @@
+         if (insight.RoleConfidencePercent < 60)
+             role = "La funzione specifica non è determinabile con i dati disponibili.";
+         else if (insight.Role.Equals("Script Python", StringComparison.OrdinalIgnoreCase)
+-                 && insight.Summary.StartsWith("Esegue ", StringComparison.OrdinalIgnoreCase))
+-            role = $"All'avvio è stato individuato lo script {insight.Summary[7..]}. " +
++                 && insight.Summary.StartsWith("Script indicato: ", StringComparison.OrdinalIgnoreCase))
++            role = $"Nei parametri è stato individuato lo script {insight.Summary[17..]}. " +
+                    "Il nome dello script non indica quale istruzione stia eseguendo ora.";
+         else
+             role = $"Le informazioni disponibili sono compatibili con «{insight.Role}». " +
+@@ -105,12 +105,12 @@
+         var facts = new List<Fact>
+         {
+             new("Identificazione", "File eseguibile", process.Name),
+-            new("Identificazione", "Programma riconosciuto", insight.FriendlyName),
+-            new("Identificazione", "Applicazione associata", insight.OwnerApp),
+-            new("Identificazione", "Funzione", insight.RoleConfidencePercent >= 60
++            new("Identificazione", "Nome proposto", insight.FriendlyName),
++            new("Identificazione", "Associazione proposta", insight.OwnerApp),
++            new("Identificazione", "Tipo suggerito", insight.RoleConfidencePercent >= 60
+                 ? insight.Role
+                 : "Non determinata con i dati disponibili"),
+-            new("Identificazione", "Valutazione del classificatore",
++            new("Identificazione", "Corrispondenza alle regole",
+                 ProcessTerminology.EvidenceLevel(insight.RoleConfidencePercent) + " (regole interne)")
+         };
+         string source = "Elementi registrati nel rapporto tecnico";
+--- a/src/ProcessLens.Core/ProcessSnapshot.cs
++++ b/src/ProcessLens.Core/ProcessSnapshot.cs
+@@ -116,7 +116,7 @@
+     public string MemoryDisplayText => PrivateWorkingSetAvailable || WorkingSetAvailable
+         ? $"{MemoryDisplayMb:F1} MiB" : "N/D";
+     public string MemoryDescription => PrivateWorkingSetAvailable
+-        ? "Memoria fisica privata residente (Private Working Set), metrica confrontabile per lo stesso PID con Gestione attività / Processi."
++        ? "Memoria fisica privata residente (Private Working Set). Confrontare la stessa istanza del PID e lo stesso contatore nello stesso intervallo; le colonne di Gestione attività possono usare metriche o aggregazioni diverse."
+         : WorkingSetAvailable
+             ? "Private Working Set non disponibile: viene mostrata la memoria residente TOTALE, inclusa quella condivisa; NON confrontare direttamente con Gestione attività / Processi."
+             : "Contatori di memoria non accessibili per questo PID.";
+--- a/src/ProcessLens.Core/ProcessTerminology.cs
++++ b/src/ProcessLens.Core/ProcessTerminology.cs
+@@ -9,11 +9,11 @@
+ {
+     public static string EvidenceStrength(int ruleScore) => ruleScore switch
+     {
+-        >= 95 => "molto forti",
+-        >= 80 => "forti",
+-        >= 60 => "moderati",
+-        >= 40 => "deboli",
+-        _ => "insufficienti"
++        >= 95 => "corrispondenza alle regole molto alta",
++        >= 80 => "corrispondenza alle regole alta",
++        >= 60 => "corrispondenza alle regole intermedia",
++        >= 40 => "corrispondenza alle regole limitata",
++        _ => "corrispondenza alle regole insufficiente"
+     };
+ 
+     public static string FunctionLabel(int ruleScore) => ruleScore switch
+@@ -39,5 +39,5 @@
+             : category;
+ 
+     public const string ScoreExplanation =
+-        "La forza degli indizi è calcolata da regole locali; non indica una probabilità statistica e non prova l’attività corrente.";
++        "La corrispondenza ai criteri è valutata da regole locali; non indica una probabilità statistica e non prova l’attività corrente.";
+ }
+--- a/src/ProcessLens.Core/ServiceExplanation.cs
++++ b/src/ProcessLens.Core/ServiceExplanation.cs
+@@ -21,8 +21,8 @@
+ 
+     public static string Impact(ServiceSnapshot service)
+     {
+-        if (service.StateCode == 1) return "Al momento non esegue attività nel processo ospitante: il servizio risulta arrestato.";
+-        return "Potrebbe fornire funzionalità a Windows o ad altre applicazioni. Lo stato del servizio e le dipendenze dichiarate non bastano per stabilire se sia sicuro arrestarlo. ProcessLens non modifica i servizi in questa versione.";
++        if (service.StateCode == 1) return "SCM riporta il servizio arrestato. Questo non descrive l’attività di altri servizi o componenti nel processo ospitante.";
++        return "Potrebbe fornire funzionalità a Windows o ad altre applicazioni. Lo stato del servizio e le dipendenze dichiarate non bastano per stabilire se sia sicuro arrestarlo. L’arresto SCM è disponibile solo su richiesta e conferma; il processo ospitante non viene terminato forzatamente.";
+     }
+ 
+     public static string Association(ServiceSnapshot service, int coHostedServices, string? hostProcessName)
+--- a/src/ProcessLens.Core/ServiceSnapshot.cs
++++ b/src/ProcessLens.Core/ServiceSnapshot.cs
+@@ -31,5 +31,5 @@
+     };
+     public string ProcessIdLabel => ProcessId > 0 ? ProcessId.ToString() : "—";
+     public string HostType => (ServiceType & 0x20) != 0 ? "Processo condiviso" :
+-        (ServiceType & 0x10) != 0 ? "Processo dedicato" : "Altro tipo Win32";
++        (ServiceType & 0x10) != 0 ? "Processo dedicato" : "Driver o altro tipo di servizio";
+ }
+--- a/src/ProcessLens.Semantics/FrameworkDetector.cs
++++ b/src/ProcessLens.Semantics/FrameworkDetector.cs
+@@ -35,13 +35,13 @@
+         if (meta.Contains("Electron", StringComparison.OrdinalIgnoreCase))
+             return new("Electron", 96, "metadati dell'eseguibile indicano Electron");
+         if (n == "dotnet.exe" || meta.Contains(".NET", StringComparison.OrdinalIgnoreCase) || (p.IsDeepInspected && dotnetModules))
+-            return new(".NET", p.IsDeepInspected && dotnetModules ? 99 : 98, p.IsDeepInspected && dotnetModules ? "runtime .NET confermato dai moduli CLR caricati" : "runtime/metadata .NET rilevati");
++            return new(".NET", p.IsDeepInspected && dotnetModules ? 99 : 98, p.IsDeepInspected && dotnetModules ? "moduli CLR compatibili con runtime .NET" : "runtime/metadata .NET rilevati");
+         if (n is "python.exe" or "pythonw.exe" || meta.Contains("Python", StringComparison.OrdinalIgnoreCase) || (p.IsDeepInspected && pythonModules))
+-            return new("Python", p.IsDeepInspected && pythonModules ? 99 : 98, p.IsDeepInspected && pythonModules ? "runtime Python confermato dai moduli caricati" : "interprete Python rilevato");
++            return new("Python", p.IsDeepInspected && pythonModules ? 99 : 98, p.IsDeepInspected && pythonModules ? "nomi di moduli compatibili con runtime Python" : "interprete Python rilevato");
+         if (n == "node.exe" || meta.Contains("Node.js", StringComparison.OrdinalIgnoreCase))
+             return new("Node.js", 98, "runtime Node.js rilevato");
+         if (n is "java.exe" or "javaw.exe" || meta.Contains("Java", StringComparison.OrdinalIgnoreCase) || (p.IsDeepInspected && javaModules))
+-            return new("Java/JVM", p.IsDeepInspected && javaModules ? 99 : 97, p.IsDeepInspected && javaModules ? "JVM confermata da jvm.dll caricato" : "Java Virtual Machine rilevata");
++            return new("Java/JVM", p.IsDeepInspected && javaModules ? 99 : 97, p.IsDeepInspected && javaModules ? "modulo jvm.dll compatibile con JVM" : "Java Virtual Machine rilevata");
+         if (p.IsDeepInspected && qtModules)
+             return new("Qt", 96, "moduli Qt Core caricati nel processo selezionato");
+         if (n is "powershell.exe" or "pwsh.exe")
+@@ -55,7 +55,7 @@
+         if (!string.IsNullOrWhiteSpace(p.PackageFullName) || !string.IsNullOrWhiteSpace(p.ApplicationUserModelId))
+             return new("Windows packaged app", 96, "processo associato a identità applicativa Windows (package/AUMID)");
+ 
+-        return new("Nativo / non determinato", 45, "nessun runtime o framework riconoscibile con le evidenze disponibili");
++        return new("Runtime non determinato", 45, "nessun runtime o framework riconoscibile con le evidenze disponibili");
+     }
+ 
+     private static bool HasAnyModule(ProcessSnapshot p, params string[] names) =>
+--- a/src/ProcessLens.Semantics/KnowledgeSignatureEngine.cs
++++ b/src/ProcessLens.Semantics/KnowledgeSignatureEngine.cs
+@@ -56,8 +56,8 @@
+             AddBoolean(rule.HasVisibleWindow, p.HasVisibleWindow, "finestra top-level visibile", evidence, ref score);
+             AddBoolean(rule.HasTcpListen, p.TcpListeningCount > 0, $"{p.TcpListeningCount} socket TCP LISTEN", evidence, ref score);
+             AddBoolean(rule.HasTcpEstablished, p.TcpEstablishedCount > 0, $"{p.TcpEstablishedCount} connessioni TCP stabilite", evidence, ref score);
+-            AddBoolean(rule.ParentSameExecutable, string.Equals(p.ParentName, p.Name, StringComparison.OrdinalIgnoreCase), "processo padre con lo stesso eseguibile", evidence, ref score);
+-            AddBoolean(rule.HasSameNameChildren, p.SameNameChildCount > 0, $"{p.SameNameChildCount} figli con lo stesso eseguibile", evidence, ref score);
++            AddBoolean(rule.ParentSameExecutable, string.Equals(p.ParentName, p.Name, StringComparison.OrdinalIgnoreCase), "processo padre con lo stesso nome", evidence, ref score);
++            AddBoolean(rule.HasSameNameChildren, p.SameNameChildCount > 0, $"{p.SameNameChildCount} figli con lo stesso nome", evidence, ref score);
+ 
+             score = Math.Clamp(score, 0, 100);
+             if (evidence.Count < rule.MinimumEvidenceCount || score < rule.MinScore)
+--- a/src/ProcessLens.Semantics/OwnershipResolver.cs
++++ b/src/ProcessLens.Semantics/OwnershipResolver.cs
+@@ -13,20 +13,20 @@
+     public static OwnershipAssessment Resolve(ProcessSnapshot p, IdentityAssessment identity, FrameworkAssessment framework)
+     {
+         if (p.IsCritical || IsWindowsPath(p.ExecutablePath))
+-            return new("Windows", 96, "eseguibile di sistema Windows / processo critico");
++            return new("Windows", 96, "percorso nella directory Windows o flag critico; non prova autenticità o produttore");
+ 
+         if (framework.Name == "Microsoft Edge WebView2")
+         {
+             string? host = p.AncestorNames.FirstOrDefault(x => !x.Equals("msedgewebview2.exe", StringComparison.OrdinalIgnoreCase));
+             if (!string.IsNullOrWhiteSpace(host))
+-                return new(PrettyExe(host), 88, $"primo processo antenato esterno a WebView2 = {host}");
++                return new(PrettyExe(host), 88, $"nome del primo antenato esterno a WebView2 = {host}; associazione proposta");
+         }
+ 
+         if (GenericHosts.Contains(p.Name) && !string.IsNullOrWhiteSpace(p.ParentName) && !GenericHosts.Contains(p.ParentName))
+-            return new(PrettyExe(p.ParentName), 82, $"runtime generico avviato da {p.ParentName}");
++            return new(PrettyExe(p.ParentName), 82, $"runtime generico; nome del padre riportato = {p.ParentName}; relazione temporale non verificata qui");
+ 
+         if (string.Equals(p.ParentName, p.Name, StringComparison.OrdinalIgnoreCase))
+-            return new(identity.FriendlyName, Math.Max(80, identity.Confidence - 5), "processo figlio omonimo dell'applicazione");
++            return new(identity.FriendlyName, Math.Max(80, identity.Confidence - 5), "nome del padre omonimo; associazione proposta, istanza da verificare");
+ 
+         if (!string.IsNullOrWhiteSpace(p.ProductName) && !p.ProductName.Contains("Operating System", StringComparison.OrdinalIgnoreCase))
+             return new(p.ProductName.Trim(), 94, "ProductName dell'eseguibile");
+@@ -34,7 +34,7 @@
+         if (!string.IsNullOrWhiteSpace(p.PackageFullName) || !string.IsNullOrWhiteSpace(p.ApplicationUserModelId))
+             return new(identity.FriendlyName, 94, "identità applicativa Windows (package/AUMID)");
+ 
+-        return new(identity.FriendlyName, Math.Min(identity.Confidence, 75), "identità dell'eseguibile; applicazione proprietaria non separabile con certezza");
++        return new(identity.FriendlyName, Math.Min(identity.Confidence, 75), "identità dell'eseguibile; applicazione associata non distinguibile con i dati disponibili");
+     }
+ 
+     private static bool IsWindowsPath(string? path) =>
+--- a/src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs
++++ b/src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs
+@@ -40,7 +40,7 @@
+         string role = hasRoleEvidence
+             ? $"Funzione attribuita dal classificatore: {Clean(i.Role)}. {Clean(i.WhatIsIt)}"
+             : $"Funzione non verificata in dettaglio: {Clean(i.Role)}. {Clean(i.WhatIsIt)}";
+-        evidence.Add($"Classificatore locale: punteggio regole {i.RoleConfidencePercent}/100 sulla funzione. Non è una probabilità statistica calibrata.");
++        evidence.Add($"Tipo suggerito dal classificatore locale; criteri e punteggio disponibili nei dettagli tecnici.");
+ 
+         string? operation = IdentifyOperation(p, evidence);
+         string operationText = operation is null
+@@ -51,14 +51,14 @@
+         if (p.CpuSampleAvailable)
+         {
+             string load = p.CpuPercent switch { >= 10 => "elevata", >= 2 => "misurabile", >= 0.2 => "leggera", _ => "molto bassa" };
+-            activity.Add($"CPU recente: {p.CpuPercent:F1}% della capacità totale del PC ({load}).");
++            activity.Add($"CPU nell’intervallo campionato: {p.CpuPercent:F1}% della capacità totale del PC ({load}).");
+             evidence.Add("Contatore CPU del PID campionato da Windows; non identifica le funzioni eseguite.");
+         }
+-        else activity.Add("CPU recente: campione non disponibile.");
++        else activity.Add("CPU nell’intervallo campionato: campione non disponibile.");
+         if (p.PrivateWorkingSetAvailable)
+             activity.Add($"RAM privata residente: {p.PrivateWorkingSetMb:F1} MiB.");
+         else if (p.WorkingSetAvailable)
+-            activity.Add($"RAM residente complessiva: {p.WorkingSetMb:F1} MiB, inclusa memoria condivisa.");
++            activity.Add($"RAM residente complessiva: {p.WorkingSetMb:F1} MiB, incluse pagine condivisibili.");
+ 
+         if (p.IsDeepInspected)
+         {
+@@ -99,7 +99,7 @@
+ 
+         if (p.ChildCount > 0)
+         {
+-            activity.Add($"Ha {p.ChildCount} processi figli attualmente osservati (di cui {p.SameNameChildCount} con lo stesso nome).");
++            activity.Add($"Lo snapshot riporta {p.ChildCount} processi figli (di cui {p.SameNameChildCount} con lo stesso nome).");
+             evidence.Add("Snapshot albero processi: figli conteggiati al momento della lettura.");
+         }
+ 
+@@ -112,15 +112,15 @@
+         evidence.Add(closest is null ? "PPID senza verifica dell'istanza." : "Process tree Windows: " + (closest.VerifiedByStartTime ? "timestamp padre-figlio compatibili." : "parentela non verificata."));
+ 
+         string confidence = operation is not null && hasRoleEvidence
+-            ? "FUNZIONE E COMANDO DEDOTTI DA INDIZI; ESECUZIONE INTERNA NON OSSERVABILE"
+-            : hasRoleEvidence ? "FUNZIONE SUPPORTATA DA INDIZI; COMPITO INTERNO NON VERIFICATO" : "IDENTIFICAZIONE PARZIALE — LIMITI ESPLICITI";
++            ? "TIPO SUGGERITO E PARAMETRI RICONOSCIUTI; ATTIVITÀ INTERNA NON VERIFICATA"
++            : hasRoleEvidence ? "TIPO SUGGERITO DALLE REGOLE; COMPITO INTERNO NON VERIFICATO" : "IDENTIFICAZIONE PARZIALE — LIMITI ESPLICITI";
+ 
+         string answer =
+             "COS'È\n" + string.Join(" ", identity) + "\n\n" +
+             "A COSA SERVE\n" + role + "\n\n" +
+             "OPERAZIONE IDENTIFICABILE\n" + operationText + "\n\n" +
+-            "CHE COSA WINDOWS OSSERVA ORA\n" + string.Join("\n", activity.Select(s => "• " + s)) + "\n\n" +
+-            "CHI L'HA AVVIATO\n" + origin + "\n\n" +
++            "DATI WINDOWS NELLE LETTURE DISPONIBILI\n" + string.Join("\n", activity.Select(s => "• " + s)) + "\n\n" +
++            "PADRE RIPORTATO E LIMITI\n" + origin + "\n\n" +
+             "COSA NON POSSIAMO PROVARE\n" +
+             "Questa analisi non legge automaticamente lo stack delle funzioni, l'heap o il contenuto dei file. " +
+             "La firma digitale non è stata verificata, e i metadati dell'eseguibile possono essere falsificati. " +
+--- a/src/ProcessLens.Semantics/ProcessQueryEngine.cs
++++ b/src/ProcessLens.Semantics/ProcessQueryEngine.cs
+@@ -174,7 +174,7 @@
+                 ? $"Nella finestra disponibile la {trend.Metric.ToLowerInvariant()} è aumentata di {trend.DeltaMb:F1} MiB."
+                 : trend.DeltaMb <= -5
+                     ? $"Nella finestra disponibile la {trend.Metric.ToLowerInvariant()} è diminuita di {Math.Abs(trend.DeltaMb):F1} MiB."
+-                    : $"Nella finestra disponibile la {trend.Metric.ToLowerInvariant()} è rimasta relativamente stabile."
++                    : $"Nella finestra disponibile la {trend.Metric.ToLowerInvariant()} ha una variazione netta inferiore a 5 MiB; possono esserci oscillazioni intermedie."
+             : "Non esiste ancora una serie temporale sufficiente per descrivere la tendenza.";
+         blocks.Add("■ DIAGNOSI IN BREVE\n" +
+                    $"Misura Windows effettuata per {processLabel}: {resident}. {trendSummary} " +
+@@ -228,9 +228,9 @@
+         string judgment = growing
+             ? "DA MONITORARE: la memoria è aumentata in modo apprezzabile nella finestra disponibile."
+             : trend?.HasTrend == true && trend.DeltaMb <= -5
+-                ? "NESSUN SEGNALE DI CRESCITA CONTINUA in questa finestra: la memoria misurata sta diminuendo."
++                ? "SALDO IN DIMINUZIONE in questa finestra: il valore finale è inferiore a quello iniziale; non prova una discesa continua."
+                 : trend?.HasTrend == true && Math.Abs(trend.DeltaMb) < 5
+-                    ? "TENDENZA STABILE nella finestra disponibile, senza un aumento rilevante."
++                    ? "SALDO QUASI INVARIATO nella finestra disponibile; verificare anche minimo e picco."
+                     : "VALUTAZIONE PARZIALE: lo storico non consente un giudizio sull'evoluzione della memoria.";
+         blocks.Add("■ VALUTAZIONE: È UN CONSUMO ECCESSIVO?\n" +
+                    "Giudizio basato su contatori Windows e andamento, non su un confronto certificato per questa applicazione.\n" +
+@@ -247,7 +247,7 @@
+             string assessment = trend.DeltaMb >= 15
+                 ? "La crescita osservata richiede un confronto più lungo, a parità di attività, prima di sospettare una perdita."
+                 : trend.DeltaMb <= -15
+-                    ? "Questa riduzione è incompatibile con una crescita continua in questa sola finestra; non esclude fenomeni in altri momenti."
++                    ? "Il valore finale è inferiore a quello iniziale; possono esserci aumenti intermedi e non si escludono fenomeni in altri momenti."
+                     : "Una variazione di questa entità può dipendere dal normale ciclo di allocazione e rilascio.";
+             blocks.Add("■ ANDAMENTO MISURATO NEL TEMPO\n" +
+                        $"• Metrica confrontabile: {trend.Metric}.\n" +
+@@ -323,20 +323,20 @@
+                 "Attendi il prossimo aggiornamento oppure verifica i permessi; N/D non significa 0%.", "DATI INSUFFICIENTI", evidence);
+ 
+         evidence.Add($"CPU del PID su tutta la macchina: {p.CpuPercent:F2}%");
+-        evidence.Add($"Media/picco 30 s: {p.CpuAverage30Seconds:F2}% / {p.CpuPeak30Seconds:F2}%");
++        evidence.Add($"Media/picco fino a 30 s: {p.CpuAverage30Seconds:F2}% / {p.CpuPeak30Seconds:F2}%");
+         evidence.Add($"Intervallo campione: {p.CpuSampleIntervalSeconds:F1}s");
+         string level = p.CpuAverage30Seconds switch
+         {
+-            >= 20 => "consumo sostenuto elevato",
+-            >= 5 => "consumo sostenuto moderato",
++            >= 20 => "media CPU elevata nei campioni disponibili",
++            >= 5 => "media CPU moderata nei campioni disponibili",
+             >= 1 => "attività CPU misurabile",
+-            _ => "consumo CPU basso nell'ultimo intervallo"
++            _ => "media CPU bassa nei campioni disponibili"
+         };
+         string explanation =
+-            $"CPU adesso: {p.CpuPercent:F1}% della capacità del PC. " +
+-            $"Media ultimi 30 s: {p.CpuAverage30Seconds:F1}%, picco: {p.CpuPeak30Seconds:F1}%. " +
+-            $"Equivalente approssimativo: {p.CpuLogicalCoreEquivalent:F2} core logici utilizzati.\n\n" +
+-            $"Interpretazione: {level}. Il processo è classificato come {insight.Role}. " +
++            $"CPU nell’intervallo campionato: {p.CpuPercent:F1}% della capacità del PC. " +
++            $"Media nella finestra disponibile (fino a 30 s): {p.CpuAverage30Seconds:F1}%, picco: {p.CpuPeak30Seconds:F1}%. " +
++            $"Equivalente approssimativo: {p.CpuLogicalCoreEquivalent:F2} core logici a pieno utilizzo (equivalente, non conteggio dei core effettivi).\n\n" +
++            $"Interpretazione: {level}. Le regole suggeriscono il tipo {insight.Role}. " +
+             "Questo aiuta a comprendere a cosa serve, ma non dimostra quale funzione interna stia impegnando la CPU. " +
+             "Per attribuire il consumo a una specifica funzione servirebbe un campionamento degli stack dei thread/profilazione (ETW), non solo Task Manager.";
+         return Result("Consumo CPU e significato", explanation, "CPU OSSERVATA; CAUSA NON PROVATA", evidence);
+@@ -402,9 +402,9 @@
+             evidence.Add(progress.Description);
+             return Result(
+                 "Progresso",
+-                $"Ho trovato un indicatore esplicito di avanzamento: {progress.Percent:F1}%. " +
++                $"Ho riconosciuto un possibile indicatore testuale di avanzamento: {progress.Percent:F1}%. " +
+                 $"Segnale osservato: {progress.Description}.\n\n" +
+-                "Questo è progresso misurato da un dato esposto dal processo, non dedotto dal consumo di CPU.",
++                "È un valore letto nel titolo della finestra o nei parametri: può riferirsi a una fase, a un valore iniziale o a un obiettivo. Non verifica il completamento del lavoro.",
+                 progress.ConfidenceLabel,
+                 evidence,
+                 sample);
+@@ -417,7 +417,7 @@
+                 "Progresso",
+                 "Questo processo sembra essere un componente a lunga durata (servizio, renderer, host o processo principale). " +
+                 "Per questo non ha necessariamente una 'percentuale completata' o una fine prevista.",
+-                "NON APPLICABILE",
++                "NON DETERMINATO",
+                 evidence);
+         }
+ 
+@@ -443,8 +443,8 @@
+             evidence.Add($"Ruolo long-running: {i.Role}");
+             return Result(
+                 "Tempo alla fine",
+-                "Non c'è un'ETA sensata: questo processo sembra progettato per restare attivo finché l'applicazione o il servizio è in uso.",
+-                "NON APPLICABILE",
++                "Il tipo suggerito è compatibile con un componente a lunga durata. Non è disponibile un indicatore di progresso: la fine del processo e quella dei suoi singoli lavori non sono stimabili.",
++                "NON DETERMINATO",
+                 evidence);
+         }
+ 
+@@ -465,7 +465,7 @@
+         {
+             return Result(
+                 "Tempo alla fine",
+-                $"Il processo espone un progresso del {progress.Percent:F1}%, ma questa è la prima osservazione utile. " +
++                $"Il testo disponibile contiene un possibile progresso del {progress.Percent:F1}%, ma questa è la prima osservazione utile. " +
+                 "Per calcolare una velocità devo confrontarla con una seconda osservazione dello stesso indicatore. " +
+                 "Ripeti la domanda dopo un po': ProcessLens conserverà questo punto come riferimento.",
+                 "IN ATTESA DI UN SECONDO CAMPIONE",
+@@ -494,7 +494,7 @@
+         {
+             return Result(
+                 "Tempo alla fine",
+-                "Il processo sta avanzando, ma la velocità misurata produce un'ETA troppo instabile per essere utile. Servono altri campioni.",
++                "Il valore testuale aumenta, ma la sua variazione produce una stima troppo instabile. Servono altri campioni e una verifica del significato dell’indicatore.",
+                 "BASSA",
+                 evidence,
+                 current);
+@@ -503,16 +503,16 @@
+         string eta = FormatDuration(TimeSpan.FromSeconds(secondsRemaining));
+         string low = FormatDuration(TimeSpan.FromSeconds(secondsRemaining * 0.75));
+         string high = FormatDuration(TimeSpan.FromSeconds(secondsRemaining * 1.35));
+-        string confidence = elapsedSeconds >= 30 && delta >= 2 ? "ALTA" : elapsedSeconds >= 10 && delta >= 0.5 ? "MEDIA" : "BASSA";
++        string confidence = "STIMA CONDIZIONATA DA DUE CAMPIONI TESTUALI";
+ 
+         evidence.Add($"Avanzamento: {previous.Percent:F1}% -> {current.Percent:F1}% in {FormatDuration(TimeSpan.FromSeconds(elapsedSeconds))}");
+         evidence.Add($"Velocità osservata: {ratePerSecond * 60:F2} punti percentuali/minuto");
+ 
+         return Result(
+             "Tempo alla fine",
+-            $"Progresso attuale: {current.Percent:F1}%. Alla velocità osservata tra gli ultimi due campioni, l'ETA è circa {eta}. " +
+-            $"Intervallo prudente: {low} - {high}.\n\n" +
+-            "È una stima dinamica: se il carico cambia, cambierà anche l'ETA.",
++            $"Possibile progresso testuale: {current.Percent:F1}%. Alla velocità osservata tra gli ultimi due campioni, l'ETA è circa {eta}. " +
++            $"Scenario aritmetico (-25% / +35% della stima): {low} - {high}; non è un intervallo di confidenza.\n\n" +
++            "La stima assume che il testo rappresenti il lavoro completato e che la velocità resti costante; fasi e totali possono cambiare. Non è una previsione calibrata.",
+             confidence,
+             evidence,
+             current);
+@@ -520,6 +520,9 @@
+ 
+     private static ProcessQueryResult Health(ProcessSnapshot p, ProcessInsight i, IReadOnlyList<double>? recentCpu, List<string> evidence)
+     {
++        if (!p.CpuSampleAvailable && recentCpu is not { Count: > 0 })
++            return Result("È bloccato?", "Campioni CPU non disponibili. Lo stato TCP, se presente, non permette di diagnosticare o escludere un blocco.",
++                "DATI INSUFFICIENTI", evidence);
+         double avg = recentCpu is { Count: > 0 } ? recentCpu.Average() : p.CpuPercent;
+         double max = recentCpu is { Count: > 0 } ? recentCpu.Max() : p.CpuPercent;
+         evidence.Add($"CPU media campioni recenti: {avg:F2}%");
+@@ -533,13 +536,13 @@
+                 "È bloccato?",
+                 "CPU e stato TCP forniscono solo segnali parziali: non bastano per stabilire se il processo sia bloccato. " +
+                 "Queste misure non permettono di escludere un blocco parziale: per verificarlo servono segnali di progresso o informazioni sui thread.",
+-                "MEDIA",
++                "NON DETERMINATO",
+                 evidence);
+         }
+ 
+         return Result(
+             "È bloccato?",
+-            "La CPU è rimasta molto bassa nei campioni disponibili, ma questo NON dimostra che il processo sia bloccato: " +
++            "Nei campioni disponibili la CPU misurata è molto bassa, ma questo NON dimostra che il processo sia bloccato: " +
+             "potrebbe semplicemente essere in attesa di input, rete, timer o eventi. Per diagnosticare uno stallo servirebbero anche I/O e stato dei thread.",
+             "NON DETERMINATO",
+             evidence);
+@@ -561,17 +564,20 @@
+ 
+         var sb = new StringBuilder();
+ 
+-        sb.AppendLine("PID SELEZIONATO");
++        sb.AppendLine("PID SELEZIONATO — LETTURE DISPONIBILI");
++        sb.AppendLine("Conteggi di socket/endpoint, non traffico o richieste. Zero indica nessuna voce rilevata nelle letture disponibili, non un’assenza garantita.");
++        if (!string.IsNullOrWhiteSpace(p.DeepInspectionNote))
++            sb.AppendLine("Esito/limiti acquisizione: " + p.DeepInspectionNote);
+         if (p.TcpListeningCount > 0)
+         {
+-            sb.Append($"- Porte TCP in ascolto: {p.TcpListeningCount}");
++            sb.Append($"- Socket TCP LISTEN rilevate: {p.TcpListeningCount}");
+             if (p.ListeningTcpPorts.Count > 0)
+                 sb.Append($" ({string.Join(", ", p.ListeningTcpPorts)})");
+             sb.AppendLine();
+         }
+         else
+         {
+-            sb.AppendLine("- Nessuna porta TCP in ascolto.");
++            sb.AppendLine("- Nessuna socket TCP LISTEN rilevata nelle letture disponibili; non garantisce assenza di socket.");
+         }
+ 
+         sb.AppendLine($"- Connessioni TCP stabilite: {p.TcpEstablishedCount}");
+@@ -604,12 +610,12 @@
+ 
+         if (p.NetworkFamilyProcessCount > 1)
+         {
+-            evidence.Add($"Famiglia stesso eseguibile: {p.NetworkFamilyProcessCount} processi");
++            evidence.Add($"Famiglia per nome/albero: {p.NetworkFamilyProcessCount} processi");
+             evidence.Add($"Famiglia - processi con socket: {p.NetworkFamilyProcessesWithSockets}");
+             evidence.Add($"Famiglia - TCP pubbliche: {p.NetworkFamilyPublicRemoteConnectionCount}");
+ 
+             sb.AppendLine();
+-            sb.AppendLine("APP / FAMIGLIA MULTIPROCESSO");
++            sb.AppendLine("PROCESSI CORRELATI PER NOME E ALBERO");
+             sb.AppendLine($"- Processi correlati analizzati: {p.NetworkFamilyProcessCount}");
+             sb.AppendLine($"- Processi che possiedono socket: {p.NetworkFamilyProcessesWithSockets}");
+             sb.AppendLine($"- TCP stabilite totali: {p.NetworkFamilyTcpEstablishedCount}");
+@@ -625,7 +631,7 @@
+             if (networkOwners.Length > 0)
+             {
+                 sb.AppendLine();
+-                sb.AppendLine("Chi sta gestendo la rete:");
++                sb.AppendLine("PID con socket rilevate (ruolo suggerito):");
+                 foreach (var owner in networkOwners)
+                 {
+                     sb.Append($"- PID {owner.Pid}: {owner.RoleHint}; TCP {owner.TcpEstablishedCount} stabilite, ");
+@@ -643,15 +649,15 @@
+             {
+                 sb.AppendLine();
+                 sb.AppendLine(
+-                    $"Interpretazione: il PID selezionato non gestisce direttamente la rete. " +
++                    $"Interpretazione: nelle letture disponibili non risultano connessioni TCP ESTABLISHED o endpoint UDP per il PID selezionato. " +
+                     $"La famiglia contiene invece il PID {declaredNetworkService.Pid}, identificato dalla command line come servizio di rete, " +
+-                    "che possiede le socket. In applicazioni Chromium/Electron questo è il modello normale: renderer e finestra principale delegano la rete a un processo separato.");
++                    "con socket rilevate. La correlazione fra processi non dimostra che questo PID gli abbia delegato le operazioni di rete.");
+             }
+             else if (p.TcpEstablishedCount == 0 && p.UdpEndpointCount == 0 && p.NetworkFamilyProcessesWithSockets > 0)
+             {
+                 sb.AppendLine();
+                 sb.AppendLine(
+-                    "Interpretazione: questo PID non possiede socket proprie, ma altri processi della stessa famiglia le possiedono. " +
++                    "Interpretazione: non risultano connessioni TCP ESTABLISHED o endpoint UDP per questo PID; altri processi correlati hanno socket rilevate. Eventuali socket LISTEN sono riportate separatamente. " +
+                     "ProcessLens può quindi dire dove sono le socket, senza attribuirle erroneamente al PID selezionato.");
+             }
+         }
+@@ -659,18 +665,18 @@
+         sb.AppendLine();
+         if (p.PublicRemoteConnectionCount > 0)
+         {
+-            sb.Append("Conclusione: questo PID ha connessioni TCP attive verso indirizzi IP pubblici. ");
++            sb.Append("Conclusione: Windows riporta per questo PID connessioni TCP verso indirizzi classificati pubblici; i byte trasferiti non sono misurati. ");
+         }
+         else if (p.NetworkFamilyPublicRemoteConnectionCount > 0)
+         {
+-            sb.Append("Conclusione: il PID selezionato non ha connessioni pubbliche dirette, ma la sua famiglia di processi sì. ");
++            sb.Append("Conclusione: non sono rilevate connessioni TCP pubbliche sul PID selezionato; sono rilevate su processi correlati. ");
+         }
+         else
+         {
+             sb.Append("Conclusione: nello snapshot attuale non sono state osservate connessioni TCP verso indirizzi pubblici. ");
+         }
+ 
+-        sb.Append("Una connessione a IP pubblico è un'evidenza di rete esterna, ma non prova da sola quale servizio remoto sia usato. ");
++        sb.Append("La classificazione dell’indirizzo come pubblico non prova il percorso di rete, la raggiungibilità, un trasferimento o il servizio remoto utilizzato. ");
+         sb.Append("Una porta LISTEN su 127.0.0.1/::1 è solo locale; 0.0.0.0/:: indica tutte le interfacce locali, ma firewall/NAT determinano l'effettiva raggiungibilità dall'esterno.");
+ 
+         return Result("Porte e connessioni", sb.ToString().Trim(), "OSSERVATO", evidence);
+@@ -683,7 +689,7 @@
+         return Result("Origine e operazione",
+             $"{origin.ParentSummary}\n\n{origin.Operation}\n\nCATENA DI AVVIO\n{origin.Chain}\n\n{origin.Limitations}",
+             p.AncestorDetails.Count > 0 && p.AncestorDetails.All(a => a.VerifiedByStartTime)
+-                ? "CATENA VERIFICATA TEMPORALMENTE" : "CATENA PARZIALE",
++                ? "CATENA COMPATIBILE PER ORARI" : "CATENA PARZIALE",
+             evidence);
+     }
+ 
+@@ -695,7 +701,7 @@
+         if (p.ParentName is not null) evidence.Add($"Processo padre: {p.ParentName}");
+         return Result("Perché è aperto",
+             $"{i.WhyRunning}\n\nORIGINE: {origin.ParentSummary}\nOPERAZIONE: {origin.Operation}\n\n{origin.Limitations}",
+-            "EVIDENZE + INTERPRETAZIONE", evidence);
++            "DATI DI AVVIO + TIPO SUGGERITO", evidence);
+     }
+ 
+     private static ProcessQueryResult Termination(ProcessSnapshot p, ProcessInsight i, List<string> evidence)
+@@ -802,13 +808,13 @@
+             foreach (string title in p.WindowTitles)
+             {
+                 var hit = TryText(title, "window-title", allowBarePercent: false);
+-                if (hit is not null) return hit;
++                if (hit is not null) return hit with { Description = "Titolo finestra: " + hit.Description, ConfidenceLabel = "INDICATORE TESTUALE DA VERIFICARE" };
+             }
+ 
+             if (!string.IsNullOrWhiteSpace(p.CommandLine))
+             {
+                 var hit = TryText(p.CommandLine!, "command-line", allowBarePercent: false);
+-                if (hit is not null) return hit;
++                if (hit is not null) return hit with { Description = "Parametri di avvio: " + hit.Description, ConfidenceLabel = "INDICATORE TESTUALE DA VERIFICARE" };
+             }
+ 
+             return null;
+--- a/src/ProcessLens.Semantics/RoleClassifier.cs
++++ b/src/ProcessLens.Semantics/RoleClassifier.cs
+@@ -13,7 +13,7 @@
+         if (p.IsCritical)
+             return R("Processo critico di sistema", "Componente essenziale di Windows",
+                 "Windows lo considera parte critica del sistema operativo.",
+-                "Windows lo avvia e lo mantiene attivo.",
++                "Il flag critico è riportato da Windows; non identifica chi ha richiesto l’avvio.",
+                 "Non terminarlo: può causare instabilità grave o arresto del sistema.", "CRITICO", "Windows", 100,
+                 "flag di processo critico fornito dal sistema");
+ 
+@@ -34,8 +34,8 @@
+         if (knowledgeRole is not null)
+         {
+             string summary = knowledgeRole.Summary ?? $"Ruolo tecnico: {knowledgeRole.Label}";
+-            string meaning = knowledgeRole.Meaning ?? "Ruolo dedotto combinando evidenze tecniche indipendenti.";
+-            string why = knowledgeRole.WhyRunning ?? (p.ParentName is null ? "Origine non disponibile." : $"Avviato da {p.ParentName}.");
++            string meaning = knowledgeRole.Meaning ?? "Ruolo suggerito dalle regole; i segnali possono derivare dalla stessa fonte.";
++            string why = knowledgeRole.WhyRunning ?? (p.ParentName is null ? "Origine non disponibile." : $"Padre riportato: {p.ParentName}; autore e motivo dell’avvio non identificati.");
+             string impact = knowledgeRole.CloseImpact ?? "La terminazione interrompe la funzione associata al processo.";
+             string risk = knowledgeRole.CloseRisk ?? "DA VERIFICARE";
+             string category = knowledgeRole.Category ?? CategoryFor(p, fw);
+@@ -52,16 +52,16 @@
+             string? type = Opt(cmd, "--type");
+             string? utility = Opt(cmd, "--utility-sub-type");
+             if (Eq(type, "renderer"))
+-                return R("Elaborazione contenuti web", "Elabora e visualizza contenuti web in un processo separato",
++                return R("Elaborazione contenuti web", "Tipo renderer indicato nei parametri Chromium",
+                     "Chromium utilizza questo tipo di processo per elaborare documenti e codice delle pagine web separatamente dal processo principale. Il parametro di avvio non identifica da solo la pagina associata.",
+-                    $"{owner.Owner} lo ha creato per visualizzare contenuti mantenendoli isolati.",
++                    "Il parametro --type=renderer suggerisce la funzione del processo; autore e motivo dell’avvio non sono osservati.",
+                     "La parte dell'interfaccia associata può ricaricarsi o mostrare un errore; spesso il processo viene ricreato.", "BASSO / MEDIO", CategoryFor(p, fw), 100,
+                     "--type=renderer nella command line");
+             if (Eq(type, "gpu-process"))
+-                return R("Processo GPU", "Gestisce rendering accelerato e compositing",
++                return R("Processo GPU", "Tipo GPU indicato nei parametri Chromium",
+                     "Il parametro --type=gpu-process indica il processo grafico Chromium, ma non specifica quale operazione grafica stia eseguendo.",
+-                    $"{owner.Owner} lo usa per spostare il lavoro grafico fuori dal processo principale.",
+-                    "L'app può perdere temporaneamente accelerazione grafica e normalmente ricrea il processo.", "BASSO / MEDIO", CategoryFor(p, fw), 100,
++                    "Il parametro --type=gpu-process suggerisce un componente grafico; non misura utilizzo della GPU o motivo dell’avvio.",
++                    "L'app può perdere temporaneamente accelerazione grafica e può ricreare il processo.", "BASSO / MEDIO", CategoryFor(p, fw), 100,
+                     "--type=gpu-process nella command line");
+             if (Eq(type, "utility"))
+             {
+@@ -69,7 +69,7 @@
+                 return R(role, UtilitySummary(utility),
+                     role == "Processo ausiliario Node.js"
+                         ? "I parametri di avvio indicano un processo ausiliario Node.js. Le singole operazioni JavaScript non sono rilevate."
+-                        : "Il parametro di avvio identifica un processo ausiliario Chromium, separato dal processo principale.",
++                        : "Il parametro di avvio suggerisce un processo ausiliario Chromium. Il termine servizio qui indica un componente interno, non necessariamente un servizio SCM di Windows.",
+                     p.ParentName is null
+                         ? "Il motivo specifico dell'avvio non è disponibile."
+                         : $"Processo padre indicato: {p.ParentName}. Il motivo specifico dell'avvio non è determinato.",
+@@ -77,16 +77,16 @@
+                     utility is null ? "--type=utility" : $"--type=utility; --utility-sub-type={utility}");
+             }
+             if (!string.IsNullOrWhiteSpace(type))
+-                return R($"Sottoprocesso Chromium: {type}", $"Esegue il ruolo interno '{type}'",
++                return R($"Sottoprocesso Chromium: {type}", $"Tipo dichiarato nei parametri: {type}",
+                     "Il ruolo è dichiarato direttamente dal motore Chromium nella command line.",
+-                    $"{owner.Owner} lo ha creato per separare questa funzione dal processo principale.",
++                    "Il parametro --type dichiara un ruolo; il motivo dell’avvio non è osservato.",
+                     "Può interrompere la funzione associata e venire riavviato dall'app.", "MEDIO", CategoryFor(p, fw), 97,
+                     $"--type={type}");
+ 
+             if (p.IsDeepInspected)
+             {
+                 if (p.HasVisibleWindow && p.SameNameChildCount > 0)
+-                    return R("Processo principale / browser", $"Coordina l'app e possiede una finestra visibile",
++                    return R("Processo principale / browser", $"Possibile processo principale con finestra visibile",
+                         "Windows associa una finestra top-level al PID e riporta figli omonimi: segnali compatibili con un processo principale/browser, senza prova dell’attività di coordinamento.",
+                         $"La finestra visibile e i figli omonimi sono compatibili con un componente principale di {owner.Owner}; l’attività di coordinamento non è stata misurata.",
+                         "Terminarlo può chiudere l'intera applicazione.", "MEDIO", CategoryFor(p, fw), 94,
+@@ -100,14 +100,14 @@
+                         "finestra top-level visibile associata al PID");
+ 
+                 if (HasAnyModule(p, "libEGL.dll", "libGLESv2.dll", "d3d11.dll", "dxgi.dll") && !p.HasVisibleWindow)
+-                    return R("Sottoprocesso grafico probabile", "Carica componenti grafici ma non possiede una finestra top-level",
+-                        "I moduli grafici caricati sono compatibili con rendering/compositing Chromium, ma senza --type=gpu-process ProcessLens mantiene la conclusione probabilistica.",
++                    return R("Possibile sottoprocesso grafico", "Carica componenti grafici ma non possiede una finestra top-level",
++                        "I moduli grafici caricati sono compatibili con rendering/compositing Chromium, ma senza --type=gpu-process ProcessLens propone un ruolo grafico senza verificarne l’attività.",
+                         $"{owner.Owner} può usarlo per lavoro grafico isolato.",
+                         "Può causare un riavvio del componente grafico o un temporaneo degrado dell'interfaccia.", "MEDIO", CategoryFor(p, fw), 76,
+                         "moduli grafici Chromium/DirectX caricati; nessuna finestra top-level");
+ 
+                 if (p.TcpEstablishedCount > 0)
+-                    return R("Sottoprocesso con rete attiva", $"Ha {p.TcpEstablishedCount} connessioni TCP stabilite",
++                    return R("Sottoprocesso con connessioni TCP", $"Ha {p.TcpEstablishedCount} connessioni TCP stabilite",
+                         "Windows riporta socket TCP in stato ESTABLISHED per questo PID. Lo stato della connessione non indica traffico dati corrente né identifica un servizio di rete specifico.",
+                         $"È associato a {owner.Owner}; Windows rileva connessioni TCP stabilite, ma non ne misura qui i byte trasferiti.",
+                         "La chiusura può interrompere richieste o sessioni di rete dell'applicazione.", "MEDIO", CategoryFor(p, fw), 70,
+@@ -126,7 +126,7 @@
+                     "Sono riportati processi figli omonimi. Questa informazione è compatibile con un processo principale, ma non conferma l’attività di coordinamento.",
+                     $"La presenza di processi figli omonimi suggerisce un componente principale, senza dimostrare un’attività di coordinamento.",
+                     "Terminarlo può chiudere l'intera applicazione e i sottoprocessi collegati.", "MEDIO", CategoryFor(p, fw), 88,
+-                    $"ha {p.SameNameChildCount} figli con lo stesso eseguibile");
++                    $"ha {p.SameNameChildCount} figli con lo stesso nome");
+         }
+ 
+         if (fw.Name == ".NET")
+@@ -149,7 +149,7 @@
+                 $"Ascolta su {p.TcpListeningCount} porta/e TCP" + (p.ListeningTcpPorts.Count > 0 ? $": {string.Join(", ", p.ListeningTcpPorts)}" : string.Empty),
+                 "Windows attribuisce al PID una o più socket TCP in stato LISTEN. Questa lettura non misura richieste già accettate né byte trasferiti.",
+                 "La socket è in ascolto sulla porta indicata; non sono osservate richieste già accettate.",
+-                "La chiusura rende indisponibile il servizio sulle porte osservate.", "MEDIO", CategoryFor(p, fw), 90,
++                "La chiusura può interrompere l’ascolto sulle socket attribuite al PID; il servizio potrebbe essere riavviato o avere altri processi.", "MEDIO", CategoryFor(p, fw), 90,
+                 "socket TCP LISTEN osservate tramite IP Helper API");
+ 
+         if (p.IsDeepInspected && p.HasVisibleWindow)
+@@ -162,7 +162,7 @@
+         if (p.IsDeepInspected && p.TcpEstablishedCount > 0)
+             return R("Connessioni TCP rilevate", $"Windows rileva {p.TcpEstablishedCount} connessioni TCP stabilite",
+                 "Windows ha rilevato socket TCP nello stato ESTABLISHED attribuiti a questo PID. Questo non dimostra che stia trasferendo dati adesso.",
+-                p.ParentName is null ? "Può attendere o usare connessioni di rete: lo stato TCP non prova un trasferimento in questo istante." : $"È stato avviato da {p.ParentName}; le connessioni TCP rilevate non provano traffico in questo istante.",
++                p.ParentName is null ? "Può attendere o usare connessioni di rete: lo stato TCP non prova un trasferimento in questo istante." : $"Padre riportato: {p.ParentName}; le connessioni TCP non provano traffico o motivo dell’avvio.",
+                 "La chiusura interrompe le connessioni di rete del processo.", "MEDIO", CategoryFor(p, fw), 68,
+                 $"{p.TcpEstablishedCount} connessioni TCP stabilite attribuite al PID");
+ 
+@@ -189,8 +189,8 @@
+ 
+         string genericCategory = CategoryFor(p, fw);
+         return R("Funzione non determinata", $"{id.FriendlyName}: funzione specifica non classificata",
+-            "ProcessLens conosce l'identità e le risorse del processo, ma non dispone ancora di segnali sufficienti per assegnare una funzione precisa senza inventarla.",
+-            p.ParentName is null ? "Origine non disponibile." : $"È stato avviato da {p.ParentName}.",
++            "ProcessLens dispone del nome e dei contatori accessibili del processo, ma non dispone ancora di segnali sufficienti per assegnare una funzione precisa senza inventarla.",
++            p.ParentName is null ? "Origine non disponibile." : $"Padre riportato: {p.ParentName}; autore e motivo dell’avvio non identificati.",
+             "Effetto della chiusura non classificato: evita di terminarlo finché il ruolo non è più chiaro.", "DA VERIFICARE", genericCategory, 35,
+             "nessun indicatore di ruolo sufficientemente forte");
+     }
+@@ -202,27 +202,27 @@
+             ? Path.GetFileName(dllMatch.Groups[1].Success ? dllMatch.Groups[1].Value : dllMatch.Groups[2].Value)
+             : null;
+         if (Eq(dll, "VBCSCompiler.dll"))
+-            return R("Compiler server Roslyn", "Mantiene pronto il compilatore C#/VB per velocizzare le build", "È il compiler server della toolchain Roslyn.", "Una build o IDE .NET lo ha avviato e può lasciarlo residente per riuso.", "Può essere ricreato; una compilazione attiva potrebbe interrompersi.", "BASSO", "Sviluppo", 100, "VBCSCompiler.dll nella command line");
++            return R("Compiler server Roslyn", "Componente Roslyn suggerito da VBCSCompiler.dll", "È il compiler server della toolchain Roslyn.", "VBCSCompiler.dll è indicato nei parametri di avvio; la richiesta originaria e il riuso corrente non sono osservati.", "Può essere ricreato; una compilazione attiva potrebbe interrompersi.", "BASSO", "Sviluppo", 100, "VBCSCompiler.dll nella command line");
+         if (Eq(dll, "MSBuild.dll"))
+-            return R("Motore di build MSBuild", "Compila o valuta un progetto .NET", "MSBuild coordina target, dipendenze e compilazione dei progetti .NET.", "Il processo è compatibile con una build o altra operazione MSBuild; il progresso non è disponibile.", "Interrompe la build corrente.", "BASSO / MEDIO", "Sviluppo", 100, "MSBuild.dll nella command line");
++            return R("Motore di build MSBuild", "Componente MSBuild indicato nei parametri", "MSBuild coordina target, dipendenze e compilazione dei progetti .NET.", "Il processo è compatibile con una build o altra operazione MSBuild; il progresso non è disponibile.", "Può interrompere una build, se in corso.", "BASSO / MEDIO", "Sviluppo", 100, "MSBuild.dll nella command line");
+         if (!string.IsNullOrWhiteSpace(dll))
+-            return R("Applicazione .NET", $"Esegue l'assembly {dll}", $"dotnet.exe sta ospitando l'assembly {dll}.", $"{owner.Owner} o un comando ha avviato questo assembly.", "Interrompe l'applicazione .NET associata.", "BASSO / MEDIO", "Sviluppo", 96, $"assembly .NET esplicito: {dll}");
++            return R("Applicazione .NET", $"Assembly indicato: {dll}", $"Nei parametri compare l’assembly {dll}; l’attività corrente non è verificata.", $"Assembly indicato nei parametri: {dll}; autore e motivo dell’avvio non identificati.", "Interrompe l'applicazione .NET associata.", "BASSO / MEDIO", "Sviluppo", 96, $"assembly .NET esplicito: {dll}");
+ 
+         foreach (string verb in new[] { "build", "restore", "test", "publish", "run", "watch" })
+             if (cmd.Contains($"dotnet {verb}", StringComparison.OrdinalIgnoreCase))
+-                return R($"dotnet {verb}", $"Esegue il comando dotnet {verb}", "È un comando della CLI .NET.", $"Nella riga di comando compare dotnet {verb}; l’esito e il progresso del comando non sono misurati.", "Interrompe il comando/progetto corrente.", "BASSO / MEDIO", "Sviluppo", 98, $"'dotnet {verb}' nella command line");
++                return R($"dotnet {verb}", $"Comando indicato: dotnet {verb}", "È un comando della CLI .NET.", $"Nella riga di comando compare dotnet {verb}; l’esito e il progresso del comando non sono misurati.", "Interrompe il comando/progetto corrente.", "BASSO / MEDIO", "Sviluppo", 98, $"'dotnet {verb}' nella command line");
+ 
+         if (p.IsDeepInspected && p.TcpListeningCount > 0)
+             return R("Applicazione/servizio .NET in ascolto", $"Runtime .NET con {p.TcpListeningCount} porta/e TCP in ascolto",
+-                "Il runtime .NET è confermato e Windows osserva socket TCP LISTEN attribuite al PID.",
++                "Il classificatore suggerisce .NET; Windows rileva socket TCP LISTEN attribuite al PID.",
+                 "Il PID ha socket TCP in ascolto; questo non dimostra che abbia elaborato richieste.", "Interrompe il servizio/app .NET e le porte osservate.", "MEDIO", "Sviluppo", 86,
+                 "runtime .NET + socket TCP LISTEN osservate");
+         if (p.IsDeepInspected && p.HasVisibleWindow)
+             return R("Applicazione desktop .NET", "Processo .NET con finestra visibile",
+-                "Il CLR è confermato e Windows associa una finestra top-level al PID.",
+-                p.ParentName is null ? "L'applicazione .NET è aperta." : $"È stata avviata da {p.ParentName}.", "Chiude la finestra/app .NET associata.", "MEDIO", "Applicazioni", 82,
++                "Il classificatore suggerisce .NET; Windows associa una finestra top-level al PID.",
++                p.ParentName is null ? "L'applicazione .NET è aperta." : $"Padre riportato: {p.ParentName}; autore e motivo dell’avvio non identificati.", "Può chiudere la finestra o l’app .NET associata.", "MEDIO", "Applicazioni", 82,
+                 "runtime .NET + finestra top-level visibile");
+-        return R("Runtime .NET", "Ospita un processo .NET non ancora identificato", "Il processo è stato riconosciuto come dotnet.exe; assembly e operazione applicativa non sono determinati con i dati disponibili.", p.ParentName is null ? "Origine non disponibile." : $"Avviato da {p.ParentName}.", "Interrompe il processo .NET associato.", "DA VERIFICARE", "Sviluppo", p.IsDeepInspected ? 64 : 58, p.IsDeepInspected ? "deep inspection completata senza un indicatore di ruolo forte" : "dotnet.exe senza assembly/comando riconoscibile");
++        return R("Runtime .NET", "Segnali compatibili con .NET; applicazione non determinata", "I segnali disponibili sono compatibili con .NET; assembly e operazione applicativa non sono determinati.", p.ParentName is null ? "Origine non disponibile." : $"Padre riportato: {p.ParentName}; autore e motivo dell’avvio non identificati.", "Interrompe il processo .NET associato.", "DA VERIFICARE", "Sviluppo", p.IsDeepInspected ? 64 : 58, p.IsDeepInspected ? "deep inspection completata senza un indicatore di ruolo forte" : "dotnet.exe senza assembly/comando riconoscibile");
+     }
+ 
+     private static RoleAssessment ClassifyPython(ProcessSnapshot p, string cmd, OwnershipAssessment owner)
+@@ -233,9 +233,9 @@
+             cmd.Contains("multiprocessing.spawn", StringComparison.OrdinalIgnoreCase) ||
+             cmd.Contains("multiprocessing.forkserver", StringComparison.OrdinalIgnoreCase))
+         {
+-            return R("Worker multiprocessing Python", "Esegue una parte del lavoro di un programma Python padre",
+-                "Processo figlio creato dal meccanismo multiprocessing di CPython. Il compito concreto dipende dal programma che lo ha avviato.",
+-                p.ParentName is null ? "Avviato dal runtime multiprocessing." : $"È un worker avviato dalla catena di {p.ParentName}.",
++            return R("Worker multiprocessing Python", "Parametri compatibili con multiprocessing Python",
++                "Nei parametri compaiono indicatori di multiprocessing CPython; non provano quale lavoro sia in corso o chi lo abbia richiesto.",
++                p.ParentName is null ? "Indicatori multiprocessing nei parametri; motivo dell’avvio non osservato." : $"Padre riportato: {p.ParentName}; la catena di avvio richiede verifica temporale.",
+                 "La chiusura può interrompere il pool di worker o l'attività attualmente eseguita.", "MEDIO", "Sviluppo", 97,
+                 "indicatori multiprocessing nella command line Python");
+         }
+@@ -248,20 +248,20 @@
+                 ? "Kernel Jupyter/IPython: esegue celle e codice ricevuti dal notebook. Senza telemetria del kernel non sappiamo quale cella sia attiva."
+                 : module.StartsWith("pip", StringComparison.OrdinalIgnoreCase)
+                     ? "Gestore pacchetti Python: installazione, verifica o gestione delle dipendenze richiesta tramite pip."
+-                    : $"Python sta eseguendo il modulo '{module}' dichiarato esplicitamente all'avvio.";
++                    : $"Il parametro -m indica il modulo '{module}'; non ne verifica l’esecuzione corrente.";
+             string role = module.StartsWith("ipykernel", StringComparison.OrdinalIgnoreCase) ? "Kernel Python di notebook" :
+                 module.StartsWith("pip", StringComparison.OrdinalIgnoreCase) ? "Gestione pacchetti Python" :
+                 "Modulo Python";
+-            return R(role, $"Esegue python -m {module}", meaning,
+-                p.ParentName is null ? $"È stato avviato il modulo {module}." : $"Avviato da {p.ParentName} per eseguire il modulo {module}.",
++            return R(role, $"Parametro riconosciuto: python -m {module}", meaning,
++                p.ParentName is null ? $"Modulo indicato nei parametri: {module}; esecuzione corrente non verificata." : $"Modulo indicato: {module}; padre riportato: {p.ParentName}. Il motivo dell’avvio non è osservato.",
+                 "La chiusura interrompe il modulo e le attività che gestisce.", "BASSO / MEDIO", "Sviluppo", 98,
+                 $"-m {module} nella command line");
+         }
+         // -c executes inline code. Do not reproduce source text: it can contain secrets.
+         if (Regex.IsMatch(cmd, @"(?:^|\s)-c(?:\s|$)", RegexOptions.IgnoreCase))
+-            return R("Codice Python inline", "Esegue codice Python passato da riga di comando",
+-                "L'interprete esegue istruzioni fornite tramite l'opzione -c. Non leggiamo il contenuto come spiegazione per evitare informazioni sensibili.",
+-                p.ParentName is null ? "Avvio tramite comando Python inline." : $"Avviato da {p.ParentName}.",
++            return R("Codice Python inline", "Parametro -c rilevato per Python",
++                "L’opzione -c indica codice fornito nei parametri di avvio. Non leggiamo il contenuto come spiegazione per evitare informazioni sensibili.",
++                p.ParentName is null ? "Avvio tramite comando Python inline." : $"Padre riportato: {p.ParentName}; autore e motivo dell’avvio non identificati.",
+                 "Interrompe l'esecuzione di quelle istruzioni.", "MEDIO", "Sviluppo", 96, "-c nella command line");
+ 
+         var script = Regex.Match(cmd, "(?:\"([^\"]+\\.py)\"|(\\S+\\.py))", RegexOptions.IgnoreCase);
+@@ -272,9 +272,9 @@
+             string entry = $"Script: {filename}";
+             if (p.IsDeepInspected && p.TcpListeningCount > 0)
+                 entry += $"; TCP LISTEN: {string.Join(", ", p.ListeningTcpPorts)}";
+-            return R("Script Python", $"Esegue {filename}",
+-                $"Il processo esegue lo script '{filename}'. Il nome del file non prova quale funzione del codice sia attiva ora.",
+-                p.ParentName is null ? $"È stato avviato per eseguire {filename}." : $"Avviato da {p.ParentName} per eseguire {filename}.",
++            return R("Script Python", $"Script indicato: {filename}",
++                $"Nei parametri compare lo script '{filename}'. Il nome del file non prova quale funzione del codice sia attiva ora.",
++                p.ParentName is null ? $"Script indicato nei parametri: {filename}; esecuzione corrente non verificata." : $"Script indicato: {filename}; padre riportato: {p.ParentName}. Il motivo dell’avvio non è osservato.",
+                 "La chiusura interrompe lo script e i suoi eventuali task attivi.", "BASSO / MEDIO", "Sviluppo", 98,
+                 $"{entry}; percorso dichiarato: {path}");
+         }
+@@ -282,16 +282,16 @@
+             return R("Processo Python in ascolto", $"Python ha {p.TcpListeningCount} porta/e TCP in ascolto" +
+                 (p.ListeningTcpPorts.Count > 0 ? $": {string.Join(", ", p.ListeningTcpPorts)}" : string.Empty),
+                 "Una socket TCP LISTEN è attribuita direttamente a questo PID. Non prova di per sé che sia un server HTTP.",
+-                "È in attesa di connessioni TCP.", "La chiusura interrompe il servizio e le porte associate.", "MEDIO", "Sviluppo", 92,
++                "Windows rileva socket TCP LISTEN; richieste e byte trasferiti non sono misurati.", "La chiusura interrompe l’ascolto e le eventuali attività del processo.", "MEDIO", "Sviluppo", 92,
+                 "runtime Python + porte TCP LISTEN osservate");
+         if (p.IsDeepInspected && p.HasVisibleWindow)
+             return R("Applicazione Python con interfaccia", "Processo Python con finestra visibile",
+                 "Windows associa una finestra top-level al PID Python; il toolkit grafico non è necessariamente determinabile.",
+-                "Windows associa una finestra visibile al processo Python; il compito del codice non è rilevato.", "Chiude l'app Python associata.", "MEDIO", "Sviluppo", 80,
++                "Windows associa una finestra visibile al processo Python; il compito del codice non è rilevato.", "Può chiudere l’app Python associata.", "MEDIO", "Sviluppo", 80,
+                 "runtime Python + finestra visibile");
+         return R("Interprete Python", "Python in esecuzione: attività interna non osservabile direttamente",
+             "Senza script/modulo leggibile o telemetria specifica il ruolo del codice non è determinabile.",
+-            p.ParentName is null ? "Origine non disponibile." : $"È stato avviato da {p.ParentName}.",
++            p.ParentName is null ? "Origine non disponibile." : $"Padre riportato: {p.ParentName}; autore e motivo dell’avvio non identificati.",
+             "Interrompe il processo e le operazioni che eventualmente esegue.", "DA VERIFICARE", "Sviluppo", 55,
+             "runtime Python identificato; attività applicativa non esposta");
+     }
+@@ -300,19 +300,19 @@
+     {
+         foreach (var pair in new[] { ("tsserver", "TypeScript language server"), ("eslint", "Analizzatore ESLint"), ("vite", "Dev server Vite"), ("next", "Runtime/dev server Next.js") })
+             if (cmd.Contains(pair.Item1, StringComparison.OrdinalIgnoreCase))
+-                return R(pair.Item2, $"Esegue {pair.Item1}", "Il ruolo è ricavato dal pacchetto/entrypoint presente nella command line Node.js.", $"{owner.Owner} lo ha avviato come tool JavaScript/TypeScript.", "Interrompe il tool o server associato.", "BASSO / MEDIO", "Sviluppo", 94, $"'{pair.Item1}' nella command line");
++                return R(pair.Item2, $"Testo riconosciuto nei parametri: {pair.Item1}", "Il ruolo è suggerito da una corrispondenza testuale nei parametri Node.js; un nome presente fra gli argomenti può essere un falso positivo.", "Nome di tool nei parametri Node.js; chi ha richiesto l’avvio non è identificato.", "Interrompe il tool o server associato.", "BASSO / MEDIO", "Sviluppo", 94, $"'{pair.Item1}' nella command line");
+         var js = Regex.Match(cmd, "(?:\"([^\"]+\\.(?:js|cjs|mjs))\"|(\\S+\\.(?:js|cjs|mjs)))", RegexOptions.IgnoreCase);
+         if (js.Success)
+         {
+             string path = js.Groups[1].Success ? js.Groups[1].Value : js.Groups[2].Value;
+-            return R("Applicazione Node.js", $"Esegue {Path.GetFileName(path)}", "Node.js sta eseguendo un entrypoint JavaScript esplicito.", $"La riga di comando indica come punto di ingresso {Path.GetFileName(path)}; l’operazione corrente non è stata misurata.", "Interrompe l'app/tool Node.js associato.", "BASSO / MEDIO", "Sviluppo", 94, $"entrypoint JavaScript: {path}");
++            return R("Applicazione Node.js", $"File indicato nei parametri: {Path.GetFileName(path)}", "Nei parametri Node.js compare un file JavaScript; il testo non verifica il lavoro corrente.", $"La riga di comando indica come punto di ingresso {Path.GetFileName(path)}; l’operazione corrente non è stata misurata.", "Interrompe l'app/tool Node.js associato.", "BASSO / MEDIO", "Sviluppo", 94, $"entrypoint JavaScript: {path}");
+         }
+         if (p.IsDeepInspected && p.TcpListeningCount > 0)
+             return R("Server Node.js", $"Node.js ascolta su {p.TcpListeningCount} porta/e TCP" + (p.ListeningTcpPorts.Count > 0 ? $": {string.Join(", ", p.ListeningTcpPorts)}" : string.Empty),
+                 "Windows rileva socket TCP nello stato LISTEN attribuite al PID Node.js. Non sono misurate richieste accettate, risposte o byte trasferiti.",
+-                "Il PID ha socket TCP in ascolto; questo non dimostra che abbia elaborato richieste.", "Interrompe il server Node.js e le richieste associate.", "MEDIO", "Sviluppo", 90,
++                "Il PID ha socket TCP in ascolto; questo non dimostra che abbia elaborato richieste.", "Può interrompere l’ascolto Node.js e le eventuali attività del processo; richieste in corso non rilevate.", "MEDIO", "Sviluppo", 90,
+                 "runtime Node.js + socket TCP LISTEN osservate");
+-        return R("Runtime Node.js", "Node.js attivo; compito specifico non esposto", "Il processo Node.js è identificato; l’entrypoint applicativo non è disponibile.", p.ParentName is null ? "Origine non disponibile." : $"Avviato da {p.ParentName}.", "Interrompe il processo Node.js associato.", "DA VERIFICARE", "Sviluppo", p.IsDeepInspected ? 62 : 55, p.IsDeepInspected ? "deep inspection senza entrypoint o comportamento forte" : "runtime Node.js senza entrypoint riconoscibile");
++        return R("Runtime Node.js", "Node.js attivo; compito specifico non esposto", "Il processo Node.js è identificato; l’entrypoint applicativo non è disponibile.", p.ParentName is null ? "Origine non disponibile." : $"Padre riportato: {p.ParentName}; autore e motivo dell’avvio non identificati.", "Interrompe il processo Node.js associato.", "DA VERIFICARE", "Sviluppo", p.IsDeepInspected ? 62 : 55, p.IsDeepInspected ? "deep inspection senza entrypoint o comportamento forte" : "runtime Node.js senza entrypoint riconoscibile");
+     }
+ 
+     private static RoleAssessment ClassifyJava(ProcessSnapshot p, string cmd, OwnershipAssessment owner)
+@@ -321,19 +321,19 @@
+         if (jar.Success)
+         {
+             string path = jar.Groups[1].Success ? jar.Groups[1].Value : jar.Groups[2].Value;
+-            return R("Applicazione Java", $"Esegue {Path.GetFileName(path)}", "La JVM sta eseguendo un JAR esplicito.", $"È attiva per eseguire {Path.GetFileName(path)}.", "Interrompe l'app Java associata.", "BASSO / MEDIO", "Sviluppo", 98, $"-jar {path}");
++            return R("Applicazione Java", $"File indicato nei parametri: {Path.GetFileName(path)}", "Il parametro -jar indica un file JAR; il lavoro corrente non è verificato.", $"File JAR indicato nei parametri: {Path.GetFileName(path)}; motivo dell’avvio non osservato.", "Interrompe l'app Java associata.", "BASSO / MEDIO", "Sviluppo", 98, $"-jar {path}");
+         }
+         if (p.IsDeepInspected && p.TcpListeningCount > 0)
+             return R("Servizio/server Java", $"JVM in ascolto su {p.TcpListeningCount} porta/e TCP",
+-                "La JVM è confermata e Windows osserva socket TCP LISTEN attribuite al PID.",
+-                "È attiva per attendere connessioni o richieste.", "Interrompe il servizio Java e le connessioni servite.", "MEDIO", "Sviluppo", 88,
++                "Il classificatore suggerisce Java/JVM; Windows rileva socket TCP LISTEN attribuite al PID.",
++                "Windows rileva socket TCP LISTEN; richieste elaborate non misurate.", "Interrompe il servizio Java e le connessioni servite.", "MEDIO", "Sviluppo", 88,
+                 "JVM + socket TCP LISTEN osservate");
+         if (p.IsDeepInspected && p.HasVisibleWindow)
+             return R("Applicazione desktop Java", "JVM con finestra visibile",
+                 "Windows associa una finestra top-level alla JVM; il toolkit/app specifico non è deducibile senza ulteriori metadati.",
+-                "Windows associa una finestra visibile alla JVM; il motivo dell’avvio non è misurato.", "Chiude l'applicazione/finestra Java associata.", "MEDIO", "Applicazioni", 80,
++                "Windows associa una finestra visibile alla JVM; il motivo dell’avvio non è misurato.", "Può chiudere l’applicazione o finestra Java associata.", "MEDIO", "Applicazioni", 80,
+                 "JVM + finestra top-level visibile");
+-        return R("Java Virtual Machine", "JVM attiva; applicazione specifica non esposta", "La JVM è identificata, ma non è presente un JAR esplicito.", p.ParentName is null ? "Origine non disponibile." : $"Avviata da {p.ParentName}.", "Interrompe l'app Java associata.", "DA VERIFICARE", "Sviluppo", p.IsDeepInspected ? 64 : 58, p.IsDeepInspected ? "deep inspection senza JAR o comportamento forte" : "runtime Java senza JAR esplicito");
++        return R("Java Virtual Machine", "JVM attiva; applicazione specifica non esposta", "La JVM è identificata, ma non è presente un JAR esplicito.", p.ParentName is null ? "Origine non disponibile." : $"Padre riportato: {p.ParentName}; autore e motivo dell’avvio non identificati.", "Interrompe l'app Java associata.", "DA VERIFICARE", "Sviluppo", p.IsDeepInspected ? 64 : 58, p.IsDeepInspected ? "deep inspection senza JAR o comportamento forte" : "runtime Java senza JAR esplicito");
+     }
+ 
+     private static RoleAssessment ClassifyPowerShell(ProcessSnapshot p, string cmd, OwnershipAssessment owner)
+@@ -342,9 +342,9 @@
+         if (ps.Success)
+         {
+             string path = ps.Groups[1].Success ? ps.Groups[1].Value : ps.Groups[2].Value;
+-            return R("Script PowerShell", $"Esegue {Path.GetFileName(path)}", "PowerShell sta eseguendo uno script .ps1 esplicito.", $"La riga di comando indica come punto di ingresso {Path.GetFileName(path)}; l’operazione corrente non è stata misurata.", "Interrompe lo script e i comandi correnti.", "BASSO / MEDIO", "Sviluppo", 98, $"script PowerShell: {path}");
+-        }
+-        return R("Shell PowerShell", "Sessione PowerShell", "È una shell/ambiente di automazione PowerShell.", p.ParentName is null ? "Sessione PowerShell aperta." : $"Avviata da {p.ParentName}.", "Chiude la sessione e gli eventuali comandi in esecuzione.", "BASSO / MEDIO", "Sviluppo", 90, "eseguibile PowerShell");
++            return R("Script PowerShell", $"File indicato nei parametri: {Path.GetFileName(path)}", "Nei parametri PowerShell compare un file .ps1; il lavoro corrente non è verificato.", $"La riga di comando indica come punto di ingresso {Path.GetFileName(path)}; l’operazione corrente non è stata misurata.", "Interrompe lo script e i comandi correnti.", "BASSO / MEDIO", "Sviluppo", 98, $"script PowerShell: {path}");
++        }
++        return R("Shell PowerShell", "Sessione PowerShell", "È una shell/ambiente di automazione PowerShell.", p.ParentName is null ? "Sessione PowerShell aperta." : $"Padre riportato: {p.ParentName}; autore e motivo dell’avvio non identificati.", "Chiude la sessione e gli eventuali comandi in esecuzione.", "BASSO / MEDIO", "Sviluppo", 90, "eseguibile PowerShell");
+     }
+ 
+     private static RoleAssessment? ClassifyByGenericNameSignals(ProcessSnapshot p, OwnershipAssessment owner, FrameworkAssessment fw)
+@@ -352,24 +352,24 @@
+         string signal = $"{p.Name} {p.FileDescription} {p.ProductName}".ToLowerInvariant();
+ 
+         if (signal.Contains("language server") || signal.Contains("language_server") || signal.Contains("languageserver"))
+-            return R("Language server", "Analizza codice per editor/IDE",
++            return R("Language server", "Possibile componente language server",
+                 "Il nome o i metadati del processo dichiarano un language server: tipicamente fornisce completamento, diagnostica, simboli e navigazione del codice.",
+                 p.ParentName is null ? "Il nome o i metadati suggeriscono un componente di supporto a editor/IDE; il processo che ha richiesto l’avvio non è noto." : $"Padre riportato da Windows: {p.ParentName}; il nome non dimostra il motivo dell’avvio.",
+                 "L'editor può perdere temporaneamente completamento, diagnostica e navigazione finché il server non viene riavviato.", "BASSO / MEDIO", "Sviluppo", 92,
+                 "segnale 'language server' nel nome/metadati del processo");
+ 
+         if (signal.Contains("crashpad") || signal.Contains("crash handler") || signal.Contains("crashreport"))
+-            return R("Gestore crash", "Gestisce i rapporti in caso di arresto anomalo dell’applicazione",
++            return R("Gestore crash", "Possibile componente per rapporti di crash",
+                 "Il nome o i metadati indicano un componente dedicato alla gestione degli arresti anomali.",
+-                $"{owner.Owner} lo mantiene disponibile per gestire eventuali arresti anomali.",
++                "Nome o metadati compatibili con gestione crash; stato interno e motivo dell’avvio non osservati.",
+                 "L’applicazione può continuare a funzionare, ma potrebbe non registrare gli arresti anomali.", "BASSO", CategoryFor(p, fw), 90,
+                 "segnale crash handler nei metadati/nome");
+ 
+         if (signal.Contains("updater") || signal.Contains("update service") || signal.Contains("update helper"))
+-            return R("Aggiornamento software", "Controlla o applica aggiornamenti dell'applicazione",
++            return R("Aggiornamento software", "Possibile componente di aggiornamento software",
+                 "Il nome/metadati indicano una funzione di aggiornamento software.",
+-                $"{owner.Owner} lo usa per controllare o installare aggiornamenti.",
+-                "Può interrompere un controllo o aggiornamento in corso; normalmente viene riavviato quando necessario.", "BASSO", "Background", 82,
++                "Nome o metadati compatibili con aggiornamenti; operazioni in corso e motivo dell’avvio non osservati.",
++                "Può interrompere un controllo o aggiornamento in corso; il riavvio dipende dalla configurazione dell’applicazione.", "BASSO", "Background", 82,
+                 "segnale updater/update service nei metadati/nome");
+ 
+         return null;
+@@ -411,16 +411,16 @@
+     }
+     private static string UtilitySummary(string? value) => UtilityRole(value) switch
+     {
+-        "Servizio di rete" => "Gestisce funzioni di rete dell'applicazione",
+-        "Servizio audio" => "Gestisce funzioni audio dell'applicazione",
+-        "Servizio storage" => "Gestisce l’archiviazione dei dati dell’applicazione",
+-        "Servizio video" => "Gestisce funzioni video dell'applicazione",
+-        "Processo ausiliario Node.js" => "Esegue componenti Node.js in un processo separato",
+-        "Servizio decodifica dati" => "Decodifica dati e contenuti in un processo separato",
+-        "Risolutore proxy" => "Gestisce la risoluzione delle impostazioni proxy",
+-        "Servizio tracing/diagnostica" => "Raccoglie informazioni diagnostiche dell’applicazione",
+-        "Servizio multimediale" => "Gestisce una funzione multimediale isolata",
+-        _ => "Esegue una funzione interna in un processo separato"
++        "Servizio di rete" => "Parametri compatibili con un componente di rete",
++        "Servizio audio" => "Parametri compatibili con un componente audio",
++        "Servizio storage" => "Parametri compatibili con un componente storage",
++        "Servizio video" => "Parametri compatibili con un componente video",
++        "Processo ausiliario Node.js" => "Parametri compatibili con un processo ausiliario Node.js",
++        "Servizio decodifica dati" => "Parametri compatibili con un componente di decodifica",
++        "Risolutore proxy" => "Parametri compatibili con un risolutore proxy",
++        "Servizio tracing/diagnostica" => "Parametri compatibili con un componente diagnostico",
++        "Servizio multimediale" => "Parametri compatibili con un componente multimediale",
++        _ => "Parametri compatibili con un processo ausiliario"
+     };
+ 
+     private static RoleAssessment R(string role, string summary, string meaning, string why, string impact, string risk, string category, int confidence, string evidence) =>
+--- a/src/ProcessLens.Semantics/knowledge/role-signatures.json
++++ b/src/ProcessLens.Semantics/knowledge/role-signatures.json
+@@ -5,9 +5,9 @@
+     "label": "Elaborazione dei contenuti web",
+     "frameworkEquals": "Chromium/Electron",
+     "minScore": 95,
+-    "summary": "Elabora e visualizza contenuti web",
++    "summary": "Tipo renderer indicato nei parametri Chromium",
+     "meaning": "I programmi basati su Chromium utilizzano processi separati per elaborare contenuti web. Il parametro di avvio non identifica la pagina specifica né l’attività corrente.",
+-    "whyRunning": "Il programma utilizza un processo separato per elaborare i contenuti web.",
++    "whyRunning": "Il parametro --type=renderer dichiara il tipo; autore e motivo dell’avvio non sono osservati.",
+     "closeImpact": "La pagina o parte dei contenuti potrebbe interrompersi; il programma potrebbe ricreare il processo.",
+     "closeRisk": "BASSO / MEDIO",
+     "commandContains": [
+@@ -42,8 +42,8 @@
+     "kind": "role",
+     "label": "Language server",
+     "minScore": 80,
+-    "summary": "Analizza codice per un editor o IDE",
+-    "meaning": "Fornisce tipicamente completamento, diagnostica, simboli, hover e navigazione del codice.",
++    "summary": "Possibile componente language server",
++    "meaning": "Nome o metadati compatibili con un language server, che tipicamente offre completamento, diagnostica e navigazione. Il lavoro corrente non è osservato.",
+     "whyRunning": "Nome o parametri compatibili con un componente per editor/IDE; il lavoro e il motivo dell’avvio non sono misurati.",
+     "closeImpact": "L'editor può perdere temporaneamente completamento, diagnostica e navigazione finché il server non viene riavviato.",
+     "closeRisk": "BASSO / MEDIO",
+@@ -73,9 +73,9 @@
+     "kind": "role",
+     "label": "Gestore crash",
+     "minScore": 80,
+-    "summary": "Gestisce i rapporti in caso di arresto anomalo dell’applicazione",
+-    "meaning": "È un componente separato dall’applicazione principale e dedicato ai rapporti sugli arresti anomali.",
+-    "whyRunning": "Rimane pronto a raccogliere informazioni se l’applicazione si arresta in modo anomalo.",
++    "summary": "Possibile componente per rapporti di crash",
++    "meaning": "Nome o metadati compatibili con gestione dei crash; non è verificato che il componente stia raccogliendo rapporti.",
++    "whyRunning": "Nome o metadati suggeriscono gestione crash; motivo dell’avvio e stato interno non osservati.",
+     "closeImpact": "L’applicazione può continuare a funzionare, ma potrebbe non registrare gli arresti anomali.",
+     "closeRisk": "BASSO",
+     "nameContains": [
+@@ -103,10 +103,10 @@
+     "kind": "role",
+     "label": "Aggiornamento software",
+     "minScore": 75,
+-    "summary": "Controlla o applica aggiornamenti dell'applicazione",
+-    "meaning": "Il processo è dedicato al controllo, download o applicazione di aggiornamenti.",
+-    "whyRunning": "L'applicazione o un servizio pianificato lo usa per mantenere il software aggiornato.",
+-    "closeImpact": "Può interrompere un controllo o aggiornamento in corso; normalmente verrà riavviato quando necessario.",
++    "summary": "Possibile componente di aggiornamento software",
++    "meaning": "Nome o metadati compatibili con aggiornamenti; controllo, download e installazione in corso non sono osservati.",
++    "whyRunning": "Il nome non identifica chi abbia richiesto l’avvio né dimostra un aggiornamento in corso.",
++    "closeImpact": "Può interrompere un controllo o aggiornamento, se in corso; il riavvio dipende dall’applicazione.",
+     "closeRisk": "BASSO",
+     "category": "Background",
+     "nameContains": [
+@@ -132,13 +132,13 @@
+   {
+     "id": "role.generic.server-listener",
+     "kind": "role",
+-    "label": "Server / servizio in ascolto",
++    "label": "Processo con socket TCP LISTEN",
+     "minScore": 70,
+     "requiresDeepInspection": true,
+-    "summary": "Attende connessioni di rete in ingresso",
++    "summary": "Socket TCP in ascolto rilevata da Windows",
+     "meaning": "Windows attribuisce direttamente al PID almeno una socket TCP in stato LISTEN. Questa lettura non misura richieste già accettate né byte trasferiti.",
+     "whyRunning": "La socket è in ascolto; lo stato LISTEN non identifica il motivo per cui il processo è stato avviato e non misura richieste accettate.",
+-    "closeImpact": "Le connessioni in ingresso verso il servizio non saranno più accettate.",
++    "closeImpact": "Può interrompere l’ascolto sulle socket del PID; altri processi o un riavvio potrebbero mantenere il servizio disponibile.",
+     "closeRisk": "MEDIO",
+     "hasTcpListen": {
+       "value": true,
+@@ -149,13 +149,13 @@
+   {
+     "id": "role.generic.ui-coordinator",
+     "kind": "role",
+-    "label": "Processo principale / coordinatore",
++    "label": "Possibile processo principale",
+     "minScore": 75,
+     "minimumEvidenceCount": 2,
+     "requiresDeepInspection": true,
+-    "summary": "Coordina l'applicazione e possiede una finestra visibile",
+-    "meaning": "La combinazione di finestra top-level e sottoprocessi omonimi è un forte segnale di processo principale/coordinatore.",
+-    "whyRunning": "Rimane attivo finché l'applicazione principale è aperta.",
++    "summary": "Finestra visibile e figli omonimi rilevati",
++    "meaning": "Windows rileva una finestra top-level e figli omonimi: dati compatibili con un processo principale, senza prova dell’attività di coordinamento.",
++    "whyRunning": "Finestra e figli omonimi non identificano il motivo dell’avvio né la durata prevista del processo.",
+     "closeImpact": "Terminarlo può chiudere l'intera applicazione e i sottoprocessi collegati.",
+     "closeRisk": "MEDIO",
+     "hasVisibleWindow": {
+@@ -166,7 +166,7 @@
+     "hasSameNameChildren": {
+       "value": true,
+       "score": 45,
+-      "evidence": "il PID coordina processi figli con lo stesso eseguibile"
++      "evidence": "lo snapshot riporta processi figli con lo stesso nome"
+     }
+   }
+ ]
+--- a/start-processlens-all.ps1
++++ b/start-processlens-all.ps1
+@@ -27,7 +27,7 @@
+ }
+ 
+ try {
+-    Write-Host 'ProcessLens v0.19.16 R6 - Avvio guidato in sequenza' -ForegroundColor Green
++    Write-Host 'ProcessLens v0.19.16 R7 candidata - Avvio guidato in sequenza' -ForegroundColor Green
+     Write-Host ('Modalita: ' + $Mode)
+     Write-Host ('Cartella: ' + $PSScriptRoot)
+     $isAdmin = Test-IsAdministrator
+--- a/tests/ProcessLens.BehaviorTests/Program.cs
++++ b/tests/ProcessLens.BehaviorTests/Program.cs
+@@ -116,7 +116,7 @@
+ var ramContext = new ProcessQueryEngine().Ask(memoryInput, memoryInsight,
+     "Perché occupa RAM?", null, memoryTrend: trend, memoryMap: vmMap, systemMemory: physical);
+ Require(ramContext.Answer.Contains("VALUTAZIONE: È UN CONSUMO ECCESSIVO?"), "assessment section present");
+-Require(ramContext.Answer.Contains("NESSUN SEGNALE DI CRESCITA CONTINUA"), "falling trend correctly qualified");
++Require(ramContext.Answer.Contains("SALDO IN DIMINUZIONE"), "falling trend correctly qualified");
+ Require(ramContext.Answer.Contains("Non emerge una pressione elevata"), "low RAM system pressure distinguished");
+ var highPressure = new ProcessQueryEngine().Ask(memoryInput, memoryInsight,
+     "Perché occupa RAM?", null, memoryTrend: trend,
+@@ -136,3 +136,57 @@
+ Require(missing.Confidence == "DATI INSUFFICIENTI", "unavailable metrics not fabricated");
+ 
+ Console.WriteLine("Process behavior explanation tests passed.");
++
++// R7: source-aware messages must not convert absent metrics, text or correlations into facts.
++var queryEngineR7 = new ProcessQueryEngine();
++ProcessQueryResult QueryR7(ProcessSnapshot p, string question, ProcessProgressSample? previous = null,
++    MemoryTrendReport? memory = null) => queryEngineR7.Ask(p,
++        new ProcessIntelligenceAnalyzer().Analyze(p), question, previous, memoryTrend: memory);
++var noCpuHealth = QueryR7(baseline, "È bloccato?");
++Require(noCpuHealth.Confidence == "DATI INSUFFICIENTI" &&
++        !noCpuHealth.Evidence.Any(e => e.Contains("CPU media")), "R7 health does not treat missing CPU as zero");
++var tcpHealth = QueryR7(baseline with { IsDeepInspected = true, TcpEstablishedCount = 1 }, "È bloccato?");
++Require(tcpHealth.Confidence == "DATI INSUFFICIENTI" && tcpHealth.Answer.Contains("non permette"),
++    "R7 established socket without CPU does not exclude a stall");
++var highCpuHealth = QueryR7(baseline with { CpuSampleAvailable = true, CpuPercent = 20 }, "È bloccato?");
++Require(highCpuHealth.Confidence == "NON DETERMINATO" && highCpuHealth.Answer.Contains("blocco parziale"),
++    "R7 high CPU does not establish process health");
++var partialNetwork = QueryR7(baseline with
++{
++    IsDeepInspected = true, DeepInspectionNote = "TCP non enumerabile: AccessDenied"
++}, "Ha porte aperte?");
++Require(partialNetwork.Answer.Contains("AccessDenied") && partialNetwork.Answer.Contains("non garantisce assenza"),
++    "R7 partial network acquisition preserves error and does not assert absence");
++var listenerWithFamily = QueryR7(baseline with
++{
++    IsDeepInspected = true, TcpListeningCount = 1,
++    NetworkFamilyProcessCount = 2, NetworkFamilyProcessesWithSockets = 2,
++    RelatedNetworkProcesses = new[] { new RelatedNetworkProcessSnapshot(201, "helper.exe",
++        "Servizio di rete Chromium/Electron (dichiarato)", 0, 1, 0, 1, Array.Empty<NetworkEndpointSnapshot>()) }
++}, "Ha connessioni di rete?");
++Require(listenerWithFamily.Answer.Contains("Socket TCP LISTEN rilevate: 1") &&
++        !listenerWithFamily.Answer.Contains("questo PID non possiede socket proprie") &&
++        listenerWithFamily.Answer.Contains("non dimostra") && !listenerWithFamily.Answer.Contains("rete delegata"),
++    "R7 family sockets do not prove delegation or erase direct listener");
++var textualProgress = baseline with { CommandLine = "example.exe --progress=50% --password=ULTRA_SECRET" };
++var progressR7 = QueryR7(textualProgress, "A che punto è?");
++Require(progressR7.Confidence == "INDICATORE TESTUALE DA VERIFICARE" &&
++        progressR7.Answer.Contains("Parametri di avvio") && progressR7.Answer.Contains("obiettivo") &&
++        !progressR7.Answer.Contains("ULTRA_SECRET"), "R7 launch text is not verified work progress");
++var titledProgress = QueryR7(baseline with { WindowTitles = new[] { "Download file 4/10 SECRET_TITLE" } }, "A che punto è?");
++Require(titledProgress.Answer.Contains("Titolo finestra") && !titledProgress.Answer.Contains("SECRET_TITLE"),
++    "R7 title indicator source is explicit and private title omitted");
++var previousR7 = new ProcessProgressSample(textualProgress.Pid, null, DateTime.UtcNow.AddMinutes(-1),
++    40, "command-line:percent", "synthetic previous indicator");
++var etaR7 = QueryR7(textualProgress, "Quando finirà?", previousR7);
++Require(etaR7.Confidence == "STIMA CONDIZIONATA DA DUE CAMPIONI TESTUALI" &&
++        etaR7.Answer.Contains("non è un intervallo di confidenza") && etaR7.Answer.Contains("velocità resti costante"),
++    "R7 ETA range is arithmetic scenario rather than calibrated confidence");
++var oscillating = new MemoryTrendReport("RAM privata residente", 3, 120, 100, 100, 100, 300, 0);
++var oscillationR7 = QueryR7(memoryInput, "Perché occupa RAM?", memory: oscillating);
++Require(oscillationR7.Answer.Contains("SALDO QUASI INVARIATO") && oscillationR7.Answer.Contains("oscillazioni intermedie") &&
++        !oscillationR7.Answer.Contains("TENDENZA STABILE"), "R7 equal endpoints do not prove stable intermediate usage");
++Require(QueryR7(baseline with { CpuSampleAvailable = true, CpuPercent = 2, CpuAverage30Seconds = 1,
++    CpuPeak30Seconds = 2 }, "Perché usa CPU?").Answer.Contains("fino a 30 s"),
++    "R7 CPU window is bounded and may be shorter than thirty seconds");
++Console.WriteLine("R7 behavior source and inference regressions passed.");
+--- a/tests/ProcessLens.MemoryTests/Program.cs
++++ b/tests/ProcessLens.MemoryTests/Program.cs
+@@ -194,8 +194,8 @@
+ // v0.19.5: UI classification is visual feedback only, never a leak/paging diagnosis.
+ foreach (var item in new (double Percent, string Label, string Color)[]
+ {
+-    (0.0, "Utilizzo RAM nella fascia ordinaria", "#047857"),
+-    (74.9, "Utilizzo RAM nella fascia ordinaria", "#047857"),
++    (0.0, "Utilizzo RAM sotto soglia di attenzione", "#047857"),
++    (74.9, "Utilizzo RAM sotto soglia di attenzione", "#047857"),
+     (75.0, "Utilizzo RAM da osservare", "#A16207"),
+     (84.9, "Utilizzo RAM da osservare", "#A16207"),
+     (85.0, "Utilizzo RAM elevato", "#B45309"),
+@@ -213,3 +213,11 @@
+ if (!MemoryDashboardPresentation.ForUsage(93.3).Explanation.Contains("non dimostra", StringComparison.Ordinal))
+     throw new Exception("FAIL RAM dashboard suggests paging is proven");
+ Console.WriteLine("PASS RAM dashboard levels, colors and evidence limits");
++
++if (!MemoryDashboardPresentation.ForUsage(90).Explanation.StartsWith("Almeno il 90%") ||
++    !MemoryDashboardPresentation.ForUsage(75).Explanation.StartsWith("Almeno il 75%"))
++    throw new Exception("FAIL R7 threshold equality must match branch predicate");
++if (!privateResident.MemoryDescription.Contains("stessa istanza") ||
++    !privateResident.MemoryDescription.Contains("aggregazioni diverse"))
++    throw new Exception("FAIL R7 Task Manager comparison must specify same counter and instance");
++Console.WriteLine("PASS R7 memory threshold boundaries and counter comparison limits");
+--- a/tests/ProcessLens.ServiceTests/Program.cs
++++ b/tests/ProcessLens.ServiceTests/Program.cs
+@@ -25,3 +25,8 @@
+ Check(ServiceExplanation.Association(auto, 3, "svchost.exe").Contains("3 servizi"), "shared host count");
+ Check(ServiceExplanation.Association(stopped, 0, null).Contains("Nessun PID"), "no fabricated host");
+ Console.WriteLine("Service explanation tests completed.");
++
++Check(ServiceExplanation.Impact(auto).Contains("richiesta e conferma") &&
++    !ServiceExplanation.Impact(auto).Contains("non modifica i servizi"), "R7 SCM stop capability described accurately");
++Check(ServiceExplanation.Impact(stopped).Contains("altri servizi"), "R7 stopped service does not describe entire host activity");
++Check((auto with { ServiceType = 1 }).HostType == "Driver o altro tipo di servizio", "R7 driver type not labelled Win32");
+--- a/tests/ProcessLens.TerminologyTests/Program.cs
++++ b/tests/ProcessLens.TerminologyTests/Program.cs
+@@ -1,4 +1,4 @@
+-﻿using ProcessLens.Core;
++﻿﻿using ProcessLens.Core;
+ using ProcessLens.Semantics;
+ 
+ static void Check(bool condition, string message)
+@@ -7,9 +7,9 @@
+     Console.WriteLine("PASS terminology: " + message);
+ }
+ 
+-Check(ProcessTerminology.EvidenceStrength(100) == "molto forti", "highest score is strength of evidence");
+-Check(ProcessTerminology.EvidenceStrength(68) == "moderati", "medium score is not called certain");
+-Check(ProcessTerminology.EvidenceStrength(0) == "insufficienti", "unknown is not certainty");
++Check(ProcessTerminology.EvidenceStrength(100) == "corrispondenza alle regole molto alta", "highest score describes rule correspondence");
++Check(ProcessTerminology.EvidenceStrength(68) == "corrispondenza alle regole intermedia", "medium score is not called certain");
++Check(ProcessTerminology.EvidenceStrength(0) == "corrispondenza alle regole insufficiente", "unknown is not certainty");
+ Check(ProcessTerminology.FunctionLabel(95) == "Funzione classificata",
+     "high classifier uses a concise, qualified label");
+ Check(ProcessTerminology.FunctionLabel(68) == "Funzione non determinata con precisione", "partial role has clear label");
+@@ -42,7 +42,7 @@
+     CommandLine = "example.exe --type=utility --utility-sub-type=node.mojom.NodeService"
+ });
+ Check(nodeUtility.Role == "Processo ausiliario Node.js", "Electron Node utility uses a professional term");
+-Check(nodeUtility.Summary == "Esegue componenti Node.js in un processo separato", "Node utility summary is concise");
++Check(nodeUtility.Summary == "Parametri compatibili con un processo ausiliario Node.js", "Node utility summary is concise");
+ Check(!nodeUtility.WhyRunning.Contains("richiede questo servizio interno", StringComparison.OrdinalIgnoreCase),
+     "reason for execution not invented from command line");
+ Check(nodeUtility.DetectionBasis.Contains("Parametri di avvio", StringComparison.OrdinalIgnoreCase),
+@@ -113,7 +113,7 @@
+     "classification explicitly states what has not been observed");
+ var unknownFacts = ProcessDetailPresentation.ClassificationFacts(
+     new ProcessSnapshot { Pid = 21, ParentPid = 0, Name = "unknown.exe" }, unknown);
+-Check(unknownFacts.Any(x => x.Label == "Funzione" && x.Value.StartsWith("Non determinata", StringComparison.Ordinal)),
++Check(unknownFacts.Any(x => x.Label == "Tipo suggerito" && x.Value.StartsWith("Non determinata", StringComparison.Ordinal)),
+     "unknown process cannot acquire an invented function");
+ Check(ProcessDetailPresentation.ClosingRiskLabel("BASSO / MEDIO") == "Effetti variabili",
+     "risk badge does not present a false precise grade");
+@@ -230,3 +230,43 @@
+     "Chromium GPU label cites precise start parameter");
+ Check(gpuInsight.WhatIsIt.Contains("non specifica", StringComparison.OrdinalIgnoreCase),
+     "GPU process role cannot prove current graphics operation");
++
++// R7: exercise name/metadata rules and runtime fallback paths independently of CPU/RAM.
++var analyzerR7 = new ProcessIntelligenceAnalyzer();
++foreach (var snapshot in new[]
++{
++    new ProcessSnapshot { Pid = 701, ParentPid = 10, ParentName = "editor.exe", Name = "updater.exe" },
++    new ProcessSnapshot { Pid = 702, ParentPid = 10, ParentName = "editor.exe", Name = "crashpad.exe" },
++    new ProcessSnapshot { Pid = 703, ParentPid = 10, ParentName = "editor.exe", Name = "python.exe", CommandLine = "python.exe -m example" },
++    new ProcessSnapshot { Pid = 704, ParentPid = 10, ParentName = "editor.exe", Name = "python.exe", CommandLine = "python.exe --multiprocessing-fork" },
++    new ProcessSnapshot { Pid = 705, ParentPid = 10, ParentName = "editor.exe", Name = "dotnet.exe", CommandLine = "dotnet.exe VBCSCompiler.dll" },
++    new ProcessSnapshot { Pid = 706, ParentPid = 10, ParentName = "editor.exe", Name = "node.exe", CommandLine = "node.exe --tool=tsserver" },
++    new ProcessSnapshot { Pid = 707, ParentPid = 10, ParentName = "editor.exe", Name = "java.exe", CommandLine = "java.exe -jar example.jar" },
++    new ProcessSnapshot { Pid = 708, ParentPid = 10, ParentName = "editor.exe", Name = "pwsh.exe" }
++})
++{
++    var classified = analyzerR7.Analyze(snapshot);
++    Check(!classified.WhyRunning.Contains("lo ha avviato") && !classified.WhyRunning.Contains("Avviato da") &&
++          !classified.WhyRunning.Contains("lo usa per") && !classified.WhyRunning.Contains("Rimane pronto"),
++        "R7 role does not invent launch cause: " + snapshot.Pid);
++    Check(classified.WhyRunning.Contains("non", StringComparison.OrdinalIgnoreCase),
++        "R7 launch limitation explicit: " + snapshot.Pid);
++}
++var coordinatorR7 = analyzerR7.Analyze(new ProcessSnapshot
++{
++    Pid = 709, ParentPid = 0, Name = "desktop.exe", IsDeepInspected = true,
++    HasVisibleWindow = true, ChildCount = 2, SameNameChildCount = 2
++});
++Check(!coordinatorR7.Summary.Contains("Coordina") &&
++    (coordinatorR7.WhatIsIt.Contains("senza prova") || !coordinatorR7.Role.Contains("principale")),
++    "R7 visible window and children do not prove coordination");
++Check(!analyzerR7.Analyze(new ProcessSnapshot { Pid = 710, ParentPid = 0, Name = "updater.exe" })
++    .Summary.Contains("Controlla o applica"), "R7 updater name does not prove an active update");
++Check(!analyzerR7.Analyze(new ProcessSnapshot { Pid = 711, ParentPid = 0, Name = "crashpad.exe" })
++    .WhyRunning.Contains("Rimane pronto"), "R7 crash handler name does not prove readiness");
++var criticalR7 = analyzerR7.Analyze(new ProcessSnapshot { Pid = 712, ParentPid = 0, Name = "critical.exe", IsCritical = true });
++Check(criticalR7.WhyRunning.Contains("flag critico") && !criticalR7.WhyRunning.Contains("Windows lo avvia"),
++    "R7 critical flag does not identify launch cause");
++var unknownRuntimeR7 = analyzerR7.Analyze(new ProcessSnapshot { Pid = 713, ParentPid = 0, Name = "unknown.exe" });
++Check(unknownRuntimeR7.Framework == "Runtime non determinato", "R7 no known runtime does not prove native execution");
++Console.WriteLine("R7 terminology contextual regressions passed.");
+--- /dev/null
++++ b/verify-candidate-r7.ps1
+@@ -0,0 +1,67 @@
++# Verification only: no GUI launch, service installation, capture or process termination.
++[CmdletBinding()]
++param()
++$ErrorActionPreference = 'Stop'
++if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) {
++    throw 'NON ESEGUITO: questa procedura richiede Windows.'
++}
++if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
++    throw 'NON ESEGUITO: SDK .NET non trovato. Nessuna installazione automatica.'
++}
++$root = $PSScriptRoot
++$results = Join-Path $root 'verification-r7'
++New-Item -ItemType Directory -Path $results -Force | Out-Null
++$records = New-Object System.Collections.Generic.List[object]
++$failures = 0
++Push-Location $root
++try {
++    & dotnet --info | Out-File (Join-Path $results 'dotnet-info.txt') -Encoding utf8
++    if ($LASTEXITCODE -ne 0) { throw 'dotnet --info non riuscito.' }
++    foreach ($script in Get-ChildItem (Join-Path $root 'tests') -Filter 'check-*.ps1' | Sort-Object Name) {
++        $status = 'PASS'
++        try { & $script.FullName *> (Join-Path $results ($script.BaseName + '.log')) }
++        catch { $status = 'FAIL'; $failures++; $_ | Out-File (Join-Path $results ($script.BaseName + '.log')) -Append -Encoding utf8 }
++        $records.Add([PSCustomObject]@{ Kind='PowerShell'; Name=$script.Name; Status=$status; ExitCode=$null })
++    }
++    foreach ($project in Get-ChildItem (Join-Path $root 'tests') -Filter '*.csproj' -Recurse | Sort-Object FullName) {
++        # Fixture is compiled only. Running it would create a target process for profiling.
++        $verb = if ($project.BaseName -eq 'ProcessLens.ProfilerFixture') { 'build' } else { 'run' }
++        $arguments = if ($verb -eq 'run') { @('run','--project',$project.FullName,'-c','Release') }
++            else { @('build',$project.FullName,'-c','Release','--nologo') }
++        & dotnet @arguments *> (Join-Path $results ($project.BaseName + '.log'))
++        $exitCode = $LASTEXITCODE
++        $status = if ($exitCode -eq 0) { 'PASS' } else { $failures++; 'FAIL' }
++        $records.Add([PSCustomObject]@{ Kind='dotnet'; Name=$project.BaseName; Status=$status; ExitCode=$exitCode })
++    }
++    foreach ($project in Get-ChildItem (Join-Path $root 'src') -Filter '*.csproj' -Recurse | Sort-Object FullName) {
++        & dotnet build $project.FullName -c Release --nologo *> (Join-Path $results ('build-' + $project.BaseName + '.log'))
++        $exitCode = $LASTEXITCODE
++        $status = if ($exitCode -eq 0) { 'PASS' } else { $failures++; 'FAIL' }
++        $records.Add([PSCustomObject]@{ Kind='build'; Name=$project.BaseName; Status=$status; ExitCode=$exitCode })
++    }
++    # Run the same semantic regression suite with copied knowledge omitted, to check C# fallbacks.
++    $semanticTests = Join-Path $root 'tests\ProcessLens.TerminologyTests\bin\Release\net8.0'
++    $knowledge = Join-Path $semanticTests 'knowledge'
++    $disabled = Join-Path $semanticTests 'knowledge.disabled-r7'
++    if (Test-Path $disabled) { throw 'Backup knowledge gia presente; risolvere prima di rieseguire.' }
++    if (Test-Path $knowledge) {
++        Move-Item -LiteralPath $knowledge -Destination $disabled
++        try {
++            & dotnet (Join-Path $semanticTests 'ProcessLens.TerminologyTests.dll') *> (Join-Path $results 'terminology-without-knowledge.log')
++            $exitCode = $LASTEXITCODE
++            $status = if ($exitCode -eq 0) { 'PASS' } else { $failures++; 'FAIL' }
++            $records.Add([PSCustomObject]@{ Kind='fallback'; Name='TerminologyWithoutKnowledge'; Status=$status; ExitCode=$exitCode })
++        }
++        finally { Move-Item -LiteralPath $disabled -Destination $knowledge }
++    }
++    else {
++        $records.Add([PSCustomObject]@{ Kind='fallback'; Name='TerminologyWithoutKnowledge'; Status='NON ESEGUITO'; ExitCode=$null })
++        $failures++
++    }
++}
++finally {
++    $records | Export-Csv (Join-Path $results 'test-results.csv') -NoTypeInformation -Encoding UTF8
++    Pop-Location
++}
++if ($failures -gt 0) { throw ($failures.ToString() + ' verifiche fallite o non eseguite. Consultare verification-r7. Candidata non promossa.') }
++Write-Host 'Suite e build superate. Verifica visuale WPF e scenari Windows ancora da completare; candidata non promossa.'

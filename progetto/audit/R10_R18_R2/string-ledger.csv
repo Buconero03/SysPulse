@@ -1,0 +1,11 @@
+file,line,added_or_modified_source_text,context
+tests/check-copy-layout-r18r1.ps1,14,"(?s)//[^\r\n]*|/\*.*?\*/|@""(?:""""|[^""])*""|""(?:\\.|[^""\\])*""|'(?:\\.|[^'\\])+'",PowerShell source control; no UI string changes
+tests/check-copy-layout-r18r1.ps1,21,"$diagnostic = '$""template={text.Template is not null}""'",PowerShell source control; no UI string changes
+tests/check-copy-layout-r18r1.ps1,25,"@{ Name = 'uppercase string'; Source = 'var s = ""Template= window.Show()"";'; Reject = $false },",PowerShell source control; no UI string changes
+tests/check-copy-layout-r18r1.ps1,28,"@{ Name = 'verbatim string'; Source = 'var s = @""""""Template = value; window.Show();"""""";'; Reject = $false },",PowerShell source control; no UI string changes
+tests/check-copy-layout-r18r1.ps1,29,"@{ Name = 'escaped quote'; Source = 'var s = ""\"" Template = value; window.Show();"";'; Reject = $false },",PowerShell source control; no UI string changes
+tests/check-copy-layout-r18r1.ps1,31,"@{ Name = 'native template lookup'; Source = 'text.Template?.FindName(""PART_ContentHost"", text);'; Reject = $false },",PowerShell source control; no UI string changes
+tests/check-copy-layout-r18r1.ps1,35,"@{ Name = 'assignment after string'; Source = 'var s = ""Template=""; text.Template = value;'; Reject = $true },",PowerShell source control; no UI string changes
+tests/check-copy-layout-r18r1.ps1,36,"@{ Name = 'show after comment'; Source = ""// window.Show();`nwindow.Show();""; Reject = $true }",PowerShell source control; no UI string changes
+tests/check-copy-layout-r18r1.ps1,39,"if ((Get-LayoutCodeViolation $case.Source) -ne $case.Reject) { throw ""FAIL R18 R2 source guard: $($case.Name)"" }",PowerShell source control; no UI string changes
+tests/check-copy-layout-r18r1.ps1,41,"Write-Host ""PASS R18 R2 source guard: $($cases.Count) regression cases; original false positive reproduced.""",PowerShell source control; no UI string changes

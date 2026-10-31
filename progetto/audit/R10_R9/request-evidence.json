@@ -1,0 +1,10 @@
+{
+  "reported_error": "CS7036 MainWindow.xaml.cs(359,59), Tests.ProcessLens.CopyUiTests",
+  "baseline": "ProcessLens-v0.19.16-R10-R8-before-R9.zip",
+  "baseline_sha256": "7d50ef273a6ae6cf4f311334dfebee3b11b8891c3844a7544200bcfc4d6453c7",
+  "fix": "Supply this as DependencyObject owner, followed by unchanged report text",
+  "Windows_user_log": "PresentationTests and CopyTests pass before WPF compilation stops; later stages not executed",
+  "candidate_Windows_execution": "NON ESEGUITO",
+  "protected_components": "Byte-identical to delivered R8",
+  "scope": "One call correction plus GUI informational version; no behavioral expansion"
+}

@@ -1,0 +1,24 @@
+PASS R28 launcher: empty package has no runnable GUI
+PASS R28 launcher: completed old installation cannot silently substitute its old GUI
+PASS R28 launcher: publication without successful R28 receipt is not accepted
+PASS R28 launcher: receipt for another revision is rejected
+Primo avvio R28: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R28 launcher: failed tests cannot issue a build receipt or launch a stale publication
+PASS R28 launcher: completed R20 cache reused without copying packages into ZIP
+PASS R28 launcher: R20 cache build has no configured network feed
+Primo avvio R28: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R28 launcher: missing executable after build remains an error
+Primo avvio R28: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R28 launcher: successful owned build resolves new publication with existing private runtime
+PASS R28 launcher: subsequent resolution needs no build or SDK command
+PASS R28 launcher: missing desktop runtime is not accepted
+PASS R28 launcher: wrong desktop runtime major is not accepted
+PASS R28 launcher: paths with spaces remain one UAC argument
+PASS R28 launcher: quotes and newlines cannot create extra launch arguments
+PASS R28 launcher: quotes and newlines cannot create extra launch arguments
+PASS R28 launcher: real PowerShell parser accepts complete launcher
+PASS R28 launcher: launcher installs no dependencies and changes no services or running processes
+R28 launcher fixture complete: 17 checks; synthetic files only, no Windows app or UAC.

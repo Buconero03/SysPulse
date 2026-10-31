@@ -1,0 +1,11 @@
+{
+  "kind": "Roslyn syntax only; no WPF type or markup compilation",
+  "status": "PASS",
+  "source_hashes": {
+    "src/ProcessLens.Core/WindowsComponentCatalog.cs": "6ca1149fbba47e8b07c93e9501e0c58d901c928ca9e17b9ed1405492c4ef8e97",
+    "src/ProcessLens.App/SystemProcessesView.xaml.cs": "e3cf7d4a5fa1833bf407b28ab416639a686df10e48b5838c07ec7449da0b4e8b",
+    "src/ProcessLens.App/MainWindow.xaml.cs": "e925f8d4f16b0e4dc9d6a2629780caccef3aea2ef00fed4ded7e650ee8ccd763",
+    "tests/ProcessLens.SystemProcessUiTests/Program.cs": "cb3fe797b78092bb5e0ffe4ba15ee0b3ba86ee0108fd3869fa0a39809be02ad1",
+    "tests/ProcessLens.WindowsComponentTests/Program.cs": "6b9d235760be68d6ee9b396f214a67f0b7d2094ad29d986e79c32d50c5d97e54"
+  }
+}

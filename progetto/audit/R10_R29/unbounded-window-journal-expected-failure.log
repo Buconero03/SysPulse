@@ -1,0 +1,150 @@
+PASS R25 same executable linked children form a group
+PASS R25 independent browser instances and other executables remain separate
+PASS R25 homonymous executable from another path is not the same app
+PASS R25 newer reused parent cannot adopt an older child
+PASS R25 unknown creation or path never establishes grouping
+PASS R25 cyclic parent graph cannot fabricate an application tree
+PASS R25 orphan stays a separate group
+PASS R25 group expansion key cannot cross PID reuse
+PASS R25 search accepts executable identity, display metadata and exact PID
+PASS R25 parent, arguments and PID substrings cannot add unrelated search results
+PASS R25 trimmed and empty identity filters
+PASS R25 hidden product/description metadata cannot override the displayed name filter
+PASS R25 repeated refreshed snapshots keep the active identity filter
+PASS R25 network ownership gate requires exact known creation and executable path
+PASS R25 group sums private resident and valid CPU [it-IT]
+PASS R25 partial coverage cannot mix total WS or missing CPU into private totals [it-IT]
+PASS R25 explicit total-resident fallback stays separate [it-IT]
+PASS R25 missing group counters remain unavailable [it-IT]
+PASS R25 sample time, partial read and per-PID local/remote port ownership retained [it-IT]
+PASS R25 unverified selected instance cannot acquire measured zero sockets [it-IT]
+PASS R25 group sums private resident and valid CPU [en-US]
+PASS R25 partial coverage cannot mix total WS or missing CPU into private totals [en-US]
+PASS R25 explicit total-resident fallback stays separate [en-US]
+PASS R25 missing group counters remain unavailable [en-US]
+PASS R25 sample time, partial read and per-PID local/remote port ownership retained [en-US]
+PASS R25 unverified selected instance cannot acquire measured zero sockets [en-US]
+PASS R25 invalid selected anchor cannot retain another instance's group sockets or counters
+PASS R25 network invalidation preserves independent CPU/RAM while displaying unavailable socket identity
+PASS R25 visible tray click requests minimize
+PASS R25 duplicate or double-click notification cannot immediately reopen minimized window
+PASS R25 later tray click restores a minimized window
+PASS R25 second click of restore double-click cannot minimize again
+PASS R25 hidden window is restored and invalid callback clock is ignored
+PASS R25 IPv4/IPv6 TCP/UDP row stride matches SDK fixture
+PASS R25 native port conversion distinguishes ephemeral local 50000 and remote 443
+PASS R25 independent IPv6 fixture preserves scope, owner and network-order port
+PASS R25 independent native table fixture decodes owner, state and network-order port
+PASS R25 growing socket table retried with new capacity
+PASS R25 native access error cannot become a valid empty table
+PASS R25 table count exceeding returned bytes is rejected
+PASS R25 oversized table rejected before allocation
+NOT RUN: Windows native tables and owned loopback listener (Linux host).
+R25 grouping, identity filter and network table regressions complete.
+PASS R25 R26 user input cancels an older queued position
+PASS R25 R26 only the latest ticket may restore a viewport
+PASS R25 R26 middle-page reading freezes rank
+PASS R25 R26 pointer and keyboard targets do not move
+PASS R25 R26 automatic ranking resumes at top outside interaction
+PASS R25 R26 removal above retains the anchor screen position
+PASS R25 R26 growth above retains the anchor screen position
+PASS R25 R26 anchor offset cannot be negative
+PASS R25 R26 changed rank and a new PID retain reader order
+PASS R25 R26 exited PID disappears without reordering survivors
+PASS R25 R26 explicit sorting applies current ranking in place
+PASS R25 R26 reconciliation never clears or resets the collection
+PASS R25 R26 unchanged inventory produces no collection events
+PASS R25 R26 empty snapshot removes exited instances
+PASS R25 R28 Closing and native callbacks defer window changes
+PASS R25 R28 ordinary header click does not defer minimize
+R26 reading and native-command policy regressions complete.
+PASS R25 R27 catalog component uses Windows icon at expected path: smss.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: csrss.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: wininit.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: winlogon.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: LogonUI.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: services.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: svchost.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: lsass.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: LsaIso.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: dwm.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: explorer.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: conhost.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: fontdrvhost.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: sihost.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: ctfmon.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: RuntimeBroker.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: taskhostw.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: dllhost.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: audiodg.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: spoolsv.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: WmiPrvSE.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: SearchIndexer.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: SearchProtocolHost.exe
+PASS R25 R27 catalog component uses Windows icon at expected path: SearchFilterHost.exe
+PASS R25 R27 icon classification: reserved System PID
+PASS R25 R27 icon classification: reserved idle PID
+PASS R25 R27 icon classification: reserved idle display name
+PASS R25 R27 icon classification: non-reserved System name
+PASS R25 R27 icon classification: wrong reserved PID name
+PASS R25 R27 icon classification: wrong idle PID name
+PASS R25 R27 icon classification: unknown path does not promote a name
+PASS R25 R27 icon classification: unexpected executable path
+PASS R25 R27 icon classification: Windows prefix collision
+PASS R25 R27 icon classification: path traversal
+PASS R25 R27 icon classification: alternate stream
+PASS R25 R27 icon classification: control character in path
+PASS R25 R27 icon classification: snapshot name differs from file
+PASS R25 R27 icon classification: case and path separators
+PASS R25 R27 icon classification: executable extension omitted in snapshot
+PASS R25 R27 icon classification: actual alternate Windows drive
+PASS R25 R27 icon classification: empty Windows directory
+PASS R25 R27 icon classification: malformed Windows directory
+PASS R25 R27 icon classification: ShellHost OS product metadata
+PASS R25 R27 icon classification: SystemApps Italian OS metadata
+PASS R25 R27 icon classification: Microsoft app metadata is not an OS component
+PASS R25 R27 icon classification: publisher alone is insufficient
+PASS R25 R27 icon classification: OS product alone is insufficient
+PASS R25 R27 icon classification: lookalike publisher
+PASS R25 R27 icon classification: lookalike product
+PASS R25 R27 icon classification: OS metadata outside Windows
+PASS R25 R27 icon classification: OS metadata in Windows Temp
+PASS R25 R27 icon classification: ordinary app in system32
+PASS R25 R27 icon classification: ordinary app keeps original icon
+PASS R25 R27 visual classification never mutates the snapshot
+PASS R25 R27 Windows icon is a category marker rather than a safety verdict
+R27 Windows icon policy regressions complete; synthetic snapshots only.
+PASS R25 R28 Explorer or another Windows component keeps its distinct executable icon
+PASS R25 R28 ordinary application keeps its original icon
+PASS R25 R28 generic Windows host gets shared Windows fallback
+PASS R25 R28 generic third-party service is not promoted to Windows
+PASS R25 R28 missing icon for classified OS component uses Windows fallback
+PASS R25 R28 unavailable unclassified icon stays unavailable
+PASS R25 R28 independently created identical pixel content matches the generic icon
+PASS R25 R28 one different color channel retains a distinct icon
+PASS R25 R28 alpha differences retain a distinct icon
+PASS R25 R28 empty data cannot establish a generic icon match
+PASS R25 R28 pixel comparison has a fixed byte budget
+PASS R25 R28 explicit minimize acts before the queued dispatcher turn
+PASS R25 R28 old queued restore cannot undo an immediate minimize
+PASS R25 R28 later explicit restore remains available
+PASS R25 R28 explicit exit prevents later immediate window changes
+PASS R25 R28 window logging never writes from the caller thread
+PASS R25 R28 diagnostics retain at most the configured queue with one worker
+PASS R25 R28 accepted window diagnostic events retain their order
+PASS R25 R28 worker can be scheduled after a completed drain
+PASS R25 R28 a failing diagnostic sink cannot stop later window events
+PASS R25 R28 failed worker scheduling cannot throw through a window command
+R28 icon preference and window dispatch regressions complete.
+PASS R25 R29 a distinct Shell icon skips all embedded-resource reads
+PASS R25 R29 embedded executable icon replaces only a generic Shell icon
+PASS R25 R29 missing Shell icon can recover an embedded icon
+PASS R25 R29 a generic embedded resource is never called a recovered original
+PASS R25 R29 failed extraction remains explicitly unavailable
+PASS R25 R29 resource failure retains the existing generic image
+PASS R25 R29 trace events are one line and retain input click state order [it-IT]
+PASS R25 R29 trace captures event time and invariant monotonic elapsed time [it-IT]
+PASS R25 R29 one attempt has correlated events with sequence numbers [it-IT]
+Unhandled exception. System.Exception: FAIL R25 R29 journal retains at most its fixed capacity without losing the later restore [it-IT]
+   at Program.<<Main>$>g__Check|0_0(Boolean ok, String label)
+   at Program.<Main>$(String[] args)

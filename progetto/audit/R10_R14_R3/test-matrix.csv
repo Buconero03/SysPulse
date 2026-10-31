@@ -1,0 +1,9 @@
+test,kind,status,details
+R14 R2 NetworkDeviceTests and PacketCaptureTests,user Windows log,PASS REPORTED,Full suites completed; no live capture
+R14 R2 initial network tab tests,user Windows log,PASS REPORTED,Initial tab selection and enabled refresh confirmed
+R14 R2 NetworkUiTests,user Windows log,FAIL REPORTED,Cross-thread access after asynchronous refresh
+R14 R3 NetworkUiTests and SystemProcessUiTests,Windows WPF runtime,NOT EXECUTED,Dispatcher preflight and retained functional regressions supplied
+R14 R3 build-dashboard.ps1 and DPI,Windows pipeline/manual,NOT EXECUTED,Requires Windows; no local WPF runtime
+R1 portable 81 network + 22 system assertions,retained historical runtime logs,HISTORICAL PASS,Compiled source hashes retained; not rerun for fixture-only R3
+Current R14 R3 source and evidence guards,Python source/XML/mutations,PASS,94 checks; no C# execution
+R14 R2 to R14 R3 patch replay,git apply and byte comparison,PASS,14 changed or added files; audit metadata and manifest excluded

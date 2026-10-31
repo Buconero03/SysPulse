@@ -1,0 +1,53 @@
+namespace ProcessLens.RamMonitor;
+
+public sealed record ProcessReading(int Pid, int ParentPid, string Name, string? Path,
+    long? StartUtcTicks, DateTime ReadUtc, string Association, bool Included,
+    long? PrivateResidentBytes, long? WorkingSetBytes, long? PrivateCommitBytes, string Errors)
+{
+    public int? HandleParentPid { get; init; }
+}
+
+public sealed record MetricTotal(long? CompleteBytes, long? ObservedBytes, int Available, int Included, bool Complete);
+public sealed record SampleTotals(MetricTotal PrivateResident, MetricTotal WorkingSet, MetricTotal PrivateCommit,
+    int IncludedProcesses, int UnresolvedCandidates, int OutsideScope, bool EnumerationComplete)
+{
+    public static SampleTotals Aggregate(IReadOnlyList<ProcessReading> rows, bool enumerationComplete)
+    {
+        var members = rows.Where(r => r.Included).GroupBy(r => (r.Pid, r.StartUtcTicks)).Select(g => g.First()).ToArray();
+        int unresolved = rows.Count(r => r.Association == "Unresolved");
+        MetricTotal Sum(Func<ProcessReading, long?> select)
+        {
+            var values = members.Select(select).Where(v => v.HasValue && v.Value >= 0).Select(v => v!.Value).ToArray();
+            long observed = 0;
+            foreach (long value in values) observed = checked(observed + value);
+            bool complete = enumerationComplete && unresolved == 0 && values.Length == members.Length;
+            return new(complete ? observed : null, values.Length > 0 || complete ? observed : null,
+                values.Length, members.Length, complete);
+        }
+        return new(Sum(r => r.PrivateResidentBytes), Sum(r => r.WorkingSetBytes), Sum(r => r.PrivateCommitBytes),
+            members.Length, unresolved, rows.Count(r => r.Association == "OutsideScope"), enumerationComplete);
+    }
+}
+
+public sealed class MonitorScope
+{
+    private readonly HashSet<string> _paths = new(StringComparer.OrdinalIgnoreCase);
+    public static readonly string[] Names = { "ProcessLens.exe", "ProcessLens.Guardian.Service.exe", "ProcessLens.MemoryAgent.exe", "ProcessLensProfiler.exe" };
+    public IReadOnlyCollection<string> Paths => _paths;
+    public MonitorScope(IEnumerable<string> paths)
+    {
+        foreach (string path in paths) _paths.Add(Normalize(path));
+    }
+    public bool IsCandidateName(string name) => Names.Contains(name, StringComparer.OrdinalIgnoreCase) ||
+        _paths.Any(p => System.IO.Path.GetFileName(p).Equals(name, StringComparison.OrdinalIgnoreCase));
+    public bool Contains(string? path) => path is not null && _paths.Contains(Normalize(path));
+    public static string Normalize(string path)
+    {
+        if (path.StartsWith(@"\\?\UNC\", StringComparison.OrdinalIgnoreCase)) path = @"\\" + path[8..];
+        else if (path.StartsWith(@"\\?\", StringComparison.Ordinal)) path = path[4..];
+        return System.IO.Path.GetFullPath(path);
+    }
+    public static bool VerifiedChild(ProcessReading child, ProcessReading parent) =>
+        child.Pid != parent.Pid && child.ParentPid == parent.Pid && child.HandleParentPid == parent.Pid && parent.Included &&
+        child.StartUtcTicks.HasValue && parent.StartUtcTicks.HasValue && child.StartUtcTicks.Value >= parent.StartUtcTicks.Value;
+}

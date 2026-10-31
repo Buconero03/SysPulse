@@ -1,0 +1,134 @@
+file,line,source_text,context
+global.json,2,"""sdk"": { ""version"": ""8.0.426"", ""rollForward"": ""disable"", ""allowPrerelease"": false }",Offline installer / local diagnostic; no application UI changes
+INSTALLA_PROCESSLENS.cmd,3,"""%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe"" -NoLogo -NoProfile -ExecutionPolicy Bypass -File ""%~dp0setup\install-offline.ps1""",Offline installer / local diagnostic; no application UI changes
+AVVIA_PROCESSLENS.cmd,3,"""%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe"" -NoLogo -NoProfile -ExecutionPolicy Bypass -File ""%~dp0setup\start-installed.ps1""",Offline installer / local diagnostic; no application UI changes
+DIAGNOSTICA_RETE.cmd,3,"""%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe"" -NoLogo -NoProfile -ExecutionPolicy Bypass -File ""%~dp0setup\diagnose-network.ps1""",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,2,$ErrorActionPreference = 'Stop',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,3,if ($env:OS -ne 'Windows_NT') { throw 'Diagnostica disponibile su Windows.' },Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,4,$lines = New-Object 'System.Collections.Generic.List[string]',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,7,Add-Result ('ProcessLens - prerequisiti rete - ' + [DateTime]::Now.ToString('yyyy-MM-dd HH:mm:ss')),Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,8,Add-Result ('Windows: ' + [Environment]::OSVersion.Version.ToString() + ' | processo 64 bit: ' + [Environment]::Is64BitProcess),Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,9,Add-Result ('Amministratore: ' + $admin),Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,10,"Add-Result 'Controllo locale: nessuna cattura, scansione Wi-Fi, sonda, modifica a servizi, audit o firewall.'",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,11,"foreach ($name in @('WlanSvc', 'EventLog')) {",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,12,try { $service = Get-Service -Name $name -ErrorAction Stop; Add-Result ('Servizio ' + $name + ': ' + $service.Status) },Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,13,catch { Add-Result ('Servizio ' + $name + ': N/D - ' + $_.Exception.Message) },Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,18,Add-Result ('Interfacce classificate Wi-Fi da Windows: ' + $wifi.Count),Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,26,Add-Result ('Indirizzi IPv4 locali su interfacce attive: ' + $ipv4 + ' (indirizzi non salvati nel rapporto)'),Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,27,} catch { Add-Result ('Inventario interfacce: N/D - ' + $_.Exception.Message) },Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,29,if (-not ('ProcessLensSetup.NativeCheck' -as [type])) {,Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,30,Add-Type -TypeDefinition @',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,36,"[DllImport(""kernel32.dll"", CharSet=CharSet.Unicode, SetLastError=true)]",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,38,"[DllImport(""kernel32.dll"", CharSet=CharSet.Ansi, ExactSpelling=true)]",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,40,"[DllImport(""kernel32.dll"")] static extern bool FreeLibrary(IntPtr module);",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,41,"[DllImport(""wlanapi.dll"")] static extern uint WlanOpenHandle(uint version, IntPtr reserved, out uint negotiated, out IntPtr client);",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,42,"[DllImport(""wlanapi.dll"")] static extern uint WlanEnumInterfaces(IntPtr client, IntPtr reserved, out IntPtr list);",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,43,"[DllImport(""wlanapi.dll"")] static extern void WlanFreeMemory(IntPtr memory);",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,44,"[DllImport(""wlanapi.dll"")] static extern uint WlanCloseHandle(IntPtr client, IntPtr reserved);",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,47,"if(module==IntPtr.Zero) return ""PktMon API: N/D - caricamento DLL di sistema, Win32 "" + Marshal.GetLastWin32Error();",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,49,"string[] names={""PacketMonitorInitialize"",""PacketMonitorUninitialize"",""PacketMonitorCreateLiveSession"",""PacketMonitorEnumDataSources"",""PacketMonitorCreateRealtimeStream"",""PacketMonitorAddSingleDataSourceToSession"",""PacketMonitorAttachOutputToSession"",""PacketMonitorSetSessionActive"",""PacketMonitorCloseSessionHandle"",""PacketMonitorCloseRealtimeStream""};",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,52,"return missing.Count==0 ? ""PktMon API: tutti i 10 export richiesti presenti; motore non avviato."" : ""PktMon API: export mancanti: "" + string.Join("", "",missing.ToArray());",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,59,"if(error!=0) return ""WLAN OpenHandle: Win32 "" + error + "" - "" + new Win32Exception((int)error).Message;",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,61,"if(error!=0) return ""WLAN EnumInterfaces: Win32 "" + error + "" - "" + new Win32Exception((int)error).Message;",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,62,"if(list==IntPtr.Zero) return ""WLAN: N/D - tabella mancante."";",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,64,"if(count<0 || count>16) return ""WLAN: N/D - conteggio fuori limite."";",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,65,"return ""WLAN API: "" + count + "" interfacce restituite; cache BSS e permesso Posizione non verificati."";",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,70,'@,Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,73,Add-Result ([ProcessLensSetup.NativeCheck]::Exports((Join-Path $env:SystemRoot 'System32\pktmonapi.dll'))),Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,74,} catch { Add-Result ('Verifica API native: N/D - ' + $_.Exception.Message) },Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,77,"$query = New-Object System.Diagnostics.Eventing.Reader.EventLogQuery('Security', [System.Diagnostics.Eventing.Reader.PathType]::LogName, '*')",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,81,Add-Result 'Registro Security: lettura consentita. Contenuto degli eventi non salvato.',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,82,} catch { Add-Result ('Registro Security: N/D - ' + $_.Exception.Message) },Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,84,$auditpol = Join-Path $env:SystemRoot 'System32\auditpol.exe',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,85,"foreach ($guid in @('{0CCE9226-69AE-11D9-BED3-505054503030}', '{0CCE9215-69AE-11D9-BED3-505054503030}')) {",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,87,Add-Result ('Audit in sola lettura: ' + $guid),Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,88,"$text = @(& $auditpol /get ""/subcategory:$guid"" 2>&1)",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,91,Add-Result ('Auditpol exit code: ' + $exitCode),Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,92,} catch { Add-Result ('Audit: N/D - ' + $_.Exception.Message) },Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,94,Add-Result '',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,95,Add-Result 'PROSSIMI CONTROLLI',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,96,"Add-Result 'Wi-Fi assente: verificare scheda, driver del produttore e WLAN AutoConfig. Un installer non aggiunge una scheda radio.'",Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,97,Add-Result 'Wi-Fi accesso negato: Impostazioni > Privacy e sicurezza > Posizione. Amministratore non sostituisce il consenso.',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,98,Add-Result 'PktMon export assenti: dipendono dalla versione di Windows; non copiare DLL da altri PC. La cattura IPv4 locale e separata.',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,99,Add-Result 'Segnali Windows: audit disabilitato o registro non accessibile non significa nessun tentativo di accesso.',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,100,Add-Result 'In ProcessLens: Elenca sorgenti Windows > seleziona sorgente > Cattura per 20 s; per Wi-Fi usa Leggi reti Wi-Fi e Cache radio Wi-Fi.',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,101,Add-Result 'Nessuno di questi controlli conta tutti i client del router o dimostra che qualcuno stia spiando un IP.',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,102,$logRoot = Join-Path $env:LOCALAPPDATA 'ProcessLens\logs',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,104,$report = Join-Path $logRoot 'rete-prerequisiti.txt',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,106,Write-Host ('Rapporto: ' + $report) -ForegroundColor Cyan,Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,108,$answer = Read-Host 'P: apri Posizione | S: apri Servizi | A: ripeti come amministratore | Invio: termina',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,110,'P' { Start-Process 'ms-settings:privacy-location' },Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,111,'S' { Start-Process (Join-Path $env:SystemRoot 'System32\services.msc') },Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,112,'A' {,Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,114,$ps = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe',Offline installer / local diagnostic; no application UI changes
+setup/diagnose-network.ps1,115,"Start-Process -FilePath $ps -Verb RunAs -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -File ""' + $PSCommandPath + '""')",Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,1,$ErrorActionPreference = 'Stop',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,2,. (Join-Path $PSScriptRoot 'offline-common.ps1'),Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,3,if ($env:OS -ne 'Windows_NT' -or -not [Environment]::Is64BitProcess -or $env:PROCESSOR_ARCHITECTURE -ne 'AMD64') {,Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,4,throw 'Questo pacchetto richiede Windows x64 e PowerShell a 64 bit. ARM64 e x86 non supportati.',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,8,$logRoot = Join-Path $env:LOCALAPPDATA 'ProcessLens\logs',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,12,Start-Transcript -LiteralPath (Join-Path $logRoot 'installazione-r20.txt') -Force | Out-Null,Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,14,Write-Host '[1/5] Verifica integrita del pacchetto completo...',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,17,throw 'Chiudi ProcessLens prima di installare. Nessun processo e stato terminato.',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,20,$marker = Join-Path $installRoot 'processlens-owned-r20.txt',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,23,throw 'La cartella di destinazione esiste e non appartiene a questa installazione. Nessun file sovrascritto.',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,27,Write-Host '[2/5] Preparazione .NET SDK e Desktop Runtime privati...',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,28,$sdkZip = Join-Path $PSScriptRoot 'payload\dotnet-sdk-8.0.426-win-x64.zip',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,29,if ((Get-FileHash -LiteralPath $sdkZip -Algorithm SHA512).Hash -ne $manifest.sdk_sha512) { throw 'SHA512 Microsoft SDK non corrispondente.' },Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,30,$dotnetRoot = Join-Path $installRoot 'dotnet',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,33,$dotnet = Join-Path $dotnetRoot 'dotnet.exe',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,35,"if ($LASTEXITCODE -ne 0 -or ""$version"".Trim() -ne '8.0.426') { throw 'SDK privato non avviabile. Vedere il log.' }",Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,37,$feed = [Security.SecurityElement]::Escape((Join-Path $PSScriptRoot 'payload\nuget')),Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,38,"$config = '<?xml version=""1.0"" encoding=""utf-8""?><configuration><packageSources><clear/><add key=""ProcessLensOffline"" value=""' + $feed + '""/></packageSources><disabledPackageSources><clear/></disabledPackageSources></configuration>'",Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,39,$configPath = Join-Path $sourceRoot 'NuGet.Config',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,41,throw 'NuGet.Config esistente e diverso: estrai il pacchetto in una nuova cartella.',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,44,Write-Host '[3/5] Test completi e compilazione WPF. Puo richiedere diversi minuti...',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,45,& (Join-Path $sourceRoot 'build-dashboard.ps1'),Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,46,if (-not (Test-Path -LiteralPath (Join-Path $sourceRoot 'publish\win-x64\ProcessLens.exe'))) { throw 'Build senza eseguibile GUI.' },Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,47,Write-Host '[4/5] Installazione applicazione e collegamenti...',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,48,$appRoot = Join-Path $installRoot 'app',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,50,Copy-Item -Path (Join-Path $sourceRoot 'publish\*') -Destination $appRoot -Recurse -Force,Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,51,Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'start-installed.ps1') -Destination $installRoot -Force,Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,52,Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'offline-common.ps1') -Destination $installRoot -Force,Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,53,Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'diagnose-network.ps1') -Destination $installRoot -Force,Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,55,$menu = Join-Path ([Environment]::GetFolderPath('Programs')) 'ProcessLens',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,57,$powershell = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,58,"foreach ($item in @(@{ Name='ProcessLens'; Script='start-installed.ps1' }, @{ Name='ProcessLens - Diagnostica rete'; Script='diagnose-network.ps1' })) {",Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,59,$link = $shell.CreateShortcut((Join-Path $menu ($item.Name + '.lnk'))),Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,62,"$link.Arguments = '-NoProfile -ExecutionPolicy Bypass -File ""' + $scriptPath + '""'",Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,66,Write-Host '[5/5] Installazione completata. Nessun servizio o criterio audit modificato.' -ForegroundColor Green,Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,67,Write-Host 'Apri ProcessLens dal menu Start. Windows mostrera la richiesta amministratore.',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,68,Write-Host 'Per i problemi rete usa DIAGNOSTICA_RETE.cmd o ProcessLens - Diagnostica rete nel menu Start.',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,69,Write-Host 'Wi-Fi: verifica anche Privacy e sicurezza > Posizione e il servizio WLAN AutoConfig.',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,70,Write-Host 'Le dipendenze sono locali. La verifica vulnerabilita online NuGet non e stata eseguita.',Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,72,Write-Host ('[INSTALLAZIONE INTERROTTA] ' + $_.Exception.Message) -ForegroundColor Red,Offline installer / local diagnostic; no application UI changes
+setup/install-offline.ps1,73,Write-Host ('Log: ' + (Join-Path $logRoot 'installazione-r20.txt')),Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,1,$ErrorActionPreference = 'Stop',Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,3,if (-not $env:LOCALAPPDATA) { throw 'LOCALAPPDATA non disponibile.' },Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,4,return Join-Path $env:LOCALAPPDATA 'Programs\ProcessLens\R20',Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,7,$manifestPath = Join-Path $Root 'setup\bundle-manifest.json',Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,9,if ($manifest.schema -ne 1 -or $manifest.bundle -ne 'ProcessLens-R20-win-x64-offline') { throw 'Manifest del pacchetto non valido.' },Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,13,if ([IO.Path]::IsPathRooted($relative) -or $relative -match '(^|[\\/])\.\.([\\/]|$)') { throw 'Percorso non valido nel manifest.' },Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,15,"if (-not $full.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase)) { throw 'File esterno al pacchetto.' }",Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,16,"if (-not (Test-Path -LiteralPath $full -PathType Leaf)) { throw ""File mancante: $relative"" }",Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,17,"if ((Get-FileHash -LiteralPath $full -Algorithm SHA256).Hash -ne $entry.sha256) { throw ""File modificato o incompleto: $relative"" }",Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,22,$env:DOTNET_ROOT = Join-Path $InstallRoot 'dotnet',Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,25,$env:DOTNET_MULTILEVEL_LOOKUP = '0',Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,26,$env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = '1',Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,27,$env:DOTNET_CLI_TELEMETRY_OPTOUT = '1',Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,28,$env:DOTNET_GENERATE_ASPNET_CERTIFICATE = 'false',Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,29,$env:NUGET_CERT_REVOCATION_MODE = 'offline',Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,30,$env:DOTNET_CLI_HOME = Join-Path $InstallRoot 'cli-home',Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,31,$env:NUGET_PACKAGES = Join-Path $InstallRoot 'packages',Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,32,$env:NuGetAudit = 'false' # Offline install only; no online vulnerability audit is claimed.,Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,33,$env:MSBUILDDISABLENODEREUSE = '1',Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,34,$env:DOTNET_CLI_DO_NOT_USE_MSBUILD_SERVER = '1',Offline installer / local diagnostic; no application UI changes
+setup/offline-common.ps1,35,$env:UseSharedCompilation = 'false',Offline installer / local diagnostic; no application UI changes
+setup/start-installed.ps1,1,$ErrorActionPreference = 'Stop',Offline installer / local diagnostic; no application UI changes
+setup/start-installed.ps1,2,. (Join-Path $PSScriptRoot 'offline-common.ps1'),Offline installer / local diagnostic; no application UI changes
+setup/start-installed.ps1,3,$installRoot = if (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'processlens-owned-r20.txt')) { $PSScriptRoot } else { Get-ProcessLensInstallRoot },Offline installer / local diagnostic; no application UI changes
+setup/start-installed.ps1,4,$exe = Join-Path $installRoot 'app\win-x64\ProcessLens.exe',Offline installer / local diagnostic; no application UI changes
+setup/start-installed.ps1,5,if (-not (Test-Path -LiteralPath $exe)) { throw 'ProcessLens non installato. Esegui INSTALLA_PROCESSLENS.cmd.' },Offline installer / local diagnostic; no application UI changes
+setup/start-installed.ps1,8,$ps = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe',Offline installer / local diagnostic; no application UI changes
+setup/start-installed.ps1,9,$script = Join-Path $installRoot 'start-installed.ps1',Offline installer / local diagnostic; no application UI changes
+setup/start-installed.ps1,10,"Start-Process -FilePath $ps -Verb RunAs -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -File ""' + $script + '""')",Offline installer / local diagnostic; no application UI changes

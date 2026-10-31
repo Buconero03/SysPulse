@@ -1,0 +1,31 @@
+{
+  "baseline_sha256": "62d14889b771b6921892f049063e90ad9f127637ca9c33eab7e90825650a6aa0",
+  "changed_production_and_test_files": [
+    "src/ProcessLens.App/App.xaml.cs",
+    "src/ProcessLens.App/CopyTestVisibility.cs",
+    "src/ProcessLens.App/MainWindow.xaml",
+    "src/ProcessLens.App/MainWindow.xaml.cs",
+    "src/ProcessLens.App/ProcessGroupRow.cs",
+    "src/ProcessLens.App/ProcessLens.App.csproj",
+    "src/ProcessLens.App/ProcessNetworkPresentation.cs",
+    "src/ProcessLens.App/ProcessRow.cs",
+    "src/ProcessLens.App/TrayWindowController.cs",
+    "src/ProcessLens.App/WindowLifetimePolicy.cs",
+    "src/ProcessLens.Core/ProcessGrouping.cs",
+    "src/ProcessLens.Core/ProcessNetworkEvidence.cs",
+    "src/ProcessLens.Core/ProcessSnapshot.cs",
+    "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "src/ProcessLens.Windows/OwnedNetworkTableReader.cs",
+    "src/ProcessLens.Windows/WindowsDeepProcessInspector.cs",
+    "tests/ProcessLens.BehaviorTests/Program.cs",
+    "tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj",
+    "tests/ProcessLens.ProcessGroupsTests/Program.cs",
+    "tests/ProcessLens.ProcessGroupsUiTests/ProcessLens.ProcessGroupsUiTests.csproj",
+    "tests/ProcessLens.ProcessGroupsUiTests/Program.cs",
+    "tests/check-ui-format-r9.ps1"
+  ],
+  "protected_components": "Guardian, MemoryAgent, profiler, RAM monitor, R24 CPU/RAM samplers and other native acquisitions BYTE IDENTICAL TO R24; network changes restricted to WindowsDeepProcessInspector and OwnedNetworkTableReader",
+  "new_dependencies": 0,
+  "new_binary": "NOT INCLUDED; full Windows build required once",
+  "WPF_runtime_DPI_UAC_RAM": "NOT EXECUTED / NOT MEASURED"
+}

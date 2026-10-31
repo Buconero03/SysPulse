@@ -1,0 +1,5122 @@
+{
+  "schema": 1,
+  "bundle": "ProcessLens-R20-win-x64-offline",
+  "sdk_sha512": "10261657109f1c62126f106a9ac966739b025b5f6b4a9f88ab7c6e73cacce9aec771895daa3267b8da933a83c32ee91bf458dc6704e1ddcd9bcf0d5edd036abb",
+  "files": [
+    {
+      "file": "ARCHITECTURE.md",
+      "sha256": "77f6625e200a744c017cc6c056e082a4fe9a90c3fa7083bc11e16f2e6b01928e",
+      "bytes": 6010
+    },
+    {
+      "file": "AVVIA-TUTTO.cmd",
+      "sha256": "fee963fd15e6119757f00b960865ed82e13ff89eb879b0b9f180d1aa823b8c5a",
+      "bytes": 727
+    },
+    {
+      "file": "AVVIA-VELOCE.cmd",
+      "sha256": "b0d5e0b5f68a0f341973e2137597969409b63520b841632ca41539fba2a349e7",
+      "bytes": 727
+    },
+    {
+      "file": "AVVIA_PROCESSLENS.cmd",
+      "sha256": "206e90e45203003062f60ae8bdfc075d700553cc834ad55d3c0be4800d616067",
+      "bytes": 189
+    },
+    {
+      "file": "AVVIO_DA_CMD_V0161.md",
+      "sha256": "0813a5ee5dcc6523a0ce5151a3d9938cd639fa0b86ae301d575af7fd89c1a914",
+      "bytes": 2330
+    },
+    {
+      "file": "Avvia-ProcessLens-con-log-RAM.cmd",
+      "sha256": "c4df830678a1f821346375b499ff84fc24eacd2379e955607862d68be6c51187",
+      "bytes": 120
+    },
+    {
+      "file": "Avvia-solo-monitor-RAM.cmd",
+      "sha256": "ef8f43bb23fa092682463a26feffc84aa623555dce7495b209412d05eb5aa561",
+      "bytes": 110
+    },
+    {
+      "file": "BUILD_FIX_BEHAVIOR_TERMINOLOGY_V0199_R3.md",
+      "sha256": "74b9c765a356e259b656d9e1552c4d54bda227802c64c298d68e2c95c4795bbd",
+      "bytes": 1761
+    },
+    {
+      "file": "BUILD_FIX_CS0136_V0153.md",
+      "sha256": "633022fddb813ef7b4d408e66fa1d6fce279d9fdb43e36e6c89e56b46b9c1f65",
+      "bytes": 938
+    },
+    {
+      "file": "BUILD_FIX_CS1009.md",
+      "sha256": "b9e876d1814194f75af6f8752823b3a8ade7e966d49d3f818696dfa6255cdb91",
+      "bytes": 636
+    },
+    {
+      "file": "BUILD_FIX_CS1039.md",
+      "sha256": "a1d648ec03a1005d578d02ea34d087dd75f687f0dfd13bd340161ccdf9e762bf",
+      "bytes": 984
+    },
+    {
+      "file": "BUILD_FIX_MEMORY_EVIDENCE_V0191.md",
+      "sha256": "0b3166ccde38c362f4d8104ad0dffc7e8896e43047506843f185c07b40a7a924",
+      "bytes": 1332
+    },
+    {
+      "file": "BUILD_FIX_UTF8_PS51_V0173.md",
+      "sha256": "74fff4d0bc3e26875a2e10a7c2f57900dac70fba64fd329d9167fd6fc8804bea",
+      "bytes": 1355
+    },
+    {
+      "file": "CHANGELOG_R10.md",
+      "sha256": "210da1b7e9736795000c6691c31759e41d2c4c35caa8c26bd21d0f46ea42f7f1",
+      "bytes": 4103
+    },
+    {
+      "file": "CHANGELOG_R7.md",
+      "sha256": "b029a1fde906614cd2b5df5b48b87feb7d9014583db14faea4523691c958ea04",
+      "bytes": 1493
+    },
+    {
+      "file": "CHANGELOG_R8.md",
+      "sha256": "5385bbcfb809c3e6c1d270c6bf88b088f6c9d4ecb3a0e1cd88f3c017ad47cd30",
+      "bytes": 941
+    },
+    {
+      "file": "CHANGELOG_R9.md",
+      "sha256": "d28ff0abbdd0e4012d7b7062fd559bf7667ff1141c1048c62e5c4b28205e7d35",
+      "bytes": 967
+    },
+    {
+      "file": "CLASSIFICATION_HIERARCHY_V01914.md",
+      "sha256": "dd6a057059105a6e202cc0a03dc6dc131416965358af8bfc31c07bab450e0229",
+      "bytes": 2391
+    },
+    {
+      "file": "CLASSIFICATION_LANGUAGE_V01911.md",
+      "sha256": "fadb8a1eb90ffe1576ccdb56556321d2e6995f23674c769bab65949e4c567345",
+      "bytes": 1372
+    },
+    {
+      "file": "COMPONENTI_WINDOWS_R15.md",
+      "sha256": "6687ad348e691aee9febe4cf19ccb374f43c7772986fb63a346359b06ec82d7b",
+      "bytes": 6734
+    },
+    {
+      "file": "COPIA_TESTI_E_REVISIONE_R10.md",
+      "sha256": "c3618adad6f0ba71a549c54343a28724d7d9666593a4fc09c2ea649b3769e522",
+      "bytes": 11512
+    },
+    {
+      "file": "CORREZIONE_CONTESTO_TEST_WPF_R14_R3.md",
+      "sha256": "cc9fe2a8adf30e8078205826a3706406ce25a1eb8e46fc36254f9998df428dee",
+      "bytes": 2070
+    },
+    {
+      "file": "CORREZIONE_CONTROLLO_POWERSHELL_R18_R2.md",
+      "sha256": "b0c410b4b0fd45f984acc4002bb244e592101e8fcc55ee437539b4e575f3a84b",
+      "bytes": 2656
+    },
+    {
+      "file": "CORREZIONE_LAYOUT_WPF_R18_R1.md",
+      "sha256": "27cdfd265b8b23302e7d4668701f6c43f0236fe9de4d419e6697168c0867da3a",
+      "bytes": 4854
+    },
+    {
+      "file": "CORREZIONE_REGISTRO_DISPOSITIVI_R14_R1.md",
+      "sha256": "ceed1be7b98b3c32ac1523f20ab41e7e159dacfdcd13145f7043ca018b4f7876",
+      "bytes": 2422
+    },
+    {
+      "file": "CORREZIONE_SCHEDA_RETE_R14_R2.md",
+      "sha256": "117bfa8696f28d900b8ebc65be4fef18cf348a98c2ebd73f2f6c65428d903668",
+      "bytes": 2896
+    },
+    {
+      "file": "CORREZIONI_VISUALI_R9.md",
+      "sha256": "c8445af4ea075ee49cf134259f5ab45c521b78a0841b7d6bbe5a4eecaa41000c",
+      "bytes": 6443
+    },
+    {
+      "file": "CPU_INTELLIGENCE.md",
+      "sha256": "c91a7e67eb23c3586ccfcee4190950661fe8d70ee1591e62583bc81caec0a2ae",
+      "bytes": 2409
+    },
+    {
+      "file": "CPU_RAM_RIPRISTINO_R10_R7.md",
+      "sha256": "22544c0b75370c8df28c0c43e9e72db42f28b549bbdfbb4e3d2b523ee29d1a25",
+      "bytes": 13395
+    },
+    {
+      "file": "DASHBOARD_BUILD_FIX_V0151.md",
+      "sha256": "c265cae11fba631b0aed15149b945380e2bc606e0de5bafd0c707dbb29692d66",
+      "bytes": 1363
+    },
+    {
+      "file": "DETAIL_HIERARCHY_V01910.md",
+      "sha256": "60d06b5577c1f1d4821a20d7af238c398b13947ddca2567a07f90540d8f4ac8e",
+      "bytes": 1626
+    },
+    {
+      "file": "DIAGNOSTICA_RETE.cmd",
+      "sha256": "f18225bbb5f9502ca0d17ca0db49c69c0573d8094929f67913482a5bc9f86440",
+      "bytes": 174
+    },
+    {
+      "file": "ELEVATION_AND_SERVICE_STOP_V0123.md",
+      "sha256": "6ca6f0ea33d2271fdf82d18d508b4b37fb634f60bb104133d67734e854d3bf1f",
+      "bytes": 2384
+    },
+    {
+      "file": "FIX_PREFLIGHT_POWERSHELL_V0199_R2.md",
+      "sha256": "b3ea80a13b2c6682a81ed5f9544f2d7d7881daefc95061d33904428a6189d715",
+      "bytes": 1545
+    },
+    {
+      "file": "GERARCHIA_RAPPORTI_R10_R3.md",
+      "sha256": "87111d9669553a41bb8ff43282a6c39a29f36f3dee4611f6ef0d2e4cccbe05b4",
+      "bytes": 5466
+    },
+    {
+      "file": "GUARDIAN_DASHBOARD_V015.md",
+      "sha256": "f9167d66a37a5a71f71ceb4722f6ece986342f4d58c5b3c4d560431d8bcdc969",
+      "bytes": 3498
+    },
+    {
+      "file": "GUARDIAN_ETW_BUILD_FIX.md",
+      "sha256": "8b949f07a710a69f17abc6bd55b0cf0bf48051bbc8e93bc6fa7b813a759d6e5a",
+      "bytes": 1466
+    },
+    {
+      "file": "GUARDIAN_ETW_NAMESPACE_FIX.md",
+      "sha256": "9f11d4d1c4f7b7244691fc5f6912e135f9b5cf0bd684a7272898add359aaf6cb",
+      "bytes": 1365
+    },
+    {
+      "file": "GUARDIAN_ETW_RUNTIME_FIX_V0133.md",
+      "sha256": "c1d3880fe2bdc1f1e2ca23862438b7be509729bbb0e073162bf8894f1cacd326",
+      "bytes": 2174
+    },
+    {
+      "file": "GUARDIAN_LINEAGE_V0152.md",
+      "sha256": "624faace3567599e3338ff794a3c302d80f90c8efe9c7796ab8411328d4147da",
+      "bytes": 3291
+    },
+    {
+      "file": "GUARDIAN_V013.md",
+      "sha256": "aee0a5757dace743688b69296d0c7bbade898d202b418f7f159dbb7c77a9f9e0",
+      "bytes": 5953
+    },
+    {
+      "file": "HOTFIX_BEHAVIOR_TCP_LISTEN_V01916_R1.md",
+      "sha256": "e1eef9d02dcf9d7678164b326929435eb7563ea2939ae0e7ed76bb79f7890b79",
+      "bytes": 1151
+    },
+    {
+      "file": "HOTFIX_CLEAR_PROCESS_IDENTIFICATION_V01916_R5.md",
+      "sha256": "6c238dd02435d61b8338aee001358af15d97efd630b2552ecec621bfb0febe61",
+      "bytes": 1551
+    },
+    {
+      "file": "HOTFIX_CLIPBOARD_R10_R9.md",
+      "sha256": "e175fd95f3619f9bfa16255fcfffc68c04fec9d91b4866454906d86a96b1f43c",
+      "bytes": 1866
+    },
+    {
+      "file": "HOTFIX_CS9035_TERMINOLOGY_V01912_R1.md",
+      "sha256": "bd84c51affa6ee4af54a5607aeccd2d8e9511cbad045e446c0b69b944617e372",
+      "bytes": 1793
+    },
+    {
+      "file": "HOTFIX_MEMORY_GUIDE_V01916_R4.md",
+      "sha256": "2c7c9dbbc47870f314b12cd63342728dd7709a532f742f23019d2c6c01cdd285",
+      "bytes": 1854
+    },
+    {
+      "file": "HOTFIX_POWERSHELL_V0196.md",
+      "sha256": "0b845e98160b93e44b1ad94f338f7299f79a71074c02e9041cbac1a8bfd2b541",
+      "bytes": 1906
+    },
+    {
+      "file": "HOTFIX_R10_R1.md",
+      "sha256": "8245f6dab24764e197241a67cd6f1e5a6993776cd15ff46a588c487a7d00424c",
+      "bytes": 2542
+    },
+    {
+      "file": "HOTFIX_R10_R2.md",
+      "sha256": "9f741dad9c353f5ed21b6d1ffac668610e8b9b9d9663ce4528671b2cd7000973",
+      "bytes": 3543
+    },
+    {
+      "file": "HOTFIX_R7_R1.md",
+      "sha256": "99a31d0197562ff0520e2492b4e6e77a8a3d9658478e71213a116d9c0372e817",
+      "bytes": 2585
+    },
+    {
+      "file": "HOTFIX_R7_R2.md",
+      "sha256": "945b782280028edf1fe3113a89e690aa1d19f2d7141a73b0bbb69b00cde685c6",
+      "bytes": 2530
+    },
+    {
+      "file": "HOTFIX_TCP_SEMANTIC_CONSISTENCY_V01916_R2.md",
+      "sha256": "be4e16c404df42520767b852072d8813663cb8535ee5e64fa86af650e7a74e82",
+      "bytes": 1662
+    },
+    {
+      "file": "HOTFIX_UI_METRIC_SPACING_V01916_R3.md",
+      "sha256": "1bf7bc3e5f18c5871112557272b4c1ed22a38043359ad33666972b5237c60944",
+      "bytes": 1489
+    },
+    {
+      "file": "HOTFIX_WPF_MC3072_V01910_R1.md",
+      "sha256": "ece46176a7b7ca4f346958e01e3a9b67e83d1e67f6054e2b9a243438bc3cda52",
+      "bytes": 1235
+    },
+    {
+      "file": "INSTALLA_PROCESSLENS.cmd",
+      "sha256": "b1387fb461e1704a4c8225fd7112edfa939badeab7dc16199a176034dfa5d776",
+      "bytes": 253
+    },
+    {
+      "file": "INTEGRAZIONE_WIRESHARK_R13.md",
+      "sha256": "fabeac5b28289185e332ac3d7edf092d898db7642e52ec8dbd06feadb70af3f7",
+      "bytes": 9929
+    },
+    {
+      "file": "INTERFACCIA_E_CONTESTO_R10_R10.md",
+      "sha256": "8760d767a3671277037f0e3e656d27ffb97d8df77a499d7043dc2c3b569e4d6f",
+      "bytes": 8610
+    },
+    {
+      "file": "INTERFACCIA_E_RAM_R19.md",
+      "sha256": "1c149b9526d85a06c958ba563648a7eaed8070e8552a9660d198554c5258ccfb",
+      "bytes": 3684
+    },
+    {
+      "file": "LOG_GUIDE_V0193.md",
+      "sha256": "cae2af324ed6fba607dc570235359d42a8e700a98c5fb10b40155857a46a1aa4",
+      "bytes": 2653
+    },
+    {
+      "file": "MEMORY_ACCURACY.md",
+      "sha256": "1668b1ba5a91c0c2c67985ac0419268a67547bd6827ef766c5c7cbfa5bda3734",
+      "bytes": 2309
+    },
+    {
+      "file": "MEMORY_ALERTS_V016.md",
+      "sha256": "cd61038a7683a0744f8d9995ef0ac0d10f03f35b533f1ad5bbbe757186005259",
+      "bytes": 2979
+    },
+    {
+      "file": "MEMORY_AUDIT_V0174.md",
+      "sha256": "e9dc07ae1eb82f5581718dbb7095444510daf50ab1b54149724b9a22ba0a09c5",
+      "bytes": 1708
+    },
+    {
+      "file": "MEMORY_INTELLIGENCE_V012.md",
+      "sha256": "f2db99788ad5f0bfda5f870b22ac8537832c09d4cfea53d413c3b7c92f47554a",
+      "bytes": 1750
+    },
+    {
+      "file": "MEMORY_TEST_LOCALE_FIX.md",
+      "sha256": "4befec25c71dabe93c2c71d4a8b025d06549cbb9233968adee6d5864ea91abd8",
+      "bytes": 1128
+    },
+    {
+      "file": "MONITOR_RAM_E_SERVIZI_R10_R8.md",
+      "sha256": "5512734d3147038d62ab7584dfa4b569bb25865465b0b1127eb3659a5dd315ce",
+      "bytes": 10333
+    },
+    {
+      "file": "NOTIFICA_CHIUSURA_R10_R4.md",
+      "sha256": "b0e38bf2ffe5aba9ab4e5088d5dd69be5f01e7fbd108d8173b86ca41d8f2fe08",
+      "bytes": 4891
+    },
+    {
+      "file": "ORIGIN_TRACE.md",
+      "sha256": "31dcb8513a6ae4d8588bfd4cd08be87bc1951472864ffbb49a49de8887711e4a",
+      "bytes": 2660
+    },
+    {
+      "file": "OTTIMIZZAZIONE_RAM_R8.md",
+      "sha256": "466182b42b314593bc57915fe8c2c8b7057feeb2b3045ea1bf882a5a03525ed4",
+      "bytes": 9853
+    },
+    {
+      "file": "PACCHETTO_UNICO_R20.md",
+      "sha256": "7d19f9f07665fe72fef98d127301cacc9afec2fb3a52e009cf70590849fc236f",
+      "bytes": 5765
+    },
+    {
+      "file": "PERFORMANCE_HOTFIX_V0198.md",
+      "sha256": "03f11406cfcdf1d9b334ec3a991a87c76a997c463bc44631f9a294fac3ae8ebf",
+      "bytes": 2312
+    },
+    {
+      "file": "PERFORMANCE_STORAGE_HARDENING_V0141.md",
+      "sha256": "4c998c628cfc9c0433a748d71d23fce2caad6d63c7edaedbc08f1ba49b7777fa",
+      "bytes": 3159
+    },
+    {
+      "file": "PROBLEMI_APERTI_R7.md",
+      "sha256": "dd373e03f9fd1c4f27103b53281941f7aa939dfd351095caa8cf12c751d2462f",
+      "bytes": 3876
+    },
+    {
+      "file": "PROCESS_ACTIVITY_INTELLIGENCE_V014.md",
+      "sha256": "f29d7654aace622ce55f59419078954c7c893a17f0ad1ee121b86269e9ebb8aa",
+      "bytes": 2489
+    },
+    {
+      "file": "PROCESS_INTELLIGENCE_V017.md",
+      "sha256": "b7eea90706346bdafd6e00c31758da666e43e418ee8fd5713f0ee7f30c2972f2",
+      "bytes": 3188
+    },
+    {
+      "file": "PROCESS_QUERY.md",
+      "sha256": "5a268e4fa4a1c473d73e139b30cb9991bba3a72ea42f86faf0470ab7cfaa6a80",
+      "bytes": 2935
+    },
+    {
+      "file": "PROCESS_TERMINATION.md",
+      "sha256": "69d5dc4e3f48b9e5f2a5f7bf58198cd8a0471a8c64708f5ed48b40e100b96751",
+      "bytes": 1780
+    },
+    {
+      "file": "PROFILA-DOTNET.cmd",
+      "sha256": "17beb1b07d44f231a5b9395ebb43bdef030f52e9ee4ed3d552fe89a6a656c78f",
+      "bytes": 134
+    },
+    {
+      "file": "PROFILER_COMPAT_V0192.md",
+      "sha256": "66ec4b61c5a3d2bf4525efc7e4f0bb39c11806ed87f01e8d860ba4c5627b400a",
+      "bytes": 2190
+    },
+    {
+      "file": "PROFILER_E2E_VALIDATION_V01912.md",
+      "sha256": "f58f1475ebcd3eb7b9eccfd5c23e85b900e04b781e368e65c0ca52890e033d27",
+      "bytes": 3138
+    },
+    {
+      "file": "RAPPORTO_REVISIONE_R6_R7.md",
+      "sha256": "1e0f81ac9d1253a6ae90e661c015391911233327534fc4677185eac62aa0e792",
+      "bytes": 9895
+    },
+    {
+      "file": "README.md",
+      "sha256": "8cff66d36c410db3ef57bf074abc128093d283bda516e10863ac46385c31969a",
+      "bytes": 37990
+    },
+    {
+      "file": "REGISTRO_LEGGIBILE_R10_R6.md",
+      "sha256": "be00f044edd9e2af95f272e48eff624473407d6025cc4f482b264e10b336f579",
+      "bytes": 5350
+    },
+    {
+      "file": "RELEASE_NOTES_V01916.md",
+      "sha256": "2af5aa9a62cc2dc74afe59475edbed7247537df49d6de31ddfeec6f3ad994b18",
+      "bytes": 3839
+    },
+    {
+      "file": "RETE_CORREZIONI_R18.md",
+      "sha256": "614ffef6173ecb6b505882a94ada7b82f42c0a13709deb87c88b47c29a14568b",
+      "bytes": 6774
+    },
+    {
+      "file": "RETE_NATIVA_R16.md",
+      "sha256": "9058f3e9ad8ff2bbd42f9d37e4e4f7768f200f459d4fdd66b5f11510bef9c128",
+      "bytes": 7117
+    },
+    {
+      "file": "RETE_NATIVA_R17.md",
+      "sha256": "e8f69bb262c22639ff651956cea23a82bdcda425b9920d8101b6b6fe0c61db3a",
+      "bytes": 8209
+    },
+    {
+      "file": "RETE_R10_R12.md",
+      "sha256": "d3bc8d6e0fbc13088e59bc94f1939a7650e689e2c6188f39e730f69f027fa078",
+      "bytes": 8104
+    },
+    {
+      "file": "REVISIONE_TERMINOLOGICA_V01916_R6.md",
+      "sha256": "7df032bcad3d3999724be8c0d75f73d1c17ec1c31aa5aaeaba3ddf342e379209",
+      "bytes": 1501
+    },
+    {
+      "file": "RIPRISTINO_FINESTRA_R10_R5.md",
+      "sha256": "01e22baf94e6299e3d75cb8e8269737e901987ec8ea8abe8cd125970a55b80f8",
+      "bytes": 6520
+    },
+    {
+      "file": "RUNTIME_PROFILER_V019.md",
+      "sha256": "d2d7a38eed6b9c54c3b90c47251f7f95d37b012ae48ab4a8cf5e36cb4e864fbc",
+      "bytes": 3119
+    },
+    {
+      "file": "SERVICES_EXPLORER.md",
+      "sha256": "3ae0639e23bf117bb98f940d2a852b264474b72e9821906aa50547b8b63c97ba",
+      "bytes": 2405
+    },
+    {
+      "file": "SERVICE_CONTEXT_MENU.md",
+      "sha256": "7b1d2d81370a62362b2c39e1f6c6873c24bf0f58c2bdca3537009e7d93289531",
+      "bytes": 1875
+    },
+    {
+      "file": "SERVICE_HISTORY.md",
+      "sha256": "09563e8d0746a7ffcc9d451ba7f30d1ea7178c961803f4372dddd723e6a08c6e",
+      "bytes": 2241
+    },
+    {
+      "file": "SERVICE_STOP.md",
+      "sha256": "7a319b83c6b1209e6e66e41227676f20958c55017b816b7ea5587c93186a39aa",
+      "bytes": 1331
+    },
+    {
+      "file": "SHA256SUMS_R7.txt",
+      "sha256": "5e905b04c600699dd5df13dff215c8b94803d0527056a14651f90d255f8e3d87",
+      "bytes": 31000
+    },
+    {
+      "file": "SHA256SUMS_R8.txt",
+      "sha256": "df343525679d4e1a076b78a593ab27451a3ef5c71feacff89d0ea4087f93e244",
+      "bytes": 33076
+    },
+    {
+      "file": "SHA256SUMS_R9.txt",
+      "sha256": "1f3aa5ccb7098dafac489f7459b62bf2c96e8224088e5593b3d648869c3a5c6b",
+      "bytes": 34742
+    },
+    {
+      "file": "SHA256SUMS_V01915.txt",
+      "sha256": "dba6011c2b0f0a75ae565a7a58635f677067b1b2f10ab247d8325a63de071c5b",
+      "bytes": 24607
+    },
+    {
+      "file": "SHA256SUMS_V01916.txt",
+      "sha256": "fa51b5eaed9ce8777349957820eb665c34f97910f3716381c0d27bed91d9d392",
+      "bytes": 25007
+    },
+    {
+      "file": "SHA256SUMS_V01916_R1.txt",
+      "sha256": "67bfb2f43f565e6e7c21850a2eec77da3d3a74bbb43df299be19c43fa13e31c5",
+      "bytes": 25095
+    },
+    {
+      "file": "SHA256SUMS_V01916_R3.txt",
+      "sha256": "5ccd70b7315b26ab991b3dcd41d083d8aae094ea287c296c6035320f631f23de",
+      "bytes": 25315
+    },
+    {
+      "file": "SHA256SUMS_V01916_R4.txt",
+      "sha256": "2bf07e3bc14d553dc963655eb9fb6260e4fde592d5a3bc5ac98d1abd814897ba",
+      "bytes": 25614
+    },
+    {
+      "file": "SHA256SUMS_V01916_R5.txt",
+      "sha256": "29a57c832786b25ef7448f61bf54698defe17b6fb622d81eed8d8e72412d5191",
+      "bytes": 25906
+    },
+    {
+      "file": "SHA256SUMS_V01916_R6.txt",
+      "sha256": "069587f7ed82665f720807c33af39f3357a4bab95f11588a05f5888615dcb72d",
+      "bytes": 26100
+    },
+    {
+      "file": "SHA256_MANIFEST.txt",
+      "sha256": "2bf07e3bc14d553dc963655eb9fb6260e4fde592d5a3bc5ac98d1abd814897ba",
+      "bytes": 25614
+    },
+    {
+      "file": "SHA256_MANIFEST_V01913.txt",
+      "sha256": "84d8d3ca8d4e5a10a19d18d4b147393c0726104b6399de67bfa3ceec6fe2431c",
+      "bytes": 24069
+    },
+    {
+      "file": "SHA256_MANIFEST_V0197.txt",
+      "sha256": "5a4ae9081f4525ddc6663f3b541b3b81eee48dae84b633d1546c449fcc926a6d",
+      "bytes": 21031
+    },
+    {
+      "file": "SHA256_MANIFEST_V0199.txt",
+      "sha256": "3d6b78307187b773e1186269a465fc4afb0d9707eba26ceb3a72e63987d914b9",
+      "bytes": 21685
+    },
+    {
+      "file": "SISTEMA_WINDOWS_R14.md",
+      "sha256": "8f401694cb33237cfb25e7260ee4380c3e60f0f5fdf1768cb7fb4353bbc4d00d",
+      "bytes": 6593
+    },
+    {
+      "file": "STARTUP_DIAGNOSTICS.md",
+      "sha256": "5918a0875ce9a11f765aed09fa349c1c782c2b917efdea7b7894ef8694a12d03",
+      "bytes": 1663
+    },
+    {
+      "file": "STARTUP_FIX_V0113.md",
+      "sha256": "4e68a6c4b5dd5bf4a5d16fce5e15828a1be795030d3f2431bec80ca33f435130",
+      "bytes": 1371
+    },
+    {
+      "file": "START_TIME.md",
+      "sha256": "734fa78fd511caddcb415c9134d5d031db2ac7c121acc73bf4daccba28ede285",
+      "bytes": 1100
+    },
+    {
+      "file": "STATIC_VALIDATION_V0197.md",
+      "sha256": "d1611ebaae52ada58b83f7ad60f3fb0bb569fe6c30d7658db4a8eff15d8a75b9",
+      "bytes": 1008
+    },
+    {
+      "file": "STRUCTURED_DIAGNOSTICS_V01913.md",
+      "sha256": "784a59c95c2a01d4bee7c867a38db4f727447fa935805c760019b998c521bc2d",
+      "bytes": 6101
+    },
+    {
+      "file": "TERMINOLOGIA_PROFESSIONALE_V0199.md",
+      "sha256": "d881862199dc4d6891d5430491370b402e578f0925334d52c4fd8eb9d6ea50ba",
+      "bytes": 2144
+    },
+    {
+      "file": "TERMINOLOGY_EVIDENCE_V0197.md",
+      "sha256": "1d65541dbdeaa2392715e9c880e5d0da86c116dbe9614eef2441725bba3779eb",
+      "bytes": 2055
+    },
+    {
+      "file": "TERMINOLOGY_V01915.md",
+      "sha256": "ec96529d9ebef78fec42eb4ff80d9d95819aab86542b714e1ce2f0beab20146d",
+      "bytes": 1412
+    },
+    {
+      "file": "UI_MEMORY_DASHBOARD_V0195.md",
+      "sha256": "14d44ed9affd08958dd7e130de299030270cd2baae3f001569ff11eb529cdeed",
+      "bytes": 1868
+    },
+    {
+      "file": "UI_MEMORY_REPORT_V0171.md",
+      "sha256": "f682d49e58485edf406e43e33f90ac7b6f0cc431cdf26e56aaec9c24cb1b52fc",
+      "bytes": 1860
+    },
+    {
+      "file": "UI_MEMORY_REPORT_V0172.md",
+      "sha256": "6b4328a651b96cd9abe5705294e81e0b7b846d874cd6b48544f952bb4ef123b8",
+      "bytes": 1396
+    },
+    {
+      "file": "UI_READABILITY_V0194.md",
+      "sha256": "a5a4a2c77933c5580c40f3001e67c5721c0f34ddce9fa3334db450ddc8663036",
+      "bytes": 1284
+    },
+    {
+      "file": "UX_WRITING_R10_R11.md",
+      "sha256": "f84b8f6bec88872b8a8be7c13f0085fb0b82333252afb76006b5128d7dbbb88f",
+      "bytes": 8802
+    },
+    {
+      "file": "VALIDAZIONE_WINDOWS_R7.md",
+      "sha256": "030655afe7df8db548908f31587b878bff0fdd87f511a7d052d1f3b34865ddcb",
+      "bytes": 5935
+    },
+    {
+      "file": "VALUTAZIONE_PROGETTO_R10_R6.md",
+      "sha256": "90d35db94181c3353e9a1a1d9aacd191775888fa7e6502f349deedfa6fe614c2",
+      "bytes": 10193
+    },
+    {
+      "file": "VERSION.txt",
+      "sha256": "16c16002675f3a5c9e776a3f6612977ddaa5a38e31d3abc2646a9287742d89bf",
+      "bytes": 38
+    },
+    {
+      "file": "WINDOWS_ALLOCATION_INSPECTOR_V018.md",
+      "sha256": "a80ff534f3f339c86e4a6342ae1228341a2cb4f9fe21d8b092aa1d270e23a4bf",
+      "bytes": 2429
+    },
+    {
+      "file": "audit/R10/USER_CURRENT_to_R10.patch",
+      "sha256": "7fad7e8253407faeff7b758500ef3b72933ecb159b0bb79c86dc8f6f4173aeb9",
+      "bytes": 1348642
+    },
+    {
+      "file": "audit/R10/change-matrix.csv",
+      "sha256": "27ee73d3219c090f6514b3830467661d6ff698ad80b5be443a70c49cfecebb28",
+      "bytes": 128449
+    },
+    {
+      "file": "audit/R10/copy-coverage.json",
+      "sha256": "74df8d2f4fe45be6aea40a82a5325045a95df6a2f268ebf98d18334596176041",
+      "bytes": 26767
+    },
+    {
+      "file": "audit/R10/diff-vs-R9.json",
+      "sha256": "6e32d69bb412b6326131bc62904f405f01ad9391a1919fa762495acadb5a34fb",
+      "bytes": 2365
+    },
+    {
+      "file": "audit/R10/excluded-generated.json",
+      "sha256": "dfa137f5e6d05834787f442b30372b6a447b998c1ac3acb996ded5cefc557991",
+      "bytes": 55026
+    },
+    {
+      "file": "audit/R10/files-changed.csv",
+      "sha256": "30c7e6009606104aab40534f89f37f7c79f14fec26981e9f7c26a3a369dd059c",
+      "bytes": 33814
+    },
+    {
+      "file": "audit/R10/input.json",
+      "sha256": "698e4eaba60ff235e4ae744edd305d2712e2a2050bcb03ff172709f7b77f6877",
+      "bytes": 558
+    },
+    {
+      "file": "audit/R10/merge-prior.json",
+      "sha256": "aeac227b1a75ce75ddd32f56a2437e3aa71ff3def0665e3008005e519fea1330",
+      "bytes": 5549
+    },
+    {
+      "file": "audit/R10/patch-replay-results.json",
+      "sha256": "c74d0dc9fe2de3dba9c5ef1b247900859a78ba3430af4d0c85acca14c530794e",
+      "bytes": 254
+    },
+    {
+      "file": "audit/R10/retention.json",
+      "sha256": "7a69740a06005a22fc8762c217eb9d95d6e48e3dff4a3e05a87cd0d9c85c03e3",
+      "bytes": 395
+    },
+    {
+      "file": "audit/R10/review-findings.csv",
+      "sha256": "cf915574ee132c7f7dd81248780dcc157ceed9ccea0281511b8f9e92e6539529",
+      "bytes": 2934
+    },
+    {
+      "file": "audit/R10/structural-results.json",
+      "sha256": "eeee064730d1d896fc148cb5c74fdcc625bf4805d0f6a4318bd7db915232cc8a",
+      "bytes": 11645
+    },
+    {
+      "file": "audit/R10/test-matrix.csv",
+      "sha256": "465bca2a2d045900af4cf88c26baaeef74b80679426ba6e37a78f5733f407e00",
+      "bytes": 6591
+    },
+    {
+      "file": "audit/R10/user-changes.json",
+      "sha256": "83c4d72ddec26e1c14335b0a82d9f99d4ded7b63c5a309020d4b82050779919d",
+      "bytes": 701
+    },
+    {
+      "file": "audit/R10/user-changes.patch",
+      "sha256": "3254118573069a83094bbe44d1560ed33646590ec3aabfd13b5b05c10cf92606",
+      "bytes": 133095
+    },
+    {
+      "file": "audit/R10_R1/R10_to_R10_R1.patch",
+      "sha256": "226a92c6631711523c25ef8c7cdcb0fbd6c37558f51f5037a3a55c3ff0b2a6e3",
+      "bytes": 13510
+    },
+    {
+      "file": "audit/R10_R1/button-regressions.json",
+      "sha256": "bd065cf8cda1fe164c4d41c156fa89d0b65d1f3178ae8de7489e722468cff5c7",
+      "bytes": 478
+    },
+    {
+      "file": "audit/R10_R1/files-changed.csv",
+      "sha256": "1d5c539be534c146d6f9a6324f21630725a1cc3cd0f5b7a2755eb751ede96f48",
+      "bytes": 1573
+    },
+    {
+      "file": "audit/R10_R1/patch-replay-results.json",
+      "sha256": "ee42142ef04b57caa609dbdd9351695030b780f9f6a4568f5cff4449240d4c44",
+      "bytes": 233
+    },
+    {
+      "file": "audit/R10_R1/test-matrix.csv",
+      "sha256": "1a7827a8ad8a001823eae9fd17de3c98055f50af6f2ec300d06c243f12c456a4",
+      "bytes": 280
+    },
+    {
+      "file": "audit/R10_R1/windows-reported-results.json",
+      "sha256": "3b5ba999dbad84b6e0c09045b99ca3aad9491e8569aff07411c2590306c582fd",
+      "bytes": 572
+    },
+    {
+      "file": "audit/R10_R10/R10_R9_to_R10_R10.patch",
+      "sha256": "f9243a2faf25addd8e0f8aebfe1c85be13950e2e0f6014a3b3bc3b5fd2eef5b0",
+      "bytes": 76328
+    },
+    {
+      "file": "audit/R10_R10/files-changed.csv",
+      "sha256": "1b71f3bbd323b06122d192152e0231badf1fb1ed1cd870ae5601c5d800e864d1",
+      "bytes": 3299
+    },
+    {
+      "file": "audit/R10_R10/monitor-navigation-source-mutations.json",
+      "sha256": "dda693772965c64ba332a7151db114f3624dd9cf04b28613deeb862b2cd72ed2",
+      "bytes": 1662
+    },
+    {
+      "file": "audit/R10_R10/patch-replay-results.json",
+      "sha256": "81906156968b9d388edf7969da6f614a39e278eb7a97cb10ae4f2e9f0065bedd",
+      "bytes": 305
+    },
+    {
+      "file": "audit/R10_R10/request-evidence.json",
+      "sha256": "9f9e6e69ab8be8677140cfc2387cc35b5aaf26ebf3344ab49206fe4a50bc988c",
+      "bytes": 738
+    },
+    {
+      "file": "audit/R10_R10/resource-source-mutations.json",
+      "sha256": "a719ad2836b88f8ae976485a9e32c96ad75f76f90c42bf22aae1bce445bd23f0",
+      "bytes": 1879
+    },
+    {
+      "file": "audit/R10_R10/retention.json",
+      "sha256": "e04b1746cf2ff5d06a65f609b9da06755db930a6c62145f02e1f3043f70b0657",
+      "bytes": 380
+    },
+    {
+      "file": "audit/R10_R10/source-retention.json",
+      "sha256": "7dc574768a68c53072634b11df5afec8a126a8cfb9495d27f5ee7ebedf88f488",
+      "bytes": 18280
+    },
+    {
+      "file": "audit/R10_R10/string-ledger.csv",
+      "sha256": "bc4a5d261f06642dcd4b5531232b066e29860fe8987e0c4dd783551ac88bac46",
+      "bytes": 120034
+    },
+    {
+      "file": "audit/R10_R10/structural-results.json",
+      "sha256": "9046cd7d5d66c962c4b7c80d58cc017922f8f7dc33588d8b048eb38a1178883f",
+      "bytes": 3963
+    },
+    {
+      "file": "audit/R10_R10/test-matrix.csv",
+      "sha256": "a72f9031749dafc7c09d3dd00354ede37ee16b4649d7191e5ab43a2c03e62e37",
+      "bytes": 720
+    },
+    {
+      "file": "audit/R10_R11/R10_R10_to_R10_R11.patch",
+      "sha256": "0bce5f0353e906ec5fd291a02a316cbf76df98e548ea74df542996e215607f30",
+      "bytes": 369620
+    },
+    {
+      "file": "audit/R10_R11/authorized-source-edits.json",
+      "sha256": "5354f5e9db2046c747367c2f06be3db3648818045c8772cae322feae71cc67f3",
+      "bytes": 7631
+    },
+    {
+      "file": "audit/R10_R11/editorial-replacements.json",
+      "sha256": "97a9579b7e839d8786499fb7df3f7a0bd0c6d96f80b54e1044d870a73d60d6f0",
+      "bytes": 52866
+    },
+    {
+      "file": "audit/R10_R11/files-changed.csv",
+      "sha256": "1273b9a17b4813d878fc725d8a13893a29ac77c8015aed11dfb63e53f12586c3",
+      "bytes": 13458
+    },
+    {
+      "file": "audit/R10_R11/monitor-navigation-source-mutations.json",
+      "sha256": "dda693772965c64ba332a7151db114f3624dd9cf04b28613deeb862b2cd72ed2",
+      "bytes": 1662
+    },
+    {
+      "file": "audit/R10_R11/patch-replay-results.json",
+      "sha256": "41e302895ab176cc6d11c1e7c9ad2f6afb10721c0b55a7ceb971c75088abba47",
+      "bytes": 304
+    },
+    {
+      "file": "audit/R10_R11/request-evidence.json",
+      "sha256": "8fb85c00c9484882bbfbc3fd208cbb0784d46f252a665456f938af9d3a6333ef",
+      "bytes": 594
+    },
+    {
+      "file": "audit/R10_R11/resource-source-mutations.json",
+      "sha256": "a719ad2836b88f8ae976485a9e32c96ad75f76f90c42bf22aae1bce445bd23f0",
+      "bytes": 1879
+    },
+    {
+      "file": "audit/R10_R11/retention.json",
+      "sha256": "50ca3228895a7449d265b213e38c92d17935de6c95f1c86dd18d1f5754f7b85d",
+      "bytes": 296
+    },
+    {
+      "file": "audit/R10_R11/source-retention.json",
+      "sha256": "241aede6593b31afda680955f53790a67828d214f63c444ad059bb209071d23b",
+      "bytes": 14609
+    },
+    {
+      "file": "audit/R10_R11/string-ledger.csv",
+      "sha256": "520623acf7da813a534512fb4f1eaaaaf152e5f4b1aa8a7454c4ad237dd3c28c",
+      "bytes": 108869
+    },
+    {
+      "file": "audit/R10_R11/test-matrix.csv",
+      "sha256": "2dda156d1c2b738034aac77c1b56ff219a070bb081569744b977b32edd7f7c1f",
+      "bytes": 6511
+    },
+    {
+      "file": "audit/R10_R11/ux-source-results.json",
+      "sha256": "7df95a788d577127151d4bf5c49b71eb7c330e042a016da57ee8dd2cb99eb365",
+      "bytes": 4520
+    },
+    {
+      "file": "audit/R10_R11/workspace-results.json",
+      "sha256": "d4bb01a453f00ed85fa21dbe927ba95e50b12214b3834f9235cff7223cd79e4b",
+      "bytes": 3960
+    },
+    {
+      "file": "audit/R10_R12/R11_R2_to_R12.patch",
+      "sha256": "8d3be8daf938d6cc28df841ff5c303b7ee907ea22970dc488f22cc917217da93",
+      "bytes": 99757
+    },
+    {
+      "file": "audit/R10_R12/authorized-source-edits.json",
+      "sha256": "7859cf5c8e09fa511b9380ebec33d5b0efcbeaee6cfcd1909a7aa8d841e07b27",
+      "bytes": 3080
+    },
+    {
+      "file": "audit/R10_R12/files-changed.csv",
+      "sha256": "f34124cecc99579ff2dfbe5179c6d4fc781dafb7b74e0c5454ce6781d035e7f2",
+      "bytes": 4820
+    },
+    {
+      "file": "audit/R10_R12/monitor-navigation-source-mutations.json",
+      "sha256": "dda693772965c64ba332a7151db114f3624dd9cf04b28613deeb862b2cd72ed2",
+      "bytes": 1662
+    },
+    {
+      "file": "audit/R10_R12/network-source-results.json",
+      "sha256": "5073a8ff8a6a24a178cbb0e6ae8c001f0af494130930c823a72062bf1a5f1e1d",
+      "bytes": 4098
+    },
+    {
+      "file": "audit/R10_R12/patch-replay-results.json",
+      "sha256": "cddacd35eb49bc9a64f541f60c3792ffe648cae324de998ec892c74d9270bc58",
+      "bytes": 245
+    },
+    {
+      "file": "audit/R10_R12/request-evidence.json",
+      "sha256": "a555c544804af94c0a4ca934080fbefd451a1b0e00c6ac958b73910df762cfde",
+      "bytes": 586
+    },
+    {
+      "file": "audit/R10_R12/resource-source-mutations.json",
+      "sha256": "a719ad2836b88f8ae976485a9e32c96ad75f76f90c42bf22aae1bce445bd23f0",
+      "bytes": 1879
+    },
+    {
+      "file": "audit/R10_R12/retention.json",
+      "sha256": "3df707fac0f6e8c42f6cf49eb89b24fa460400b73cdcf8e2f0d4be9f6babb5b8",
+      "bytes": 314
+    },
+    {
+      "file": "audit/R10_R12/source-retention.json",
+      "sha256": "84f7bc5a73e4f6967d03858e8bb49d611310146b711ecff7e68b6abc777dccde",
+      "bytes": 18413
+    },
+    {
+      "file": "audit/R10_R12/string-ledger.csv",
+      "sha256": "36b31e77f6821d1197f15cf4f1c3e1df285e71fdf3deb92c6e68d2fd54c0a150",
+      "bytes": 41576
+    },
+    {
+      "file": "audit/R10_R12/test-matrix.csv",
+      "sha256": "4c491bf142e1afa6453f03eb0ad06c36bcad6abe357de358375425d14de3c284",
+      "bytes": 7068
+    },
+    {
+      "file": "audit/R10_R12/ux-source-results.json",
+      "sha256": "8a01e9730b3cbdd3f4059b3da44df66a2e2f7906b362a6b5b58fef41c8899f2b",
+      "bytes": 4535
+    },
+    {
+      "file": "audit/R10_R12/workspace-results.json",
+      "sha256": "0159e368e840a489af2f560eaf68bc7162a1166557591da0575d6301e4e0d1c6",
+      "bytes": 3974
+    },
+    {
+      "file": "audit/R10_R13/R12_to_R13.patch",
+      "sha256": "177ec7ccca938068206834665b9469aa48a693859c903c85a83308fdb21289f8",
+      "bytes": 85788
+    },
+    {
+      "file": "audit/R10_R13/authorized-source-edits.json",
+      "sha256": "a6b4d5ef88da0a63e6e07d0b1b81f4624606b0d9a3c9b5ef70e197d085c8cc5c",
+      "bytes": 2707
+    },
+    {
+      "file": "audit/R10_R13/files-changed.csv",
+      "sha256": "8a6798fbcb1526def53b57da5dac72b59584c31f6e486e7b712c0138ceabff36",
+      "bytes": 4221
+    },
+    {
+      "file": "audit/R10_R13/monitor-navigation-source-mutations.json",
+      "sha256": "dda693772965c64ba332a7151db114f3624dd9cf04b28613deeb862b2cd72ed2",
+      "bytes": 1662
+    },
+    {
+      "file": "audit/R10_R13/network-source-results.json",
+      "sha256": "4b26419f6ec18b59c32e89df517e2bd64159deccd276749223b521c1178e2d4e",
+      "bytes": 4112
+    },
+    {
+      "file": "audit/R10_R13/packet-source-results.json",
+      "sha256": "2c5adf3004f78a4bbd96287597c2494c8988a5e7cc7ba41eed90f6d160084ed2",
+      "bytes": 3803
+    },
+    {
+      "file": "audit/R10_R13/patch-replay-results.json",
+      "sha256": "0b7284173d61850edcf862f1652312f3290e99fd772a3f2b1cf17728b5ef1409",
+      "bytes": 242
+    },
+    {
+      "file": "audit/R10_R13/request-evidence.json",
+      "sha256": "88b6bb59ae17c7b56598765a29b1abc4bd1918345e3cf83efaeb98c14e8b70ef",
+      "bytes": 601
+    },
+    {
+      "file": "audit/R10_R13/resource-source-mutations.json",
+      "sha256": "a719ad2836b88f8ae976485a9e32c96ad75f76f90c42bf22aae1bce445bd23f0",
+      "bytes": 1879
+    },
+    {
+      "file": "audit/R10_R13/retention.json",
+      "sha256": "e29e57561bcf80cdf80c46c992a60f84fb635ccfa569d8182567c7440cd6e7b1",
+      "bytes": 378
+    },
+    {
+      "file": "audit/R10_R13/source-retention.json",
+      "sha256": "4a5ebcd1fb88206f381e4e570a51faa051c322f8038771cfd349beea982f33fb",
+      "bytes": 19183
+    },
+    {
+      "file": "audit/R10_R13/string-ledger.csv",
+      "sha256": "506f99fb636897d7fcbc8aa947f4d8feaecd39e1e2b0add61f0360791c1eb351",
+      "bytes": 37533
+    },
+    {
+      "file": "audit/R10_R13/test-matrix.csv",
+      "sha256": "40a2e260bc00e59bb1d5068f8737c861e8f270d8c1541f96863847d7ced37e45",
+      "bytes": 7524
+    },
+    {
+      "file": "audit/R10_R13/ux-source-results.json",
+      "sha256": "5ac7091d83208854be9b1e541106efd8c6e4bf81534518d1b5dcd8e039afa72c",
+      "bytes": 4550
+    },
+    {
+      "file": "audit/R10_R13/workspace-results.json",
+      "sha256": "0159e368e840a489af2f560eaf68bc7162a1166557591da0575d6301e4e0d1c6",
+      "bytes": 3974
+    },
+    {
+      "file": "audit/R10_R14/PRIMA_DOPO.md",
+      "sha256": "d9496bf44a03f92f52c8f0cf20c811b9008755a7cd28a9ef369790808f1f618e",
+      "bytes": 1285
+    },
+    {
+      "file": "audit/R10_R14/R13_to_R14.patch",
+      "sha256": "3830d29bcd3d6cca2c21b1b9af8bf52f54b1911e9c188c0e156f4796890709aa",
+      "bytes": 101266
+    },
+    {
+      "file": "audit/R10_R14/authorized-source-edits.json",
+      "sha256": "2968c3648d8d5ff91b6f02e598ab868de029585736ab22974fc4968010ca1a68",
+      "bytes": 3056
+    },
+    {
+      "file": "audit/R10_R14/files-changed.csv",
+      "sha256": "5a582438d88743ef1ca94f9b1bd7766855221b0893cc35fcf4f5ac7a0c1bd9cd",
+      "bytes": 3443
+    },
+    {
+      "file": "audit/R10_R14/monitor-navigation-source-mutations.json",
+      "sha256": "dda693772965c64ba332a7151db114f3624dd9cf04b28613deeb862b2cd72ed2",
+      "bytes": 1662
+    },
+    {
+      "file": "audit/R10_R14/patch-replay-results.json",
+      "sha256": "432f5b1b983664db2943cea0c0ca35143dae1122e43161f32640cc9e1d6317df",
+      "bytes": 281
+    },
+    {
+      "file": "audit/R10_R14/request-evidence.json",
+      "sha256": "3cea9fc0446683393367a545c84781827c923652451bfa290b7a6c539d893528",
+      "bytes": 309
+    },
+    {
+      "file": "audit/R10_R14/resource-source-mutations.json",
+      "sha256": "a719ad2836b88f8ae976485a9e32c96ad75f76f90c42bf22aae1bce445bd23f0",
+      "bytes": 1879
+    },
+    {
+      "file": "audit/R10_R14/retention.json",
+      "sha256": "882efb805ce51f1d8e8ff516f8e8f29842595af6c887b6984b27f3ade95b66ef",
+      "bytes": 248
+    },
+    {
+      "file": "audit/R10_R14/source-results.json",
+      "sha256": "6200f171f3d4fa732d072c5bffae4a91747190f2177e669e45a48bbab5f9ea0d",
+      "bytes": 4470
+    },
+    {
+      "file": "audit/R10_R14/source-retention.json",
+      "sha256": "f19f89e087ddf1c2b50dc4817ce399330b88ed9663bcd6c929b869459b850924",
+      "bytes": 19531
+    },
+    {
+      "file": "audit/R10_R14/string-ledger.csv",
+      "sha256": "e9c66968873524638a08225222d256cc227f3b18cb5a44a82d9935aa3963aa00",
+      "bytes": 28674
+    },
+    {
+      "file": "audit/R10_R14/test-matrix.csv",
+      "sha256": "eb1aae105c6ddadb99f112faaa83656efc975e5c164b8e4ab1dd00dd016759fb",
+      "bytes": 6045
+    },
+    {
+      "file": "audit/R10_R14_R1/PRIMA_DOPO.md",
+      "sha256": "fbe3666f5f4b730a6045c84278bac64b3eb65b789eefc5d7a6ee118c0ad097fb",
+      "bytes": 1500
+    },
+    {
+      "file": "audit/R10_R14_R1/R14_to_R14_R1.patch",
+      "sha256": "e1a8bd4ada8cadfe8f65067dec05c1218638f490366109f7453fc990e5c472a1",
+      "bytes": 29972
+    },
+    {
+      "file": "audit/R10_R14_R1/authorized-source-edits.json",
+      "sha256": "072c54695f1ffc3a86ead8d15781faf9cdd88dba7f89c173f2d85f51597c74b7",
+      "bytes": 914
+    },
+    {
+      "file": "audit/R10_R14_R1/baseline-repro.log",
+      "sha256": "ddc8d3ad2438bcb9c1053092b091e72ddd3665b15a70cb4897037d11a7465fc7",
+      "bytes": 3646
+    },
+    {
+      "file": "audit/R10_R14_R1/catalog-source-results.json",
+      "sha256": "9ec38e72d1aec076be0ca0a6125ddac0ffa85e6452625eb22518ab2e9446b15e",
+      "bytes": 2170
+    },
+    {
+      "file": "audit/R10_R14_R1/core-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R14_R1/files-changed.csv",
+      "sha256": "b5ff4861bc8ae2acbf90a2863a9c64954d9fc30c07b77dcd4c3e4b2920323302",
+      "bytes": 1971
+    },
+    {
+      "file": "audit/R10_R14_R1/monitor-navigation-source-mutations.json",
+      "sha256": "dda693772965c64ba332a7151db114f3624dd9cf04b28613deeb862b2cd72ed2",
+      "bytes": 1662
+    },
+    {
+      "file": "audit/R10_R14_R1/network-tests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R14_R1/network-tests-run.log",
+      "sha256": "59c48eeda379566439f2182c45f6b26b1ddae9e1695b944b24ac34023b7c5a36",
+      "bytes": 7018
+    },
+    {
+      "file": "audit/R10_R14_R1/packet-tests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R14_R1/patch-replay-results.json",
+      "sha256": "c87d052a54360716e6ea2838aace5fa18874bc50e57a7ff1fceb97f32262b1c7",
+      "bytes": 281
+    },
+    {
+      "file": "audit/R10_R14_R1/resource-source-mutations.json",
+      "sha256": "a719ad2836b88f8ae976485a9e32c96ad75f76f90c42bf22aae1bce445bd23f0",
+      "bytes": 1879
+    },
+    {
+      "file": "audit/R10_R14_R1/retention.json",
+      "sha256": "361e3c9a5b0ed275f24442633781d424fce656a78839cbab90e3995f60088e1c",
+      "bytes": 286
+    },
+    {
+      "file": "audit/R10_R14_R1/runtime-evidence.json",
+      "sha256": "f6ae917c84c42a725e67617c3483b376821123331e4044ba4ec759afcfc7e78a",
+      "bytes": 4716
+    },
+    {
+      "file": "audit/R10_R14_R1/string-ledger.csv",
+      "sha256": "dae43867c10526ac8d269dfbd3c277d637749ac2b91710fbda61515d7f1a7e68",
+      "bytes": 49
+    },
+    {
+      "file": "audit/R10_R14_R1/system-source-results.json",
+      "sha256": "44c8f04202abe84fe234fcee19aae141db034b7a0f1308118d3785d8d1cdf416",
+      "bytes": 4478
+    },
+    {
+      "file": "audit/R10_R14_R1/system-tests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R14_R1/system-tests-run.log",
+      "sha256": "fa6789f47fa20cc6462a31c0f655675a90bcea07c9cf28b28f8122f829b2bffb",
+      "bytes": 1437
+    },
+    {
+      "file": "audit/R10_R14_R1/test-matrix.csv",
+      "sha256": "aed6c1328ffab450a153bab7be07a98632c63fa1f525dad84b4099034a58da23",
+      "bytes": 929
+    },
+    {
+      "file": "audit/R10_R14_R2/PRIMA_DOPO.md",
+      "sha256": "129ae165e294c356b02e8260e20e8088921945c4e30114d2550bf3b3c3052cb9",
+      "bytes": 1476
+    },
+    {
+      "file": "audit/R10_R14_R2/R14_R1_to_R14_R2.patch",
+      "sha256": "7a1c71c239eca4b99cbadd34dbbb285a5fed6b5acc98a658cd87ccd5ef0a65a6",
+      "bytes": 34607
+    },
+    {
+      "file": "audit/R10_R14_R2/authorized-source-edits.json",
+      "sha256": "f9729e62b21cf68dd152861f334b0efb354369d753fad7327050fc4f72262c82",
+      "bytes": 1403
+    },
+    {
+      "file": "audit/R10_R14_R2/catalog-retention-results.json",
+      "sha256": "ffae0bf86819c6f04bb461ed0afa40c062000788ca2ccbb45f01454b7d7fbff6",
+      "bytes": 2226
+    },
+    {
+      "file": "audit/R10_R14_R2/files-changed.csv",
+      "sha256": "dc2defb243491a0e22e54be49348423958497bf8b04c834e238f3befd82426b4",
+      "bytes": 1963
+    },
+    {
+      "file": "audit/R10_R14_R2/patch-replay-results.json",
+      "sha256": "a4dc1dfd4c9035ea8b09fb19ab7340733ce01d137a3b10f7d5be741beae7c22d",
+      "bytes": 281
+    },
+    {
+      "file": "audit/R10_R14_R2/reported-evidence.json",
+      "sha256": "ca8c6bdab8a76afacfa3eb92fd15e9c28a008ad785e91d689b5669374e730025",
+      "bytes": 752
+    },
+    {
+      "file": "audit/R10_R14_R2/reported-windows-build.log",
+      "sha256": "96e0b2cf21eba62833c16aa34aebf3e09134f43ec700986271943273a7712540",
+      "bytes": 31118
+    },
+    {
+      "file": "audit/R10_R14_R2/retention.json",
+      "sha256": "078f9f3087c96767d8e34e511050fb6ca8c650d289444deda5d3986505e03424",
+      "bytes": 338
+    },
+    {
+      "file": "audit/R10_R14_R2/string-ledger.csv",
+      "sha256": "2490c30b38491f6b4d4cda2d46f390958bb6113fd98f3b2eee5d3669db56947b",
+      "bytes": 3153
+    },
+    {
+      "file": "audit/R10_R14_R2/system-retention-results.json",
+      "sha256": "d3e2095c2d327d6b6ca931bb1466e2e124219394e20bbb5c2a4adfaa21e87781",
+      "bytes": 4475
+    },
+    {
+      "file": "audit/R10_R14_R2/tab-source-results.json",
+      "sha256": "85fd2f4e66be1daf580362d2b6bdd3f954e293b80d16badbf40a06fd5628f5a5",
+      "bytes": 2820
+    },
+    {
+      "file": "audit/R10_R14_R2/test-matrix.csv",
+      "sha256": "8c7f539bee24e4cea3c4109d3ce1ab2f68a8622e1bc97dd1f011a349f829e206",
+      "bytes": 1148
+    },
+    {
+      "file": "audit/R10_R14_R2/wpf-reference.json",
+      "sha256": "6954449c186e0567ea5bc90af96307706f4afadedff56c8f3b4869d35c3067c9",
+      "bytes": 596
+    },
+    {
+      "file": "audit/R10_R14_R3/R14_R2_to_R14_R3.patch",
+      "sha256": "0e8b58303164b22c18c3eaa6f5e1950c887db6840ef8d0fb09bd0f2c8db53a23",
+      "bytes": 47000
+    },
+    {
+      "file": "audit/R10_R14_R3/authorized-source-edits.json",
+      "sha256": "d6022f1c3a33a2588d9b8f6219be5d1e5fa9cdd8022a9aba5986a61cea32c08d",
+      "bytes": 1298
+    },
+    {
+      "file": "audit/R10_R14_R3/before-after.md",
+      "sha256": "cdc539f452614bcb31d449ade7423fc40a9c9a712e612b7b6113585c0fff9848",
+      "bytes": 593
+    },
+    {
+      "file": "audit/R10_R14_R3/catalog-retention-results.json",
+      "sha256": "d34e4c602f91c34d81c9b7edd97553ae565e28154e83af7c126db67a8eccb3ba",
+      "bytes": 2235
+    },
+    {
+      "file": "audit/R10_R14_R3/context-source-results.json",
+      "sha256": "f6669a1b90cae64299bba07235d7d07d8215e248afe2a81bcfb957386625904a",
+      "bytes": 4394
+    },
+    {
+      "file": "audit/R10_R14_R3/files-changed.csv",
+      "sha256": "4c7327102d8a913bcfce9d35cb47cd2b9354368a71630af12001bba405ec5ffe",
+      "bytes": 2260
+    },
+    {
+      "file": "audit/R10_R14_R3/patch-replay-results.json",
+      "sha256": "009e266d22f9d6b355cac13c264e9852f41c12ab6d0f1fa9e51e40b4244b1e03",
+      "bytes": 281
+    },
+    {
+      "file": "audit/R10_R14_R3/reported-windows-build-excerpt.log",
+      "sha256": "82a5ad45621509cbf568d8f8d80145ee7412021e7202523af542b2bd0ef3f5a1",
+      "bytes": 863
+    },
+    {
+      "file": "audit/R10_R14_R3/retention.json",
+      "sha256": "9ea60d3e22aaf5b76d62d21feafda62906816b1d705f04a54cd2fcbfc795f82a",
+      "bytes": 338
+    },
+    {
+      "file": "audit/R10_R14_R3/string-ledger.csv",
+      "sha256": "46a72ebc887dd1d651cdf278330b5c4c268fd1a3e5c863eebd02af2691fbe468",
+      "bytes": 6593
+    },
+    {
+      "file": "audit/R10_R14_R3/system-retention-results.json",
+      "sha256": "d3e2095c2d327d6b6ca931bb1466e2e124219394e20bbb5c2a4adfaa21e87781",
+      "bytes": 4475
+    },
+    {
+      "file": "audit/R10_R14_R3/tab-retention-results.json",
+      "sha256": "8124ea80dbaa30522968f80286b6010191c033cbb80ee5dc017f00e9e36e7e3c",
+      "bytes": 2844
+    },
+    {
+      "file": "audit/R10_R14_R3/test-matrix.csv",
+      "sha256": "6ac3c3df81fdc3bc90f00ffb6bf0edccf8194b3560878e8cd4121300697b1a86",
+      "bytes": 1015
+    },
+    {
+      "file": "audit/R10_R15/ProcessLens.Core-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R15/ProcessLens.NetworkDeviceTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R15/ProcessLens.NetworkDeviceTests-run.log",
+      "sha256": "59c48eeda379566439f2182c45f6b26b1ddae9e1695b944b24ac34023b7c5a36",
+      "bytes": 7018
+    },
+    {
+      "file": "audit/R10_R15/ProcessLens.SystemProcessTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R15/ProcessLens.SystemProcessTests-run.log",
+      "sha256": "fa6789f47fa20cc6462a31c0f655675a90bcea07c9cf28b28f8122f829b2bffb",
+      "bytes": 1437
+    },
+    {
+      "file": "audit/R10_R15/ProcessLens.WindowsComponentTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R15/ProcessLens.WindowsComponentTests-run.log",
+      "sha256": "dbb5e4bfd4b9efbef7060694559cccfbae28bee20ff0d037298d0cf221414ecf",
+      "bytes": 5211
+    },
+    {
+      "file": "audit/R10_R15/R14_R3_to_R15.patch",
+      "sha256": "e8bbdb6483d5eda480cbae3681e721734ab4b9deab2cd7634c2d2cfbb01fce29",
+      "bytes": 99467
+    },
+    {
+      "file": "audit/R10_R15/authorized-source-edits.json",
+      "sha256": "0ce84138a02dddbcfca88266b581e3a269663a8ae9992f4189629f07f9193796",
+      "bytes": 3730
+    },
+    {
+      "file": "audit/R10_R15/before-after.md",
+      "sha256": "51407f93042b6c522a0672a380f70f1d78d29d4290069d1b8f59b304c134245f",
+      "bytes": 1136
+    },
+    {
+      "file": "audit/R10_R15/catalog-retention-results.json",
+      "sha256": "b9296192bba8dbc8fa10b9d553e3171990a278eabc5321c92c9242989e51af8a",
+      "bytes": 2258
+    },
+    {
+      "file": "audit/R10_R15/component-source-results.json",
+      "sha256": "75c0eb88b3e485c4c6caf5330b46b716c7bfdc9ad3c62912387cdfc0873bbd6b",
+      "bytes": 4462
+    },
+    {
+      "file": "audit/R10_R15/context-retention-results.json",
+      "sha256": "fa14247b0341f864b972baa6d2a3915ac7eba04f7898fde18c0c28f6d46ffcee",
+      "bytes": 4529
+    },
+    {
+      "file": "audit/R10_R15/csharp-syntax.log",
+      "sha256": "9281d00126ccf99c8693fcb0178086aadfdb540232a2f17292548bfd8caa13a0",
+      "bytes": 381
+    },
+    {
+      "file": "audit/R10_R15/files-changed.csv",
+      "sha256": "d5580d78bbc4f7b1dc739d51b9166d9bb4d9df9839ca1fc1ead8af75d5db3760",
+      "bytes": 3489
+    },
+    {
+      "file": "audit/R10_R15/patch-replay-results.json",
+      "sha256": "39194b374b829097237f1c47e3c51d3e348bd14db2d597449c29de97208ad057",
+      "bytes": 281
+    },
+    {
+      "file": "audit/R10_R15/retention.json",
+      "sha256": "4c0d40496b582d15f86e74922c9c9e4bf4aaa4b5da913e034da24235e44e72fc",
+      "bytes": 335
+    },
+    {
+      "file": "audit/R10_R15/runtime-evidence.json",
+      "sha256": "404c776fb2a3740299732e45c842e21bae3c6d60f01d5112caa40148281facf3",
+      "bytes": 4842
+    },
+    {
+      "file": "audit/R10_R15/scope.json",
+      "sha256": "b4e2d3d3f4f407e5cbba729f49bf30aa403c4933083e34b52e0f9b8aa437c12e",
+      "bytes": 650
+    },
+    {
+      "file": "audit/R10_R15/string-ledger.csv",
+      "sha256": "79122b0bd88ec0d8d8d65ab5fa41e04184531f32dcc531ce3b575e140d65e9f6",
+      "bytes": 35029
+    },
+    {
+      "file": "audit/R10_R15/syntax-evidence.json",
+      "sha256": "2a3789fc4bd97fe655dd7e58fa90f25bbb0ec7039d2bc2c4945c738008e61b42",
+      "bytes": 726
+    },
+    {
+      "file": "audit/R10_R15/system-retention-results.json",
+      "sha256": "fe2ed5afb23bea3bd6fcf77924a458d24b70c4984c8c197c15c8389b1dc1a46e",
+      "bytes": 4541
+    },
+    {
+      "file": "audit/R10_R15/tab-retention-results.json",
+      "sha256": "858533a4716ee3cd9477f1519e4ec3d65e55c031253b9b6adc152d25ee9ae9ba",
+      "bytes": 2923
+    },
+    {
+      "file": "audit/R10_R15/test-matrix.csv",
+      "sha256": "139265ca0e664122612d4fbc538e4784e052ce1321c08fd2e697ee317b1d7a9f",
+      "bytes": 1218
+    },
+    {
+      "file": "audit/R10_R16/ProcessLens.Core-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R16/ProcessLens.NativeNetworkTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R16/ProcessLens.NativeNetworkTests-run.log",
+      "sha256": "ad2579b2989b0d7047549504e7521a20b289f245849d505ed379df248ca9c66e",
+      "bytes": 3566
+    },
+    {
+      "file": "audit/R10_R16/ProcessLens.NetworkDeviceTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R16/ProcessLens.NetworkDeviceTests-run.log",
+      "sha256": "59c48eeda379566439f2182c45f6b26b1ddae9e1695b944b24ac34023b7c5a36",
+      "bytes": 7018
+    },
+    {
+      "file": "audit/R10_R16/ProcessLens.SystemProcessTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R16/ProcessLens.SystemProcessTests-run.log",
+      "sha256": "fa6789f47fa20cc6462a31c0f655675a90bcea07c9cf28b28f8122f829b2bffb",
+      "bytes": 1437
+    },
+    {
+      "file": "audit/R10_R16/ProcessLens.WindowsComponentTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R16/ProcessLens.WindowsComponentTests-run.log",
+      "sha256": "dbb5e4bfd4b9efbef7060694559cccfbae28bee20ff0d037298d0cf221414ecf",
+      "bytes": 5211
+    },
+    {
+      "file": "audit/R10_R16/R15_to_R16.patch",
+      "sha256": "d64752dd4d0fbe27f9e8b75116606c91f5bec6f460b0a3ddad853f210ea05ced",
+      "bytes": 111164
+    },
+    {
+      "file": "audit/R10_R16/authorized-source-edits.json",
+      "sha256": "5c301eb23de20c7f6b1bcf303029e6dd72c89b2a7586a985a0a4cb77cc5c05b5",
+      "bytes": 3743
+    },
+    {
+      "file": "audit/R10_R16/before-after.md",
+      "sha256": "685e2c9d5ab87b4eb6c692e5324cd6b2094224b66c8d71d5e68e348c92b94f8b",
+      "bytes": 1047
+    },
+    {
+      "file": "audit/R10_R16/catalog-retention-results.json",
+      "sha256": "b9296192bba8dbc8fa10b9d553e3171990a278eabc5321c92c9242989e51af8a",
+      "bytes": 2258
+    },
+    {
+      "file": "audit/R10_R16/component-retention-results.json",
+      "sha256": "7efc843565280a8c0b3a9da290e1aa289ec6a912311d5452ce3696d14f1333b5",
+      "bytes": 4448
+    },
+    {
+      "file": "audit/R10_R16/context-retention-results.json",
+      "sha256": "1fe2112adde68e7a75e5147a8812fcc0c1ea39effd059402b067263c7f599bce",
+      "bytes": 4509
+    },
+    {
+      "file": "audit/R10_R16/csharp-syntax.log",
+      "sha256": "b86db5e0654dba4b028168caf90a7245804edf25e53f7f3524f08e45eeadef2b",
+      "bytes": 456
+    },
+    {
+      "file": "audit/R10_R16/files-changed.csv",
+      "sha256": "186ca5a75674960a085ec3cd71d87814d6c6f92f56447d74d057289ec8e46c56",
+      "bytes": 3665
+    },
+    {
+      "file": "audit/R10_R16/native-source-results.json",
+      "sha256": "91dc1d43ac9421537017c565e92845b5aeded46d5ddc003de9dae1158b16b362",
+      "bytes": 5085
+    },
+    {
+      "file": "audit/R10_R16/patch-replay-results.json",
+      "sha256": "bc19c552a58d2be17292588837a8b9e39942f479af41287df8a13d4a5e27da72",
+      "bytes": 281
+    },
+    {
+      "file": "audit/R10_R16/retention.json",
+      "sha256": "6fa27b698d346caa10ad21ac417870284c6260af8c33bbbf30bfb573fa42560f",
+      "bytes": 332
+    },
+    {
+      "file": "audit/R10_R16/runtime-evidence.json",
+      "sha256": "ba4da8a907653db69663e44bd6eb16159c0628d2dfe5b61f4d2c9cf72d354c0f",
+      "bytes": 5347
+    },
+    {
+      "file": "audit/R10_R16/scope.json",
+      "sha256": "b0ee9f58c329f1a473d3674650a0ec1b311835e9970c83932ca6479655512886",
+      "bytes": 668
+    },
+    {
+      "file": "audit/R10_R16/string-ledger.csv",
+      "sha256": "d68e6b081fca984ab66341ea9dad720763bb75bc90e0d9d84c8cf3b40f962130",
+      "bytes": 46597
+    },
+    {
+      "file": "audit/R10_R16/syntax-evidence.json",
+      "sha256": "44b89c61aa487671892390402243febd411007e48c4495ae45bf9b918a1d7573",
+      "bytes": 869
+    },
+    {
+      "file": "audit/R10_R16/system-retention-results.json",
+      "sha256": "fe2ed5afb23bea3bd6fcf77924a458d24b70c4984c8c197c15c8389b1dc1a46e",
+      "bytes": 4541
+    },
+    {
+      "file": "audit/R10_R16/tab-retention-results.json",
+      "sha256": "5d0e20b11c02bb020300b2fe5f702f6ae7fbf6d11f8e5951a1bdf2104abba0f7",
+      "bytes": 2923
+    },
+    {
+      "file": "audit/R10_R16/test-matrix.csv",
+      "sha256": "65bbc96fee58885520db4a489b6a66db239a7331948252f048ef41fe5617a9e6",
+      "bytes": 1235
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.CopyUiTests-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.Core-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.NativeCaptureTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.NativeCaptureTests-run.log",
+      "sha256": "3f1f8931f0bb1668f202891ec059c8802d92aeb341aeeeefef737911aa02c025",
+      "bytes": 5224
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.NativeNetworkTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.NativeNetworkTests-run.log",
+      "sha256": "ad2579b2989b0d7047549504e7521a20b289f245849d505ed379df248ca9c66e",
+      "bytes": 3566
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.NetworkDeviceTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.NetworkDeviceTests-run.log",
+      "sha256": "59c48eeda379566439f2182c45f6b26b1ddae9e1695b944b24ac34023b7c5a36",
+      "bytes": 7018
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.NetworkUiTests-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.Semantics-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.SystemProcessTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.SystemProcessTests-run.log",
+      "sha256": "fa6789f47fa20cc6462a31c0f655675a90bcea07c9cf28b28f8122f829b2bffb",
+      "bytes": 1437
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.SystemProcessUiTests-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.Windows-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.WindowsComponentTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R17/ProcessLens.WindowsComponentTests-run.log",
+      "sha256": "dbb5e4bfd4b9efbef7060694559cccfbae28bee20ff0d037298d0cf221414ecf",
+      "bytes": 5211
+    },
+    {
+      "file": "audit/R10_R17/R16_to_R17.patch",
+      "sha256": "55d8f3c588fc5bd90e4066c7db777508aa00f3d103eea8c5e9be9f75ae1a6495",
+      "bytes": 144693
+    },
+    {
+      "file": "audit/R10_R17/authorized-source-edits.json",
+      "sha256": "dc2bce5dddbd0acc2c2ec3be475c3893f04cda87a5ea5b3920ef8f4ba2d9767b",
+      "bytes": 4356
+    },
+    {
+      "file": "audit/R10_R17/before-after.md",
+      "sha256": "08688ced9d4a8a8420083be2688aff3f7148dc5b638e5275f8b8e6450729a7a5",
+      "bytes": 1649
+    },
+    {
+      "file": "audit/R10_R17/catalog-retention-results.json",
+      "sha256": "b9296192bba8dbc8fa10b9d553e3171990a278eabc5321c92c9242989e51af8a",
+      "bytes": 2258
+    },
+    {
+      "file": "audit/R10_R17/component-retention-results.json",
+      "sha256": "7efc843565280a8c0b3a9da290e1aa289ec6a912311d5452ce3696d14f1333b5",
+      "bytes": 4448
+    },
+    {
+      "file": "audit/R10_R17/context-retention-results.json",
+      "sha256": "1fe2112adde68e7a75e5147a8812fcc0c1ea39effd059402b067263c7f599bce",
+      "bytes": 4509
+    },
+    {
+      "file": "audit/R10_R17/csharp-syntax.log",
+      "sha256": "7d4ab256b27e8c4cda7c6068656cb1272195c665337040168862f2529a14a2ec",
+      "bytes": 896
+    },
+    {
+      "file": "audit/R10_R17/files-changed.csv",
+      "sha256": "c1cf536e3f77d297da7b435d85981e4fba2e16ad6c453c7cda701fbda6cedbe1",
+      "bytes": 3935
+    },
+    {
+      "file": "audit/R10_R17/native-capture-results.json",
+      "sha256": "bef722da1fceaf22977723be0f6e3fdb44866a2aee586cec0616e770a0bc679e",
+      "bytes": 6891
+    },
+    {
+      "file": "audit/R10_R17/native-retention-results.json",
+      "sha256": "91dc1d43ac9421537017c565e92845b5aeded46d5ddc003de9dae1158b16b362",
+      "bytes": 5085
+    },
+    {
+      "file": "audit/R10_R17/patch-replay-results.json",
+      "sha256": "dd2cf7e20d4662546a14cbd0bd8190d4465cf1b3d7b4690145406b20bc96f898",
+      "bytes": 281
+    },
+    {
+      "file": "audit/R10_R17/retention.json",
+      "sha256": "41e558d3575386ebb800701ce619a4e286ae5e1a8c4bdf75ef5a6a2b7bbe9d4e",
+      "bytes": 332
+    },
+    {
+      "file": "audit/R10_R17/runtime-evidence.json",
+      "sha256": "b7e6eadad4425438938ef9c1a89f19e52545cc993c56e6eac7c87f1581454ad4",
+      "bytes": 5844
+    },
+    {
+      "file": "audit/R10_R17/string-ledger.csv",
+      "sha256": "2563db53f0fc45f5f647e47f20da5bb2c3d48435bec2af1f0c9aa535242e7a8a",
+      "bytes": 55390
+    },
+    {
+      "file": "audit/R10_R17/syntax-evidence.json",
+      "sha256": "c3fd874643aae56d60c1943394b7e80bf047fd0e5f3e456772a8f6671cd93841",
+      "bytes": 850
+    },
+    {
+      "file": "audit/R10_R17/system-retention-results.json",
+      "sha256": "fe2ed5afb23bea3bd6fcf77924a458d24b70c4984c8c197c15c8389b1dc1a46e",
+      "bytes": 4541
+    },
+    {
+      "file": "audit/R10_R17/tab-retention-results.json",
+      "sha256": "5d0e20b11c02bb020300b2fe5f702f6ae7fbf6d11f8e5951a1bdf2104abba0f7",
+      "bytes": 2923
+    },
+    {
+      "file": "audit/R10_R17/test-matrix.csv",
+      "sha256": "c79f4af9a5c04cb73852e1eaa1f895c91bf5ae2f301282146c401395050003da",
+      "bytes": 1670
+    },
+    {
+      "file": "audit/R10_R17/verification-notes.md",
+      "sha256": "25be55d1a3cf493d820f7b3ff0d933e35f69eb669b1db4771a844543284714cb",
+      "bytes": 2498
+    },
+    {
+      "file": "audit/R10_R17/wpf-typecheck-evidence.json",
+      "sha256": "ea8f4d737db38b84b336c30a782be7e83a0bff995702ce247f4f087dd0fbb42b",
+      "bytes": 15596
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.CompatibleCaptureTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.CompatibleCaptureTests-run.log",
+      "sha256": "eac4403484c11e65f742fe3bba36366cdc89b96c8b9499470659026656fa2d92",
+      "bytes": 4652
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.CopyUiTests-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.Core-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.NativeCaptureTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.NativeCaptureTests-run.log",
+      "sha256": "3f1f8931f0bb1668f202891ec059c8802d92aeb341aeeeefef737911aa02c025",
+      "bytes": 5224
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.NativeNetworkTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.NativeNetworkTests-run.log",
+      "sha256": "ad2579b2989b0d7047549504e7521a20b289f245849d505ed379df248ca9c66e",
+      "bytes": 3566
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.NetworkDeviceTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.NetworkDeviceTests-run.log",
+      "sha256": "59c48eeda379566439f2182c45f6b26b1ddae9e1695b944b24ac34023b7c5a36",
+      "bytes": 7018
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.NetworkUiTests-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.Semantics-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.SystemProcessTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.SystemProcessTests-run.log",
+      "sha256": "fa6789f47fa20cc6462a31c0f655675a90bcea07c9cf28b28f8122f829b2bffb",
+      "bytes": 1437
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.SystemProcessUiTests-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.Windows-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.WindowsComponentTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18/ProcessLens.WindowsComponentTests-run.log",
+      "sha256": "dbb5e4bfd4b9efbef7060694559cccfbae28bee20ff0d037298d0cf221414ecf",
+      "bytes": 5211
+    },
+    {
+      "file": "audit/R10_R18/R17_to_R18.patch",
+      "sha256": "df1024a8dbbfa5f3a88eca5a37756d17b0e4b8d8a8767ebb1c3751a4429a5b0b",
+      "bytes": 130229
+    },
+    {
+      "file": "audit/R10_R18/authorized-source-edits.json",
+      "sha256": "e676a312f26f8cb20098f63ae77dda89493c25cd59753c0b3ea7bec4bfef8290",
+      "bytes": 5629
+    },
+    {
+      "file": "audit/R10_R18/before-after.md",
+      "sha256": "ce6a344ee381926eea14c316a503acfd75a37d5dca55e3ac5e05addb338ff385",
+      "bytes": 1372
+    },
+    {
+      "file": "audit/R10_R18/capture-retention-results.json",
+      "sha256": "bef722da1fceaf22977723be0f6e3fdb44866a2aee586cec0616e770a0bc679e",
+      "bytes": 6891
+    },
+    {
+      "file": "audit/R10_R18/catalog-retention-results.json",
+      "sha256": "b9296192bba8dbc8fa10b9d553e3171990a278eabc5321c92c9242989e51af8a",
+      "bytes": 2258
+    },
+    {
+      "file": "audit/R10_R18/component-retention-results.json",
+      "sha256": "7efc843565280a8c0b3a9da290e1aa289ec6a912311d5452ce3696d14f1333b5",
+      "bytes": 4448
+    },
+    {
+      "file": "audit/R10_R18/context-retention-results.json",
+      "sha256": "1fe2112adde68e7a75e5147a8812fcc0c1ea39effd059402b067263c7f599bce",
+      "bytes": 4509
+    },
+    {
+      "file": "audit/R10_R18/csharp-syntax.log",
+      "sha256": "d8986f2ed6f4eff041de6bf1cca2c409d72aefaf2ea6b7a4a9418fbe4d861968",
+      "bytes": 1049
+    },
+    {
+      "file": "audit/R10_R18/files-changed.csv",
+      "sha256": "cf87d085ae7b05a446f015a1add1c35685219cbe39313d41d5f0193734dbc412",
+      "bytes": 4652
+    },
+    {
+      "file": "audit/R10_R18/native-retention-results.json",
+      "sha256": "91dc1d43ac9421537017c565e92845b5aeded46d5ddc003de9dae1158b16b362",
+      "bytes": 5085
+    },
+    {
+      "file": "audit/R10_R18/patch-replay-results.json",
+      "sha256": "10ca17069bb0d772e770beacb565b12e8eae3d5496d0d863160f9d98a6d1d7f4",
+      "bytes": 281
+    },
+    {
+      "file": "audit/R10_R18/recovery-results.json",
+      "sha256": "16b890e5b2bc30652f20387b0fd9ce5a260e61e750f28422f50beda4a34549b9",
+      "bytes": 8127
+    },
+    {
+      "file": "audit/R10_R18/reported-windows-observations.md",
+      "sha256": "856decf2d131d4359dff6c03e341689a7f67c78e8e6a844965e3bdd9f8d99528",
+      "bytes": 853
+    },
+    {
+      "file": "audit/R10_R18/retention.json",
+      "sha256": "9896b16f796fc59b9f62d03125a07a3e728f6e535b32d508bfeabf7ca0f3c925",
+      "bytes": 332
+    },
+    {
+      "file": "audit/R10_R18/runtime-evidence.json",
+      "sha256": "c60aa464aeb13322e7efa606fd0d55f0696d07343ab1e2f33e7b1c3b8566c817",
+      "bytes": 6353
+    },
+    {
+      "file": "audit/R10_R18/string-ledger.csv",
+      "sha256": "60b476f85ff1b616c9087b5c737f2aab48f3d631732ac9cab743f07ef56502d8",
+      "bytes": 30273
+    },
+    {
+      "file": "audit/R10_R18/syntax-evidence.json",
+      "sha256": "0aa7de693f7520251e6b159544a3b048865538f644a99d702ba0bd212aff8d88",
+      "bytes": 986
+    },
+    {
+      "file": "audit/R10_R18/system-retention-results.json",
+      "sha256": "fe2ed5afb23bea3bd6fcf77924a458d24b70c4984c8c197c15c8389b1dc1a46e",
+      "bytes": 4541
+    },
+    {
+      "file": "audit/R10_R18/tab-retention-results.json",
+      "sha256": "5d0e20b11c02bb020300b2fe5f702f6ae7fbf6d11f8e5951a1bdf2104abba0f7",
+      "bytes": 2923
+    },
+    {
+      "file": "audit/R10_R18/test-matrix.csv",
+      "sha256": "34904a3687f8ee0523e90ab118a4ec02bdbc96c62a20bccdf2eb8c26f4874f08",
+      "bytes": 1375
+    },
+    {
+      "file": "audit/R10_R18/verification-notes.md",
+      "sha256": "212e51b334019147d3929ead8d8fb09c14eb15d63303e6577efcea689d22cd25",
+      "bytes": 1775
+    },
+    {
+      "file": "audit/R10_R18/wpf-typecheck-evidence.json",
+      "sha256": "9729053abe50a4311058f00f7e6e7d1cc1c1005c14dc99948d5eede3ef76d8e1",
+      "bytes": 15723
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.CompatibleCaptureTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.CompatibleCaptureTests-run.log",
+      "sha256": "eac4403484c11e65f742fe3bba36366cdc89b96c8b9499470659026656fa2d92",
+      "bytes": 4652
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.CopyUiTests-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.Core-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.NativeCaptureTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.NativeCaptureTests-run.log",
+      "sha256": "3f1f8931f0bb1668f202891ec059c8802d92aeb341aeeeefef737911aa02c025",
+      "bytes": 5224
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.NativeNetworkTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.NativeNetworkTests-run.log",
+      "sha256": "ad2579b2989b0d7047549504e7521a20b289f245849d505ed379df248ca9c66e",
+      "bytes": 3566
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.NetworkDeviceTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.NetworkDeviceTests-run.log",
+      "sha256": "59c48eeda379566439f2182c45f6b26b1ddae9e1695b944b24ac34023b7c5a36",
+      "bytes": 7018
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.NetworkUiTests-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.Semantics-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.SystemProcessTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.SystemProcessTests-run.log",
+      "sha256": "fa6789f47fa20cc6462a31c0f655675a90bcea07c9cf28b28f8122f829b2bffb",
+      "bytes": 1437
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.SystemProcessUiTests-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.Windows-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.WindowsComponentTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R18_R1/ProcessLens.WindowsComponentTests-run.log",
+      "sha256": "dbb5e4bfd4b9efbef7060694559cccfbae28bee20ff0d037298d0cf221414ecf",
+      "bytes": 5211
+    },
+    {
+      "file": "audit/R10_R18_R1/R18_to_R18_R1.patch",
+      "sha256": "94c19d2a676bc954277ef8bf22788311ca37d1283b088c9faecb39195e10e07a",
+      "bytes": 79104
+    },
+    {
+      "file": "audit/R10_R18_R1/authorized-source-edits.json",
+      "sha256": "336435330e1790985be1f49973a8ca3c59fa83a6a4cc61fb9d4921635af92d58",
+      "bytes": 1533
+    },
+    {
+      "file": "audit/R10_R18_R1/before-after.md",
+      "sha256": "79e71e8973e4f9fcddc06949fb18bb77a5232144889ec9f30c3ef0c5f9b8e96d",
+      "bytes": 946
+    },
+    {
+      "file": "audit/R10_R18_R1/capture-retention-results.json",
+      "sha256": "bef722da1fceaf22977723be0f6e3fdb44866a2aee586cec0616e770a0bc679e",
+      "bytes": 6891
+    },
+    {
+      "file": "audit/R10_R18_R1/catalog-retention-results.json",
+      "sha256": "b9296192bba8dbc8fa10b9d553e3171990a278eabc5321c92c9242989e51af8a",
+      "bytes": 2258
+    },
+    {
+      "file": "audit/R10_R18_R1/component-retention-results.json",
+      "sha256": "7efc843565280a8c0b3a9da290e1aa289ec6a912311d5452ce3696d14f1333b5",
+      "bytes": 4448
+    },
+    {
+      "file": "audit/R10_R18_R1/context-retention-results.json",
+      "sha256": "f8442b96367883e75c643c985e6dd1c725e82da7b7e6ef3fae9b14f748db33d4",
+      "bytes": 4552
+    },
+    {
+      "file": "audit/R10_R18_R1/csharp-syntax.log",
+      "sha256": "323bc0d14fc842b8f8dbe3069805bdddcb7da6fa88bc3e233ddd6dca86b189a1",
+      "bytes": 198
+    },
+    {
+      "file": "audit/R10_R18_R1/files-changed.csv",
+      "sha256": "3159f588eebe2a793b58b1b00fa8da59d3d9e0f1add5a6f46277bee066e504c5",
+      "bytes": 3071
+    },
+    {
+      "file": "audit/R10_R18_R1/layout-results.json",
+      "sha256": "9a395c4edf5abfe5a254a3de398874b9bfca9aa6e954f2c58f0f34dae5ee387e",
+      "bytes": 3913
+    },
+    {
+      "file": "audit/R10_R18_R1/native-retention-results.json",
+      "sha256": "91dc1d43ac9421537017c565e92845b5aeded46d5ddc003de9dae1158b16b362",
+      "bytes": 5085
+    },
+    {
+      "file": "audit/R10_R18_R1/patch-replay-results.json",
+      "sha256": "4885fdabaefb9bb0d2e300d0618717c4b6b974cd456cd8b4d8b4372bfcd2b9f2",
+      "bytes": 281
+    },
+    {
+      "file": "audit/R10_R18_R1/recovery-retention-results.json",
+      "sha256": "16b890e5b2bc30652f20387b0fd9ce5a260e61e750f28422f50beda4a34549b9",
+      "bytes": 8127
+    },
+    {
+      "file": "audit/R10_R18_R1/reported-windows-r17-excerpt.log",
+      "sha256": "b65bd15bf90864fbfc1c8c97aad3362c8eed14d168d96b7d40c0f8e30e0c2bb8",
+      "bytes": 14519
+    },
+    {
+      "file": "audit/R10_R18_R1/retention.json",
+      "sha256": "dba2e4e55d46a10757e0670620ecf82aa30c9b774f06c9db36ce52d2397156da",
+      "bytes": 371
+    },
+    {
+      "file": "audit/R10_R18_R1/runtime-evidence.json",
+      "sha256": "9a932e583bfe012d3514ad3a05e058585f285f1df096ff75487090f36605fcab",
+      "bytes": 6453
+    },
+    {
+      "file": "audit/R10_R18_R1/string-ledger.csv",
+      "sha256": "5f6a34184d5f4937308444e9d74d8f5aca6ff87362d1b892c32be2c57b184128",
+      "bytes": 1579
+    },
+    {
+      "file": "audit/R10_R18_R1/syntax-evidence.json",
+      "sha256": "5670ef39c47257444fddca6dd8971a0fe216425fd21ac4486fc43bda45759113",
+      "bytes": 223
+    },
+    {
+      "file": "audit/R10_R18_R1/system-retention-results.json",
+      "sha256": "fe2ed5afb23bea3bd6fcf77924a458d24b70c4984c8c197c15c8389b1dc1a46e",
+      "bytes": 4541
+    },
+    {
+      "file": "audit/R10_R18_R1/tab-retention-results.json",
+      "sha256": "5d0e20b11c02bb020300b2fe5f702f6ae7fbf6d11f8e5951a1bdf2104abba0f7",
+      "bytes": 2923
+    },
+    {
+      "file": "audit/R10_R18_R1/test-matrix.csv",
+      "sha256": "f3b80867193cccbc73e3638a6a90c9b18d39a6ff762b8d17c0fa1438948dff2a",
+      "bytes": 1259
+    },
+    {
+      "file": "audit/R10_R18_R1/verification-notes.md",
+      "sha256": "0acf3d8a8d408b9d0aced6c189093c2d02a3b87422a5e2a4762dc3e356ded98f",
+      "bytes": 1362
+    },
+    {
+      "file": "audit/R10_R18_R1/wpf-typecheck-evidence.json",
+      "sha256": "0dc14e256dddda96529bdbbd1d0d9f08b7aee4e54d2fd370c477b6419c164811",
+      "bytes": 15723
+    },
+    {
+      "file": "audit/R10_R18_R2/R18_R1_to_R18_R2.patch",
+      "sha256": "3b848b9f904de9a991abe14b10e2365fcbced902271566cfbaecfad27d97d46f",
+      "bytes": 69727
+    },
+    {
+      "file": "audit/R10_R18_R2/authorized-source-edits.json",
+      "sha256": "8bad8ea984471c53c4aee1de29cdc7e940ea61f9b1fbfd5b0f65f532dad58cff",
+      "bytes": 907
+    },
+    {
+      "file": "audit/R10_R18_R2/before-after.md",
+      "sha256": "96bab2a0537dd99da8ff0486d4d9b25acb7e23d44ba51f2133ffe4ec377bbed2",
+      "bytes": 885
+    },
+    {
+      "file": "audit/R10_R18_R2/capture-retention-results.json",
+      "sha256": "bef722da1fceaf22977723be0f6e3fdb44866a2aee586cec0616e770a0bc679e",
+      "bytes": 6891
+    },
+    {
+      "file": "audit/R10_R18_R2/catalog-retention-results.json",
+      "sha256": "b9296192bba8dbc8fa10b9d553e3171990a278eabc5321c92c9242989e51af8a",
+      "bytes": 2258
+    },
+    {
+      "file": "audit/R10_R18_R2/component-retention-results.json",
+      "sha256": "7efc843565280a8c0b3a9da290e1aa289ec6a912311d5452ce3696d14f1333b5",
+      "bytes": 4448
+    },
+    {
+      "file": "audit/R10_R18_R2/context-retention-results.json",
+      "sha256": "f8442b96367883e75c643c985e6dd1c725e82da7b7e6ef3fae9b14f748db33d4",
+      "bytes": 4552
+    },
+    {
+      "file": "audit/R10_R18_R2/files-changed.csv",
+      "sha256": "69f682f750bcec1da6087466771aa521cfc71104d63deebe2add4ed4d8e5fd6d",
+      "bytes": 2872
+    },
+    {
+      "file": "audit/R10_R18_R2/layout-retention-results.json",
+      "sha256": "9a395c4edf5abfe5a254a3de398874b9bfca9aa6e954f2c58f0f34dae5ee387e",
+      "bytes": 3913
+    },
+    {
+      "file": "audit/R10_R18_R2/native-retention-results.json",
+      "sha256": "91dc1d43ac9421537017c565e92845b5aeded46d5ddc003de9dae1158b16b362",
+      "bytes": 5085
+    },
+    {
+      "file": "audit/R10_R18_R2/patch-replay-results.json",
+      "sha256": "7997c65809fb39ba698bdfbdd8c5e00d09eb6886739ba783edd8b1b9f20ae1df",
+      "bytes": 281
+    },
+    {
+      "file": "audit/R10_R18_R2/powershell-evidence.json",
+      "sha256": "c3773560a75cb0605393b5467bf703f021a6739fe83e3f79b7237017548dcbd8",
+      "bytes": 8800
+    },
+    {
+      "file": "audit/R10_R18_R2/powershell-execution.log",
+      "sha256": "a9d8c2e801ddce4cc3d4d474712ccfd8633346439626c52ba33fd23453325cc1",
+      "bytes": 9062
+    },
+    {
+      "file": "audit/R10_R18_R2/recovery-retention-results.json",
+      "sha256": "16b890e5b2bc30652f20387b0fd9ce5a260e61e750f28422f50beda4a34549b9",
+      "bytes": 8127
+    },
+    {
+      "file": "audit/R10_R18_R2/reported-windows-r18r1-excerpt.log",
+      "sha256": "39949f297ed10689ee5f05e2a7468d21819fda320fbf2e6853bcce6a297bebb2",
+      "bytes": 368
+    },
+    {
+      "file": "audit/R10_R18_R2/retention.json",
+      "sha256": "211eabfcfe20fda0b1bf1121a5fb516f8617a6300c77e58ab95f351c4fa8c27c",
+      "bytes": 452
+    },
+    {
+      "file": "audit/R10_R18_R2/runtime-evidence.json",
+      "sha256": "38517e45a6f299a3d9657e9e9a8d50d5092332b7c222a0b4cf60733e626e211f",
+      "bytes": 6536
+    },
+    {
+      "file": "audit/R10_R18_R2/string-ledger.csv",
+      "sha256": "b7883fbd83726ce0b717ff8eea487fb414d64b1ab9ad27f1b73d447d10696fc6",
+      "bytes": 1949
+    },
+    {
+      "file": "audit/R10_R18_R2/syntax-evidence.json",
+      "sha256": "e7cfe3d60686bad5dd82e0493fbcdde2104207807db301948ea713ccb44c7d40",
+      "bytes": 306
+    },
+    {
+      "file": "audit/R10_R18_R2/system-retention-results.json",
+      "sha256": "fe2ed5afb23bea3bd6fcf77924a458d24b70c4984c8c197c15c8389b1dc1a46e",
+      "bytes": 4541
+    },
+    {
+      "file": "audit/R10_R18_R2/tab-retention-results.json",
+      "sha256": "5d0e20b11c02bb020300b2fe5f702f6ae7fbf6d11f8e5951a1bdf2104abba0f7",
+      "bytes": 2923
+    },
+    {
+      "file": "audit/R10_R18_R2/test-matrix.csv",
+      "sha256": "0c1d89a2fb033c04934a37e4c88ffd905ad7346ed8525fc8f7d8d8b93c3494a0",
+      "bytes": 1267
+    },
+    {
+      "file": "audit/R10_R18_R2/wpf-typecheck-evidence.json",
+      "sha256": "03143bca4f8bad475c57559f5fdead335a52539cb57da28c6d8ba9a6a227ea1d",
+      "bytes": 15806
+    },
+    {
+      "file": "audit/R10_R19/ProcessLens-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R19/ProcessLens.CopyUiTests-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R19/ProcessLens.Core-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R19/ProcessLens.NetworkUiTests-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R19/ProcessLens.PresentationTests-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R19/ProcessLens.PresentationTests-run.log",
+      "sha256": "7c3516ae7a466fd8bdc554713a04a26a5dbe5b9078e3b6f2e4e58514cf139983",
+      "bytes": 6117
+    },
+    {
+      "file": "audit/R10_R19/ProcessLens.Semantics-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R19/ProcessLens.SystemProcessUiTests-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R19/ProcessLens.Windows-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R19/R18_R2_to_R19.patch",
+      "sha256": "3a5255d5a3cb556678ba69c38b3786392d3c885ec36161c4b589a8ddcd8dbb38",
+      "bytes": 101019
+    },
+    {
+      "file": "audit/R10_R19/authorized-source-edits.json",
+      "sha256": "0b931e635a14303d3d7563564a528a0fb9bd59cea27bfddd298b4d5ae7b32d2c",
+      "bytes": 2626
+    },
+    {
+      "file": "audit/R10_R19/before-after.md",
+      "sha256": "cf975935814a0efa6186f2e5f196673b5307a4fb2239a8c41da3d80655993872",
+      "bytes": 1164
+    },
+    {
+      "file": "audit/R10_R19/capture-retention-results.json",
+      "sha256": "bef722da1fceaf22977723be0f6e3fdb44866a2aee586cec0616e770a0bc679e",
+      "bytes": 6891
+    },
+    {
+      "file": "audit/R10_R19/catalog-retention-results.json",
+      "sha256": "b9296192bba8dbc8fa10b9d553e3171990a278eabc5321c92c9242989e51af8a",
+      "bytes": 2258
+    },
+    {
+      "file": "audit/R10_R19/component-retention-results.json",
+      "sha256": "ff93adc7b18420165fe2792b57daf6d2f158f23f8860a08eaeaa87639a61e987",
+      "bytes": 4444
+    },
+    {
+      "file": "audit/R10_R19/context-retention-results.json",
+      "sha256": "f8442b96367883e75c643c985e6dd1c725e82da7b7e6ef3fae9b14f748db33d4",
+      "bytes": 4552
+    },
+    {
+      "file": "audit/R10_R19/files-changed.csv",
+      "sha256": "06b49b16ea80c5cc570de2473a3723b0fcd38455eaada1721a778b606de9cb49",
+      "bytes": 4013
+    },
+    {
+      "file": "audit/R10_R19/layout-retention-results.json",
+      "sha256": "05689249692a3a2ca8bb31229c7394c26505a4c7ae52280ec48a2ce1b94f6366",
+      "bytes": 3959
+    },
+    {
+      "file": "audit/R10_R19/native-retention-results.json",
+      "sha256": "91dc1d43ac9421537017c565e92845b5aeded46d5ddc003de9dae1158b16b362",
+      "bytes": 5085
+    },
+    {
+      "file": "audit/R10_R19/network-runtime-retention.json",
+      "sha256": "e9c5fcfb08d8107397ee6bd4290f5e74285a8e92993b89678d90eebcc617228e",
+      "bytes": 6625
+    },
+    {
+      "file": "audit/R10_R19/patch-replay-results.json",
+      "sha256": "8303275f756164bbc506340e7a881902a7b1f01e04031df5594f7aefa2462512",
+      "bytes": 268
+    },
+    {
+      "file": "audit/R10_R19/powershell-preflight.log",
+      "sha256": "0f7d44edf424ebc72706af34aeffc7db526d7ef5a060b8f532923f78eb5cd7e2",
+      "bytes": 6030
+    },
+    {
+      "file": "audit/R10_R19/preflight-evidence.json",
+      "sha256": "7615e9e254a474dfaf87f9e8c307fc9e6e74edff4790bbe1ef9a53e1d662b262",
+      "bytes": 3454
+    },
+    {
+      "file": "audit/R10_R19/presentation-evidence.json",
+      "sha256": "4d083d01546f084983a6bf2268afb3d5217ff133a42e0f431519e6e015e94ce7",
+      "bytes": 4468
+    },
+    {
+      "file": "audit/R10_R19/recovery-retention-results.json",
+      "sha256": "16b890e5b2bc30652f20387b0fd9ce5a260e61e750f28422f50beda4a34549b9",
+      "bytes": 8127
+    },
+    {
+      "file": "audit/R10_R19/retention.json",
+      "sha256": "4de33ce8a348828aeba496d6575986eded2b686f883807f87226569fa5bc5342",
+      "bytes": 383
+    },
+    {
+      "file": "audit/R10_R19/source-results.json",
+      "sha256": "ec5bbd419330a9ca65688b8fdb82f4604eb5e8e7f9ffbe25c7f3451fe64382c3",
+      "bytes": 4535
+    },
+    {
+      "file": "audit/R10_R19/string-ledger.csv",
+      "sha256": "d2a8c168abf0a9b884c9c0f3e7e10d5b178bedc5b22a0c12995efcf0f8723d79",
+      "bytes": 16984
+    },
+    {
+      "file": "audit/R10_R19/system-retention-results.json",
+      "sha256": "fe2ed5afb23bea3bd6fcf77924a458d24b70c4984c8c197c15c8389b1dc1a46e",
+      "bytes": 4541
+    },
+    {
+      "file": "audit/R10_R19/tab-retention-results.json",
+      "sha256": "5d0e20b11c02bb020300b2fe5f702f6ae7fbf6d11f8e5951a1bdf2104abba0f7",
+      "bytes": 2923
+    },
+    {
+      "file": "audit/R10_R19/test-matrix.csv",
+      "sha256": "deffb43bbfae2fa8f91dfee722b37a9a10c208573d2f35f4094576cb80f4b413",
+      "bytes": 916
+    },
+    {
+      "file": "audit/R10_R19/wpf-typecheck-evidence.json",
+      "sha256": "4c6574af90a0732db3b9a8ae3b349cd4eca80fadf332169d3b382374d1c60a7b",
+      "bytes": 15723
+    },
+    {
+      "file": "audit/R10_R2/R10_R1_to_R10_R2.patch",
+      "sha256": "2274ddb12a8e6a9d8165c86cafd78224607796e009ed371a9d0f758937aa98f2",
+      "bytes": 12516
+    },
+    {
+      "file": "audit/R10_R2/button-regressions.json",
+      "sha256": "bd065cf8cda1fe164c4d41c156fa89d0b65d1f3178ae8de7489e722468cff5c7",
+      "bytes": 478
+    },
+    {
+      "file": "audit/R10_R2/files-changed.csv",
+      "sha256": "f110ce39dd80147ce86833b761ff24b1feb807e562bc3f8237850d549e36848f",
+      "bytes": 1212
+    },
+    {
+      "file": "audit/R10_R2/patch-replay-results.json",
+      "sha256": "f9e5d0940011ee98bbd144b15d67456ab8624b32659c178a2a81259217f0ef31",
+      "bytes": 355
+    },
+    {
+      "file": "audit/R10_R2/string-ledger.csv",
+      "sha256": "ca95167f8aba4588c86ee4496f564ddbf06191ab148d3b4d6f263a8fcb5d5948",
+      "bytes": 373
+    },
+    {
+      "file": "audit/R10_R2/test-matrix.csv",
+      "sha256": "91f86da18e66c58a084076d2681fe9d1a7e7e684d0279e7dea7e3b3a4db08cf1",
+      "bytes": 368
+    },
+    {
+      "file": "audit/R10_R2/windows-reported-results.json",
+      "sha256": "8a05f2852c98634443ebb71499fb27de36a5d6bc4ae5e690c89386bdd4d3ba01",
+      "bytes": 1193
+    },
+    {
+      "file": "audit/R10_R2/windows-user-R1.log",
+      "sha256": "4770b098719a2eb041343843fc615cf22aa2fe106b227a9201f2141120f5c695",
+      "bytes": 16547
+    },
+    {
+      "file": "audit/R10_R20/R19_to_R20_setup.patch",
+      "sha256": "fb2ac7de307001edceb9a6a126a6e4e8a424f21336df4087a9df215ad87fdb5e",
+      "bytes": 38011
+    },
+    {
+      "file": "audit/R10_R20/authorized-source-edits.json",
+      "sha256": "bc5892fc4bfda3d691738f8126d18ac8ed7b1be5cc42377bf00928c5ba12dc89",
+      "bytes": 1572
+    },
+    {
+      "file": "audit/R10_R20/dependency-closure.json",
+      "sha256": "8da23094da62ec46d2aa0ec8a604d17cfea5d599f85e1723c45b86dee7a32e14",
+      "bytes": 401
+    },
+    {
+      "file": "audit/R10_R20/downloads.json",
+      "sha256": "1ee187e88190c7a79b83a1ca287af027b4b376a229271d1bca0bbcb98142b7d2",
+      "bytes": 40671
+    },
+    {
+      "file": "audit/R10_R20/files-changed.csv",
+      "sha256": "11930ab89d818a16f8d346c35f0b975e497dfdd37b70410592a655f1d5163ed9",
+      "bytes": 1279
+    },
+    {
+      "file": "audit/R10_R20/installer-fixture.log",
+      "sha256": "f609743658aa21c2983c4acf61ae2560a081470f7e12ef2ee7291df77190fe84",
+      "bytes": 1057
+    },
+    {
+      "file": "audit/R10_R20/native-diagnostic-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "audit/R10_R20/patch-replay-results.json",
+      "sha256": "01e94593302d8f629d356cd6ce89792e62f3cfd72b88c237dc6d64e9094afce5",
+      "bytes": 359
+    },
+    {
+      "file": "audit/R10_R20/powershell-evidence.json",
+      "sha256": "f511ef742d4bd62aebb01831cd3e816b6263445e5da5646c2b742f91581e9c27",
+      "bytes": 5355
+    },
+    {
+      "file": "audit/R10_R20/powershell-preflight.log",
+      "sha256": "5ca8cb309668960e660f4a5812d3c7b7cc91b9fbf3de6bc363588968d92748f4",
+      "bytes": 6030
+    },
+    {
+      "file": "audit/R10_R20/retention.json",
+      "sha256": "6221df9506216ef270af749bf646c275d180afdec011b8ac4f77a0db4e422018",
+      "bytes": 301
+    },
+    {
+      "file": "audit/R10_R20/scope-evidence.json",
+      "sha256": "488add7a91f0d1645d4e69b10c053d6d8cc535808f02ed3518b676bc2c88e2e8",
+      "bytes": 322
+    },
+    {
+      "file": "audit/R10_R20/string-ledger.csv",
+      "sha256": "b401bc46bbccb5fdb80a1530779a95c09dcad30f301a73a001cccd2ad7184990",
+      "bytes": 24100
+    },
+    {
+      "file": "audit/R10_R20/test-matrix.csv",
+      "sha256": "e7f18bd30381c2207310d1339c32f35dcf59c9965173c1ab35dd7b2c076fcceb",
+      "bytes": 669
+    },
+    {
+      "file": "audit/R10_R3/R10_R2_to_R10_R3.patch",
+      "sha256": "249b4fedbfb7b03d02f22fe80ed73ca2819f95b395a7793660707619d2a6b781",
+      "bytes": 45605
+    },
+    {
+      "file": "audit/R10_R3/button-regressions.json",
+      "sha256": "bd065cf8cda1fe164c4d41c156fa89d0b65d1f3178ae8de7489e722468cff5c7",
+      "bytes": 478
+    },
+    {
+      "file": "audit/R10_R3/files-changed.csv",
+      "sha256": "95d3e62177197c7691e2a2484ea67f3f5453aa11e21860f651003f4d58547c09",
+      "bytes": 2448
+    },
+    {
+      "file": "audit/R10_R3/patch-replay-results.json",
+      "sha256": "d951d78b0a539d321c9286846614d67842a01834350377a37c56e0e3098b5a1e",
+      "bytes": 525
+    },
+    {
+      "file": "audit/R10_R3/request-evidence.json",
+      "sha256": "6115e66b12ea8132baa17959d8788455ecd1aad8bd2c9feb4cc4fbf21e5efb54",
+      "bytes": 779
+    },
+    {
+      "file": "audit/R10_R3/retention.json",
+      "sha256": "627a121e0487cafebac0868f3745f47dc54f2cc3ad14fc92479d34c5fc6d767f",
+      "bytes": 409
+    },
+    {
+      "file": "audit/R10_R3/string-ledger.csv",
+      "sha256": "4c12c3f6dfeef437782fe774a85f57e0736907890b1d1642a9524298baf7ebe2",
+      "bytes": 1050
+    },
+    {
+      "file": "audit/R10_R3/test-matrix.csv",
+      "sha256": "4c91581df0228f9cd8a02c7446878764b7c4a1a5536353eb209146e706488686",
+      "bytes": 478
+    },
+    {
+      "file": "audit/R10_R4/R10_R3_to_R10_R4.patch",
+      "sha256": "cd6b2564112c73abc77cd48fb0171fce7869d686ab4bca9396632812fb9cf0f9",
+      "bytes": 28417
+    },
+    {
+      "file": "audit/R10_R4/button-regressions.json",
+      "sha256": "bd065cf8cda1fe164c4d41c156fa89d0b65d1f3178ae8de7489e722468cff5c7",
+      "bytes": 478
+    },
+    {
+      "file": "audit/R10_R4/files-changed.csv",
+      "sha256": "ef4d95faeddaa2e9132712e15d58c53d28715be92de697fd761aa554b6db924a",
+      "bytes": 2292
+    },
+    {
+      "file": "audit/R10_R4/patch-replay-results.json",
+      "sha256": "0ed659055834a877d99b2947a06dd6e11928f683d00d289938dc7f374e8bd0b7",
+      "bytes": 564
+    },
+    {
+      "file": "audit/R10_R4/request-evidence.json",
+      "sha256": "2f8e9da70c38001b69be25a846866ca3ffc44c443ed00ed8f6269e7154b83a70",
+      "bytes": 565
+    },
+    {
+      "file": "audit/R10_R4/retention.json",
+      "sha256": "627a121e0487cafebac0868f3745f47dc54f2cc3ad14fc92479d34c5fc6d767f",
+      "bytes": 409
+    },
+    {
+      "file": "audit/R10_R4/string-ledger.csv",
+      "sha256": "65fe11aff426c93c56fedf3cc95a19703a26c59014b5d6ba469d56bceca2cadb",
+      "bytes": 845
+    },
+    {
+      "file": "audit/R10_R4/test-matrix.csv",
+      "sha256": "d40d69573017506f0aa11c05788342383c331ade96c40732ad9556aadc822d88",
+      "bytes": 583
+    },
+    {
+      "file": "audit/R10_R5/R10_R4_to_R10_R5.patch",
+      "sha256": "b152e8440c1f2a841d9f69682f488cdbacbd75e33413bb5f6d40317c59ed2afa",
+      "bytes": 29388
+    },
+    {
+      "file": "audit/R10_R5/button-regressions.json",
+      "sha256": "bd065cf8cda1fe164c4d41c156fa89d0b65d1f3178ae8de7489e722468cff5c7",
+      "bytes": 478
+    },
+    {
+      "file": "audit/R10_R5/files-changed.csv",
+      "sha256": "f020cbfc2df210410f7b593396da517b4cf1b1fa7b7e7d8d467e4ba4dbf21529",
+      "bytes": 2125
+    },
+    {
+      "file": "audit/R10_R5/patch-replay-results.json",
+      "sha256": "512d111c42860580f138629b669f09535f05180d47e5b0f732d17c1370697224",
+      "bytes": 573
+    },
+    {
+      "file": "audit/R10_R5/request-evidence.json",
+      "sha256": "7173dc579177cad2bd5fc3e524ae03bc5a53121d980dc310f6b29404689f054f",
+      "bytes": 548
+    },
+    {
+      "file": "audit/R10_R5/retention.json",
+      "sha256": "627a121e0487cafebac0868f3745f47dc54f2cc3ad14fc92479d34c5fc6d767f",
+      "bytes": 409
+    },
+    {
+      "file": "audit/R10_R5/string-ledger.csv",
+      "sha256": "32ac20ca08e2bb0a7ff96daaab7ef8a2d03c6708fdaf313fe4ea6925beb7b88b",
+      "bytes": 897
+    },
+    {
+      "file": "audit/R10_R5/test-matrix.csv",
+      "sha256": "c907d650ee938a5f2085b6c084920d9b59e70d281887a328826fb249f96a299e",
+      "bytes": 731
+    },
+    {
+      "file": "audit/R10_R6/R10_R5_to_R10_R6.patch",
+      "sha256": "70448646f10dd95ea7683e8d8e3a58974a38950b5646e60e33994b0170ca6248",
+      "bytes": 43066
+    },
+    {
+      "file": "audit/R10_R6/button-regressions.json",
+      "sha256": "bd065cf8cda1fe164c4d41c156fa89d0b65d1f3178ae8de7489e722468cff5c7",
+      "bytes": 478
+    },
+    {
+      "file": "audit/R10_R6/files-changed.csv",
+      "sha256": "986faafe7fc8619e8ae45a5514ca2a7adc8c205b275fb47939e8dfec930f7277",
+      "bytes": 2390
+    },
+    {
+      "file": "audit/R10_R6/new-review-finding.csv",
+      "sha256": "98b17231abfdafc562109476c0326b24ca0a0012c27a6638bc5a0a435db81dfe",
+      "bytes": 306
+    },
+    {
+      "file": "audit/R10_R6/patch-replay-results.json",
+      "sha256": "5e163c8522f72841e4028fa4e460f3c98c91e17f7306ef423b4367cd845e9299",
+      "bytes": 574
+    },
+    {
+      "file": "audit/R10_R6/request-evidence.json",
+      "sha256": "6d1149baabb9227b2d71cdcb9d92e651e973e54506b821b230770f482b597c56",
+      "bytes": 588
+    },
+    {
+      "file": "audit/R10_R6/retention.json",
+      "sha256": "627a121e0487cafebac0868f3745f47dc54f2cc3ad14fc92479d34c5fc6d767f",
+      "bytes": 409
+    },
+    {
+      "file": "audit/R10_R6/string-ledger.csv",
+      "sha256": "ef154eff607ac7b6e7f91e185599cd7d903365deb3406c11e5ea28d6f7b6cb7f",
+      "bytes": 1037
+    },
+    {
+      "file": "audit/R10_R6/test-matrix.csv",
+      "sha256": "d0aee0ae066750ecfe39fcf3ebfaa60e283f195ee83c1086a6c4eab50ca19f59",
+      "bytes": 692
+    },
+    {
+      "file": "audit/R10_R7/R10_R6_to_R10_R7.patch",
+      "sha256": "9b2c3245a84682a78b6bc50c590e9c8534cf6c51180e9d780c6498a129d1d5e4",
+      "bytes": 91029
+    },
+    {
+      "file": "audit/R10_R7/button-regressions.json",
+      "sha256": "bd065cf8cda1fe164c4d41c156fa89d0b65d1f3178ae8de7489e722468cff5c7",
+      "bytes": 478
+    },
+    {
+      "file": "audit/R10_R7/files-changed.csv",
+      "sha256": "dfccd2ec6d9c401f3758b5f4d4e3f83d6447ead321cc2630510aebe10b21e046",
+      "bytes": 3556
+    },
+    {
+      "file": "audit/R10_R7/patch-replay-results.json",
+      "sha256": "e28c4f2500a91674e0d2e5a0665ee3276df60dab171ba4b349098f88ddf96b13",
+      "bytes": 955
+    },
+    {
+      "file": "audit/R10_R7/request-evidence.json",
+      "sha256": "c9a5bbb5d7e83d53aa7bfb51f274f7ffebbdbf1b647d293acf930d9fc6726853",
+      "bytes": 804
+    },
+    {
+      "file": "audit/R10_R7/resource-source-mutations.json",
+      "sha256": "a719ad2836b88f8ae976485a9e32c96ad75f76f90c42bf22aae1bce445bd23f0",
+      "bytes": 1879
+    },
+    {
+      "file": "audit/R10_R7/retention.json",
+      "sha256": "3dc88dac560d2b1ac8cee2c5be356e2304f4d26396b198ec58feae3250119aef",
+      "bytes": 316
+    },
+    {
+      "file": "audit/R10_R7/string-ledger.csv",
+      "sha256": "1d8a5a9a69db7cd67f7be2e03cae1e9f29a2ac824ccee5af714936394d175c63",
+      "bytes": 1527
+    },
+    {
+      "file": "audit/R10_R7/test-matrix.csv",
+      "sha256": "0200473881c667e25a42da19f4db794e7925d9be188d8588f244e748ba504ada",
+      "bytes": 844
+    },
+    {
+      "file": "audit/R10_R8/R10_R7_to_R10_R8.patch",
+      "sha256": "59a67204a0a062dde1be049a824613351c202350f5615d4f5aa35b01fac925e9",
+      "bytes": 95760
+    },
+    {
+      "file": "audit/R10_R8/button-regressions.json",
+      "sha256": "bd065cf8cda1fe164c4d41c156fa89d0b65d1f3178ae8de7489e722468cff5c7",
+      "bytes": 478
+    },
+    {
+      "file": "audit/R10_R8/files-changed.csv",
+      "sha256": "335137c09a8046844f73f422fba799007b9c881190f5fba00d62ff70036931c9",
+      "bytes": 3594
+    },
+    {
+      "file": "audit/R10_R8/monitor-navigation-source-mutations.json",
+      "sha256": "dda693772965c64ba332a7151db114f3624dd9cf04b28613deeb862b2cd72ed2",
+      "bytes": 1662
+    },
+    {
+      "file": "audit/R10_R8/patch-replay-results.json",
+      "sha256": "d5df7699d4a3cd587cb6d8e022ef551c25a23452ca5426ba476f8b2f4ba217e2",
+      "bytes": 986
+    },
+    {
+      "file": "audit/R10_R8/request-evidence.json",
+      "sha256": "19d3a5fcc41e684b1d33964f3ae6a55ac99d13d0ef5f9d15e178bce92247ddb5",
+      "bytes": 889
+    },
+    {
+      "file": "audit/R10_R8/resource-source-mutations.json",
+      "sha256": "a719ad2836b88f8ae976485a9e32c96ad75f76f90c42bf22aae1bce445bd23f0",
+      "bytes": 1879
+    },
+    {
+      "file": "audit/R10_R8/retention.json",
+      "sha256": "10b6d3241111a605e547d63b627d48dd4a00cef321e747e893ed80e6c9bc86db",
+      "bytes": 316
+    },
+    {
+      "file": "audit/R10_R8/string-ledger.csv",
+      "sha256": "c9bc24a6e6a711af067e62b7491b6bb2b1df7d2faed5081b4436d05812a9d164",
+      "bytes": 1341
+    },
+    {
+      "file": "audit/R10_R8/test-matrix.csv",
+      "sha256": "3948d3959a980c19b45aa16165dce19e651452d1b53520feb8e22c2a219a1880",
+      "bytes": 851
+    },
+    {
+      "file": "audit/R10_R9/R10_R8_to_R10_R9.patch",
+      "sha256": "e690e0939dd5b73766c887e5db77146da628eb0f66240e2ffcaad70478c39baa",
+      "bytes": 8107
+    },
+    {
+      "file": "audit/R10_R9/clipboard-call-regressions.json",
+      "sha256": "58397dd36b0ca35ab99949899b8d22b599210c4b5734a40527e397b27fefd980",
+      "bytes": 652
+    },
+    {
+      "file": "audit/R10_R9/files-changed.csv",
+      "sha256": "3f18db99f42cb03e38c5bb7b9915a652e25b3cc8cd719dd331ea161bc9913405",
+      "bytes": 725
+    },
+    {
+      "file": "audit/R10_R9/patch-replay-results.json",
+      "sha256": "9fc5124bdea4bff2e02ebc2f50a3686a05531ffe3a5e79da8ca0a92e0800c4b9",
+      "bytes": 434
+    },
+    {
+      "file": "audit/R10_R9/request-evidence.json",
+      "sha256": "c11b4b8fc895efb25014d1aeb7080299033b523469d9d8fbc5e1899439e63146",
+      "bytes": 641
+    },
+    {
+      "file": "audit/R10_R9/string-ledger.csv",
+      "sha256": "219cd7623bd4ab8a045721aa0ba1c3bdf181101e2ba6bdc9e2f21e1c59bdac4e",
+      "bytes": 330
+    },
+    {
+      "file": "audit/R10_R9/test-matrix.csv",
+      "sha256": "f94cc15b8ffb281569cb76b89546fab48cefcf757952df4763f2e6670af65bbb",
+      "bytes": 377
+    },
+    {
+      "file": "audit/R7/CHANGELOG_DETTAGLIATO.csv",
+      "sha256": "ffcc135047495a7c9887f1a3c9ce468b5457aa65d35cf53ead652847a0889615",
+      "bytes": 90354
+    },
+    {
+      "file": "audit/R7/COPERTURA_FILE.csv",
+      "sha256": "a9d517893f5d0290f8afec43fbb8fd735351e6737b7b9423813915bd3086b51d",
+      "bytes": 41848
+    },
+    {
+      "file": "audit/R7/DECISIONI_41_PRIORITA_R6.csv",
+      "sha256": "e0a4b03ddceb186fe582612b0125441718af4e02c81b2837496f3edf6339c2f3",
+      "bytes": 31484
+    },
+    {
+      "file": "audit/R7/FILES_CHANGED.csv",
+      "sha256": "a42b546f31d2a9f8975faa22c75ee77f40a9c05da8a501b9b7ca8977278d199c",
+      "bytes": 5284
+    },
+    {
+      "file": "audit/R7/GLOSSARIO_95_CONTINUITA_R7.csv",
+      "sha256": "06929c48db97a8232bb07f0d4aa7e901cd7306c4237d3ac0e623f1c1c95b2f2e",
+      "bytes": 57302
+    },
+    {
+      "file": "audit/R7/MATRICE_COMPLETA_3406_R6_R7.csv",
+      "sha256": "82e1a73682652ae3acedb28d29cf34423b43f29a83696e3600f7b5e8d00eecc4",
+      "bytes": 2343475
+    },
+    {
+      "file": "audit/R7/MATRICE_NUOVI_CONTESTI_R7.csv",
+      "sha256": "61a21388ccb2bb14271e939b4cde5cf10f8955ec78d035a21bfbbc7573ede7af",
+      "bytes": 917015
+    },
+    {
+      "file": "audit/R7/R6_to_R7.patch",
+      "sha256": "27a8cb9c9f64fdefa4f9f2f757f2cec07e17e1301f00d20ff0c871a2b5cfc133",
+      "bytes": 146048
+    },
+    {
+      "file": "audit/R7/changes.json",
+      "sha256": "a68920d792571b38ed30d7af2cabd161455ad7224b36f971c1f74671dee90cac",
+      "bytes": 128510
+    },
+    {
+      "file": "audit/R7/patch-replay-results.json",
+      "sha256": "4c2a6e03b9662bd27ac0cb768e48cadd4cfdffb8a7ef336489247214ff18db9f",
+      "bytes": 162
+    },
+    {
+      "file": "audit/R7/static-results.json",
+      "sha256": "99889c90bb39c874d4cac95bfa2f979fe47427514cc6ee5685691f8e2a5319ae",
+      "bytes": 2602
+    },
+    {
+      "file": "audit/R7/summary.json",
+      "sha256": "257ffc3b5fe471edc96e065626632091114634369d24d5021fd967a890fffc43",
+      "bytes": 414
+    },
+    {
+      "file": "audit/R7/test-matrix.csv",
+      "sha256": "92f9fd10e83372675b868910db76be8cd19acb78dedfeb1f06112e1013969d76",
+      "bytes": 9753
+    },
+    {
+      "file": "audit/R7_R1/R6_to_R7_R1.patch",
+      "sha256": "327108cc2da1f4cebe3082d392a8b2c51630b5db6734b8710a23f34a4a54a20c",
+      "bytes": 151306
+    },
+    {
+      "file": "audit/R7_R1/R7_to_R7_R1.patch",
+      "sha256": "9837cfdeaf709de9d52ea5723d09b6b265a5f068f728aeaabd5e34e3a550841e",
+      "bytes": 7845
+    },
+    {
+      "file": "audit/R7_R1/change-record.json",
+      "sha256": "bfa78e082d8d08f662b177b62394bdd593987f200b24b9ca0eed33f5f8137e42",
+      "bytes": 2655
+    },
+    {
+      "file": "audit/R7_R1/changed-files.json",
+      "sha256": "fb6fc40388d78de62a5ce0788b632a05cb6bc5157d8c225a87fb5e79726c48db",
+      "bytes": 1509
+    },
+    {
+      "file": "audit/R7_R1/delta-matrix.csv",
+      "sha256": "1913450e613d84da76f0a50cb4297f94ac4276b83e3efc832bbe173e3ea6caaa",
+      "bytes": 2083
+    },
+    {
+      "file": "audit/R7_R1/package-checks.json",
+      "sha256": "d446663ff1fc569c527235a63a2a4f66181e9b8370393750a225ee91265b2686",
+      "bytes": 223
+    },
+    {
+      "file": "audit/R7_R1/routing-static-results.json",
+      "sha256": "bc67ac580de4951a954dddd0d84758b00846d3d3258c8cfc43cf694b435885be",
+      "bytes": 1441
+    },
+    {
+      "file": "audit/R7_R1/structural-results.json",
+      "sha256": "dabe8b12f24c63d98e4da7c7b6a7a87dead23c31335ae8c06f9a5d8b323d513e",
+      "bytes": 2602
+    },
+    {
+      "file": "audit/R7_R1/windows-reported-results.json",
+      "sha256": "f824ee5d24799e8d862e365c8a47d65934af5aab7c4f8ef61aaa0a15bc6c69c6",
+      "bytes": 314
+    },
+    {
+      "file": "audit/R7_R2/R6_to_R7_R2.patch",
+      "sha256": "70cfcea50dc581924dc02560bd3b81ba8f566606e4db1efb7fb2ea32f1b8e313",
+      "bytes": 156396
+    },
+    {
+      "file": "audit/R7_R2/R7_R1_to_R7_R2.patch",
+      "sha256": "eb95ffc4923d55f17a2984701a6eb19691ad88fc425cf2f12c63877fcc657a1d",
+      "bytes": 8732
+    },
+    {
+      "file": "audit/R7_R2/change-record.json",
+      "sha256": "e6ffaf7a525463c83d1c82a19f6024e9ff7e2bc582e96e8d89f23d8655a9d398",
+      "bytes": 2882
+    },
+    {
+      "file": "audit/R7_R2/changed-files.json",
+      "sha256": "e9bcafdc10128b453b25dfe213ae8bea3646f70cb58ab2d66b122bfb496ad578",
+      "bytes": 1536
+    },
+    {
+      "file": "audit/R7_R2/delta-matrix.csv",
+      "sha256": "389737b49247dbefb3d7cf30495da58b8fb5bf95943d15c7575d132d1ef971a2",
+      "bytes": 2306
+    },
+    {
+      "file": "audit/R7_R2/multiprocessing-source-checks.json",
+      "sha256": "4323eb764842f8c25495ce775bde4214f7fdb746e38fce020779d584dff94777",
+      "bytes": 261
+    },
+    {
+      "file": "audit/R7_R2/package-checks.json",
+      "sha256": "bf0121c6f2989215446a3298d860ed5d9b11bdbe44ee41e89459578396fcc779",
+      "bytes": 223
+    },
+    {
+      "file": "audit/R7_R2/structural-results.json",
+      "sha256": "dabe8b12f24c63d98e4da7c7b6a7a87dead23c31335ae8c06f9a5d8b323d513e",
+      "bytes": 2602
+    },
+    {
+      "file": "audit/R7_R2/windows-reported-results.json",
+      "sha256": "56823eb6eff9ba88c208c00c79f58ec6b8f1979c31fc69193460a38025063270",
+      "bytes": 289
+    },
+    {
+      "file": "audit/R8/USER_R7_to_R8.patch",
+      "sha256": "bd13cb856ed0326a262e11c3b1021c09a3f5375937b8b31ae42d69a53dcc6f52",
+      "bytes": 52145
+    },
+    {
+      "file": "audit/R8/change-record.json",
+      "sha256": "5b67a8a5ffb4661674b2dc3669105f88f55c4ce470df8c859455f4e21a9cca29",
+      "bytes": 27221
+    },
+    {
+      "file": "audit/R8/comparison-status.json",
+      "sha256": "e8f69895f547ca82785b43f3dc24aa9033ac9211280055f0f200b22dc73e3399",
+      "bytes": 321
+    },
+    {
+      "file": "audit/R8/excluded-build-files.json",
+      "sha256": "6be19f77e052fe1c9bca31629048d893a16be768d7a6d9414295e4b0e8ffadef",
+      "bytes": 72513
+    },
+    {
+      "file": "audit/R8/files-changed.csv",
+      "sha256": "1eb2e1a8293481c565f941df23961171bbb1d233cc18a1188315733c4c0258bd",
+      "bytes": 2590
+    },
+    {
+      "file": "audit/R8/input-comparison.json",
+      "sha256": "45c3a49692427088bed828239f2cf9cc5a9d46dabb2efd685d0aba7a60d0d682",
+      "bytes": 488
+    },
+    {
+      "file": "audit/R8/patch-replay-results.json",
+      "sha256": "1714555bbbc7ee8ef1b4b29e09645dc2a2a3e5c27b3fe409f5091beae4ebd595",
+      "bytes": 87
+    },
+    {
+      "file": "audit/R8/structural-results.json",
+      "sha256": "10d7451d943c2daf4b10252ef7ff0b1473ab2633931f6bfeb4d86f40bb43b904",
+      "bytes": 3158
+    },
+    {
+      "file": "audit/R8/test-matrix.csv",
+      "sha256": "3becb83205e9143f3f570f718c1e6817855c853bc6013c4f7561d283d3e32a1f",
+      "bytes": 3558
+    },
+    {
+      "file": "audit/R9/R8_to_R9.patch",
+      "sha256": "7359f899a12abd9a87c21bb941f3bb75ab48758c931e83cddd4acc2cc8a8b15a",
+      "bytes": 69930
+    },
+    {
+      "file": "audit/R9/change-matrix.csv",
+      "sha256": "a7092636bd80d706b088bb9d2f3235d83bd68c2c954d6ee22cbf69d3b203c606",
+      "bytes": 17637
+    },
+    {
+      "file": "audit/R9/files-changed.csv",
+      "sha256": "559da0fd70b33e1e26c39cdbee36af8daa2664e9f1c3d34653c4c9642ca45704",
+      "bytes": 3211
+    },
+    {
+      "file": "audit/R9/input.json",
+      "sha256": "c1dbb86bcba15ea7387c0dde46b9593f8ec3d7165a00c8812376044557bdc359",
+      "bytes": 532
+    },
+    {
+      "file": "audit/R9/patch-replay-results.json",
+      "sha256": "b72246927388992f632fe99678dddb035fd9ae37fd0b60b0e7d3e75e5d557222",
+      "bytes": 254
+    },
+    {
+      "file": "audit/R9/structural-results.json",
+      "sha256": "66be662425a1ae38f099c6a5f0c9af22b671f02e9d41047726babcf8b9f994f5",
+      "bytes": 3852
+    },
+    {
+      "file": "audit/R9/test-matrix.csv",
+      "sha256": "62bd3f6db2b182e06c2f12febb9c9a663bf784e99fc6f1843c6d0d949fe9a58b",
+      "bytes": 6848
+    },
+    {
+      "file": "audit/prior/DECISIONI_SEGNALAZIONI_PRIORITARIE.csv",
+      "sha256": "c66f5cf2c67e89313ae04b816ef2368c91200a8b51d6b0b5a37eea97ea5eac5d",
+      "bytes": 16602
+    },
+    {
+      "file": "audit/prior/GLOSSARIO_95_VOCI_CON_RISCONTRI.csv",
+      "sha256": "a02d691d0ab96ef8a8a284866daaa35f110f2afdc2e89f660c9131da79e14fc4",
+      "bytes": 43380
+    },
+    {
+      "file": "audit/prior/HANDOFF_PER_CHATGPT_WORK.md",
+      "sha256": "c6359489e5f3d88a4aacf87c75719ddf58d6747f1fa1df800e0dfbc1f38c585b",
+      "bytes": 1798
+    },
+    {
+      "file": "audit/prior/INVENTARIO_TESTI_R5.csv",
+      "sha256": "6aebbc3170a80a76f9e0d971fbb7fef967ae242b7478d1f48eee2d00c6e04e83",
+      "bytes": 828018
+    },
+    {
+      "file": "audit/prior/MODIFICHE_APPLICATE_R6.csv",
+      "sha256": "72e9000f8f53966c7ba7be7fb601e98dc12f94b080d6634adaaf54d6d5ec76a3",
+      "bytes": 6939
+    },
+    {
+      "file": "audit/prior/R6_INVENTARIO_TESTI_R6.csv",
+      "sha256": "d26ad7bb7aac418bda11d5361aca5a2c6db70e151265f4ae9426ef4383a0f059",
+      "bytes": 828640
+    },
+    {
+      "file": "audit/prior/R6_statistiche.json",
+      "sha256": "ad3a38decb137075dff290737875f8d0005be5faf8699a9743d7665da8e7a508",
+      "bytes": 746
+    },
+    {
+      "file": "audit/prior/RAPPORTO_AUDIT_TERMINOLOGICO_R5_R6.md",
+      "sha256": "6e6ec0ccf87978e8bec15fc1945f0310357771d1ba606764aa6f1b5e22ad70d1",
+      "bytes": 10968
+    },
+    {
+      "file": "audit/prior/statistiche.json",
+      "sha256": "f3e7cabdfd2076b9d351086ce4f2ce24287f7cd77c7b9a380f05b9c2ae85653c",
+      "bytes": 747
+    },
+    {
+      "file": "audit/tools/README.md",
+      "sha256": "da81c23e17a823b670aef54ee8df6745a641ab50a9c0bf082da1971f0be18366",
+      "bytes": 633
+    },
+    {
+      "file": "audit/tools/README_R8.md",
+      "sha256": "d1e00791a865152710a3a47841bf62d451692ee2284f7ee5d281d1d385064ce7",
+      "bytes": 423
+    },
+    {
+      "file": "audit/tools/button_layout_rules.py",
+      "sha256": "0515c0a930cf1bb7aced9eba8d10a6ff280a854ae0dbc8a35d448d4f11e17371",
+      "bytes": 596
+    },
+    {
+      "file": "audit/tools/check_copy_layout_r18r1.py",
+      "sha256": "c7fef3d02dc3a41a16b7ddf93c8fcfa9f11765f6e35935f900b1d87588025ea2",
+      "bytes": 9123
+    },
+    {
+      "file": "audit/tools/check_device_catalog_r14r1.py",
+      "sha256": "5761fbf2d71884707a7198397431868f5a5ae5f59ccfb05d3558d6c1ddda5981",
+      "bytes": 5863
+    },
+    {
+      "file": "audit/tools/check_header_layout_r19.py",
+      "sha256": "ed648104b62b35b40fd7aa20c7b8830c81578f1196852a20be1727bd334c522c",
+      "bytes": 7291
+    },
+    {
+      "file": "audit/tools/check_native_capture_r17.py",
+      "sha256": "3928f9b15898e53f97ffd90cb405a5350e49b675387eb4afd9d4ea40fcfbf995",
+      "bytes": 14626
+    },
+    {
+      "file": "audit/tools/check_native_network_r16.py",
+      "sha256": "b4b480ed345c5b30306108668b8bc8fc55ef679872e908a8a17716c2322fbc11",
+      "bytes": 11825
+    },
+    {
+      "file": "audit/tools/check_network_devices_r12.py",
+      "sha256": "614606b0a38b423d13dfc23af9ae569c1f1014df48afc7ac3db84369fe31d692",
+      "bytes": 6808
+    },
+    {
+      "file": "audit/tools/check_network_recovery_r18.py",
+      "sha256": "c92277ca1374669e5bfd8ba6a20dee74e8def41ebb42af162bee066ff1239fd5",
+      "bytes": 17417
+    },
+    {
+      "file": "audit/tools/check_network_tab_r14r2.py",
+      "sha256": "f45f08c86e60e04be3609f8d5ff68d6daafd22b49d7b810fcbe41af17d04dfe1",
+      "bytes": 7416
+    },
+    {
+      "file": "audit/tools/check_packet_capture_r13.py",
+      "sha256": "f483b6d7254e93c67eada415b583dc29a313e015932a346ab503cdb44c29077e",
+      "bytes": 10291
+    },
+    {
+      "file": "audit/tools/check_r10.py",
+      "sha256": "4917a2e48f295fef24edc4fb22f72a5e8634aa51cd7791b3e8919459bed207db",
+      "bytes": 21170
+    },
+    {
+      "file": "audit/tools/check_r7.py",
+      "sha256": "3f2af7925cd3b90f8f41679cd75414504d6adc8ae2bad4dd6079c19072fc9f01",
+      "bytes": 5657
+    },
+    {
+      "file": "audit/tools/check_r8.py",
+      "sha256": "ec84eb9ba58875d7f9269fc20d5478615ea1cac0483510b44f292012bfce31f4",
+      "bytes": 6734
+    },
+    {
+      "file": "audit/tools/check_r9.py",
+      "sha256": "84098516c97c158df5ceed438a1a66e347e127c1b5710a5c3901856bcda3fc0a",
+      "bytes": 8620
+    },
+    {
+      "file": "audit/tools/check_source_guard_r18r2.py",
+      "sha256": "14d049f7a4894bce835fe9ba9bbdca1205e1b468aabf4323dd660b330b89ffc9",
+      "bytes": 5431
+    },
+    {
+      "file": "audit/tools/check_system_processes_r14.py",
+      "sha256": "a6a280fe1c8909312851b475ace45ccb513a80eb4f99f7048b21e131319aeef0",
+      "bytes": 11998
+    },
+    {
+      "file": "audit/tools/check_ux_writing_r10r11.py",
+      "sha256": "5c7dd68d78d2e0080f653869bfdf1cd40cfa0e25c0404cb4678d29e8378ee51d",
+      "bytes": 9441
+    },
+    {
+      "file": "audit/tools/check_windows_components_r15.py",
+      "sha256": "167691847914eeaaaf43b983a515f7bd0cb61af2c15011990b381ece8b26e959",
+      "bytes": 7763
+    },
+    {
+      "file": "audit/tools/check_workspace_r10r10.py",
+      "sha256": "4e79e38ec586f43695c23d74dceea8989436377e17af2e24a4945a3dae724420",
+      "bytes": 9325
+    },
+    {
+      "file": "audit/tools/check_wpf_test_context_r14r3.py",
+      "sha256": "b99f521a5294a0136e87705cf64385e6f6769b2d39936d679e0826a848fd8da5",
+      "bytes": 7110
+    },
+    {
+      "file": "audit/tools/interpolated_expectation_contract.py",
+      "sha256": "d993b9605aa72c5be5d14ac69233859dd2b69c063358507000043f7f459851a9",
+      "bytes": 1593
+    },
+    {
+      "file": "audit/tools/live_resource_rules.py",
+      "sha256": "ed9f1bb019f0e72a9b0db4175e653c53d6688830ecad473490cbb181b47edb49",
+      "bytes": 4700
+    },
+    {
+      "file": "audit/tools/memory_text_contract.py",
+      "sha256": "baaca4fc2d0cdc528f523363df6ca4428eb2222e4011f2d032385b22c508dcf8",
+      "bytes": 1373
+    },
+    {
+      "file": "audit/tools/network_device_rules.py",
+      "sha256": "64bb2d70bc29ed2d43e438448474ced835dbf6492fb0e11f54ce1f73ce644912",
+      "bytes": 5386
+    },
+    {
+      "file": "audit/tools/package_copy_layout_r18r1.py",
+      "sha256": "29e430b4dcf516f0704fa9f786157c0ebb3dd7c17f8edda082d2703f9819932d",
+      "bytes": 8167
+    },
+    {
+      "file": "audit/tools/package_device_catalog_r14r1.py",
+      "sha256": "d424f577c22d13e42464192cc337b9187a0333b66f508dda0d0e8eaa7ce0e511",
+      "bytes": 7070
+    },
+    {
+      "file": "audit/tools/package_header_layout_r19.py",
+      "sha256": "401e1596f00128da67e900f2cb8606618a223db9f5e595d3113144a81f1bd4b1",
+      "bytes": 7193
+    },
+    {
+      "file": "audit/tools/package_native_capture_r17.py",
+      "sha256": "7fc4fbcf1715cb3de9ef6a68bd7648266278e4ea428655fbd58c4bb1bb8e5ac6",
+      "bytes": 8005
+    },
+    {
+      "file": "audit/tools/package_native_network_r16.py",
+      "sha256": "8f196f3fee93e3db73079cc8e4481c02375040e103b41116af675fc293cf567a",
+      "bytes": 7673
+    },
+    {
+      "file": "audit/tools/package_network_recovery_r18.py",
+      "sha256": "ddecaeb7b66a6156d393063e53704e53371c9e64a5d1b9b7dbec57a90902ed4e",
+      "bytes": 8035
+    },
+    {
+      "file": "audit/tools/package_network_tab_r14r2.py",
+      "sha256": "9e8d0447cc50cd98fd1bb7252cb9ad1888c8148fe3a77bb10c39c4b881c95deb",
+      "bytes": 7130
+    },
+    {
+      "file": "audit/tools/package_offline_setup_r20.py",
+      "sha256": "5ee816859cf834f80b0ea3c56b34c4c652b4d14ce236ac2f42e18fede712307b",
+      "bytes": 8107
+    },
+    {
+      "file": "audit/tools/package_source_guard_r18r2.py",
+      "sha256": "85069c9d3d19295e32d0dc94b64d79827c6a43716a2e56ce26acf5348498b632",
+      "bytes": 9295
+    },
+    {
+      "file": "audit/tools/package_system_processes_r14.py",
+      "sha256": "3de913166520d452491af987746941b56487bd71c20664d01a21923cf5a65e2f",
+      "bytes": 6914
+    },
+    {
+      "file": "audit/tools/package_windows_components_r15.py",
+      "sha256": "42c6d9c7dfa057879906258b739ab305b578d865a97b8540185f61f5d33cdb40",
+      "bytes": 7643
+    },
+    {
+      "file": "audit/tools/package_wpf_test_context_r14r3.py",
+      "sha256": "5e8c780bab69e7dfb45d84b0ca4fb46c04ee76b242777dc869d9e299fb961ff5",
+      "bytes": 7259
+    },
+    {
+      "file": "audit/tools/ram_monitor_rules.py",
+      "sha256": "9bcdaed6166c9e27431c520f87647ab86812b02a81d94e2f8f1bb7b17de7e2c8",
+      "bytes": 3834
+    },
+    {
+      "file": "audit/tools/run_component_portable_r15.py",
+      "sha256": "1e4100e3c22bf4818309d75e5714f44fb629374281355b4f36d315d9c9c1a595",
+      "bytes": 2881
+    },
+    {
+      "file": "audit/tools/run_header_presentation_r19.py",
+      "sha256": "9e057dc1d63b7b7871a8376d742c8db976cb4646f68f1eba4297125c3ea4a4c0",
+      "bytes": 2597
+    },
+    {
+      "file": "audit/tools/run_native_capture_portable_r17.py",
+      "sha256": "893114cc40bb787cad7f414f02871fc33b8205d054baa9f02e69186f5eef6df4",
+      "bytes": 3043
+    },
+    {
+      "file": "audit/tools/run_native_network_portable_r16.py",
+      "sha256": "0033f176a3304ff52fd040950f0522fccaf0d5ecf60526fb8e5fc3a2417bf199",
+      "bytes": 2966
+    },
+    {
+      "file": "audit/tools/run_network_recovery_portable_r18.py",
+      "sha256": "350e2e56b0dad7b8250954d3f315db710b64de8ba543f534981fb4911eb7d4c2",
+      "bytes": 3180
+    },
+    {
+      "file": "audit/tools/test_button_layout_r10r1.py",
+      "sha256": "e332203f35eb9c3bdb58717641894a8934224d4c118174da42c0f622500b8280",
+      "bytes": 1944
+    },
+    {
+      "file": "audit/tools/test_clipboard_calls_r10r9.py",
+      "sha256": "d82d6610c1e742954bd1ddd8000a3e34629c0c0ab5d68fbbe4e73ead3cebf8bd",
+      "bytes": 3914
+    },
+    {
+      "file": "audit/tools/test_live_resource_r10r7.py",
+      "sha256": "e59fce41f5ba6525bd66b9e14f490df58a9e34a72f6efc6eaf377fff51456156",
+      "bytes": 2903
+    },
+    {
+      "file": "audit/tools/test_offline_bundle_r20.ps1",
+      "sha256": "51abf472820bf42edbf31349776dc5c913ff9e50082be5cc28772000a64d68ef",
+      "bytes": 3461
+    },
+    {
+      "file": "audit/tools/test_ram_monitor_r10r8.py",
+      "sha256": "74733f65eac3fc3cf09bad3d67e98ed50804ede8a454ed00c01e298679118bcf",
+      "bytes": 2564
+    },
+    {
+      "file": "audit/tools/typecheck_wpf_sources_r17.py",
+      "sha256": "4dcbee481762e9775a602299dc5c53ab22048a60e9b6da811ad93dfe2de4b23a",
+      "bytes": 3999
+    },
+    {
+      "file": "audit/tools/typecheck_wpf_sources_r18.py",
+      "sha256": "ad21b4f6a8830582769cedb7e750f9792987add1dc7b66d2e04fd20cb7e1e9cc",
+      "bytes": 3999
+    },
+    {
+      "file": "audit/tools/typecheck_wpf_sources_r18r1.py",
+      "sha256": "5d23ce3c41718e3b25aea88b287f080d8d5af890ab32e304156a44e5d003d4e5",
+      "bytes": 4002
+    },
+    {
+      "file": "audit/tools/typecheck_wpf_sources_r19.py",
+      "sha256": "92a4df8d22c9277d9e647c9dc4b89ff809791cf9928d6a97e4aca4fd45bb64cf",
+      "bytes": 3999
+    },
+    {
+      "file": "audit/tools/ux_writing_rules.py",
+      "sha256": "041059e503cf447d93ef79ec0b37c11eae460b8197e54b466ebaf883ae2a7eb9",
+      "bytes": 2530
+    },
+    {
+      "file": "bootstrap.ps1",
+      "sha256": "b6d6018974a06192d5962437b5f1c77977bc3da6c474d1dd9c019d9b291f4b09",
+      "bytes": 5935
+    },
+    {
+      "file": "build-dashboard.ps1",
+      "sha256": "99f6c7022ead48e2dc61284a2fc149267bc89a20dda9720007b6e0dc65801502",
+      "bytes": 13600
+    },
+    {
+      "file": "build-diagnostics.ps1",
+      "sha256": "85140798a7802cdce85d638c87c0100b8e949c696a3186568654a4f814568a0c",
+      "bytes": 4670
+    },
+    {
+      "file": "build-guardian.ps1",
+      "sha256": "42487f541d3cb96030f240a9bb27176a769193b62e090598d082b2735d8b4a88",
+      "bytes": 1926
+    },
+    {
+      "file": "build-ram-monitor.ps1",
+      "sha256": "ac094a828b761a76871c5936b7a2ba5dd2bc16bf5dd8f3b4315207f8ee2f982b",
+      "bytes": 1077
+    },
+    {
+      "file": "diagnose-dotnet-hosts.ps1",
+      "sha256": "fc617d15c953a795c4c6389571f8421ba1c88e214dd7e98ff1e073e3b1089e24",
+      "bytes": 670
+    },
+    {
+      "file": "diagnose-startup.ps1",
+      "sha256": "eced402673d52a353b825acb1021b4f7727bfdf2efb1cbf9ebe7b7b6591bdaee",
+      "bytes": 2270
+    },
+    {
+      "file": "diagnostics-status.ps1",
+      "sha256": "2a87da0bc998ec6db25906666ee8875382bba969a92df3124fad550b23d43fe3",
+      "bytes": 2217
+    },
+    {
+      "file": "docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv",
+      "sha256": "3bf75aa6244a3068a50c089a0d64cce05eeee1ff7293a6968b0482e867a05f56",
+      "bytes": 41307
+    },
+    {
+      "file": "docs/terminology/REVISIONE_MANUALE_BASE_V01915.md",
+      "sha256": "b8ad9d1450fac592b5241dcdc51fd1dd9540036187ecb4105851b1ae747f6ad2",
+      "bytes": 3475
+    },
+    {
+      "file": "global.json",
+      "sha256": "07b7c7dd361891336f9688143f7b3ad55021e9594afc66f64145411c8be7570e",
+      "bytes": 90
+    },
+    {
+      "file": "guardian-activity.ps1",
+      "sha256": "826ad84330631a9adaf0dac446d08640b82f56883797a06f353ce21a432db8e8",
+      "bytes": 1494
+    },
+    {
+      "file": "guardian-health.ps1",
+      "sha256": "67cafea45a09bbcb9171f8f007d8f94c138c73b76251ced5d785a57106280784",
+      "bytes": 1376
+    },
+    {
+      "file": "guardian-report.ps1",
+      "sha256": "8fce2ecc5c99e4f6acf7b9bf0560911bc3e61be7c53f295fc77be70dff75bb79",
+      "bytes": 413
+    },
+    {
+      "file": "guardian-status.ps1",
+      "sha256": "6b22bb95715dbab787fd0b0aa77ea93651e65e05ee949b76e6f5ddfa4d863308",
+      "bytes": 686
+    },
+    {
+      "file": "install-guardian.ps1",
+      "sha256": "8de8cb33fca486260698323d3b2f71da618b896a413017e74ba5233fce9ea8d6",
+      "bytes": 2420
+    },
+    {
+      "file": "install-memory-alerts.ps1",
+      "sha256": "88e9da0b8d9733f87a815d963cd9fcc736bed85ff6886dc59a14747c95c94c6e",
+      "bytes": 2422
+    },
+    {
+      "file": "measure-processlens-memory.ps1",
+      "sha256": "39484ccdb06a3b9e4ea155ce63290bf7cb49172582d9294f35d4c663b41536f4",
+      "bytes": 3768
+    },
+    {
+      "file": "measure-processlens-resources.ps1",
+      "sha256": "c5a49cf99c5d3525a540bdbae1d952007e0eb9c00e28570c14a36fb4adbe2da0",
+      "bytes": 7161
+    },
+    {
+      "file": "memory-alerts-status.ps1",
+      "sha256": "6445b28d1caa0c7f3a2d06b38d5448a540de865688e88ed42a1690d2f70f594c",
+      "bytes": 590
+    },
+    {
+      "file": "memory-footprint.ps1",
+      "sha256": "c7e53481becd346133bbe4edd2b26923fbc816069bf5b4ac4a5f80978eddfe10",
+      "bytes": 1321
+    },
+    {
+      "file": "profile-dotnet.ps1",
+      "sha256": "27fc5bd38bac22de038224857db260467ffa17d34d7dcf352faee499c75d4ae1",
+      "bytes": 3048
+    },
+    {
+      "file": "profiler-status.ps1",
+      "sha256": "9949342bfc7e3b6b6dccf59d2c90eaadbfc4e092bcc85be577382914be0d87a5",
+      "bytes": 971
+    },
+    {
+      "file": "publish-release.ps1",
+      "sha256": "139622b2f8d1d4a3eb87a87381d5dd77ef67a03cf7c24913b499ba8bcee12ec1",
+      "bytes": 2353
+    },
+    {
+      "file": "run-release.ps1",
+      "sha256": "05f8373d9a1449e7be46947cf2102b79bd059e68cb4eddf4efbd2b5e21174982",
+      "bytes": 549
+    },
+    {
+      "file": "setup/diagnose-network.ps1",
+      "sha256": "2fb3c7fcf6417b6c4070c95a995e80121244f52206e473ee56c526fb57aaebfe",
+      "bytes": 8059
+    },
+    {
+      "file": "setup/install-offline.ps1",
+      "sha256": "acdf2b67dd7a7cb1996d9e47f8fa51fc06a64a9598a06f93e9101cf4d2cee41e",
+      "bytes": 5405
+    },
+    {
+      "file": "setup/offline-common.ps1",
+      "sha256": "e4fe06cace520192dc072669c9a5d491e3566abb8d61458a9ef7b71d1a50bb3d",
+      "bytes": 2186
+    },
+    {
+      "file": "setup/payload/dotnet-sdk-8.0.426-win-x64.zip",
+      "sha256": "b2523f881c97e13234e9b3905fe9978831b84e52f8115ba397d31203d2e022ce",
+      "bytes": 285292840
+    },
+    {
+      "file": "setup/payload/downloads.json",
+      "sha256": "1ee187e88190c7a79b83a1ca287af027b4b376a229271d1bca0bbcb98142b7d2",
+      "bytes": 40671
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.data.sqlite.8.0.20.nupkg",
+      "sha256": "f6fb17c1f11a51458060322dc107cd6df8c6fe87c5c8507c7cc31c90af56372a",
+      "bytes": 34998
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.data.sqlite.core.8.0.20.nupkg",
+      "sha256": "d2f156c5c7036eafc3b3dd49c4bdb90648fdc37e5bd67a2c7eef527ad634c938",
+      "bytes": 297570
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.diagnostics.netcore.client.0.2.510501.nupkg",
+      "sha256": "bda612812a323c7d1727e09566af97952c8bd6d2606799045ca330631fb523dc",
+      "bytes": 163679
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.diagnostics.tracing.traceevent.3.1.24.nupkg",
+      "sha256": "8d7005c88eebb4d688b0403a0e6610b70b150962a894743d0c1f43de367af108",
+      "bytes": 5435432
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.configuration.8.0.0.nupkg",
+      "sha256": "f413ec012971ad5f229663028dd6f74e251c9b9bc56719019c023f7cd0521320",
+      "bytes": 191129
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.configuration.abstractions.8.0.0.nupkg",
+      "sha256": "e1e0690e47fb309a334d99cec10bf071f81129019c3577b42bf905fa1e5197ca",
+      "bytes": 149230
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.configuration.binder.8.0.0.nupkg",
+      "sha256": "19a9df2271b3ce83766ca78dc0e37cfc79da9abea5ed14e960b038f423570fd4",
+      "bytes": 385489
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.configuration.binder.8.0.2.nupkg",
+      "sha256": "68607456ea02df861a74012aaf0a1a5cb739aa56b9e69b300d5db12d2991ed21",
+      "bytes": 389312
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.configuration.commandline.8.0.0.nupkg",
+      "sha256": "7e63c2fe8f12fb0793b50256ca4a671879ba00a554db5c5813f09a1d853bce08",
+      "bytes": 139143
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.configuration.environmentvariables.8.0.0.nupkg",
+      "sha256": "f9b8c566fa82b0c7f6151336a25ab1fdfb9bf90c1f335901863195393e470b8f",
+      "bytes": 122333
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.configuration.fileextensions.8.0.1.nupkg",
+      "sha256": "89103c2fb057fdf7b92c70953a1cc14a4df419fb213fb576423da7c6912f4ad0",
+      "bytes": 144571
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.configuration.json.8.0.1.nupkg",
+      "sha256": "27c10aff286c7d3a5e49463c17cd594c157d00f1e23d496237b77e9f6397f488",
+      "bytes": 160472
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.configuration.usersecrets.8.0.1.nupkg",
+      "sha256": "c86bd67f0061c85b9d708bfdea9296690d4c20c3a2bf92c74829fef49ec3a33d",
+      "bytes": 141387
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.dependencyinjection.6.0.0.nupkg",
+      "sha256": "819b8c6ae9cc255cafbdea6eccda1d18f45ce9ea8a1fffdb92cdfde7b75890f2",
+      "bytes": 208004
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.dependencyinjection.8.0.1.nupkg",
+      "sha256": "3bd8348d64be8df1a84f7caa2b06582462fe8c64887926f09afa262830b78535",
+      "bytes": 344439
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg",
+      "sha256": "49991ed2334a22a26fbee91db5af8c808946b2b3f611d3e4912f257cb83b26ee",
+      "bytes": 149541
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg",
+      "sha256": "ef92b31065a36d110b7332690a226e6fe96d35430c6f3e40ff529053ee5d80ff",
+      "bytes": 276886
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg",
+      "sha256": "51f2df1100245f10da54f0bb7e813f277155117777d4fbbab902214e27372606",
+      "bytes": 278862
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.diagnostics.8.0.1.nupkg",
+      "sha256": "0ab68734269594c898c7a7dff5a7d3e94ed10bf3283825ccde99f62ab5e488b7",
+      "bytes": 163338
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.diagnostics.abstractions.8.0.1.nupkg",
+      "sha256": "7790d55e103ca89158f586e1663b13aace70e640eec45e6ff860ff59947540bd",
+      "bytes": 154367
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.fileproviders.abstractions.8.0.0.nupkg",
+      "sha256": "b904979ade3b5f61c6a159e26af8cb2026cfb43d9179039840c832de5d31b8c5",
+      "bytes": 113833
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.fileproviders.physical.8.0.0.nupkg",
+      "sha256": "dbdcb9651435660cd53b11e4b58c72887e34915826e6e9f6c9319dbee4969d17",
+      "bytes": 199058
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.filesystemglobbing.8.0.0.nupkg",
+      "sha256": "f8ecf8d494798dd70994224e4a94082f938c04d8bed479767742541df112eec5",
+      "bytes": 192314
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.hosting.8.0.1.nupkg",
+      "sha256": "1452e8e9e9b4376bda5a0ebffef690871a0e813f4b2c7e58d8a5a409e5f9c50e",
+      "bytes": 308451
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.hosting.abstractions.8.0.1.nupkg",
+      "sha256": "fdb2152fdbaf050855fca4268c0d598d1ef8b0c7da02505bd79b155ec1831150",
+      "bytes": 232336
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.hosting.windowsservices.8.0.1.nupkg",
+      "sha256": "241ad9bafd51c6925fe7047cd60f756c4d7f25080178eb67243bc0f7cae560a1",
+      "bytes": 173990
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.logging.6.0.0.nupkg",
+      "sha256": "f16b1929119f5d6e4cb1790c98d55feac96b930f9c474d3973390e3f6294a939",
+      "bytes": 111767
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.logging.8.0.1.nupkg",
+      "sha256": "be47d5c38b50120f3a5e0d7cbfa40ed106f862ccf4363c79eddd5770dba3e885",
+      "bytes": 233885
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.logging.abstractions.6.0.0.nupkg",
+      "sha256": "40da9c437c7e30e2bb9576d6902cd23966bfd90c9835b74cfce1046d6375e52c",
+      "bytes": 458701
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.logging.abstractions.8.0.2.nupkg",
+      "sha256": "707a5ef17d818186b90f3ba565fab6e2b83c3b62b92e6ab63a22e1a320158097",
+      "bytes": 801164
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.logging.configuration.8.0.1.nupkg",
+      "sha256": "13625b246d845e5bf61d458b8b5ee422400be910bdac2d84d7c0b7800c8eb9a1",
+      "bytes": 144891
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.logging.console.8.0.1.nupkg",
+      "sha256": "dad86117525b0cd8f7071d9f707ecedbab8718d78c77d3186a1e8deb4948a485",
+      "bytes": 266136
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.logging.debug.8.0.1.nupkg",
+      "sha256": "80a16a060e656e3cb954111c02ea10fd2b17031beb61d0583aef5d57ad1e24a8",
+      "bytes": 124342
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.logging.eventlog.8.0.1.nupkg",
+      "sha256": "d549043b09773a9d9bde34efa48d74847c487bd16a795572f95075b59a7a2dcf",
+      "bytes": 141250
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.logging.eventsource.8.0.1.nupkg",
+      "sha256": "108353fcf81f0780ef7fed490732f5a653d3df97b34fb9324bccbf5cc3206310",
+      "bytes": 171910
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.options.6.0.0.nupkg",
+      "sha256": "0f19c48068825e992bc459315ed397ab06a202da088c0f1549258272c5b41701",
+      "bytes": 140038
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.options.8.0.0.nupkg",
+      "sha256": "9f69b82527a040a51394eb0a2d95141c728cabddba789d30f4df46f88dc5a05c",
+      "bytes": 492963
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.options.8.0.2.nupkg",
+      "sha256": "02372575d75d76d37ff5a1fda60ec2944672716b451cb8bd20f7b518684d432b",
+      "bytes": 494417
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.options.configurationextensions.8.0.0.nupkg",
+      "sha256": "03905bcf0d6488d9208ab939c7c932c7083d94b4dc4a78288de0fea1ca46d512",
+      "bytes": 135412
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.primitives.6.0.0.nupkg",
+      "sha256": "020bf2b2cce9435d40893049164bd2cbc267c085938f5e4f7de93b4fb4e151ce",
+      "bytes": 144250
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.extensions.primitives.8.0.0.nupkg",
+      "sha256": "154f2a8f70d1f1b0dd73573e59e199c7f3c265eaaa9ddc1e64cf5ea5ca578d2a",
+      "bytes": 209772
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.net.illink.tasks.8.0.32.nupkg",
+      "sha256": "c10f7630218ba0b55780b4fb5e98bc3cd895659179607fcdf9a4da065358abe8",
+      "bytes": 1446375
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.netcore.app.host.win-x64.8.0.32.nupkg",
+      "sha256": "32d48bdbce29ec3c57917ca2aae2aa5fc71302702780c099b9f122842bccd789",
+      "bytes": 5488632
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.netcore.platforms.5.0.0.nupkg",
+      "sha256": "2c8720d52b437102cf380069e0945722cf37eddef3d226bafbefb7485de39757",
+      "bytes": 39826
+    },
+    {
+      "file": "setup/payload/nuget/microsoft.win32.registry.5.0.0.nupkg",
+      "sha256": "f64ca53c67ca65ce7cc85a8d29aefbb2da2672836731e1115e8cd62730dc5080",
+      "bytes": 354731
+    },
+    {
+      "file": "setup/payload/nuget/sqlitepclraw.bundle_e_sqlite3.2.1.6.nupkg",
+      "sha256": "7590ff6d9b185e33aee3a647e58ff0821d2e8473aa2310be4bed1e70a86bef5f",
+      "bytes": 37656
+    },
+    {
+      "file": "setup/payload/nuget/sqlitepclraw.core.2.1.6.nupkg",
+      "sha256": "4715a39b9d8f766315f7c7600f2d010a917df3cf81b2c45952000b2efed31ff1",
+      "bytes": 34519
+    },
+    {
+      "file": "setup/payload/nuget/sqlitepclraw.lib.e_sqlite3.2.1.6.nupkg",
+      "sha256": "b87b7977e48552449de960fb4e0d09ddef1e568c72fc533fb783c091cf4f253d",
+      "bytes": 16588105
+    },
+    {
+      "file": "setup/payload/nuget/sqlitepclraw.provider.e_sqlite3.2.1.6.nupkg",
+      "sha256": "cc773f619b1def6797948f1b6b5b6fe7c1d9594222ca325ac6ad8208fd6141ef",
+      "bytes": 58749
+    },
+    {
+      "file": "setup/payload/nuget/system.collections.immutable.9.0.8.nupkg",
+      "sha256": "ff9ef9ed82cb95b9032f6f7e652a13889e13a45cba1d048ac1d30f953eca610c",
+      "bytes": 651173
+    },
+    {
+      "file": "setup/payload/nuget/system.diagnostics.diagnosticsource.6.0.0.nupkg",
+      "sha256": "458f6e5923dd2b67e04b0963d4e1c1181568dd9bc642004937302c4b93863167",
+      "bytes": 374970
+    },
+    {
+      "file": "setup/payload/nuget/system.diagnostics.eventlog.8.0.0.nupkg",
+      "sha256": "aedf3173791d769418e0711d82194178e2b881dc39c888f899c661015b64dbf6",
+      "bytes": 535543
+    },
+    {
+      "file": "setup/payload/nuget/system.diagnostics.eventlog.8.0.1.nupkg",
+      "sha256": "cefa9def6a7081c1a86b59c7dd94f50b498ff64e77bc52c9ebdaf9302435b1a0",
+      "bytes": 538290
+    },
+    {
+      "file": "setup/payload/nuget/system.io.pipelines.9.0.8.nupkg",
+      "sha256": "74ef38ad47290e08fa93cad366adca9b2ff2fba73f70fd456b576c095f492250",
+      "bytes": 223692
+    },
+    {
+      "file": "setup/payload/nuget/system.memory.4.5.3.nupkg",
+      "sha256": "0af97b45b45b46ef6a2b37910568dabd492c793da3859054595d523e2a545859",
+      "bytes": 154054
+    },
+    {
+      "file": "setup/payload/nuget/system.reflection.metadata.9.0.8.nupkg",
+      "sha256": "e0d83e08c096bc0a1be9575010b8c609fd525327d9e5cddf3e29af5e77a13bc4",
+      "bytes": 1114748
+    },
+    {
+      "file": "setup/payload/nuget/system.reflection.typeextensions.4.7.0.nupkg",
+      "sha256": "184b42197c2d3a79187a3495f937e5f83ab21aae634d4695c8bf5e32ea4c1c13",
+      "bytes": 249287
+    },
+    {
+      "file": "setup/payload/nuget/system.runtime.compilerservices.unsafe.6.0.0.nupkg",
+      "sha256": "6c41b53e70e9eee298cff3a02ce5acdd15b04125589be0273f0566026720a762",
+      "bytes": 84343
+    },
+    {
+      "file": "setup/payload/nuget/system.runtime.compilerservices.unsafe.6.1.2.nupkg",
+      "sha256": "5f6a7f53af3465f92beb6da873ebe0e496206c313313b98badee4355a6b25937",
+      "bytes": 75106
+    },
+    {
+      "file": "setup/payload/nuget/system.security.accesscontrol.5.0.0.nupkg",
+      "sha256": "b9e486f989fcd9ebf1c86067138f4de03fa780e0c35e0a2b9e506d4373a6c39e",
+      "bytes": 621573
+    },
+    {
+      "file": "setup/payload/nuget/system.security.principal.windows.5.0.0.nupkg",
+      "sha256": "081390c25f6f78592b28ada853c24514488a221fe9f9a24efaaf5373643ff3d6",
+      "bytes": 535022
+    },
+    {
+      "file": "setup/payload/nuget/system.serviceprocess.servicecontroller.8.0.1.nupkg",
+      "sha256": "d9c5d3ccd3b25ea2629c53f375527d1aeeaaac5b7271f8afbbb4470f304989cf",
+      "bytes": 296621
+    },
+    {
+      "file": "setup/payload/nuget/system.text.encodings.web.9.0.8.nupkg",
+      "sha256": "d85cb9fd502a047bb07311cc55ebf2cd00d12119724d9953fb9a70afa3adbae5",
+      "bytes": 293522
+    },
+    {
+      "file": "setup/payload/nuget/system.text.json.9.0.8.nupkg",
+      "sha256": "084a0b3a3d0a7ae72d2b68d777ac99fbfe72c786a9b0487bfb1b091fde61ff57",
+      "bytes": 1877396
+    },
+    {
+      "file": "setup/start-installed.ps1",
+      "sha256": "829640319d2d69626b902ba7eee35489188f6b3aa347119a52f4b4a79ee0fb92",
+      "bytes": 983
+    },
+    {
+      "file": "src/ProcessLens.App/App.xaml",
+      "sha256": "c35d1cedbe0d69f11bfeb3d0d644305b75e536d9f3651522e6c7978d41528532",
+      "bytes": 266
+    },
+    {
+      "file": "src/ProcessLens.App/App.xaml.cs",
+      "sha256": "2790f315833aa0fc5894eb8d27cc1cb3ff33009b878fe2cf50375a46954c09bb",
+      "bytes": 6087
+    },
+    {
+      "file": "src/ProcessLens.App/AppDiagnostics.cs",
+      "sha256": "e14ef220918d797c19c4226e169b66e6a11fa37a2f052c7924b4f47b4cf1102d",
+      "bytes": 3199
+    },
+    {
+      "file": "src/ProcessLens.App/AuditLogPresentation.cs",
+      "sha256": "f03ae644ee8cdebc3e7aa6b07527f9ba0cc8d7fb9446434fedcd7429abb66f84",
+      "bytes": 3653
+    },
+    {
+      "file": "src/ProcessLens.App/AuditLogView.cs",
+      "sha256": "2b4ae1321511cea73b2e88df25ab37ddbc3255c90bff6005c77564fccb3216f6",
+      "bytes": 2681
+    },
+    {
+      "file": "src/ProcessLens.App/BoundedCache.cs",
+      "sha256": "1dcdd3549cc7b6f82da2397710e8d57e8635a6ac1689ab3f8f71220dc9ee9450",
+      "bytes": 2180
+    },
+    {
+      "file": "src/ProcessLens.App/ClipboardText.cs",
+      "sha256": "f0079359456c4ec5fdca803cf10a256d1d96b3d988990de813c1e1a7ee0cbe4b",
+      "bytes": 781
+    },
+    {
+      "file": "src/ProcessLens.App/CopyTestVisibility.cs",
+      "sha256": "771cd5e85bd0a4f346654c65579f2e0fe43c690e1e334d41ca747363d29c1c32",
+      "bytes": 227
+    },
+    {
+      "file": "src/ProcessLens.App/CopyTextFormat.cs",
+      "sha256": "d6f610ab27bd7ac3585b924d50aab65d8cfac615d93a9a92b24e3910bdd9b2f2",
+      "bytes": 1013
+    },
+    {
+      "file": "src/ProcessLens.App/GridCopySupport.cs",
+      "sha256": "f58ff149eba9a00166da05530f6b519fbb816111bd29389bb0398f302c1719a0",
+      "bytes": 4852
+    },
+    {
+      "file": "src/ProcessLens.App/GuardianDashboardReader.cs",
+      "sha256": "7707fb1b340d9eb500f9027f9e6709fb46e28a0e1020e4013e6b6be5003ad852",
+      "bytes": 10682
+    },
+    {
+      "file": "src/ProcessLens.App/GuardianDashboardView.xaml",
+      "sha256": "5692acba5a869332c8e0659e962af596dfc9564ae76704e3feca0a76e7eaa766",
+      "bytes": 27891
+    },
+    {
+      "file": "src/ProcessLens.App/GuardianDashboardView.xaml.cs",
+      "sha256": "f5c0938eed283efa4b88055319d91247a97ac171865d3ffb4dd07976238ec4a0",
+      "bytes": 10352
+    },
+    {
+      "file": "src/ProcessLens.App/GuardianDiagnosticPresentation.cs",
+      "sha256": "68582244716f3b2dd0a12b3ed30811d8ff1a6d45b77183dc874fb2cddd1366c3",
+      "bytes": 2256
+    },
+    {
+      "file": "src/ProcessLens.App/GuardianLineageReader.cs",
+      "sha256": "fb228b7d66c7d13bfd37eeae33ee96c3a45b13b1a0f194ff468b53065b120d92",
+      "bytes": 12476
+    },
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml",
+      "sha256": "359e564ff06a6d016b64e97e8d701c6a8437c845789b32013f716f9dbe9332d5",
+      "bytes": 92319
+    },
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+      "sha256": "75f25a8b503ec28a0d2249a123e63fc277e38afb8be44942d73791a83095a7ea",
+      "bytes": 130847
+    },
+    {
+      "file": "src/ProcessLens.App/MemoryAnalysisAudit.cs",
+      "sha256": "4e4d988b05e5c0596fd757f2073dcfa53fdb47b1c909cf0e1bf1270a6a3fa5b2",
+      "bytes": 2568
+    },
+    {
+      "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+      "sha256": "bf2b5a45ad618facb28718a4ac80b9d051837b3bf0f3f5ee4142303f36508720",
+      "bytes": 22931
+    },
+    {
+      "file": "src/ProcessLens.App/MemoryDashboardView.xaml.cs",
+      "sha256": "60d8f8d28e2df3c9a5867bf28900ce054d395a1e9c35e5926dd4468101258437",
+      "bytes": 13276
+    },
+    {
+      "file": "src/ProcessLens.App/MemoryObservationBuffer.cs",
+      "sha256": "a53796dc1791dc16fdcc8daa56ec19784f9027e076cea6c3a2f6efdba6131396",
+      "bytes": 960
+    },
+    {
+      "file": "src/ProcessLens.App/NativeCaptureView.xaml",
+      "sha256": "846083cfbf067e33c25014aa3cfb568a03589db54730b9f722caaf5bc5d49f7d",
+      "bytes": 6714
+    },
+    {
+      "file": "src/ProcessLens.App/NativeCaptureView.xaml.cs",
+      "sha256": "b5fc0a05c83293d1de137c3f77f00f3c4e6126fddf15083c3903efc46e0a91b0",
+      "bytes": 6798
+    },
+    {
+      "file": "src/ProcessLens.App/NativeNetworkEvidenceView.xaml",
+      "sha256": "856253fd1db8ef396d30d55eb91669ac0ca8dbe535b23f182eac266c77fd6365",
+      "bytes": 4543
+    },
+    {
+      "file": "src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs",
+      "sha256": "3a9883c793b90fcd592717cc5af6474b383a59587f5b1905365c1de185e13ba0",
+      "bytes": 3639
+    },
+    {
+      "file": "src/ProcessLens.App/NetworkCaptureView.xaml",
+      "sha256": "ab2ff483987000fcf488e88ea557e5c322d1ea569b021675c6ebc97de148a8ba",
+      "bytes": 6676
+    },
+    {
+      "file": "src/ProcessLens.App/NetworkCaptureView.xaml.cs",
+      "sha256": "0d8121d67b2c1bcea6583a977b1264b32cfd16e90bf10afbb35511c0a33561ef",
+      "bytes": 9574
+    },
+    {
+      "file": "src/ProcessLens.App/NetworkDevicesView.xaml",
+      "sha256": "a5fb2894486cf9639853d6d6856af92c934147e4c9b646ab44225ec3ba817674",
+      "bytes": 6633
+    },
+    {
+      "file": "src/ProcessLens.App/NetworkDevicesView.xaml.cs",
+      "sha256": "8fe1f889697ba416e95831358ed0135c16a33bbe9c9d84d58829bec0546e8cbc",
+      "bytes": 9463
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessDisplayFormatter.cs",
+      "sha256": "ea27373b936aba897c8feb733c86bcd72918f1bb8160fd314b76581dcd6c57fc",
+      "bytes": 2447
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessExitNotice.cs",
+      "sha256": "11122e975198371ba55e61c3cf2efe29eed8bd01d5fb7f740fba3b60424e0a3a",
+      "bytes": 1041
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessExitWatch.cs",
+      "sha256": "9eaf8f27fb117aa3738a7f90f6fb6148f06d2c9d856a7f963a0d5b746be26998",
+      "bytes": 2837
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessIconResolver.cs",
+      "sha256": "3aa0ab8fdc43b8251776e24a9efc1074975841ceec6afabba9719e20f7c7272f",
+      "bytes": 3617
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256": "d85a1d43a87c0d20e0d1e9cd65f161ac6152d3d35c47f2d0c28f1e3c52907947",
+      "bytes": 1211
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessNetworkPresentation.cs",
+      "sha256": "d6a9482919a441d903c83e2f22c4c3e40aff29be9051afc294b2130b07b59143",
+      "bytes": 2747
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessRow.cs",
+      "sha256": "ccf32bd0e3e640b4d74e63267ac9d94e70ddac0435151cfc4974ca4e89e5a5e9",
+      "bytes": 3521
+    },
+    {
+      "file": "src/ProcessLens.App/ProfilerClient.cs",
+      "sha256": "99f30090c0dcb2ecd446693482b389e8173551c330d18fa211f44e4635b39715",
+      "bytes": 6819
+    },
+    {
+      "file": "src/ProcessLens.App/ReportLayout.cs",
+      "sha256": "adb4422ab3212798bddf098a2202e0ab273c7c05feb1c6ad3b1fe71b1997064a",
+      "bytes": 3213
+    },
+    {
+      "file": "src/ProcessLens.App/ReportView.cs",
+      "sha256": "c295abfebbae335000af5a36e60c00d5af5e9a855fada6c97b21cff0deecaf91",
+      "bytes": 2649
+    },
+    {
+      "file": "src/ProcessLens.App/SelectableText.cs",
+      "sha256": "500b40c6c466121666462e40713906d95e07f6a2ad904d11c8d71e3991b35e67",
+      "bytes": 3148
+    },
+    {
+      "file": "src/ProcessLens.App/ServiceDetailsWindow.cs",
+      "sha256": "eb3550284b2604795df581edeea50d67c7e6ecd9d3e82926c9ddc1cb759eb619",
+      "bytes": 2144
+    },
+    {
+      "file": "src/ProcessLens.App/ServiceNavigation.cs",
+      "sha256": "65384ca92e06d3c2a2cf2f0236b2fafa38276597af311d424e2005e3872baf51",
+      "bytes": 992
+    },
+    {
+      "file": "src/ProcessLens.App/SystemProcessesView.xaml",
+      "sha256": "ab97452252be7a787301c89b6a6cab9da7e82ee9733f6e2eaa5f37ef62b6af1a",
+      "bytes": 8946
+    },
+    {
+      "file": "src/ProcessLens.App/SystemProcessesView.xaml.cs",
+      "sha256": "e3cf7d4a5fa1833bf407b28ab416639a686df10e48b5838c07ec7449da0b4e8b",
+      "bytes": 7798
+    },
+    {
+      "file": "src/ProcessLens.App/TrayWindowController.cs",
+      "sha256": "d67240b8f86ccf1e503494021ad10af34c55c93b5dcd28fab0495ba97f66f4d0",
+      "bytes": 9440
+    },
+    {
+      "file": "src/ProcessLens.App/WindowLifetimePolicy.cs",
+      "sha256": "ab0e36e87f2dc4a1e34ed93a7e84775bd1eeff1c5b7ff70382c266c11880e1a1",
+      "bytes": 400
+    },
+    {
+      "file": "src/ProcessLens.App/WindowsComponentContext.cs",
+      "sha256": "1b0e14954516675dac8364d6c12b95425f749d10f63ca4274c2142b6620bb66e",
+      "bytes": 4320
+    },
+    {
+      "file": "src/ProcessLens.App/app.manifest",
+      "sha256": "de65b956bafdc7411490f26fd73f11f619d3920443c46ff9d098669a27036b18",
+      "bytes": 679
+    },
+    {
+      "file": "src/ProcessLens.Core/BoundedMetadataCache.cs",
+      "sha256": "f1ceeb055898633d849f05696ab6d7392893c76cb211aef3ea2edf7067622a26",
+      "bytes": 891
+    },
+    {
+      "file": "src/ProcessLens.Core/CpuMath.cs",
+      "sha256": "9d3435cfadafe2d75099b32f5ff26728f02460db02e1f906ed871906a8e52893",
+      "bytes": 753
+    },
+    {
+      "file": "src/ProcessLens.Core/CpuTelemetry.cs",
+      "sha256": "1987a4ed41d82d4a7429acd4e989109868fe23ea57f0e3d9e6c5e82845492632",
+      "bytes": 475
+    },
+    {
+      "file": "src/ProcessLens.Core/IDeepProcessInspector.cs",
+      "sha256": "2e792aa2f0b6cde1371a2f93ca23f889f71b30de8f39f073679d41e195a83357",
+      "bytes": 126
+    },
+    {
+      "file": "src/ProcessLens.Core/IProcessAnalyzer.cs",
+      "sha256": "431e979f777f7ca0903934de2e9b83a9eea5b12147c5730914f405fca76ae347",
+      "bytes": 123
+    },
+    {
+      "file": "src/ProcessLens.Core/IProcessCollector.cs",
+      "sha256": "b168f6ef3f987fc670df6954680c3cf01879b9343bbf73cfab200572d0c8a58c",
+      "bytes": 117
+    },
+    {
+      "file": "src/ProcessLens.Core/LiveCpuSample.cs",
+      "sha256": "74d457df49f46b0265d93037a20244bac58286e6dfcc416958df5f6191e11b7f",
+      "bytes": 3451
+    },
+    {
+      "file": "src/ProcessLens.Core/MemoryAlertPolicy.cs",
+      "sha256": "fee877a7c5ecff567728aee4533bb9e50e6bf35ceb4755c0c8b6e65c88df4cec",
+      "bytes": 1376
+    },
+    {
+      "file": "src/ProcessLens.Core/MemoryDashboardPresentation.cs",
+      "sha256": "f7f75eb6361abf02a61177e52f5a888e9f0fb4d9c7908e56183e4a61c41581cf",
+      "bytes": 1616
+    },
+    {
+      "file": "src/ProcessLens.Core/MemoryEvidence.cs",
+      "sha256": "9c2a6de103ec99cbc2b1f282df712f747198ed0ba6d906e7ffd5588a20ba971f",
+      "bytes": 3649
+    },
+    {
+      "file": "src/ProcessLens.Core/MonitorRefreshPolicy.cs",
+      "sha256": "d54f1b34099bba32bd5e3ce7f5b95549c0c5dc03753d0bfb2474b0dc092abf94",
+      "bytes": 1080
+    },
+    {
+      "file": "src/ProcessLens.Core/NativeCaptureEvidence.cs",
+      "sha256": "11a5c654668a04569d99a43277466eeb6b63cbb6354a371bd70531fdb6d850a3",
+      "bytes": 8788
+    },
+    {
+      "file": "src/ProcessLens.Core/NativeNetworkEvidence.cs",
+      "sha256": "341bb0db3ff38e3297a5141192d8bca4ab94e22ebf2fbf9ada3a58b4ca3f1504",
+      "bytes": 7620
+    },
+    {
+      "file": "src/ProcessLens.Core/NetworkDevices.cs",
+      "sha256": "cc0dcd2290dc16060768cdd46ac13230ffcd9b9e76556a2dbb118a75ab56ec0e",
+      "bytes": 11593
+    },
+    {
+      "file": "src/ProcessLens.Core/NetworkEvidenceStatus.cs",
+      "sha256": "60bbc05198489036e4f609dba8a94fa7d9f0c3d8636698c66bfa6d70d0fed4f4",
+      "bytes": 2570
+    },
+    {
+      "file": "src/ProcessLens.Core/PacketCaptureEvidence.cs",
+      "sha256": "0da4633e63212c88813fc9c1b67fc9c1daca78ce1de958fb348160e71733f57c",
+      "bytes": 7532
+    },
+    {
+      "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+      "sha256": "8901337e91d83285518ec0b6746b6a2d336de86e469f5ba7d36f11e49db2f66f",
+      "bytes": 14517
+    },
+    {
+      "file": "src/ProcessLens.Core/ProcessInsight.cs",
+      "sha256": "0608e873850f9012d72310f1e0fb8894babffd89e97eb941921dad92b7536239",
+      "bytes": 1398
+    },
+    {
+      "file": "src/ProcessLens.Core/ProcessLens.Core.csproj",
+      "sha256": "12985a174dc55d6f519f2205bf7b35d0123d6d7dfa7fe3fe34f2f3028ba30604",
+      "bytes": 204
+    },
+    {
+      "file": "src/ProcessLens.Core/ProcessMemoryGuide.cs",
+      "sha256": "02a42a8afd5df279c77ba32853e04859849d87a2d6a285805fc0b1ae0960a3f9",
+      "bytes": 1084
+    },
+    {
+      "file": "src/ProcessLens.Core/ProcessSnapshot.cs",
+      "sha256": "e64c0621a77761c4a712f0a3ae52a1bdbd6a37cca323732f60576499118de8cc",
+      "bytes": 8455
+    },
+    {
+      "file": "src/ProcessLens.Core/ProcessStartFormatter.cs",
+      "sha256": "4068618b0106fb54db58cd535aa6105693ad59d3bb883fe785de34c5cb175f00",
+      "bytes": 1422
+    },
+    {
+      "file": "src/ProcessLens.Core/ProcessTerminationPolicy.cs",
+      "sha256": "1da8106a6793191de1672db2c58b8eb7afb6a5d03ecc74e19826b39809ce2fa3",
+      "bytes": 2306
+    },
+    {
+      "file": "src/ProcessLens.Core/ProcessTerminology.cs",
+      "sha256": "2a4932a5ff4127b1f7c391e8a6b0726c628c939d394545c34c0c287aeec5d570",
+      "bytes": 1418
+    },
+    {
+      "file": "src/ProcessLens.Core/ProfilerModels.cs",
+      "sha256": "38726f167628b68cbb770fcbffa742de1248048d8d33a0d4928a5495ee8b0e88",
+      "bytes": 4629
+    },
+    {
+      "file": "src/ProcessLens.Core/ServiceExplanation.cs",
+      "sha256": "164db2905285666120080e1914b46262c036397ede97f79bf8311ee6c2ce3edb",
+      "bytes": 1729
+    },
+    {
+      "file": "src/ProcessLens.Core/ServiceHistoryEvent.cs",
+      "sha256": "a4b84a0cf7d07fd9e62a5dba7f8b2b983293c4dfe466783deb2ff291b11b294a",
+      "bytes": 581
+    },
+    {
+      "file": "src/ProcessLens.Core/ServiceHistoryInterpretation.cs",
+      "sha256": "fb16d2e11c7fedc5261e0a2310ed81b56c6395e5787c86bbb1c9c0afd912af49",
+      "bytes": 2894
+    },
+    {
+      "file": "src/ProcessLens.Core/ServiceSnapshot.cs",
+      "sha256": "6d419628760dd22b94bf748e9272038084ab9406f94ee8ca91a0fbf7b4d84688",
+      "bytes": 1674
+    },
+    {
+      "file": "src/ProcessLens.Core/ServiceStopPolicy.cs",
+      "sha256": "630f48af8eda29fcc4e662a3e80cac66c989ec96eaa6088cd18d752703c1c2cb",
+      "bytes": 2229
+    },
+    {
+      "file": "src/ProcessLens.Core/StructuredDiagnostics.cs",
+      "sha256": "8e3485364fd3d7b54eea9d5cdcead89d1e38a6536b4bd515ee3a34679a2cfb97",
+      "bytes": 6658
+    },
+    {
+      "file": "src/ProcessLens.Core/SystemProcessCatalog.cs",
+      "sha256": "930c2a8390708e3d07335021c46310c73be3b29b8a8d02c4db8b0e168b52181f",
+      "bytes": 5578
+    },
+    {
+      "file": "src/ProcessLens.Core/WindowsAllocationEvidence.cs",
+      "sha256": "e518ec5bf4c796cf47feca7c1fd34ab2f7971452010c0463fc4b67553e505007",
+      "bytes": 4784
+    },
+    {
+      "file": "src/ProcessLens.Core/WindowsComponentCatalog.cs",
+      "sha256": "6ca1149fbba47e8b07c93e9501e0c58d901c928ca9e17b9ed1405492c4ef8e97",
+      "bytes": 10433
+    },
+    {
+      "file": "src/ProcessLens.Guardian.Core/GuardianModels.cs",
+      "sha256": "7a4caffe9c90c9c7ad49812ba2b77e616b9c1e42419b52a4b4f9a30a87c04496",
+      "bytes": 6879
+    },
+    {
+      "file": "src/ProcessLens.Guardian.Core/ProcessLens.Guardian.Core.csproj",
+      "sha256": "e4efd285315ecfc9d4d90068757639c14e30c97477dff25decb801a6abb2ca6f",
+      "bytes": 186
+    },
+    {
+      "file": "src/ProcessLens.Guardian.Service/EtwProcessMonitor.cs",
+      "sha256": "3dc0f41b1fc9c8d7117e53f09879ffb3ce3c1e356d5ac5e124efd7d9cbaa97f0",
+      "bytes": 3925
+    },
+    {
+      "file": "src/ProcessLens.Guardian.Service/GuardianActivityAnalyzer.cs",
+      "sha256": "2c60ab6dd7b5576d52fd010524f22897b2fb23f029222902e70c13cd12d70e53",
+      "bytes": 11171
+    },
+    {
+      "file": "src/ProcessLens.Guardian.Service/GuardianStorageHealth.cs",
+      "sha256": "88afee21ec1b09fa4f21e7948e70f270f575859bf5457d7b21e5b582aa201825",
+      "bytes": 5001
+    },
+    {
+      "file": "src/ProcessLens.Guardian.Service/GuardianStore.cs",
+      "sha256": "6cd1bb6391b6990d6930b4b8ae99d16412698ca7623f8206475fe455bee61236",
+      "bytes": 15567
+    },
+    {
+      "file": "src/ProcessLens.Guardian.Service/GuardianWorker.cs",
+      "sha256": "ae3a0c2abe6a11805f79853c4fbe5644c9c933ed56d7e563bd0bc582021af11f",
+      "bytes": 11523
+    },
+    {
+      "file": "src/ProcessLens.Guardian.Service/LightweightSampler.cs",
+      "sha256": "052b5907ba9ca74b9afede043631e1dfe742957f19a1e8f113ffb7a42f9970d5",
+      "bytes": 2101
+    },
+    {
+      "file": "src/ProcessLens.Guardian.Service/ProcessLens.Guardian.Service.csproj",
+      "sha256": "41a37d9320f9962c3f2cc7c93440c9aa467707e2deee80d6539b997699f3aefa",
+      "bytes": 781
+    },
+    {
+      "file": "src/ProcessLens.Guardian.Service/ProcessTreeSampler.cs",
+      "sha256": "4f897455dfc0bdb9f07bef2b3b67fca5500f58c261a8dfd635fe3e99e505356d",
+      "bytes": 2119
+    },
+    {
+      "file": "src/ProcessLens.Guardian.Service/Program.cs",
+      "sha256": "4e607125e174144e09fe57912b48c8785b5eb451444f3868f9796301fcdf4b42",
+      "bytes": 2905
+    },
+    {
+      "file": "src/ProcessLens.Guardian.Service/WindowsPortSampler.cs",
+      "sha256": "1b67ef6f4a98eaafb8d6ce9af9efc8375837e05e7e34b8bef8454a6724b1b065",
+      "bytes": 5024
+    },
+    {
+      "file": "src/ProcessLens.Guardian.Service/guardian.settings.json",
+      "sha256": "c170fb2a6456ea507276ab617b6c5cae053cca16863f1bbad3fb8b45fe33639d",
+      "bytes": 186
+    },
+    {
+      "file": "src/ProcessLens.MemoryAgent/ProcessLens.MemoryAgent.csproj",
+      "sha256": "a6eef6e4cbeb9f981f8bab3deb3f3f98f21c6df18b1477fb8861f9d1f571ae63",
+      "bytes": 715
+    },
+    {
+      "file": "src/ProcessLens.MemoryAgent/Program.cs",
+      "sha256": "29cfb2ea2f04dca92aa9ac69951c57a62945542feeefd7b6256b285cd36e85e0",
+      "bytes": 7420
+    },
+    {
+      "file": "src/ProcessLens.Profiler/ProcessLens.Profiler.csproj",
+      "sha256": "50e7e764227325ba02e4323e5e63eec0af3ce75d831063d0ce01a3674b6b12e1",
+      "bytes": 490
+    },
+    {
+      "file": "src/ProcessLens.Profiler/Program.cs",
+      "sha256": "8dd583d9b48ecf91b3ad724120ff959666461226985fbedad155b85c7c8f8a78",
+      "bytes": 16869
+    },
+    {
+      "file": "src/ProcessLens.RamMonitor/LogSession.cs",
+      "sha256": "e1ec08db1892723965b94230a4bbd9ea5e3c06d0695502e71d5e48576fc03aaa",
+      "bytes": 7850
+    },
+    {
+      "file": "src/ProcessLens.RamMonitor/Measurement.cs",
+      "sha256": "be2126c3f4f8ed2ed4dbcaf1754f3369205757cd787cd150bb18a16f5749382f",
+      "bytes": 3212
+    },
+    {
+      "file": "src/ProcessLens.RamMonitor/NativeSampler.cs",
+      "sha256": "17ef0a28b38c958d3e99af3850345f817d69ccbb9d75e41d2130a93800d53622",
+      "bytes": 11939
+    },
+    {
+      "file": "src/ProcessLens.RamMonitor/ProcessLens.RamMonitor.csproj",
+      "sha256": "c6317718c73014bdb6b3a34fdfe8bac2f3e307ffdbc400cc6d8d619e29811be4",
+      "bytes": 433
+    },
+    {
+      "file": "src/ProcessLens.RamMonitor/Program.cs",
+      "sha256": "e5ae049fae33d4a66f8212f6dfa442a4762290defff3bf602f289db8b8b51de7",
+      "bytes": 6011
+    },
+    {
+      "file": "src/ProcessLens.Semantics/FrameworkDetector.cs",
+      "sha256": "504b98a1bc77ceb7219bc82c20f32bcf2bbd1e10c8e606b3d109b2eb80f0a27a",
+      "bytes": 5353
+    },
+    {
+      "file": "src/ProcessLens.Semantics/IdentityResolver.cs",
+      "sha256": "31d72d4446b78d22e81db66e267c85f32ca442b6233e0d25d7568912451c437c",
+      "bytes": 3929
+    },
+    {
+      "file": "src/ProcessLens.Semantics/KnowledgeSignatureEngine.cs",
+      "sha256": "2ac1ea38d6ef5ebebdafbe2394e7c96809982a1d823f21cb70bdea9ff557c662",
+      "bytes": 7230
+    },
+    {
+      "file": "src/ProcessLens.Semantics/KnowledgeSignatureModels.cs",
+      "sha256": "01b02eb1ea6c730e8447e3401e90fd749797390340a36a81043d66a329fa9227",
+      "bytes": 2213
+    },
+    {
+      "file": "src/ProcessLens.Semantics/OwnershipResolver.cs",
+      "sha256": "6a668d2d3ec0037109a82b64d432e06ea179d8938b8204dcf497d4ee1f8d9424",
+      "bytes": 2547
+    },
+    {
+      "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+      "sha256": "9ed6c624e3b95aa5585e15b63719c823a6e65804c06628fdc397530f4c612faa",
+      "bytes": 13349
+    },
+    {
+      "file": "src/ProcessLens.Semantics/ProcessIntelligenceAnalyzer.cs",
+      "sha256": "66357c0d3a588a2beb5121baba90aea78090ae84e029d3a8debfc33662af569f",
+      "bytes": 4804
+    },
+    {
+      "file": "src/ProcessLens.Semantics/ProcessIntelligenceModels.cs",
+      "sha256": "a271707ec12d5842a2c9ce2973cbd0adffb59b4847288809316d6b9b06eb7ed9",
+      "bytes": 540
+    },
+    {
+      "file": "src/ProcessLens.Semantics/ProcessLens.Semantics.csproj",
+      "sha256": "7c79d5f8939dd2acfa4b7c4cdf620456f500cc5875c79c7d5778acad5e110f6a",
+      "bytes": 538
+    },
+    {
+      "file": "src/ProcessLens.Semantics/ProcessOriginAnalyzer.cs",
+      "sha256": "2c5ee23614e9b496fae1fe7de68b6aa2e58740435e90b6dd48cfb9e6e0efc09a",
+      "bytes": 7317
+    },
+    {
+      "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+      "sha256": "61ee5cfb7b208308d9332fda8442ad29eed0838b034a03334365f4d214cf09e9",
+      "bytes": 51596
+    },
+    {
+      "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+      "sha256": "4ce5c2a49fa2f5bb38706d001ffb42c51918573f4fc8208ce538e6dd9fdcfbbc",
+      "bytes": 48400
+    },
+    {
+      "file": "src/ProcessLens.Semantics/knowledge/README.md",
+      "sha256": "753bab9d25a95387aa68de76f71ef5903023d9936eac32b520e0cd1912bebbb6",
+      "bytes": 604
+    },
+    {
+      "file": "src/ProcessLens.Semantics/knowledge/framework-signatures.json",
+      "sha256": "080ce810730db3e14982741f223790ef7fc3a87d58a8828924fd1c1a09cfebc8",
+      "bytes": 3024
+    },
+    {
+      "file": "src/ProcessLens.Semantics/knowledge/role-signatures.json",
+      "sha256": "195f1bcdf0451cc371783c5bc0a4c34a9a82d56557269df30584a85a9c18d37e",
+      "bytes": 6105
+    },
+    {
+      "file": "src/ProcessLens.Windows/NativeMethods.cs",
+      "sha256": "8c1097d06d0e5532bf6380f4374dc3ab6618c55d29f6b56d5bab893893d7ccd1",
+      "bytes": 8929
+    },
+    {
+      "file": "src/ProcessLens.Windows/ProcessLens.Windows.csproj",
+      "sha256": "1d548ee833d5c52b43ce7e105328391f621054972285b4d98af6b2b0fc4f14eb",
+      "bytes": 428
+    },
+    {
+      "file": "src/ProcessLens.Windows/SystemCpuSampler.cs",
+      "sha256": "6c73aece34fca2e2929e8f0dad1eac0243c97fd019e44efe9a27486241f3a812",
+      "bytes": 2536
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsAllocationInspector.cs",
+      "sha256": "21ace8f20abdb1d4c538f56506b3370f35815de34082806a32258a0db5c081d3",
+      "bytes": 16460
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsCompatibleCapture.cs",
+      "sha256": "388e3cb64b16c143a46583c704ab44109b9607e26fc802467feee07ce0cee168",
+      "bytes": 10971
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsDeepProcessInspector.cs",
+      "sha256": "d6543f3bb7d9130a41df25ad99c3f95b83ef4a0e8c9aa06bcb18dab4627822b3",
+      "bytes": 25482
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsLiveCpuSampler.cs",
+      "sha256": "0c3f7bee1b99b82b212b633fd9c861137b8c993854ca7345f22113d32fa8c1f2",
+      "bytes": 3758
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsMemorySampler.cs",
+      "sha256": "7c3db94dfc87d5fef51dac702f3140730be5abd96d23245b5950ad4af94c4704",
+      "bytes": 2828
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsNativeCapture.cs",
+      "sha256": "ce6cef79ba1c82d9d24847b4a6c42c4a591fed718a2b2996c8695fc9a7f30c6b",
+      "bytes": 21064
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs",
+      "sha256": "1c91fed1bd87507d2d0438a00115615280008792fc36f1f0f8162ceae98231d7",
+      "bytes": 9288
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsNetworkDevices.cs",
+      "sha256": "c41bf9c46d13399bbc5014d22a4e62e0f33b0d6988b699e2114133baf70e562b",
+      "bytes": 8671
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsPhysicalMemoryReader.cs",
+      "sha256": "7e73ec452924fef2f4c65933cf8421eda83f85724f8f7e6440cf849cff88cb15",
+      "bytes": 17249
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsProcessCollector.cs",
+      "sha256": "9359bc88760c28eb8a465618412787e31ce2e4fb975de11aa25a0d0f89448cd1",
+      "bytes": 21964
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsProcessTerminator.cs",
+      "sha256": "03c10cf5a28b05db81061c1ba8d7289a5199c03159b53628ceca08df92482363",
+      "bytes": 5800
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsSelectedMemoryReader.cs",
+      "sha256": "01c91dff8057f1407a36dd0d8e3c27634ecb2b7ce3a0218f0a60c01ec6a7c1af",
+      "bytes": 3186
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsSelfResources.cs",
+      "sha256": "f3328e55ddc15c8726f90ba53a666ca58d39ede8c223b811c597a6f61ce72275",
+      "bytes": 2102
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsServiceCatalog.cs",
+      "sha256": "8fdc1339c1b9625b170b04acf11865c927859a896cbc408acf2d9b4a6fa36749",
+      "bytes": 8272
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsServiceEventHistory.cs",
+      "sha256": "e08d526c24420108156d0d6aa76ce4c4d4e03d76750c62695a4e0fbf6a511918",
+      "bytes": 4224
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsServiceStopController.cs",
+      "sha256": "49928a2038c032ee0d5ed74faeb8d68b09f071b153426e76597158c7ba573e50",
+      "bytes": 5183
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsSystemProcessSource.cs",
+      "sha256": "75d501ff017e33280e784cb7fe6cd5f7adb22b55dc4426e5868fe8ca2be9af01",
+      "bytes": 13272
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsVirtualMemoryInspector.cs",
+      "sha256": "c1a50bc62e9e7f5f2410e6abaed66a6583b136b5077641a12a80291c074c3aa7",
+      "bytes": 7866
+    },
+    {
+      "file": "src/ProcessLens.Windows/WiresharkTools.cs",
+      "sha256": "86c728599c1f679b8778c3792829eda117ab8175c50d507f757cc3c1c16a6564",
+      "bytes": 9784
+    },
+    {
+      "file": "start-processlens-all.ps1",
+      "sha256": "d9c85a4fbccd8560ae4ec5a4d974a081420da4353b09be7842f2cca5b4574a44",
+      "bytes": 6417
+    },
+    {
+      "file": "start-processlens-ram-monitor.ps1",
+      "sha256": "7dc74e41adaa47832fab814201e322391d17e11bc32ae1bee1804c4efccdb175",
+      "bytes": 2310
+    },
+    {
+      "file": "test-cpu.ps1",
+      "sha256": "276d2e6bf5af19c1cf830f2e4adb03f43f86bc254de9dc302c2684ffd2418b06",
+      "bytes": 290
+    },
+    {
+      "file": "test-memory.ps1",
+      "sha256": "3cff315bb7f4c4c28e105264aaf01ca0177524500388628fa5b4379c2dbe44f9",
+      "bytes": 213
+    },
+    {
+      "file": "test-origin.ps1",
+      "sha256": "4c3709a1f550694e11e0375e05f91b32738cf432cf379c3a06bf0f225bad3055",
+      "bytes": 294
+    },
+    {
+      "file": "test-service-history.ps1",
+      "sha256": "4ec87b0f142f6ff5537b55544e94f331e94ac195a380d7179dc2d7bfd86a5de7",
+      "bytes": 250
+    },
+    {
+      "file": "test-termination.ps1",
+      "sha256": "cd1b9d0fa6a815c4410fd0fc5b942798178c924fc09ff82b2809e34584654aa7",
+      "bytes": 231
+    },
+    {
+      "file": "tests/ProcessLens.BehaviorTests/ProcessLens.BehaviorTests.csproj",
+      "sha256": "7a8e7d698dec1d7d82473e6346698c8c387912adfe439f813a9d3ff0e6796c06",
+      "bytes": 448
+    },
+    {
+      "file": "tests/ProcessLens.BehaviorTests/Program.cs",
+      "sha256": "3551b12ed0aaf314147e9a26a2d2b892ec11f7f2d1c6b7e7512e1d364d5cf02a",
+      "bytes": 15510
+    },
+    {
+      "file": "tests/ProcessLens.CompatibleCaptureTests/ProcessLens.CompatibleCaptureTests.csproj",
+      "sha256": "d1b522f4bf060336ebb52877f32b1647099e700dc5526b1f657b699e19289788",
+      "bytes": 530
+    },
+    {
+      "file": "tests/ProcessLens.CompatibleCaptureTests/Program.cs",
+      "sha256": "542738e102bbb9f422590ae52a44fcbfae0bbe539b0b5e9bdaf3eef0992d0401",
+      "bytes": 9687
+    },
+    {
+      "file": "tests/ProcessLens.CopyTests/ProcessLens.CopyTests.csproj",
+      "sha256": "6b2f8bd46a327fcf45d0557e3a7b071adc5b1d564fadb617f7dae98c42786c21",
+      "bytes": 858
+    },
+    {
+      "file": "tests/ProcessLens.CopyTests/Program.cs",
+      "sha256": "ec7ae81d5f64d2a3f1a6152f35dafe3681741cf8a47af856257c90ba0196ef76",
+      "bytes": 12843
+    },
+    {
+      "file": "tests/ProcessLens.CopyUiTests/ProcessLens.CopyUiTests.csproj",
+      "sha256": "5e845c393b20ad8e2c6dd325132e2a735a820f74c5a52e9cced041a74bed1d29",
+      "bytes": 369
+    },
+    {
+      "file": "tests/ProcessLens.CopyUiTests/Program.cs",
+      "sha256": "30151ce76361f4b05013f67aaf627f11dc24b6fa8545d93ec696cd56a2001055",
+      "bytes": 22883
+    },
+    {
+      "file": "tests/ProcessLens.CpuTests/ProcessLens.CpuTests.csproj",
+      "sha256": "8a71cb2041c4bb8516877f4ff55da46c1be2c93cfebae51a7baed143623805a0",
+      "bytes": 352
+    },
+    {
+      "file": "tests/ProcessLens.CpuTests/Program.cs",
+      "sha256": "7a0ee009886565b70d8556bf762c08911d3fbe2d9b4e5b8f458095fbedec3688",
+      "bytes": 4558
+    },
+    {
+      "file": "tests/ProcessLens.DiagnosticsTests/ProcessLens.DiagnosticsTests.csproj",
+      "sha256": "30877a90485e101bbbe59702486970fdc2c816bb663fabea06df16f17840d5b8",
+      "bytes": 321
+    },
+    {
+      "file": "tests/ProcessLens.DiagnosticsTests/Program.cs",
+      "sha256": "7fae6b05dbcb602d87abb9f6f48984b6f6be506279f51d544ba7f1f82905be1c",
+      "bytes": 2194
+    },
+    {
+      "file": "tests/ProcessLens.GuardianDashboardTests/ProcessLens.GuardianDashboardTests.csproj",
+      "sha256": "d62ba391f9abab24dc2ef2c3b95af3440445d81317ce69b50bc7ee480cf5f94a",
+      "bytes": 888
+    },
+    {
+      "file": "tests/ProcessLens.GuardianDashboardTests/Program.cs",
+      "sha256": "9eb5af1b5cf0de6755e7751cb10401dfc805fe12b6d564c2973244a4680edef6",
+      "bytes": 12297
+    },
+    {
+      "file": "tests/ProcessLens.GuardianStorageTests/ProcessLens.GuardianStorageTests.csproj",
+      "sha256": "bd9533ee425889794b93491553238881b8053a65d46ef2b8841f0d07bd7da17a",
+      "bytes": 346
+    },
+    {
+      "file": "tests/ProcessLens.GuardianStorageTests/Program.cs",
+      "sha256": "5890932e79ee4b4b5d68d7344526bcf8c1e53c53320709ccf1c8b35cd8c2abd4",
+      "bytes": 6074
+    },
+    {
+      "file": "tests/ProcessLens.GuardianTests/ProcessLens.GuardianTests.csproj",
+      "sha256": "b81faff151c01338e736af2f41f7573e4be9bca22335c86549c23c697f084f74",
+      "bytes": 332
+    },
+    {
+      "file": "tests/ProcessLens.GuardianTests/Program.cs",
+      "sha256": "86745827708d6320c72d6a53da4049464c0af906cc9b03a22a705b36ffd788a1",
+      "bytes": 2572
+    },
+    {
+      "file": "tests/ProcessLens.MemoryAlertTests/ProcessLens.MemoryAlertTests.csproj",
+      "sha256": "08b484aa2d002e5a4118a05a70bbd7a601fb6545b232c6348dd62ed20cf8350c",
+      "bytes": 344
+    },
+    {
+      "file": "tests/ProcessLens.MemoryAlertTests/Program.cs",
+      "sha256": "eed7355fba697e516236011d6deb8a14f1350176518489b115db5152a894929b",
+      "bytes": 1060
+    },
+    {
+      "file": "tests/ProcessLens.MemoryEfficiencyTests/ProcessLens.MemoryEfficiencyTests.csproj",
+      "sha256": "734dbd8e12c3bd71a8024bfb6b44ccf2dd7d40e63f7784c0c8622960992b8524",
+      "bytes": 546
+    },
+    {
+      "file": "tests/ProcessLens.MemoryEfficiencyTests/Program.cs",
+      "sha256": "b0b41116f1b193a2076f77084c160b7bccec8ee91b7309918bb95dfbfe7b0a6c",
+      "bytes": 5629
+    },
+    {
+      "file": "tests/ProcessLens.MemoryTests/ProcessLens.MemoryTests.csproj",
+      "sha256": "83634beff8275c857c49285c7dad74da05694bf72e94031e60f7210940a5e41d",
+      "bytes": 448
+    },
+    {
+      "file": "tests/ProcessLens.MemoryTests/Program.cs",
+      "sha256": "9fc1bd4129d0f5c6bdf6eafb17bf7511cec6bc7dfece5997843ac5161418d494",
+      "bytes": 11982
+    },
+    {
+      "file": "tests/ProcessLens.NativeCaptureTests/ProcessLens.NativeCaptureTests.csproj",
+      "sha256": "bc91025fd84026a9a0f5b71a60013408ceb6597a785be0915ce323e68ade432e",
+      "bytes": 428
+    },
+    {
+      "file": "tests/ProcessLens.NativeCaptureTests/Program.cs",
+      "sha256": "5251c2f9c22520a4bd6e0b0b9214efc8ac3e4ff08fa0728aa6b5ae1205906aea",
+      "bytes": 14318
+    },
+    {
+      "file": "tests/ProcessLens.NativeNetworkTests/ProcessLens.NativeNetworkTests.csproj",
+      "sha256": "d438a2c2429cad5ff244049cf871d7e28e82b5138307ccda375b4187ad5655da",
+      "bytes": 444
+    },
+    {
+      "file": "tests/ProcessLens.NativeNetworkTests/Program.cs",
+      "sha256": "2ff225055bbd7f7db17297eb87c8718f07d40765a31c9414c1aad7a9b643c07d",
+      "bytes": 13836
+    },
+    {
+      "file": "tests/ProcessLens.NetworkDeviceTests/ProcessLens.NetworkDeviceTests.csproj",
+      "sha256": "33ae83ae4260e18570cebbba3146961ff1cd71252cc61c6ef4da37b7c5bc73a1",
+      "bytes": 433
+    },
+    {
+      "file": "tests/ProcessLens.NetworkDeviceTests/Program.cs",
+      "sha256": "1d95d2bd04af4445ed89fae3152fa45ae26095ec8918ef849743143aef724cee",
+      "bytes": 13619
+    },
+    {
+      "file": "tests/ProcessLens.NetworkUiTests/ProcessLens.NetworkUiTests.csproj",
+      "sha256": "68d2f5b154e726d6e59192e410a8394451bfc213a3d89344033ff4a2cc99ec2a",
+      "bytes": 345
+    },
+    {
+      "file": "tests/ProcessLens.NetworkUiTests/Program.cs",
+      "sha256": "fc40b40a859bbc47e683ade7728c409c02320a2114283714c3c3efab18618799",
+      "bytes": 24868
+    },
+    {
+      "file": "tests/ProcessLens.OriginTests/ProcessLens.OriginTests.csproj",
+      "sha256": "7a8e7d698dec1d7d82473e6346698c8c387912adfe439f813a9d3ff0e6796c06",
+      "bytes": 448
+    },
+    {
+      "file": "tests/ProcessLens.OriginTests/Program.cs",
+      "sha256": "53530c2856a73c707f3b7ecead757c12e3de26b664305dda8a69c6d5932b0671",
+      "bytes": 3681
+    },
+    {
+      "file": "tests/ProcessLens.PacketCaptureTests/ProcessLens.PacketCaptureTests.csproj",
+      "sha256": "e16d175ee555a85cbb1bc7c6c517422494f4d2a635068fd45dc906ff9d959192",
+      "bytes": 416
+    },
+    {
+      "file": "tests/ProcessLens.PacketCaptureTests/Program.cs",
+      "sha256": "e62dc6f18a22c5ab18b234bf8b2d9b25602744c2598a8ad92d36e25aa06adc05",
+      "bytes": 10074
+    },
+    {
+      "file": "tests/ProcessLens.PresentationTests/ProcessLens.PresentationTests.csproj",
+      "sha256": "abf822cd8692049af3c1f7e2ff0b6fcd51875cb5ae20914c40a49a7e84a40770",
+      "bytes": 584
+    },
+    {
+      "file": "tests/ProcessLens.PresentationTests/Program.cs",
+      "sha256": "f46f391dadd8c752e54de9c44aeb4c48f54882e78981a58ecf237cdae01bd380",
+      "bytes": 7783
+    },
+    {
+      "file": "tests/ProcessLens.ProfilerFixture/ProcessLens.ProfilerFixture.csproj",
+      "sha256": "031da6a6f6d810b9f23ffe7818f3acefb7b0ff54b0eb8c6752735ad58d254904",
+      "bytes": 237
+    },
+    {
+      "file": "tests/ProcessLens.ProfilerFixture/Program.cs",
+      "sha256": "8277359a06410b042a15cd5ea377109ed413267a4c2158a58ff018ded18c6069",
+      "bytes": 1484
+    },
+    {
+      "file": "tests/ProcessLens.ProfilerTests/ProcessLens.ProfilerTests.csproj",
+      "sha256": "e915237215d4143f7c66f90a9a7d02ead2498ab07c3942786cfbd050989cd262",
+      "bytes": 313
+    },
+    {
+      "file": "tests/ProcessLens.ProfilerTests/Program.cs",
+      "sha256": "3016a000012a4dafa5939b118f337e28fc11ab632b3d6efd4b38fff443fef64e",
+      "bytes": 2255
+    },
+    {
+      "file": "tests/ProcessLens.RamMonitorTests/ProcessLens.RamMonitorTests.csproj",
+      "sha256": "c8627554b6c7689b75900bda6980309cd113105514722235659bf79378f89cb2",
+      "bytes": 530
+    },
+    {
+      "file": "tests/ProcessLens.RamMonitorTests/Program.cs",
+      "sha256": "558a7c8bf19bb94247b144f9a6da717036faf541f940ac5113f5534ddc2d240a",
+      "bytes": 7357
+    },
+    {
+      "file": "tests/ProcessLens.RefreshPolicyTests/ProcessLens.RefreshPolicyTests.csproj",
+      "sha256": "197301a1febc3c56e5d1acd5733f41d1da26003f60cacc3a70d47cbbb841e82f",
+      "bytes": 352
+    },
+    {
+      "file": "tests/ProcessLens.RefreshPolicyTests/Program.cs",
+      "sha256": "c7f962ef804aaf03dd34ce89192a7eb9a05ce745cf1401f32b92b986b608ed5e",
+      "bytes": 1250
+    },
+    {
+      "file": "tests/ProcessLens.ServiceHistoryTests/ProcessLens.ServiceHistoryTests.csproj",
+      "sha256": "82eda60c61ff0cfede1ed08cedf47b715e3f47d914ccb10c61db83bc4db9bfc5",
+      "bytes": 334
+    },
+    {
+      "file": "tests/ProcessLens.ServiceHistoryTests/Program.cs",
+      "sha256": "8cc2ce951900340fb95cc301c334a8214827bc96758b366bbc246daee88f6b35",
+      "bytes": 2436
+    },
+    {
+      "file": "tests/ProcessLens.ServiceStopTests/ProcessLens.ServiceStopTests.csproj",
+      "sha256": "30877a90485e101bbbe59702486970fdc2c816bb663fabea06df16f17840d5b8",
+      "bytes": 321
+    },
+    {
+      "file": "tests/ProcessLens.ServiceStopTests/Program.cs",
+      "sha256": "a8384c28e50849893bab4e0fab8ceb213c5591e850637967dbcbecd90375e80d",
+      "bytes": 1929
+    },
+    {
+      "file": "tests/ProcessLens.ServiceTests/ProcessLens.ServiceTests.csproj",
+      "sha256": "e915237215d4143f7c66f90a9a7d02ead2498ab07c3942786cfbd050989cd262",
+      "bytes": 313
+    },
+    {
+      "file": "tests/ProcessLens.ServiceTests/Program.cs",
+      "sha256": "b843e0de52ff688c62f82be0a16f031b4a2343fbd0f52964f4c8415207209a2a",
+      "bytes": 1746
+    },
+    {
+      "file": "tests/ProcessLens.SystemProcessTests/ProcessLens.SystemProcessTests.csproj",
+      "sha256": "e456a61af576facbb1070f36fb67fbe2829343300f668893fc9407b84a9ef107",
+      "bytes": 440
+    },
+    {
+      "file": "tests/ProcessLens.SystemProcessTests/Program.cs",
+      "sha256": "c41e754dc7b5ee78db0308d06b43a08c3de91d1743e1d570a3f200a5e4e74d87",
+      "bytes": 8142
+    },
+    {
+      "file": "tests/ProcessLens.SystemProcessUiTests/ProcessLens.SystemProcessUiTests.csproj",
+      "sha256": "68d2f5b154e726d6e59192e410a8394451bfc213a3d89344033ff4a2cc99ec2a",
+      "bytes": 345
+    },
+    {
+      "file": "tests/ProcessLens.SystemProcessUiTests/Program.cs",
+      "sha256": "070a481ac48afaa8db6f82c52e31fe124c25aacf084045cb4deedd6ff6a60afc",
+      "bytes": 10307
+    },
+    {
+      "file": "tests/ProcessLens.TerminationTests/ProcessLens.TerminationTests.csproj",
+      "sha256": "30877a90485e101bbbe59702486970fdc2c816bb663fabea06df16f17840d5b8",
+      "bytes": 321
+    },
+    {
+      "file": "tests/ProcessLens.TerminationTests/Program.cs",
+      "sha256": "ed25d8ac2b42c9ed58d6b8e1f939ae3377efe05ca6f3462f2a4dd1d55dc4d722",
+      "bytes": 1738
+    },
+    {
+      "file": "tests/ProcessLens.TerminologyTests/ProcessLens.TerminologyTests.csproj",
+      "sha256": "7a8e7d698dec1d7d82473e6346698c8c387912adfe439f813a9d3ff0e6796c06",
+      "bytes": 448
+    },
+    {
+      "file": "tests/ProcessLens.TerminologyTests/Program.cs",
+      "sha256": "97c7fa74fba57e008169b3e787d3919df708dd1c58b214bd0e1c706d1da83f74",
+      "bytes": 21595
+    },
+    {
+      "file": "tests/ProcessLens.WindowsComponentTests/ProcessLens.WindowsComponentTests.csproj",
+      "sha256": "6502dbf4da1569ca2476be92d534b14d382929713a02b2017ffcdb5dd8eb0253",
+      "bytes": 318
+    },
+    {
+      "file": "tests/ProcessLens.WindowsComponentTests/Program.cs",
+      "sha256": "6b9d235760be68d6ee9b396f214a67f0b7d2094ad29d986e79c32d50c5d97e54",
+      "bytes": 7145
+    },
+    {
+      "file": "tests/check-classification-hierarchy-v01914.ps1",
+      "sha256": "6e0e38ed0b9282e587331304e55151945f95916aa5b42c3e7d04c5780f76d945",
+      "bytes": 2041
+    },
+    {
+      "file": "tests/check-classification-language-v01911.ps1",
+      "sha256": "a310e370d2027ba5a5372debab69bd9f6034893d0b43f3f71c090ed3e8dd6065",
+      "bytes": 1146
+    },
+    {
+      "file": "tests/check-copy-layout-r18r1.ps1",
+      "sha256": "dad1a777257ca583f6a1aeeb4b1669f533cefd57bf490863480b1d76106af1d2",
+      "bytes": 3261
+    },
+    {
+      "file": "tests/check-copy-ui-r10.ps1",
+      "sha256": "4722c7cbe819057f29dfd6fa5dbcfe3fea73b11795270b2435c2423af83311e0",
+      "bytes": 6515
+    },
+    {
+      "file": "tests/check-detail-hierarchy-v01910.ps1",
+      "sha256": "66abf4ec0a9e3b6db03057013211795931754327a5ee8b1e3e5abda093800b73",
+      "bytes": 2371
+    },
+    {
+      "file": "tests/check-diagnostics-v01913.ps1",
+      "sha256": "9db8c8e4777bd7263c4ee2f5680f425ffb48de0ee653b03e25bd4ccc02a515b6",
+      "bytes": 1556
+    },
+    {
+      "file": "tests/check-elevation.ps1",
+      "sha256": "a204c9c16047324c72f250f04efee7e1f598313d86e6b86cde83f779492a65bc",
+      "bytes": 1029
+    },
+    {
+      "file": "tests/check-etw-startup-order.ps1",
+      "sha256": "5dc4fbea6af913efd325e7676e6de1949f973f2e8cc667b81b51e60c9f8dbe8a",
+      "bytes": 1240
+    },
+    {
+      "file": "tests/check-guardian-dashboard.ps1",
+      "sha256": "4e4c4c930543290c3241d8052d0a250a5f71397d55a22fee39118cd8fd541cc5",
+      "bytes": 3739
+    },
+    {
+      "file": "tests/check-memory-dashboard.ps1",
+      "sha256": "75716feb62aea75fe22f2546f6a2f68b113f1e73448c508ecdde3a4d22b260ae",
+      "bytes": 1170
+    },
+    {
+      "file": "tests/check-memory-efficiency-r8.ps1",
+      "sha256": "a89f5a97ddf5f3a9985b8faba3995fc8f4993b5dca5bb18fabacee0e36ae9ebc",
+      "bytes": 1627
+    },
+    {
+      "file": "tests/check-memory-measurement-audit.ps1",
+      "sha256": "c27d1b5100c605cced5cf07069236bdb49d19f4918e59846dd22559eb9f29f13",
+      "bytes": 1886
+    },
+    {
+      "file": "tests/check-memory-ui-v0195.ps1",
+      "sha256": "79e5876d94e32b618a7271cf08ebb309aa8af77743e33cc0f7434acf49ca77ed",
+      "bytes": 1784
+    },
+    {
+      "file": "tests/check-native-capture-r17.ps1",
+      "sha256": "16203b984d3bbd51167940fcce65add942e3d3667411ecb7f94c7606cb0b44f0",
+      "bytes": 2548
+    },
+    {
+      "file": "tests/check-native-network-r16.ps1",
+      "sha256": "6b54233fab0e0468abb6a93d04ce5d8e646b80c24baa20d3e4d92a37a51de09c",
+      "bytes": 2304
+    },
+    {
+      "file": "tests/check-network-devices-r12.ps1",
+      "sha256": "9eec0866cc888681f4f4f5c4bdba1d92a3995276aa30ca1114ee7057a962f906",
+      "bytes": 3342
+    },
+    {
+      "file": "tests/check-network-recovery-r18.ps1",
+      "sha256": "c56712112f7bc0262dd9b7d4275c678b178c7f75c866764e46545c71307d65dc",
+      "bytes": 1225
+    },
+    {
+      "file": "tests/check-packet-capture-r13.ps1",
+      "sha256": "c457ea1b6e6ca5a696d56c73da5f9c1aba56b1b1f9342d37e47e0e5772fa08a6",
+      "bytes": 2110
+    },
+    {
+      "file": "tests/check-powershell-syntax.ps1",
+      "sha256": "10b833dd269cd615291c0d3cf1084eee1a6c842366cc4fc578f493e0f5ec3ed2",
+      "bytes": 2013
+    },
+    {
+      "file": "tests/check-profiler-fixture-v01912.ps1",
+      "sha256": "e9da501d589a786e288f42be4197b197205511dde1171b811dc74fa41524fcff",
+      "bytes": 2050
+    },
+    {
+      "file": "tests/check-profiler-isolation.ps1",
+      "sha256": "62f9865a005dd98c515a3f7fae8506a9df1687f4910e02d17f84397e04a07267",
+      "bytes": 1653
+    },
+    {
+      "file": "tests/check-structured-queries.ps1",
+      "sha256": "3d9bbcd00b566238355e6649c5f6ecc0132180f9d767fe9d7f20beffe8370e5d",
+      "bytes": 2842
+    },
+    {
+      "file": "tests/check-system-processes-r14.ps1",
+      "sha256": "10ee038ee59c8b06d2e2923dbb34f5724eef6a6110434608d7577a8e8e6b0eed",
+      "bytes": 2028
+    },
+    {
+      "file": "tests/check-terminology-ui.ps1",
+      "sha256": "a7ff096af588b30cab13c12c7f445d66aad5ed15caa1b8f101cb6450f2b155b4",
+      "bytes": 2552
+    },
+    {
+      "file": "tests/check-ui-format-r9.ps1",
+      "sha256": "ceb356fb3d5def5c5036cd6b1b3383d963e244c23f6367c068be0ee57c44f396",
+      "bytes": 4238
+    },
+    {
+      "file": "tests/check-ui-readability.ps1",
+      "sha256": "06a591140e2e6805e6bee4412d13967efaac1cbd84cc45a35de072285b5af4f1",
+      "bytes": 3238
+    },
+    {
+      "file": "tests/check-ux-writing-r10r11.ps1",
+      "sha256": "3b9a4ec69c62c280ddf970b12954e4ef6b9e3bc35e18ac6bcdb1eefee1360e08",
+      "bytes": 1445
+    },
+    {
+      "file": "tests/check-windows-allocation-inspector.ps1",
+      "sha256": "a16aca2a9c9e51af64a627ec0107fefcf73dff09625c3f053ba378b49f2d9a87",
+      "bytes": 1780
+    },
+    {
+      "file": "tests/check-windows-components-r15.ps1",
+      "sha256": "60de35a048c4efba59a93719bb2c54f0e6a675fba036eed2a9f9bbc53284e614",
+      "bytes": 1623
+    },
+    {
+      "file": "tests/check-workspace-r10r10.ps1",
+      "sha256": "a3efb1919f4cfa98953c567a14365c579e05db10df0aabfd782fb6d05bbe9cb7",
+      "bytes": 2130
+    },
+    {
+      "file": "tests/check-wpf-contextmenu.ps1",
+      "sha256": "99621e155e5171e62ac10f41b766e1bc9a5beb0f008fc798e51bb704a7635d5a",
+      "bytes": 3316
+    },
+    {
+      "file": "tests/check-wpf-test-context-r14r3.ps1",
+      "sha256": "10c90c71781865be21a46efac578f98ef4d9da80c893edf3356db4fcbb31d0a5",
+      "bytes": 1446
+    },
+    {
+      "file": "uninstall-guardian.ps1",
+      "sha256": "acdbd9bef09e37905fc5ee766f48bd079ea088579d9c1b31afc1cb233576c950",
+      "bytes": 1539
+    },
+    {
+      "file": "uninstall-memory-alerts.ps1",
+      "sha256": "22433b9655ee7c027da874dfd5d04cc765f305b5d33bfebc9fa06063ae5fd69f",
+      "bytes": 1140
+    },
+    {
+      "file": "upgrade-guardian.ps1",
+      "sha256": "59e7ff8f49b1a3ee979b12a4724032f657786abaf2340bedefaa8e3d5cbce065",
+      "bytes": 3791
+    },
+    {
+      "file": "verify-candidate-r10.ps1",
+      "sha256": "29335ba74c0fc7bae453c27206758fc68e8081ba6ee2d8db7cb591552d25bfd0",
+      "bytes": 4156
+    },
+    {
+      "file": "verify-candidate-r7.ps1",
+      "sha256": "c931584c227f945f7a4a8cb26b50d249fbf65cdbd08108a3fc0c9f75bb5e98ac",
+      "bytes": 4150
+    },
+    {
+      "file": "verify-candidate-r8.ps1",
+      "sha256": "b86b786cb92599b26ecc6d28a5a22a30da8a369bd37071f291df5a15926aed4b",
+      "bytes": 4150
+    },
+    {
+      "file": "verify-candidate-r9.ps1",
+      "sha256": "9206ea0cb9f2eadd5c5bb9d3e1b3c68feb23ab767c8dfc7bcfb0b57cc8280bc6",
+      "bytes": 4153
+    },
+    {
+      "file": "verify-dotnet-profiler.ps1",
+      "sha256": "c88fd8eba28e5ed47c25e595667a4e7ae0ccbf3ea6a91df12b1e3ac881f9f3b6",
+      "bytes": 7263
+    }
+  ]
+}

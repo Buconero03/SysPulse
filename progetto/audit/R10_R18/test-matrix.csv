@@ -1,0 +1,14 @@
+test,kind,status,details
+CompatibleCaptureTests,Roslyn / .NET 8 Linux,PASS,"56 assertions; fake interfaces and owned fake sockets, no live acquisition"
+NativeCaptureTests,Roslyn / .NET 8 Linux,PASS,75 assertions
+NativeNetworkTests,Roslyn / .NET 8 Linux,PASS,40 assertions
+WindowsComponentTests,Roslyn / .NET 8 Linux,PASS,58 assertions
+SystemProcessTests,Roslyn / .NET 8 Linux,PASS PORTABLE,22 assertions; live Windows branch skipped
+NetworkDeviceTests,Roslyn / .NET 8 Linux,PASS,81 assertions
+Edited C# syntax,Roslyn syntax parser,PASS,7 files
+Windows Semantics App and three UI test projects,WindowsDesktop refs + explicit generated-field stubs,PASS TYPE CHECK ONLY,6 assemblies with zero warnings; not XAML/BAML compilation or runtime
+Network UI new regressions,Windows WPF fixtures,NOT EXECUTED,Error retention and disabled audit help supplied
+Live raw socket PktMon WLAN and Security calls,Windows runtime,NOT EXECUTED,No live capture or driver/API compatibility qualified here
+Complete build / publish / PowerShell / DPI / RAM / CPU,Windows acceptance,NOT EXECUTED,Run build-dashboard.ps1 and manual checks in RETE_CORREZIONI_R18.md
+Current R18 source and evidence guards,Python source/XML/mutations,PASS,235 checks; no C# execution
+R17 to R18 patch replay,git apply and byte comparison,PASS,29 changed or added files; audit metadata and manifest excluded

@@ -1,0 +1,7 @@
+{
+  "portable_project_graphs_built": 13,
+  "assertions": 822,
+  "missing_reference_negative_control": "PASS: isolated copy removing Semantics ProjectReference fails with CS0234",
+  "test_project_sha256": "1338675402527a512b46aacbf04c9b7c7343533716cb2bd4e01e78d9fa690cca",
+  "qualification": "Real SDK/MSBuild restore/build and output execution; local subprocesses use isolated artifact directories, serial project graphs, disabled unused workload resolver and empty NuGet feed. Windows WPF runtime and native-only branches NOT EXECUTED."
+}

@@ -1,0 +1,66 @@
+﻿test,kind,status,reason
+network-source-results.json,Python source/XML or guard mutations,PASS,28 source checks; not C# execution
+ux-source-results.json,Python source/XML or guard mutations,PASS,33 source checks; not C# execution
+workspace-results.json,Python source/XML or guard mutations,PASS,29 source checks; not C# execution
+resource-source-mutations.json,Python source/XML or guard mutations,PASS,14 source checks; not C# execution
+monitor-navigation-source-mutations.json,Python source/XML or guard mutations,PASS,13 source checks; not C# execution
+ProcessLens.BehaviorTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.CopyTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.CopyUiTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.CpuTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.DiagnosticsTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.GuardianDashboardTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.GuardianStorageTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.GuardianTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.MemoryAlertTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.MemoryEfficiencyTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.MemoryTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.NetworkDeviceTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.NetworkUiTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.OriginTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.PresentationTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.ProfilerFixture,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.ProfilerTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.RamMonitorTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.RefreshPolicyTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.ServiceHistoryTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.ServiceStopTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.ServiceTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.TerminationTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+ProcessLens.TerminologyTests,C# .NET/WPF,NON ESEGUITO,No SDK .NET or Windows/WPF runtime here; new network tests use synthetic data
+check-classification-hierarchy-v01914.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-classification-language-v01911.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-copy-ui-r10.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-detail-hierarchy-v01910.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-diagnostics-v01913.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-elevation.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-etw-startup-order.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-guardian-dashboard.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-memory-dashboard.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-memory-efficiency-r8.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-memory-measurement-audit.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-memory-ui-v0195.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-network-devices-r12.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-powershell-syntax.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-profiler-fixture-v01912.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-profiler-isolation.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-structured-queries.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-terminology-ui.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-ui-format-r9.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-ui-readability.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-ux-writing-r10r11.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-windows-allocation-inspector.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-workspace-r10r10.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+check-wpf-contextmenu.ps1,PowerShell,NON ESEGUITO,PowerShell not available
+WPF network view 950x680 DIP 100%,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, focus and buttons"
+WPF network view 950x680 DIP 125%,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, focus and buttons"
+WPF network view 950x680 DIP 150%,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, focus and buttons"
+WPF network view 950x680 DIP 200%,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, focus and buttons"
+WPF network view 1180x800 DIP 100%,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, focus and buttons"
+WPF network view 1180x800 DIP 125%,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, focus and buttons"
+WPF network view 1180x800 DIP 150%,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, focus and buttons"
+WPF network view 1180x800 DIP 200%,manual Windows,NON ESEGUITO,"Wrapping, scrolling, copy, focus and buttons"
+Live Windows neighbor table versus Get-NetNeighbor,native integration,NON ESEGUITO,No Windows or real local network acquisition
+CPU/RAM overhead,measurement,NON MISURATO,No Windows performance measurement or savings claim
+Legacy check_r10.py full original-input audit,Python source,NON ESEGUITO,Original R7/R9 input archives unavailable in pruned workspace; current baseline guards run separately
+R11 R2 to R12 patch replay,git apply and SHA256,PASS,"Actual apply and byte comparison, current audit and manifest excluded for self-reference"

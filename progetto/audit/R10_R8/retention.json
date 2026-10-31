@@ -1,0 +1,8 @@
+{
+  "root": "ProcessLens/",
+  "source_tree": "One active tree continuing R10 R7",
+  "input_uploads_and_prior_baselines": "retained exact",
+  "generated_build_output": "none",
+  "replay_directories": "removed only after exact verification",
+  "user_screenshots": "no new image requested or needed for this request"
+}

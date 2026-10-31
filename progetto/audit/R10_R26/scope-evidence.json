@@ -1,0 +1,21 @@
+{
+  "baseline_sha256": "a879ff1363aad04bde00658a5585185b36370c7b98e395a25bf6de0efb366fc3",
+  "changed_production_and_test_files": [
+    "src/ProcessLens.App/AutomaticViewport.cs",
+    "src/ProcessLens.App/MainWindow.xaml",
+    "src/ProcessLens.App/MainWindow.xaml.cs",
+    "src/ProcessLens.App/ProcessGroupRow.cs",
+    "src/ProcessLens.App/ProcessLens.App.csproj",
+    "src/ProcessLens.App/ProcessRow.cs",
+    "src/ProcessLens.App/ReadingPositionPolicy.cs",
+    "src/ProcessLens.App/TrayWindowController.cs",
+    "src/ProcessLens.App/WindowLifetimePolicy.cs",
+    "tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj",
+    "tests/ProcessLens.ProcessGroupsTests/Program.cs",
+    "tests/ProcessLens.ProcessGroupsUiTests/Program.cs"
+  ],
+  "protected_components": "Guardian, MemoryAgent, profiler, RAM monitor, R24 CPU/RAM samplers and other native acquisitions BYTE IDENTICAL TO R25; all Core and native acquisitions unchanged",
+  "new_dependencies": 0,
+  "new_binary": "NOT INCLUDED; full Windows build required once",
+  "WPF_runtime_DPI_UAC_RAM": "NOT EXECUTED / NOT MEASURED"
+}

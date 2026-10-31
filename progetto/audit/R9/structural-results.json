@@ -1,0 +1,132 @@
+[
+  {
+    "test": "baseline identity",
+    "status": "PASS",
+    "detail": "Delivered R8 source archive, not the earlier R7"
+  },
+  {
+    "test": "bounded existing-file changes",
+    "status": "PASS",
+    "detail": "README.md, build-dashboard.ps1, src/ProcessLens.App/MainWindow.xaml, src/ProcessLens.App/MainWindow.xaml.cs, src/ProcessLens.App/ProcessLens.App.csproj, src/ProcessLens.App/ProcessRow.cs, start-processlens-all.ps1"
+  },
+  {
+    "test": "protected source and rules identical",
+    "status": "PASS",
+    "detail": "80 unchanged files"
+  },
+  {
+    "test": "R8 RAM implementation retained",
+    "status": "PASS",
+    "detail": "Cache, history buffer, icons and R8 regressions unchanged"
+  },
+  {
+    "test": "XML well-formed",
+    "status": "PASS",
+    "detail": "32 markup/project files; not a WPF compile"
+  },
+  {
+    "test": "unique names MemoryDashboardView.xaml",
+    "status": "PASS",
+    "detail": "No duplicated generated control names"
+  },
+  {
+    "test": "unique names GuardianDashboardView.xaml",
+    "status": "PASS",
+    "detail": "No duplicated generated control names"
+  },
+  {
+    "test": "unique names App.xaml",
+    "status": "PASS",
+    "detail": "No duplicated generated control names"
+  },
+  {
+    "test": "unique names MainWindow.xaml",
+    "status": "PASS",
+    "detail": "No duplicated generated control names"
+  },
+  {
+    "test": "action label wrapping and spacing",
+    "status": "PASS",
+    "detail": "Native button template, wrapped content, no fixed height"
+  },
+  {
+    "test": "all main-window buttons styled",
+    "status": "PASS",
+    "detail": "20 buttons"
+  },
+  {
+    "test": "quick analysis header wrapping",
+    "status": "PASS",
+    "detail": "Header text is templated; existing hover/click events retained"
+  },
+  {
+    "test": "metric cells wrap",
+    "status": "PASS",
+    "detail": "No text can draw into an adjacent metric cell"
+  },
+  {
+    "test": "network line spacing",
+    "status": "PASS",
+    "detail": "Multiline text has explicit line pitch"
+  },
+  {
+    "test": "filter groups wrap",
+    "status": "PASS",
+    "detail": "Wrapping filter groups at reduced width"
+  },
+  {
+    "test": "DPI rounding",
+    "status": "PASS",
+    "detail": "Layout rounding, no Windows DPI setting changed"
+  },
+  {
+    "test": "CPU formatting connected and guarded",
+    "status": "PASS",
+    "detail": "Availability still required; no default zero substituted"
+  },
+  {
+    "test": "raw CPU counter preserved",
+    "status": "PASS",
+    "detail": "Exact round-trip numeric representation in tooltip; stale tooltip cleared"
+  },
+  {
+    "test": "culture and bounded duration precision",
+    "status": "PASS",
+    "detail": "Culture-aware formatting, millisecond rounding, nonbreaking space before unit"
+  },
+  {
+    "test": "unknown invalid duration remains unknown",
+    "status": "PASS",
+    "detail": "Invalid readings N/D; positive sub-millisecond is not zero"
+  },
+  {
+    "test": "network formatting connected",
+    "status": "PASS",
+    "detail": "One formatter used by UI and linked regression suite"
+  },
+  {
+    "test": "network multiline and acquisition limits",
+    "status": "PASS",
+    "detail": "Direct PID, group, role and acquisition note remain distinct"
+  },
+  {
+    "test": "all XAML handlers remain declared",
+    "status": "PASS",
+    "detail": "Method declaration/name existence only; not a compiler check"
+  },
+  {
+    "test": "R8 lazy lifecycle and recycling retained",
+    "status": "PASS",
+    "detail": "R8 memory changes preserved in modified UI file"
+  },
+  {
+    "test": "user process-row customizations retained",
+    "status": "PASS",
+    "detail": "Only percentage display expression changed in ProcessRow"
+  },
+  {
+    "test": "new and prior tests wired",
+    "status": "PASS",
+    "detail": "Regression source supplied; .NET/PowerShell execution NOT performed"
+  }
+]

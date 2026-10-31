@@ -1,0 +1,14 @@
+  Determining projects to restore...
+  Restored /workspace/scratch/3c80859a1061/ProcessLens/r33/ProcessLens-Leggero/progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj (in 101 ms).
+  Restored /workspace/scratch/3c80859a1061/ProcessLens/r33/ProcessLens-Leggero/progetto/src/ProcessLens.Semantics/ProcessLens.Semantics.csproj (in 101 ms).
+  Restored /workspace/scratch/3c80859a1061/ProcessLens/r33/ProcessLens-Leggero/progetto/src/ProcessLens.Core/ProcessLens.Core.csproj (in 87 ms).
+  ProcessLens.Core -> /workspace/scratch/3c80859a1061/ProcessLens/r33-test/ProcessGroupsTests/bin/ProcessLens.Core/release/ProcessLens.Core.dll
+  ProcessLens.Semantics -> /workspace/scratch/3c80859a1061/ProcessLens/r33-test/ProcessGroupsTests/bin/ProcessLens.Semantics/release/ProcessLens.Semantics.dll
+  ProcessLens.ProcessGroupsTests -> /workspace/scratch/3c80859a1061/ProcessLens/r33-test/ProcessGroupsTests/bin/ProcessLens.ProcessGroupsTests/release/ProcessLens.ProcessGroupsTests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:08.69
+

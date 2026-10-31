@@ -1,0 +1,167 @@
+[
+  {
+    "test": "R14 satisfies native source and lifecycle guards",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "only R14 UI changes and exact recorded R14 R1/R2/R3 fixes and exact R15 presentation since R13",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "existing sources exact to R13 outside R14 UI and exact R14 R1/R2/R3 fixes and exact R15 presentation",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "no baseline file deleted",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "R14 production hashes retained or replaced by exact R14 R1/R2/R3 or R15 hashes",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "all project XML and XAML parse",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "view names unique and declared handlers connected",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "system report text selectable and wrapped",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "system table virtualized copied read-only",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "system buttons wrap without fixed height",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "main navigation wired with lazy host and original button rules",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "all clipboard calls keep required owner and text arguments",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "R13 Wireshark source guards still pass",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "R12 network source guards still pass",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "native tests include independent binary ABI fixtures boundaries cultures and Windows self comparison",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "WPF fixture exercises actual bindings copy scope navigation and late completion",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "both C# suites and source gate in standard Windows build",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject native buffer bound",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject native buffer release",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject next-record bounds",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject Unicode pointer bounds",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject duplicate PID",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject handle scope",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject reused PID age check",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject native error retained",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject fallback termination error",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject page overflow",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject unknown creation",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject name ownership",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject late result",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject hidden cancellation",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject PID substring search",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject navigation identity",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  }
+]

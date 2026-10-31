@@ -1,0 +1,12 @@
+{
+  "checks": {
+    "parent_name_limit": true,
+    "fork": true,
+    "spawn": true,
+    "forkserver": true,
+    "both_parent_cases": true,
+    "counter_independence": true,
+    "specific_704": true
+  },
+  "scope": "Source checks only; .NET execution NOT RUN"
+}

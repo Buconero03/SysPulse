@@ -1,0 +1,30 @@
+[
+  {
+    "test": "all direct app calls have two nonempty arguments",
+    "status": "PASS"
+  },
+  {
+    "test": "GUI report supplies its window and preserves nonempty guard",
+    "status": "PASS"
+  },
+  {
+    "test": "delivered R8 reproduces the reported one-argument defect",
+    "status": "PASS"
+  },
+  {
+    "test": "missing owner mutation rejected",
+    "status": "PASS"
+  },
+  {
+    "test": "extra or empty argument rejected",
+    "status": "PASS"
+  },
+  {
+    "test": "nested expressions do not add top-level arguments",
+    "status": "PASS"
+  },
+  {
+    "test": "comments strings and punctuation within text ignored",
+    "status": "PASS"
+  }
+]

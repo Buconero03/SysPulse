@@ -1,0 +1,8 @@
+{
+  "baseline_sha256": "3f51f87d17a3c8763e27e34072663b747473e10f2fc38cc92c638fc303248f7e",
+  "existing_src_and_tests": "BYTE IDENTICAL",
+  "build_pipeline": "BYTE IDENTICAL",
+  "retired_R20_files_archived": 7,
+  "new_binary": "NOT INCLUDED",
+  "Windows_launch_UAC": "NOT EXECUTED"
+}

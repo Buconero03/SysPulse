@@ -1,0 +1,60 @@
+file,line,before_or_after,changed_text
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,before,    <InformationalVersion>0.19.16-R10-R23-new-task-candidate</InformationalVersion>
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,after,    <InformationalVersion>0.19.16-R10-R23-R1-raw-input-fix-candidate</InformationalVersion>
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"[assembly: System.Runtime.CompilerServices.InternalsVisibleTo(""ProcessLens.NewTaskTests"")]"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        => TryCreateCore(program, arguments, directory, out request, out error,"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,            expandEnvironment ? Environment.ExpandEnvironmentVariables : null);
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"    internal static bool TryCreateCore(string program, string arguments, string directory,"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        out NewTaskRequest? request, out string error, Func<string, string>? expand)"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,        // Win32 expansion consumes null-terminated strings. Reject raw controls before
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        // trimming or expansion, otherwise a NUL suffix can disappear on Windows."
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        if (InvalidControls(program, arguments, directory))"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        { error = ""I campi contengono caratteri non validi o interruzioni di riga.""; return false; }"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,before,        if (expandEnvironment)
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,before,        { program = Environment.ExpandEnvironmentVariables(program); directory = Environment.ExpandEnvironmentVariables(directory); }
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,        if (expand is not null)
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,        { program = expand(program); directory = expand(directory); }
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,before,"        if (program.Any(char.IsControl) || program.Contains('""') || directory.Any(char.IsControl) || directory.Contains('""') ||"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,before,            arguments.Any(c => char.IsControl(c) && c != '\t'))
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"        if (InvalidControls(program, arguments, directory) || program.Contains('""') || directory.Contains('""'))"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,"    private static bool InvalidControls(string program, string arguments, string directory) =>"
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,        program.Any(char.IsControl) || directory.Any(char.IsControl) ||
+src/ProcessLens.Core/NewTaskLaunch.cs,see patch,after,        arguments.Any(c => char.IsControl(c) && c != '\t');
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,before,"    Check(!NewTaskRequest.TryCreate(bad, """", """", out _, out _), ""invalid program rejected before launch: "" + bad.Replace('\n', '?').Replace('\0', '?'));"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    Check(!NewTaskRequest.TryCreate(bad, """", """", out _, out _), ""invalid program rejected before launch: "" + bad.Replace(""\n"", ""<LF>"").Replace(""\0"", ""<NUL>""));"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,int expansionCalls = 0;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,string Win32ExpansionFixture(string text)
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,{
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    expansionCalls++;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    int nul = text.IndexOf('\0');
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    return nul >= 0 ? text[..nul] : text;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,}
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"Check(Win32ExpansionFixture(""tool.exe\0ignored"") == ""tool.exe"","
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    ""R23 R1 synthetic Win32 null-terminated expansion reproduces the dangerous truncation"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,foreach (var probe in new[] {
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    (Program: ""bad\0.exe"", Arguments: """", Directory: """", Label: ""program NUL before suffix""),"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    (Program: ""tool.exe\0ignored"", Arguments: """", Directory: """", Label: ""program NUL after executable""),"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    (Program: ""\0tool.exe"", Arguments: """", Directory: """", Label: ""program initial NUL""),"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    (Program: ""tool.exe"", Arguments: """", Directory: ""C:\\Data\0ignored"", Label: ""directory embedded NUL""),"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    (Program: ""tool.exe"", Arguments: ""--token=TOP_SECRET\0ignored"", Directory: """", Label: ""argument embedded NUL""),"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    (Program: ""tool.exe\n"", Arguments: """", Directory: """", Label: ""program trailing LF before trimming""),"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    (Program: ""tool.exe"", Arguments: """", Directory: ""C:\\Data\r"", Label: ""directory trailing CR before trimming"")"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,})
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,{
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,    expansionCalls = 0;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    bool accepted = NewTaskRequest.TryCreateCore(probe.Program, probe.Arguments, probe.Directory,"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"        out var parsed, out string message, Win32ExpansionFixture);"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    Check(!accepted && parsed is null && expansionCalls == 0 && !message.Contains(""TOP_SECRET""),"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"        ""R23 R1 raw input rejected before native expansion: "" + probe.Label);"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    Check(!NewTaskRequest.TryCreate(probe.Program, probe.Arguments, probe.Directory, out _, out _, expandEnvironment: false),"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"        ""R23 R1 direct launcher revalidation rejects controls without expansion: "" + probe.Label);"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,}
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,expansionCalls = 0;
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"Check(NewTaskRequest.TryCreateCore("" tool.exe "", raw, "" C:\\Data "", out var beforeNative, out _, Win32ExpansionFixture) &&"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    expansionCalls == 2 && beforeNative!.Program == ""tool.exe"" && beforeNative.Arguments == raw && beforeNative.WorkingDirectory == @""C:\Data"","
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    ""R23 R1 valid inputs still expand once per path and preserve exact arguments"");"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"Check(!NewTaskRequest.TryCreateCore(""tool.exe"", """", """", out _, out _, text => text == ""tool.exe"" ? ""bad\0.exe"" : text),"
+tests/ProcessLens.NewTaskTests/Program.cs,see patch,after,"    ""R23 R1 controls introduced by an expansion result remain rejected"");"

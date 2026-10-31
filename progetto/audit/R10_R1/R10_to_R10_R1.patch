@@ -1,0 +1,228 @@
+--- a/CHANGELOG_R10.md
++++ b/CHANGELOG_R10.md
+@@ -1,3 +1,9 @@
++# R10 R1 candidata — correzione controllo pulsanti
++
++Stile comune applicato al pulsante Analizza RAM ora. Controllo R9 invariato nei vincoli, con diagnostica puntuale e regressioni negative; regola aggiunta ai controlli portabili. Vedere `HOTFIX_R10_R1.md`. Build/test .NET/PowerShell e verifica WPF: NON ESEGUITO.
++
++---
++
+ # ProcessLens v0.19.16 R10 candidata
+ 
+ - Selezione e copia dei testi informativi nei pannelli processo, analisi, RAM, cronologia servizi e stato Guardian.
+--- /dev/null
++++ b/HOTFIX_R10_R1.md
+@@ -0,0 +1,33 @@
++# ProcessLens v0.19.16 R10 R1 — stile del pulsante Analizza RAM ora
++
++Il log Windows dell’utente si interrompe nel controllo `check-ui-format-r9.ps1` con `FAIL R9: unstyled or fixed-height button`. Le fasi successive non sono state eseguite.
++
++La causa è il pulsante `AnalyzeRamDirectButton`, introdotto nel nuovo ramo utente e integrato nella R10 senza il riferimento a `ActionButtonStyle`. Il controllo R9 richiede per ogni pulsante uno dei due stili comuni e vieta un’altezza fissa. Il pulsante era l’unico che violava questa regola. È un errore nell’integrazione della candidata R10.
++
++Correzioni:
++
++- Aggiunto `Style="{StaticResource ActionButtonStyle}"` al pulsante. L’azione di analisi RAM e i suoi parametri rimangono gli stessi. Lo stile fornisce wrapping e altezza minima.
++- Il controllo PowerShell conserva la stessa condizione di errore; ora stampa nome, testo, stile e altezza del controllo coinvolto.
++- Aggiunte al controllo PowerShell tre mutazioni negative sul vero markup: rimozione dello stile, stile sconosciuto e altezza fissa. Devono essere tutte respinte.
++- Aggiunta la regola mancante anche al verificatore portabile R10, che prima controllava altri aspetti dell’interfaccia e non questo requisito.
++- Regressione portabile sullo ZIP R10 realmente consegnato: riproduce il difetto del solo pulsante Analizza RAM ora; la copia corretta passa. Altre tre mutazioni vengono respinte e il collegamento dell’evento rimane presente.
++
++Eseguiti in questo ambiente: 6 regressioni portabili, 41 controlli strutturali, applicazione reale della patch e confronto SHA-256, integrità del pacchetto. Non sono esecuzioni PowerShell o WPF.
++
++**NON ESEGUITO:** PowerShell corretto, build/test .NET, caricamento WPF e verifica visuale/DPI. Restano le criticità di contabilità RAM documentate nel rapporto R10. Non vengono modificate acquisizioni Windows, contratti, servizi, profiler o funzionalità di copia.
++
++Il log Windows fornito viene registrato come osservazione dell’utente: controlli iniziali superati fino a R8, controllo R9 fallito, fasi successive non eseguite. Non si attribuisce il risultato positivo delle regressioni portabili alla suite Windows.
++
++Estrarre la candidata corretta in una cartella nuova; nella radice con `src` e `tests` eseguire:
++
++```powershell
++.\build-dashboard.ps1
++```
++
++Se termina con successo:
++
++```powershell
++.\run-release.ps1
++```
++
++Materiali: `audit/R10_R1/`, patch esatta R10 → R10 R1, matrice aggiornata e manifest `SHA256SUMS_R10.txt`. Le registrazioni precedenti rimangono storiche.
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,10 @@
+-﻿# R10 candidata — selezione, copia e nuovo ramo utente
++﻿# R10 R1 — correzione del blocco nel controllo pulsanti
++
++Leggere `HOTFIX_R10_R1.md`. Il pulsante Analizza RAM ora usa ora lo stile comune richiesto dal controllo R9. Il controllo resta rigoroso e indica il nome del pulsante in errore; aggiunte regressioni per stile mancante, sconosciuto e altezza fissa. Build/test .NET e PowerShell, verifica WPF e DPI: **NON ESEGUITO** qui. Le funzioni e i limiti della R10 descritti sotto restano validi. Manifest corrente: `SHA256SUMS_R10.txt` rigenerato per R1.
++
++---
++
++# R10 candidata — selezione, copia e nuovo ramo utente
+ 
+ Leggere prima `COPIA_TESTI_E_REVISIONE_R10.md`: spiega copia dei blocchi, rapporto completo, tabelle e valutazione delle modifiche. Le novità del nuovo ZIP sono integrate con le correzioni R8/R9. Alcune attribuzioni e somme della nuova dashboard RAM restano da correggere; non sono certificate come esatte.
+ 
+--- a/VERSION.txt
++++ b/VERSION.txt
+@@ -1 +1 @@
+-0.19.16-R10-copy-review-candidate
++0.19.16-R10-R1-copy-review-candidate
+--- /dev/null
++++ b/audit/tools/button_layout_rules.py
+@@ -0,0 +1,12 @@
++"""Portable equivalent of the strict R9 WPF button layout predicate, not WPF execution."""
++import xml.etree.ElementTree as ET
++
++XNAME = '{http://schemas.microsoft.com/winfx/2006/xaml}Name'
++ALLOWED_STYLES = {'{StaticResource FilterButtonStyle}', '{StaticResource ActionButtonStyle}'}
++
++
++def violations(root):
++    return [dict(name=e.get(XNAME, ''), content=e.get('Content', ''),
++                 style=e.get('Style', ''), height=e.get('Height'))
++            for e in root.iter() if e.tag.rsplit('}', 1)[-1] == 'Button' and
++            (e.get('Style') not in ALLOWED_STYLES or 'Height' in e.attrib)]
+--- a/audit/tools/check_r10.py
++++ b/audit/tools/check_r10.py
+@@ -2,6 +2,7 @@
+ from pathlib import Path
+ import argparse,copy,json,re,zipfile,hashlib
+ import xml.etree.ElementTree as ET
++from button_layout_rules import violations as button_layout_violations
+ p=argparse.ArgumentParser(description=__doc__)
+ p.add_argument('--input-zip',type=Path,required=True);p.add_argument('--r9-zip',type=Path,required=True)
+ p.add_argument('--candidate',type=Path,default=Path('.'));p.add_argument('--output',type=Path)
+@@ -33,6 +34,8 @@
+  check('table copy enabled '+filename,all(e.get('{clr-namespace:ProcessLens.App}GridCopySupport.Enabled')=='True' for e in grids),str(len(grids))+' tables; original selection modes retained')
+  if filename=='MainWindow.xaml':main=root;main_names=named
+ check('process service list templates unchanged',all(ET.tostring(main_names[n])==ET.tostring(next(e for e in ET.fromstring(r9['src/ProcessLens.App/MainWindow.xaml']).iter() if e.get(x+'Name')==n)) for n in ['ProcessList','ServiceList']),'Virtualized list selection and action targets untouched')
++bad_buttons = button_layout_violations(main.getroot())
++check('strict R9 button styles and no fixed height', not bad_buttons, str(bad_buttons) if bad_buttons else 'Every main-window button checked, including direct RAM action')
+ for filename in ['GuardianDashboardView.xaml','MemoryDashboardView.xaml']:
+  before=ET.fromstring(user['src/ProcessLens.App/'+filename]);after=ET.parse(b/'src/ProcessLens.App'/filename)
+  oldgrids=[e for e in before.iter() if local(e)=='DataGrid'];newgrids=[copy.deepcopy(e) for e in after.iter() if local(e)=='DataGrid']
+--- /dev/null
++++ b/audit/tools/test_button_layout_r10r1.py
+@@ -0,0 +1,43 @@
++"""Regressions for the portable guard, including the exact failed R10 input."""
++import argparse
++import copy
++import json
++import zipfile
++import xml.etree.ElementTree as ET
++from pathlib import Path
++from button_layout_rules import violations, XNAME
++
++p = argparse.ArgumentParser(description=__doc__)
++p.add_argument('--baseline-zip', type=Path, required=True)
++p.add_argument('--candidate', type=Path, required=True)
++p.add_argument('--output', type=Path, required=True)
++a = p.parse_args()
++with zipfile.ZipFile(a.baseline_zip) as z:
++    baseline = ET.fromstring(z.read('ProcessLens-v0.19.16-R10/src/ProcessLens.App/MainWindow.xaml'))
++current = ET.parse(a.candidate / 'src/ProcessLens.App/MainWindow.xaml').getroot()
++results = []
++
++
++def check(name, condition):
++    results.append(dict(test=name, status='PASS' if condition else 'FAIL'))
++    print(results[-1]['status'], name)
++
++
++check('delivered R10 failure reproduced: only direct RAM button lacks style',
++      [r['name'] for r in violations(baseline)] == ['AnalyzeRamDirectButton'])
++check('corrected R10 R1 has no layout-rule violation', not violations(current))
++for name in ['MissingStyle', 'UnknownStyle', 'FixedHeight']:
++    probe = copy.deepcopy(current)
++    button = next(e for e in probe.iter() if e.get(XNAME) == 'AnalyzeRamDirectButton')
++    if name == 'MissingStyle':
++        button.attrib.pop('Style')
++    elif name == 'UnknownStyle':
++        button.set('Style', '{StaticResource MissingStyle}')
++    else:
++        button.set('Height', '20')
++    check('reject ' + name, [r['name'] for r in violations(probe)] == ['AnalyzeRamDirectButton'])
++check('direct RAM event remains wired',
++      next(e for e in current.iter() if e.get(XNAME) == 'AnalyzeRamDirectButton').get('Click') == 'AnalyzeRamDirectButton_Click')
++a.output.parent.mkdir(parents=True, exist_ok=True)
++a.output.write_text(json.dumps(results, indent=2) + '\n')
++raise SystemExit(0 if all(r['status'] == 'PASS' for r in results) else 1)
+--- a/src/ProcessLens.App/MainWindow.xaml
++++ b/src/ProcessLens.App/MainWindow.xaml
+@@ -720,7 +720,7 @@
+                                 <Grid>
+                                     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                     <TextBlock Text="MEMORIA · MISURE SEPARATE" Style="{StaticResource SectionLabel}" VerticalAlignment="Center" Margin="0"/>
+-                                    <Button x:Name="AnalyzeRamDirectButton" Grid.Column="1" Content="Analizza RAM ora ▾"
++                                    <Button Style="{StaticResource ActionButtonStyle}" x:Name="AnalyzeRamDirectButton" Grid.Column="1" Content="Analizza RAM ora ▾"
+                                             Click="AnalyzeRamDirectButton_Click" Padding="9,3" FontSize="11" FontWeight="SemiBold"
+                                             Background="#E0F2FE" BorderBrush="#7DD3FC" Foreground="#0369A1" Cursor="Hand"
+                                             ToolTip="Esegue subito la diagnosi anatomica completa della RAM per questo processo"/>
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-copy-review-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R1-copy-review-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+--- a/start-processlens-all.ps1
++++ b/start-processlens-all.ps1
+@@ -27,7 +27,7 @@
+ }
+ 
+ try {
+-    Write-Host 'ProcessLens v0.19.16 R10 candidata - Avvio guidato in sequenza' -ForegroundColor Green
++    Write-Host 'ProcessLens v0.19.16 R10 R1 candidata - Avvio guidato in sequenza' -ForegroundColor Green
+     Write-Host ('Modalita: ' + $Mode)
+     Write-Host ('Cartella: ' + $PSScriptRoot)
+     $isAdmin = Test-IsAdministrator
+--- a/tests/check-ui-format-r9.ps1
++++ b/tests/check-ui-format-r9.ps1
+@@ -10,10 +10,42 @@
+ if (-not $style.SelectSingleNode("./*[local-name()='Setter' and @Property='MinHeight' and @Value='36']")) {
+     throw 'FAIL R9: action buttons need a minimum height.'
+ }
+-foreach ($button in $view.SelectNodes("//*[local-name()='Button']")) {
+-    if ($button.GetAttribute('Style') -notin @('{StaticResource FilterButtonStyle}', '{StaticResource ActionButtonStyle}') -or
+-        $button.HasAttribute('Height')) { throw 'FAIL R9: unstyled or fixed-height button.' }
++function Get-ButtonLayoutViolations([xml]$document) {
++    foreach ($button in $document.SelectNodes("//*[local-name()='Button']")) {
++        if ($button.GetAttribute('Style') -notin @('{StaticResource FilterButtonStyle}', '{StaticResource ActionButtonStyle}') -or
++            $button.HasAttribute('Height')) {
++            [PSCustomObject]@{
++                Name = $button.GetAttribute('Name', 'http://schemas.microsoft.com/winfx/2006/xaml')
++                Content = $button.GetAttribute('Content')
++                Style = $button.GetAttribute('Style')
++                Height = $button.GetAttribute('Height')
++            }
++        }
++    }
+ }
++$violations = @(Get-ButtonLayoutViolations $view)
++if ($violations.Count -gt 0) {
++    $details = ($violations | ForEach-Object {
++        "Name='$($_.Name)' Content='$($_.Content)' Style='$($_.Style)' Height='$($_.Height)'"
++    }) -join '; '
++    throw ('FAIL R9: unstyled or fixed-height button: ' + $details)
++}
++# R10 R1: exercise the actual guard with deliberately broken copies of the markup.
++foreach ($mutation in @('MissingStyle', 'UnknownStyle', 'FixedHeight')) {
++    [xml]$probe = $view.OuterXml
++    $button = $probe.SelectSingleNode("//*[@*[local-name()='Name']='AnalyzeRamDirectButton']")
++    if ($null -eq $button) { throw 'FAIL R10 R1: direct RAM action missing.' }
++    switch ($mutation) {
++        'MissingStyle' { $button.RemoveAttribute('Style') }
++        'UnknownStyle' { $button.SetAttribute('Style', '{StaticResource MissingStyle}') }
++        'FixedHeight' { $button.SetAttribute('Height', '20') }
++    }
++    $rejected = @(Get-ButtonLayoutViolations $probe)
++    if ($rejected.Count -ne 1 -or $rejected[0].Name -ne 'AnalyzeRamDirectButton') {
++        throw ('FAIL R10 R1: button layout guard missed mutation ' + $mutation)
++    }
++}
++Write-Host 'PASS R10 R1: all buttons styled; missing/unknown styles and fixed-height regressions rejected.'
+ foreach ($name in @('DetailCpuAverageText','DetailCpuPeakText','DetailCpuText','DetailMemoryText',
+     'DetailPrivateWorkingSetText','DetailWorkingSetText','DetailPrivateCommitText','CpuGraphScaleText')) {
+     $node = $view.SelectSingleNode("//*[@*[local-name()='Name']='$name']")

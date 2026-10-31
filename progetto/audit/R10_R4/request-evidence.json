@@ -1,0 +1,9 @@
+{
+  "source": "User request 2026-10-17: small message when a process closes",
+  "baseline": "R10 R3 delivered candidate",
+  "new_observation_reason": "Process disappearance from filters/snapshots is not confirmed exit; user-requested notification needs a verified read-only wait",
+  "new_API_scope": "GUI only, SYNCHRONIZE plus PROCESS_QUERY_LIMITED_INFORMATION; timestamp check and single-shot wait on same handle",
+  "protected_components": "unchanged byte for byte",
+  "Windows_R4_execution": "NON ESEGUITO",
+  "target_processes_started_or_terminated_here": 0
+}

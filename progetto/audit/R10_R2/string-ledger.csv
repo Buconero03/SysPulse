@@ -1,0 +1,4 @@
+scope,before,after,status
+Test diagnostic,height assertion without actual dimensions,initialized/template/desired dimensions added,source reviewed; runtime pending
+Product text,no change,no change,application source and markup SHA256 identical to R1
+Console numeric log,NBSP mojibake in supplied log,no data conversion in hotfix,format assertions passed in supplied R1 log

@@ -1,0 +1,12 @@
+test,kind,status
+29 current structural checks,Python source and XML,PASS
+14 CPU restore source guard regressions,Python source only,PASS
+13 RAM monitor navigation source guard regressions,Python source only,PASS
+Exact R9 patch replay,git apply and SHA256,PASS
+New Guardian diagnostic and Windows reference regressions,C# .NET,NON ESEGUITO
+WPF focus return and diagnostic bindings,C# WPF,NON ESEGUITO
+Full existing .NET test suites and build,Windows .NET,NON ESEGUITO
+PowerShell syntax and source checks,PowerShell,NON ESEGUITO
+DPI 100 125 150 200 percent and manual navigation,Windows rendering,NON ESEGUITO
+GUI and suite CPU RAM impact,measurement,NON MISURATO
+Historical audit results,retained evidence,NON RIESEGUITI

@@ -1,0 +1,7 @@
+{
+  "origin": "Log utente del 2026-10-14, R7 R1",
+  "BehaviorTests": "PASS riportato, incluse regressioni R7/R1",
+  "TerminologyTests": "FAIL riportato: launch limitation explicit 704, test lessicale generico",
+  "subsequent_stages": "NON ESEGUITO",
+  "R7_R2_dotnet": "NON ESEGUITO qui"
+}

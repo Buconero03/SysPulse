@@ -1,0 +1,243 @@
+file,side,changed_text
+LEGGIMI.txt,before,"ProcessLens R32 — area di notifica, icone e testi"
+LEGGIMI.txt,after,"ProcessLens R32 R1 — area di notifica, icone e testi"
+LEGGIMI.txt,before,13 progetti MSBuild e 834 asserzioni PASS; 40 controlli PowerShell e 17 prove launcher PASS.
+LEGGIMI.txt,after,"Base R32: 13 progetti MSBuild e 834 asserzioni PASS, non ripetuti in R32 R1."
+LEGGIMI.txt,after,R32 R1: 41 controlli PowerShell e 17 prove launcher; correzione del riferimento System.IO.Path.
+LEGGIMI.txt,before,Dettagli e prove: progetto/audit/R10_R32/REVIEW.md.
+LEGGIMI.txt,after,Dettagli e prove: progetto/audit/R10_R32_R1/REVIEW.md.
+LEGGIMI.txt,after,
+LEGGIMI.txt,after,Avvio corretto: AVVIA_PROCESSLENS.cmd (Esplora file puo mostrarlo come AVVIA_PROCESSLENS).
+LEGGIMI.txt,after,Errore CS0103 corretto in TrayWindowController.cs: non dipende dalla cartella di avvio.
+progetto/audit/tools/check_powershell_r32r1.py,after,"""""""Run PowerShell source preflight and isolated launcher fixtures, never a build or installation."""""""
+progetto/audit/tools/check_powershell_r32r1.py,after,"import argparse,json,hashlib,subprocess"
+progetto/audit/tools/check_powershell_r32r1.py,after,from pathlib import Path
+progetto/audit/tools/check_powershell_r32r1.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--shell',type=Path,required=True);p.add_argument('--pwsh',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/check_powershell_r32r1.py,after,r=a.project.resolve();shell=a.shell.resolve();audit=r/'audit/R10_R32_R1';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/check_powershell_r32r1.py,after,"# Same 30 authorized baseline source stages, plus the R24 wiring gate."
+progetto/audit/tools/check_powershell_r32r1.py,after,"stages=[x['file'] for x in json.loads((r/'audit/R10_R23_R1/powershell-evidence.json').read_text())['stages']]+['audit/tools/check_live_metrics_r24.ps1','audit/tools/check_process_groups_r25.ps1','audit/tools/check_scroll_minimize_r26.ps1','audit/tools/check_windows_icons_r27.ps1','audit/tools/check_window_controls_r28.ps1','audit/tools/check_window_diagnostics_r29.ps1','audit/tools/check_tray_callbacks_r30.ps1','audit/tools/check_search_hosts_r31.ps1','audit/tools/check_build_reference_r31r1.ps1','audit/tools/check_notification_area_r32.ps1','audit/tools/check_wpf_path_r32r1.ps1'];results=[];logs=[]"
+progetto/audit/tools/check_powershell_r32r1.py,after,for n in stages:
+progetto/audit/tools/check_powershell_r32r1.py,after," x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(r/n)],cwd=r,capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;logs.append(n+'\n'+log)"
+progetto/audit/tools/check_powershell_r32r1.py,after, if x.returncode:(audit/'preflight.log').write_text('\n'.join(logs));raise SystemExit(log)
+progetto/audit/tools/check_powershell_r32r1.py,after," results.append({'file':n,'sha256':sha((r/n).read_bytes()),'status':'PASS'})"
+progetto/audit/tools/check_powershell_r32r1.py,after,(audit/'preflight.log').write_text('\n'.join(logs))
+progetto/audit/tools/check_powershell_r32r1.py,after,fixture=r/'audit/tools/test_launcher_r32r1.ps1';launcher=shell/'supporto/avvia.ps1'
+progetto/audit/tools/check_powershell_r32r1.py,after,"x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(fixture),'-Launcher',str(launcher)],capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;(audit/'launcher-fixture.log').write_text(log)"
+progetto/audit/tools/check_powershell_r32r1.py,after,if x.returncode:raise SystemExit(log)
+progetto/audit/tools/check_powershell_r32r1.py,after,"count=sum(line.startswith('PASS R32 R1 launcher:') for line in log.splitlines());assert count==17,count"
+progetto/audit/tools/check_powershell_r32r1.py,after,"(audit/'powershell-evidence.json').write_text(json.dumps({'PowerShell':'7.4.21 Linux; no Windows runtime execution','stages':results,'launcher_fixture_checks':count,'launcher_sha256':sha(launcher.read_bytes()),'fixture_sha256':sha(fixture.read_bytes())},indent=2)+'\n');print('PASS',len(results),'source stages;',count,'launcher checks')"
+progetto/audit/tools/check_wpf_path_r32r1.ps1,after,$ErrorActionPreference='Stop'
+progetto/audit/tools/check_wpf_path_r32r1.ps1,after,$root=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+progetto/audit/tools/check_wpf_path_r32r1.ps1,after,$tray=Get-Content (Join-Path $root 'src/ProcessLens.App/TrayWindowController.cs') -Raw -Encoding UTF8
+progetto/audit/tools/check_wpf_path_r32r1.ps1,after,if(-not $tray.Contains('System.IO.Path.Combine(AppContext.BaseDirectory')){throw 'FAIL R32 R1: tray icon path must explicitly resolve System.IO.Path.'}
+progetto/audit/tools/check_wpf_path_r32r1.ps1,after,$usingCheck=Get-Content (Join-Path $root 'audit/tools/typecheck_wpf_sources_r32r1.py') -Raw -Encoding UTF8
+progetto/audit/tools/check_wpf_path_r32r1.ps1,after,if(-not $usingCheck.Contains('msbuild-wpf-usings.json') -or -not $usingCheck.Contains('wpf_globals if name')){throw 'FAIL R32 R1: C# checks must use evaluated WPF implicit usings.'}
+progetto/audit/tools/check_wpf_path_r32r1.ps1,after,Write-Host 'PASS R32 R1: explicit IO path and evaluated WPF implicit usings; markup and Windows execution remain separate.'
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"""""""Create a lightweight R32 R1 candidate; assert the precise R32 delta, evidence hashes and manifests."""""""
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"import argparse,csv,difflib,hashlib,json,shutil,subprocess,tempfile,zipfile"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,from pathlib import Path
+progetto/audit/tools/package_wpf_path_r32r1.py,after,import xml.etree.ElementTree as ET
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--shell',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True);p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,shell=a.shell.resolve();r=shell/'progetto';audit=r/'audit/R10_R32_R1';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/package_wpf_path_r32r1.py,after,assert sha(a.baseline_zip.read_bytes())=='2c383c3e3e57f46cee2c3deef6a632655d9a1472dade5a2b24a35b63a92ef528'
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"with zipfile.ZipFile(a.baseline_zip) as z:before={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"for d in sorted(shell.rglob('__pycache__'),reverse=True):shutil.rmtree(d)"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,after={f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file()}
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"modified={'LEGGIMI.txt','supporto/avvia.ps1','progetto/build-dashboard.ps1','progetto/src/ProcessLens.App/TrayWindowController.cs','progetto/src/ProcessLens.App/ProcessLens.App.csproj'}"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"added={f'progetto/audit/tools/{n}' for n in ['typecheck_wpf_sources_r32r1.py','check_powershell_r32r1.py','check_wpf_path_r32r1.ps1','test_launcher_r32r1.ps1','package_wpf_path_r32r1.py']}"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"manifests={'SHA256SUMS.txt','progetto/SHA256SUMS_R10.txt'}"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"assert all(n in after for n in before),'No baseline file may disappear'"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"assert {n for n,b in before.items() if n not in manifests and after[n]!=b}==modified,'Unexpected modification or missing intended change'"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"assert {n for n in after if n not in before and not n.startswith('progetto/audit/R10_R32_R1/')}==added,'Unexpected new file'"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"assert not any(n.startswith('progetto/progetto/') for n in after),'Nested duplicate project'"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"for n,b in after.items():"
+progetto/audit/tools/package_wpf_path_r32r1.py,after," if n.endswith(('.xaml','.csproj')):ET.fromstring(b)"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"assert all(after[n]==b for n,b in before.items() if n not in modified and n.startswith(('progetto/src/ProcessLens.Core/','progetto/src/ProcessLens.Semantics/','progetto/src/ProcessLens.Windows/','progetto/src/ProcessLens.Guardian/','progetto/src/ProcessLens.MemoryAgent/','progetto/src/ProcessLens.Profiler/','progetto/src/ProcessLens.RamMonitor/')))"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"for n in ['AutomaticViewport.cs','ReadingPositionPolicy.cs','WindowLifetimePolicy.cs','IconPreferencePolicy.cs','DeferredDiagnosticWriter.cs','ProcessIconResolver.cs','NativeIconPreference.cs','AppDiagnostics.cs']:"
+progetto/audit/tools/package_wpf_path_r32r1.py,after," assert after['progetto/src/ProcessLens.App/'+n]==before['progetto/src/ProcessLens.App/'+n],n"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,d=json.loads((audit/'wpf-typecheck-evidence.json').read_text())
+progetto/audit/tools/package_wpf_path_r32r1.py,after,assert len(d['assemblies'])==9 and all(x['status']=='PASS' for x in d['assemblies'])
+progetto/audit/tools/package_wpf_path_r32r1.py,after,assert 'System.IO' not in d['evaluated_wpf_implicit_usings']
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"for n,h in d['inputs'].items():assert sha((r/n).read_bytes())==h,(n,'stale typecheck input')"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,ps=json.loads((audit/'powershell-evidence.json').read_text());assert len(ps['stages'])==41 and ps['launcher_fixture_checks']==17
+progetto/audit/tools/package_wpf_path_r32r1.py,after,for row in ps['stages']:assert sha((r/row['file']).read_bytes())==row['sha256']
+progetto/audit/tools/package_wpf_path_r32r1.py,after,assert sha((shell/'supporto/avvia.ps1').read_bytes())==ps['launcher_sha256']
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"negative=(audit/'missing-io-expected-failure.log').read_text();assert 'CS0103' in negative and ""'Path'"" in negative"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"assert after['progetto/src/ProcessLens.App/TrayWindowController.cs']==before['progetto/src/ProcessLens.App/TrayWindowController.cs'].replace(b'Path.Combine(',b'System.IO.Path.Combine(')"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"(audit/'scope-evidence.json').write_text(json.dumps({'baseline_sha256':sha(a.baseline_zip.read_bytes()),'modified_files':sorted(modified),'new_files':sorted(added),'protected':'All Core, Semantics, native code, tests and UI unchanged from R32; only System.IO.Path qualification, version, launcher and declared preflight changed','new_dependencies':0,'Windows_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'},indent=2)+'\n')"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"with (audit/'string-ledger.csv').open('w',newline='') as f:"
+progetto/audit/tools/package_wpf_path_r32r1.py,after," w=csv.writer(f);w.writerow(['file','side','changed_text'])"
+progetto/audit/tools/package_wpf_path_r32r1.py,after, for n in sorted(modified|added):
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"  for line in difflib.unified_diff(before.get(n,b'').decode('utf-8-sig').splitlines(),after[n].decode('utf-8-sig').splitlines(),n,n,n=0):"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"   if line.startswith(('+','-')) and not line.startswith(('+++','---')):w.writerow([n,'after' if line[0]=='+' else 'before',line[1:]])"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"with (audit/'files-changed.csv').open('w',newline='') as f:"
+progetto/audit/tools/package_wpf_path_r32r1.py,after," w=csv.writer(f);w.writerow(['file','kind','sha256_before','sha256_after'])"
+progetto/audit/tools/package_wpf_path_r32r1.py,after," for n in sorted(modified|added):w.writerow([n,'added' if n in added else 'modified',sha(before[n]) if n in before else '',sha(after[n])])"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,include=lambda n:n not in manifests and not n.startswith('progetto/audit/R10_R32_R1/')
+progetto/audit/tools/package_wpf_path_r32r1.py,after,with tempfile.TemporaryDirectory(prefix='processlens-r31-') as tmp:
+progetto/audit/tools/package_wpf_path_r32r1.py,after, t=Path(tmp);bdir=t/'before';adir=t/'after';bdir.mkdir();adir.mkdir()
+progetto/audit/tools/package_wpf_path_r32r1.py,after," for base,data in [(bdir,before),(adir,after)]:"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"  for n,b in data.items():"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"   if include(n):p=base/n;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b)"
+progetto/audit/tools/package_wpf_path_r32r1.py,after," x=subprocess.run(['git','diff','--no-index','--no-renames','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=t,capture_output=True);assert x.returncode==1"
+progetto/audit/tools/package_wpf_path_r32r1.py,after, lines=[]
+progetto/audit/tools/package_wpf_path_r32r1.py,after, for line in x.stdout.splitlines(keepends=True):
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"  if line.startswith((b'diff --git ',b'--- ',b'+++ ')):"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"   for prefix in [b'a/before/',b'a/after/']:line=line.replace(prefix,b'a/')"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"   for prefix in [b'b/before/',b'b/after/']:line=line.replace(prefix,b'b/')"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,  lines.append(line)
+progetto/audit/tools/package_wpf_path_r32r1.py,after, patch=b''.join(lines);path=audit/'R32_to_R32_R1.patch';path.write_bytes(patch)
+progetto/audit/tools/package_wpf_path_r32r1.py,after," x=subprocess.run(['git','apply','--check',str(path)],cwd=bdir,capture_output=True);assert x.returncode==0,x.stderr"
+progetto/audit/tools/package_wpf_path_r32r1.py,after," subprocess.run(['git','apply',str(path)],cwd=bdir,check=True)"
+progetto/audit/tools/package_wpf_path_r32r1.py,after," assert {f.relative_to(bdir).as_posix():f.read_bytes() for f in bdir.rglob('*') if f.is_file()}=={n:b for n,b in after.items() if include(n)}"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"(audit/'patch-evidence.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','patch_sha256':sha(patch),'excluded_from_diff_only':'current R31 audit and recursive manifests; all included in final ZIP'},indent=2)+'\n')"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt'}
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"(r/'SHA256SUMS_R10.txt').write_text(''.join(sha(b)+'  '+n+'\n' for n,b in sorted(current.items())))"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,files={f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file() and f.name!='SHA256SUMS.txt'}
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"assert not any(n.endswith(('.dll','.exe','.pdb','.deb','.nupkg','.pyc','.ok')) for n in files),'Build/SDK artifacts forbidden'"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,assert all(len(b)<10*1024*1024 for b in files.values())
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"manifest=''.join(sha(b)+'  '+n+'\n' for n,b in sorted(files.items()));files['SHA256SUMS.txt']=manifest.encode();(shell/'SHA256SUMS.txt').write_text(manifest)"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"a.output_directory.mkdir(parents=True,exist_ok=True);target=a.output_directory/'ProcessLens-R32-R1-correzione-avvio.zip'"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:"
+progetto/audit/tools/package_wpf_path_r32r1.py,after," for n,b in sorted(files.items()):z.writestr('ProcessLens-Leggero/'+n,b)"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,with zipfile.ZipFile(target) as z:
+progetto/audit/tools/package_wpf_path_r32r1.py,after, assert z.testzip() is None
+progetto/audit/tools/package_wpf_path_r32r1.py,after," for line in manifest.splitlines():h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/'+n))==h"
+progetto/audit/tools/package_wpf_path_r32r1.py,after," for line in (r/'SHA256SUMS_R10.txt').read_text().splitlines():h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/progetto/'+n))==h"
+progetto/audit/tools/package_wpf_path_r32r1.py,after," assert {n.split('/')[1] for n in z.namelist()}=={'AVVIA_PROCESSLENS.cmd','LEGGIMI.txt','supporto','progetto','SHA256SUMS.txt'}"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"result={'zip':str(target.resolve()),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files)-1,'R32_historical_assertions_not_rerun':834,'PowerShell_source_stages':41,'launcher_fixture_checks':17,'WPF_namespace_negative_control':'CS0103 for Path reproduced','CSharp_WindowsDesktop_typechecked_assemblies':9,'Windows_WPF_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'}"
+progetto/audit/tools/package_wpf_path_r32r1.py,after,"(a.output_directory/'verification-r32r1.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,param([string] $Launcher)
+progetto/audit/tools/test_launcher_r32r1.ps1,after,$ErrorActionPreference = 'Stop'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,. $Launcher -FunctionsOnly
+progetto/audit/tools/test_launcher_r32r1.ps1,after,$count = 0
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"function Check([bool] $Ok, [string] $Label) {"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    if (-not $Ok) { throw ('FAIL R32 R1 launcher: ' + $Label) }
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Write-Host ('PASS R32 R1 launcher: ' + $Label); $script:count++
+progetto/audit/tools/test_launcher_r32r1.ps1,after,}
+progetto/audit/tools/test_launcher_r32r1.ps1,after,function Touch([string] $Path) {
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Set-Content -LiteralPath $Path -Value 'fixture only' -Encoding ASCII
+progetto/audit/tools/test_launcher_r32r1.ps1,after,}
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"function Make-Runtime([string] $Path, [string] $Version='8.0.32') {"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Touch (Join-Path $Path 'dotnet.exe')
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    New-Item -ItemType Directory -Path (Join-Path $Path 'shared/Microsoft.NETCore.App/8.0.32') -Force | Out-Null
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    New-Item -ItemType Directory -Path (Join-Path $Path ('shared/Microsoft.WindowsDesktop.App/' + $Version)) -Force | Out-Null
+progetto/audit/tools/test_launcher_r32r1.ps1,after,}
+progetto/audit/tools/test_launcher_r32r1.ps1,after,$temporary = Join-Path ([IO.Path]::GetTempPath()) ('processlens-r23-' + [Guid]::NewGuid().ToString('N'))
+progetto/audit/tools/test_launcher_r32r1.ps1,after,$saved = @{}
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"foreach ($name in @('PATH','DOTNET_ROOT','DOTNET_ROOT_X64','NUGET_PACKAGES')) { $saved[$name] = [Environment]::GetEnvironmentVariable($name) }"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,try {
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    $root = Join-Path $temporary 'bundle with space'; $profile = Join-Path $temporary 'profile with space'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"    New-Item -ItemType Directory -Path $root,$profile,(Join-Path $root 'supporto') -Force | Out-Null"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'empty package has no runnable GUI'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    $installed = Join-Path $profile 'Programs/ProcessLens/R20'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Touch (Join-Path $installed 'app/win-x64/ProcessLens.exe'); Touch (Join-Path $installed 'start-installed.ps1')
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'completed old installation cannot silently substitute its old GUI'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    $exe = Join-Path $root 'progetto/publish/win-x64/ProcessLens.exe'; Touch $exe
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    $receipt = Join-Path $root 'supporto/build-r32-r1.ok'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'publication without successful R31 receipt is not accepted'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Set-Content -LiteralPath $receipt -Value 'older version'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'receipt for another revision is rejected'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Remove-Item -LiteralPath $receipt
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    $sdk = Join-Path $installed 'dotnet'; Make-Runtime $sdk
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"    New-Item -ItemType Directory -Path (Join-Path $sdk 'sdk/8.0.426'),(Join-Path $installed 'packages') -Force | Out-Null"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"    # Stub only the compiler entry point and project build script; no dotnet, app or service is launched."
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    function global:dotnet { throw 'fixture must not launch a real compiler' }
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    $build = Join-Path $root 'progetto/build-dashboard.ps1'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"    Set-Content -LiteralPath $build -Value 'throw ""synthetic failed tests""'"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    $failed = $false
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('synthetic failed tests') }
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'failed tests cannot issue a build receipt or launch a stale publication'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Check ($env:NUGET_PACKAGES -eq (Join-Path $installed 'packages')) 'completed R20 cache reused without copying packages into ZIP'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    [xml]$config = Get-Content -LiteralPath (Join-Path $root 'progetto/NuGet.Config') -Raw
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Check ($config.configuration.packageSources.clear -ne $null -and -not $config.configuration.packageSources.add) 'R20 cache build has no configured network feed'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Remove-Item -LiteralPath $exe
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Set-Content -LiteralPath $build -Value '# fixture successful script but no executable'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    $failed = $false
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('senza eseguibile') }
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'missing executable after build remains an error'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"    Set-Content -LiteralPath $build -Value 'New-Item -ItemType Directory -Path ""publish/win-x64"" -Force | Out-Null; Set-Content -LiteralPath ""publish/win-x64/ProcessLens.exe"" -Value ""fixture""'"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Invoke-ProcessLensBuild $root $profile
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    $target = Resolve-ProcessLensLaunch $root $profile
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Check ($target.Kind -eq 'Exe' -and $target.Entry -eq $exe -and $target.Runtime -eq $sdk) 'successful owned build resolves new publication with existing private runtime'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"    Set-Content -LiteralPath $build -Value 'throw ""fast path must not rebuild""'"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Check ((Resolve-ProcessLensLaunch $root $profile).Entry -eq $exe) 'subsequent resolution needs no build or SDK command'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    $incomplete = Join-Path $temporary 'incomplete'; Touch (Join-Path $incomplete 'dotnet.exe')
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Check (-not (Test-DesktopRuntime8 $incomplete)) 'missing desktop runtime is not accepted'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Make-Runtime $incomplete '9.0.1'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Check (-not (Test-DesktopRuntime8 $incomplete)) 'wrong desktop runtime major is not accepted'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"    Check ((Quote-LaunchArgument 'C:\Program Files\ProcessLens\ProcessLens.exe') -eq '""C:\Program Files\ProcessLens\ProcessLens.exe""') 'paths with spaces remain one UAC argument'"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"    foreach ($bad in @('C:\bad""path', ""C:\bad`npath"")) {"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,        $failed = $false; try { Quote-LaunchArgument $bad | Out-Null } catch { $failed = $true }
+progetto/audit/tools/test_launcher_r32r1.ps1,after,        Check $failed 'quotes and newlines cannot create extra launch arguments'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    }
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    $tokens = $null; $errors = $null
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"    $ast = [System.Management.Automation.Language.Parser]::ParseFile($Launcher,[ref]$tokens,[ref]$errors)"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Check ($errors.Count -eq 0) 'real PowerShell parser accepts complete launcher'
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"    $commands = @($ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] },$true) | ForEach-Object { $_.GetCommandName() })"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"    Check (@($commands | Where-Object { $_ -in @('Expand-Archive','Invoke-WebRequest','Install-Package','Install-Module','Set-Service','Start-Service','Stop-Service','Stop-Process') }).Count -eq 0) 'launcher installs no dependencies and changes no services or running processes'"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"    Write-Host ('R32 R1 launcher fixture complete: ' + $count + ' checks; synthetic files only, no Windows app or UAC.')"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,} finally {
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    Remove-Item function:global:dotnet -ErrorAction SilentlyContinue
+progetto/audit/tools/test_launcher_r32r1.ps1,after,"    foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name,$saved[$name]) }"
+progetto/audit/tools/test_launcher_r32r1.ps1,after,    if (Test-Path -LiteralPath $temporary) { Remove-Item -LiteralPath $temporary -Recurse -Force }
+progetto/audit/tools/test_launcher_r32r1.ps1,after,}
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"""""""Type-check real C# against WindowsDesktop reference assemblies with explicit generated-field stubs."
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"This is NOT WPF markup compilation, BAML, MSBuild, or runtime validation. Stubs live outside the deliverable."
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,""""""""
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"import argparse,hashlib,json,subprocess,xml.etree.ElementTree as ET"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,from pathlib import Path
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();out=work/'typecheck';out.mkdir(exist_ok=True);audit=r/'audit/R10_R32_R1';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,base={p.name:p for p in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll')};desktop=list((work/'wpf-ref').glob('*.dll'))
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,assert len(desktop)>20
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,for f in desktop:base[f.name]=f
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,refs=list(base.values());event=sdk/'packs/Microsoft.AspNetCore.App.Ref/8.0.32/ref/net8.0/System.Diagnostics.EventLog.dll';sqlite=work/'Microsoft.Data.Sqlite.dll'
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"globals=out/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,wpf_usings=[x['Identity'] for x in json.loads((audit/'msbuild-wpf-usings.json').read_text())['Items']['Using']]
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"assert set(wpf_usings)=={'System','System.Collections.Generic','System.Linq','System.Threading','System.Threading.Tasks'}, 'Unexpected evaluated WPF implicit usings'"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,wpf_globals=out/'WpfGlobalUsings.cs';wpf_globals.write_text(''.join('global using '+s+';\n' for s in wpf_usings))
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,x='{http://schemas.microsoft.com/winfx/2006/xaml}';stubs=[];inputs={}
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,for path in (r/'src/ProcessLens.App').glob('*.xaml'):
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after, tree=ET.parse(path).getroot();cls=tree.get(x+'Class');assert cls
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after, fields=[]
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after, for e in tree.iter():
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,  name=e.get(x+'Name')
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,  if not name:continue
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"  tag=e.tag.split('}',1)[1]"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,  if e.tag.startswith('{clr-namespace:ProcessLens.App}'):typ='ProcessLens.App.'+tag
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,  elif tag=='Polyline':typ='System.Windows.Shapes.Polyline'
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,  else:typ='System.Windows.Controls.'+tag
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,  fields.append('internal '+typ+' '+name+' = null!;')
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after," ns,short=cls.rsplit('.',1);stubs.append('namespace '+ns+' { public partial class '+short+' { '+ ' '.join(fields)+' private void InitializeComponent() {} } }')"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after, inputs[path.relative_to(r).as_posix()]=sha(path.read_bytes())
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,stub=out/'MarkupFieldStubs.cs';stub.write_text('\n'.join(stubs));results=[]
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"def compile(name,sources,extra=(),library=True):"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after, for f in sources:
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,  if f.is_relative_to(r):inputs[f.relative_to(r).as_posix()]=sha(f.read_bytes())
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after," args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(out/(name+'.dll'))]"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after, args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after," args+=['-r:'+str(f) for f in [*refs,event,*extra]]+[str(wpf_globals if name == 'ProcessLens' or name.endswith('UiTests') else globals)]+[str(f) for f in sources]"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after," result=subprocess.run(args,capture_output=True,text=True);log=result.stdout+result.stderr;(audit/(name+'-typecheck.log')).write_text(log)"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after," print(name, 'PASS' if result.returncode==0 else 'FAIL');results.append({'assembly':name,'status':'PASS' if result.returncode==0 else 'FAIL','warning_count':log.count('warning CS')})"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after, if result.returncode:raise SystemExit(log)
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,core=work/'runtime/ProcessLens.Core.dll';assert core.is_file()
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"compile('ProcessLens.Windows',sorted((r/'src/ProcessLens.Windows').glob('*.cs')),[core])"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),[core])"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"extra=[core,out/'ProcessLens.Windows.dll',out/'ProcessLens.Semantics.dll',sqlite]"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"compile('ProcessLens',sorted((r/'src/ProcessLens.App').rglob('*.cs'))+[stub],extra)"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"for name in ['NetworkUiTests','CopyUiTests','SystemProcessUiTests','NewTaskUiTests','LiveMetricsUiTests','ProcessGroupsUiTests']:"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after," compile('ProcessLens.'+name,[r/'tests'/('ProcessLens.'+name)/'Program.cs'],extra+[out/'ProcessLens.dll'],False)"
+progetto/audit/tools/typecheck_wpf_sources_r32r1.py,after,"(audit/'wpf-typecheck-evidence.json').write_text(json.dumps({'qualification':'C# type checking with generated-field stubs only; NOT actual WPF markup compilation or runtime','evaluated_wpf_implicit_usings':wpf_usings,'assemblies':results,'inputs':inputs,'stub_sha256':sha(stub.read_bytes()),'reference_hashes':{f.name:sha(f.read_bytes()) for f in [*desktop,event,sqlite]}},indent=2)+'\n')"
+progetto/build-dashboard.ps1,after,& (Join-Path $PSScriptRoot 'audit\tools\check_wpf_path_r32r1.ps1')
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,before,    <InformationalVersion>0.19.16-R10-R32-notification-area-candidate</InformationalVersion>
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,after,    <InformationalVersion>0.19.16-R10-R32-R1-wpf-path-candidate</InformationalVersion>
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"            Path.Combine(AppContext.BaseDirectory, ""Assets"", ""ProcessLens.ico""), 1, 32, 32, 0x10);"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            System.IO.Path.Combine(AppContext.BaseDirectory, ""Assets"", ""ProcessLens.ico""), 1, 32, 32, 0x10);"
+supporto/avvia.ps1,before,    $receipt = Join-Path $Root 'supporto/build-r32.ok'
+supporto/avvia.ps1,after,    $receipt = Join-Path $Root 'supporto/build-r32-r1.ok'
+supporto/avvia.ps1,before,        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R32-notification-area') {
+supporto/avvia.ps1,after,        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R32-R1-wpf-path') {
+supporto/avvia.ps1,before,    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r32.ok') -Value 'ProcessLens-R32-notification-area' -Encoding ASCII
+supporto/avvia.ps1,after,    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r32-r1.ok') -Value 'ProcessLens-R32-R1-wpf-path' -Encoding ASCII

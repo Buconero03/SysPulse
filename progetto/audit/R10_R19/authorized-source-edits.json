@@ -1,0 +1,48 @@
+{
+  "baseline_sha256": "1e86eb08d6e4b87649a65ee69cbb1786c82933dc8ea95c7c6d9385b0d1cedee2",
+  "scope": "User-requested Windows components layout and physical RAM header; existing CPU worker reused, no collectors changed.",
+  "files": [
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml",
+      "sha256_before": "8b978fd36f2f2629076005414bd7af0d8f1648fe2830cbb2a9018301b6107faf",
+      "sha256_after": "359e564ff06a6d016b64e97e8d701c6a8437c845789b32013f716f9dbe9332d5",
+      "scope": "RAM header/UI readability, corresponding tests or candidate identity"
+    },
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+      "sha256_before": "e925f8d4f16b0e4dc9d6a2629780caccef3aea2ef00fed4ded7e650ee8ccd763",
+      "sha256_after": "75f25a8b503ec28a0d2249a123e63fc277e38afb8be44942d73791a83095a7ea",
+      "scope": "RAM header/UI readability, corresponding tests or candidate identity"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessDisplayFormatter.cs",
+      "sha256_before": "a3dde1ac1f4b754a180134c36e75f6893afd623e22193224ca6180ab7511a19b",
+      "sha256_after": "ea27373b936aba897c8feb733c86bcd72918f1bb8160fd314b76581dcd6c57fc",
+      "scope": "RAM header/UI readability, corresponding tests or candidate identity"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256_before": "df23c8f069c88452850d4e3fd34aaa7eab2cfd9cbeeb764dbcf307e2aa6ca082",
+      "sha256_after": "d85a1d43a87c0d20e0d1e9cd65f161ac6152d3d35c47f2d0c28f1e3c52907947",
+      "scope": "RAM header/UI readability, corresponding tests or candidate identity"
+    },
+    {
+      "file": "src/ProcessLens.App/SystemProcessesView.xaml",
+      "sha256_before": "273ca5b30932861694efa8fa94f6125b8da71d7abe8551fa3213197f86f48bd9",
+      "sha256_after": "ab97452252be7a787301c89b6a6cab9da7e82ee9733f6e2eaa5f37ef62b6af1a",
+      "scope": "RAM header/UI readability, corresponding tests or candidate identity"
+    },
+    {
+      "file": "tests/ProcessLens.PresentationTests/Program.cs",
+      "sha256_before": "a0abcaf7a8412c47058be074008c52459cde81f49776481e2b65a57237ac0759",
+      "sha256_after": "f46f391dadd8c752e54de9c44aeb4c48f54882e78981a58ecf237cdae01bd380",
+      "scope": "RAM header/UI readability, corresponding tests or candidate identity"
+    },
+    {
+      "file": "tests/ProcessLens.SystemProcessUiTests/Program.cs",
+      "sha256_before": "cb3fe797b78092bb5e0ffe4ba15ee0b3ba86ee0108fd3869fa0a39809be02ad1",
+      "sha256_after": "070a481ac48afaa8db6f82c52e31fe124c25aacf084045cb4deedd6ff6a60afc",
+      "scope": "RAM header/UI readability, corresponding tests or candidate identity"
+    }
+  ]
+}

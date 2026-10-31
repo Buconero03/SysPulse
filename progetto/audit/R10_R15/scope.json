@@ -1,0 +1,18 @@
+{
+  "baseline": "R14 R3",
+  "catalog_families": 17,
+  "scope": "Windows component presentation only; no native acquisition changes",
+  "event_capture": "No new event capture; existing Guardian unchanged",
+  "resident_processes_added": 0,
+  "production_timers_added": 0,
+  "new_history_buffers": 0,
+  "retained_inventory": "Only catalog matches; original general inventory temporary during manual acquisition",
+  "observed_synthetic_example": {
+    "ordinary_rows": 5000,
+    "service_host_instances": 200,
+    "retained_instances": 200,
+    "group_rows": 1
+  },
+  "Windows_GUI_RAM_delta": "NOT MEASURED",
+  "full_Windows_WPF_build": "NOT EXECUTED"
+}

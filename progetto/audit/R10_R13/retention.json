@@ -1,0 +1,10 @@
+{
+  "active_source_trees": 1,
+  "baseline": "Previously delivered R12 retained exact",
+  "temporary_patch_tree": "Removed after successful exact replay",
+  "historical_audits": "Retained unchanged; not current execution claims",
+  "third_party_binaries_bundled": 0,
+  "capture_files_bundled": 0,
+  "screenshots_added": 0,
+  "network_scans_or_process_actions_executed_here": 0
+}

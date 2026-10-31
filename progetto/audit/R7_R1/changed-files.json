@@ -1,0 +1,37 @@
+[
+  {
+    "file": "HOTFIX_R7_R1.md",
+    "sha256_R7": "",
+    "sha256_R7_R1": "99a31d0197562ff0520e2492b4e6e77a8a3d9658478e71213a116d9c0372e817"
+  },
+  {
+    "file": "README.md",
+    "sha256_R7": "788bfb6199ff4bfbbdafe44cf3375d97eefadc18395a37fe15cd270ca425a71e",
+    "sha256_R7_R1": "5e848d1a7c734bd304d3161fc8f1ceb995ca4affb1df2e4645339992e288ee18"
+  },
+  {
+    "file": "VERSION.txt",
+    "sha256_R7": "bbd19a8ad0a108806e55d8380afc15a923a85d5ef5463d1097201be6c30598a4",
+    "sha256_R7_R1": "99f3e526c09eeaf97412a8ff0dc47799831ff391c2d1963a0abf1f212e1fdd5c"
+  },
+  {
+    "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+    "sha256_R7": "49c24405750b44e3b1fe742ea41d1d770f41b25ffdba241c798d5da489410f49",
+    "sha256_R7_R1": "4a956e9ae490109164f6c6d5cff60c9de20d79e0fa62543993640c64aa74d7f8"
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "sha256_R7": "bb62642d3a77b0fd1201afd1b4fcd16d734b8a09738151a98e5686fb0ac7d582",
+    "sha256_R7_R1": "5c41a69bca8c9575d3b6d5b7c3abdb20402f88ad4f0f77ec0f0a6a4a2ea2257b"
+  },
+  {
+    "file": "start-processlens-all.ps1",
+    "sha256_R7": "1d9c47cecfa80a1f7b70bdb358a72caec3d9da8d992e9296b608b2f39ecf0c5f",
+    "sha256_R7_R1": "cb69c2d103cc144b46b3f7fc56075799869bfbd9fe4f661a4ff002a7ca12ee85"
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/Program.cs",
+    "sha256_R7": "ba4d16b5a253233f47eefb74a25a32a13b6c3fdea7cefa195b7fa8fbeb7dc653",
+    "sha256_R7_R1": "708b23f4a524790d35f7ec6e529cebebfe8f19166c500581e021b5954cd9389f"
+  }
+]

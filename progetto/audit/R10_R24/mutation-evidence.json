@@ -1,0 +1,18 @@
+[
+  {
+    "mutation": "false-private-zero",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.Windows/WindowsMemorySampler.cs",
+    "production_sha256": "a329a923b756143c80824307bb93083b403c90256a679bf75cf8ce4be75787ce",
+    "test_sha256": "c26534eb971d728ade8b0e2c43914e9e9ce789b54da58e8e83d4fd57a3cfc640"
+  },
+  {
+    "mutation": "synchronous-minimize",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/WindowLifetimePolicy.cs",
+    "production_sha256": "fe84de5b80f4c102f2e8cba9fce25a3752622cee14c0ff0956e368a154cd5809",
+    "test_sha256": "c26534eb971d728ade8b0e2c43914e9e9ce789b54da58e8e83d4fd57a3cfc640"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "mutation": "override-specific-native-icon",
+    "expected_failure": "R28 Explorer or another Windows component keeps its distinct executable icon",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/IconPreferencePolicy.cs",
+    "production_sha256": "b81afb84463143b32e4b38dfd374e80de91536048bfa7158542e4176b9ff578a",
+    "test_sha256": "e1f11eb825aa7b4f69f5188fdfd109304df7e4aa1401a454d0bc856c96a4885f"
+  },
+  {
+    "mutation": "defer-ordinary-click",
+    "expected_failure": "R28 explicit minimize acts before the queued dispatcher turn",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/WindowLifetimePolicy.cs",
+    "production_sha256": "efcd0a6e83c1781dc9f4c148b4071a1c89d8933f164039cb7ecfd4876e077d43",
+    "test_sha256": "e1f11eb825aa7b4f69f5188fdfd109304df7e4aa1401a454d0bc856c96a4885f"
+  },
+  {
+    "mutation": "stale-restore-after-minimize",
+    "expected_failure": "R28 old queued restore cannot undo an immediate minimize",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/WindowLifetimePolicy.cs",
+    "production_sha256": "efcd0a6e83c1781dc9f4c148b4071a1c89d8933f164039cb7ecfd4876e077d43",
+    "test_sha256": "e1f11eb825aa7b4f69f5188fdfd109304df7e4aa1401a454d0bc856c96a4885f"
+  },
+  {
+    "mutation": "synchronous-window-log",
+    "expected_failure": "R28 window logging never writes from the caller thread",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/DeferredDiagnosticWriter.cs",
+    "production_sha256": "5c0cb0d2599d4868872a81a8a8a4a56fcb7201b36e40fa4ab10f7cf803742f55",
+    "test_sha256": "e1f11eb825aa7b4f69f5188fdfd109304df7e4aa1401a454d0bc856c96a4885f"
+  }
+]

@@ -1,0 +1,74 @@
+PASS UI text: identity evidence retained in technical details
+PASS UI text: role evidence retained in technical details
+PASS UI text: clear classification evidence level
+PASS UI text: classification evidence source declared
+PASS UI text: live activity not inferred from role classification
+PASS UI text: heuristic scores not presented as calibrated percentages
+PASS UI text: no ungrammatical certainty label
+PASS UI text: internal rule ID excluded from the summary
+PASS query uses deep explanation
+PASS unknown process avoids invented operation
+PASS limitations explicit
+PASS python -m module explained
+PASS network listening state and port attributed directly
+PASS network LISTEN does not imply accepted requests or traffic
+PASS command line secret not exposed
+PASS git status identified
+PASS git args secret redacted
+PASS git repository path not printed
+PASS related process socket not claimed direct
+PASS encoded Powershell command detected
+PASS encoded payload not printed
+PASS quoted python script basename identified
+PASS python script directory not exposed
+PASS python credentials not exposed
+PASS assessment section present
+PASS falling trend correctly qualified
+PASS low RAM system pressure distinguished
+PASS high RAM system pressure reported
+PASS no unsupported process blame
+PASS memory route recognized
+PASS memory executive summary
+PASS memory physical versus committed explained
+PASS memory trend given with evidence
+PASS virtual map separated from physical pages
+PASS safe next steps
+PASS does not fabricate leak
+PASS actual physical private MiB present
+PASS unavailable metrics not fabricated
+Process behavior explanation tests passed.
+PASS R7 health does not treat missing CPU as zero
+PASS R7 established socket without CPU does not exclude a stall
+PASS R7 high CPU does not establish process health
+PASS R7 partial network acquisition preserves error and does not assert absence
+PASS R7 family sockets do not prove delegation or erase direct listener
+PASS R7 launch text is not verified work progress
+PASS R7 title indicator source is explicit and private title omitted
+PASS R7 ETA range is arithmetic scenario rather than calibrated confidence
+PASS R7 equal endpoints do not prove stable intermediate usage
+PASS R7 CPU window is bounded and may be shorter than thirty seconds
+R7 behavior source and inference regressions passed.
+PASS R7 R1 port wording reaches network: Ha porte aperte?
+PASS R7 R1 port wording reaches network: Ha una porta aperta?
+PASS R7 R1 port wording reaches network: Quali PORTE sono aperte?
+PASS R7 R1 port wording reaches network: Open port?
+PASS R7 R1 port wording reaches network: Open ports?
+PASS R7 R1 embedded porta does not add Network: Il consumo di RAM comporta problemi?
+PASS R7 R1 embedded porta does not add Network: Riporta il consumo di RAM
+PASS R7 R1 embedded porta does not add Network: Supporta il confronto RAM?
+R7 R1 network question routing regressions passed.
+PASS R11 summary keeps each allocation number in a separate readable fact [it-IT]
+PASS R11 no nested parentheses or inferred heap objects; trend has explicit duration [it-IT]
+PASS R11 short wording preserves counter and object-measurement limits [it-IT]
+PASS R11 summary keeps each allocation number in a separate readable fact [en-US]
+PASS R11 no nested parentheses or inferred heap objects; trend has explicit duration [en-US]
+PASS R11 short wording preserves counter and object-measurement limits [en-US]
+PASS R25 script summary keeps only basename across path separators [it-IT]
+PASS R25 original script command line is preserved [it-IT]
+PASS R25 script summary keeps only basename across path separators [it-IT]
+PASS R25 original script command line is preserved [it-IT]
+PASS R25 script summary keeps only basename across path separators [en-US]
+PASS R25 original script command line is preserved [en-US]
+PASS R25 script summary keeps only basename across path separators [en-US]
+PASS R25 original script command line is preserved [en-US]
+

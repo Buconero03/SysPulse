@@ -1,0 +1,1250 @@
+[
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml.cs",
+    "before": "nella finestra selezionata",
+    "after": "nel periodo selezionato",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDashboardView.xaml.cs",
+    "before": "nella finestra",
+    "after": "nel periodo",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDiagnosticPresentation.cs",
+    "before": "RAM residente totale",
+    "after": "Working Set totale",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/GuardianDiagnosticPresentation.cs",
+    "before": "RAM RESIDENTE TOTALE",
+    "after": "WORKING SET TOTALE",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "RAM privata residente",
+    "after": "Working Set privato",
+    "occurrences": 3
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "RAM PRIVATA RESIDENTE",
+    "after": "WORKING SET PRIVATO",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "RAM residente totale",
+    "after": "Working Set totale",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "RAM RESIDENTE TOTALE",
+    "after": "WORKING SET TOTALE",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "I processi più recenti sono mostrati per primi. Seleziona un processo per analizzarlo.",
+    "after": "Seleziona un processo per analizzarlo.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "RAM privata residente",
+    "after": "Working Set privato",
+    "occurrences": 6
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "RAM residente totale",
+    "after": "Working Set totale",
+    "occurrences": 3
+  },
+  {
+    "file": "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "before": "RAM privata residente",
+    "after": "Working Set privato",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessMemoryGuide.cs",
+    "before": "RAM privata residente",
+    "after": "Working Set privato",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessSnapshot.cs",
+    "before": "RAM PRIVATA RESIDENTE",
+    "after": "WORKING SET PRIVATO",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessSnapshot.cs",
+    "before": "RAM RESIDENTE TOTALE",
+    "after": "WORKING SET TOTALE",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessTerminology.cs",
+    "before": "Ruolo indicativo",
+    "after": "Ruolo stimato",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessTerminology.cs",
+    "before": "Funzione non determinata",
+    "after": "Funzione sconosciuta",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "RAM privata residente",
+    "after": "Working Set privato",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "RAM privata residente",
+    "after": "Working Set privato",
+    "occurrences": 4
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "RAM residente totale",
+    "after": "Working Set totale",
+    "occurrences": 2
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "nella finestra",
+    "after": "nel periodo",
+    "occurrences": 2
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "fine finestra",
+    "after": "fine periodo",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Funzione non determinata",
+    "after": "Funzione sconosciuta",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "funzione specifica non classificata",
+    "after": "Non classificato",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "processi figli omonimi riportati",
+    "after": "sottoprocessi",
+    "occurrences": 2
+  },
+  {
+    "file": "src/ProcessLens.RamMonitor/LogSession.cs",
+    "before": "RAM PRIVATA RESIDENTE",
+    "after": "WORKING SET PRIVATO",
+    "occurrences": 1
+  },
+  {
+    "file": "tests/ProcessLens.BehaviorTests/Program.cs",
+    "before": "RAM privata residente",
+    "after": "Working Set privato",
+    "occurrences": 2
+  },
+  {
+    "file": "tests/ProcessLens.CopyTests/Program.cs",
+    "before": "RAM privata residente",
+    "after": "Working Set privato",
+    "occurrences": 2
+  },
+  {
+    "file": "tests/ProcessLens.GuardianDashboardTests/Program.cs",
+    "before": "RAM RESIDENTE TOTALE",
+    "after": "WORKING SET TOTALE",
+    "occurrences": 1
+  },
+  {
+    "file": "tests/ProcessLens.MemoryEfficiencyTests/Program.cs",
+    "before": "RAM privata residente",
+    "after": "Working Set privato",
+    "occurrences": 2
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/Program.cs",
+    "before": "RAM privata residente",
+    "after": "Working Set privato",
+    "occurrences": 2
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/Program.cs",
+    "before": "RAM PRIVATA RESIDENTE",
+    "after": "WORKING SET PRIVATO",
+    "occurrences": 2
+  },
+  {
+    "file": "tests/ProcessLens.MemoryTests/Program.cs",
+    "before": "RAM RESIDENTE TOTALE",
+    "after": "WORKING SET TOTALE",
+    "occurrences": 1
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/Program.cs",
+    "before": "Ruolo indicativo",
+    "after": "Ruolo stimato",
+    "occurrences": 1
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/Program.cs",
+    "before": "Funzione non determinata",
+    "after": "Funzione sconosciuta",
+    "occurrences": 2
+  },
+  {
+    "file": "docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv",
+    "before": "RAM privata residente",
+    "after": "Working Set privato",
+    "occurrences": 1
+  },
+  {
+    "file": "docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv",
+    "before": "RAM residente totale",
+    "after": "Working Set totale",
+    "occurrences": 1
+  },
+  {
+    "file": "docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv",
+    "before": "Funzione non determinata",
+    "after": "Funzione sconosciuta",
+    "occurrences": 3
+  },
+  {
+    "file": "audit/R10_R10/string-ledger.csv",
+    "before": "RAM residente totale",
+    "after": "Working Set totale",
+    "occurrences": 1
+  },
+  {
+    "file": "audit/R10_R10/string-ledger.csv",
+    "before": "nella finestra selezionata",
+    "after": "nel periodo selezionato",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessTerminology.cs",
+    "before": "La corrispondenza ai criteri è valutata da regole locali; non indica una probabilità statistica e non prova l’attività corrente.",
+    "after": "Punteggio delle regole, non probabilità. Non misura l’attività attuale.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/StructuredDiagnostics.cs",
+    "before": "Invalid diagnostic metadata; raw/free-form values are not allowed.",
+    "after": "Metadati diagnostici non validi: usare codici e valori ammessi.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/ProcessRow.cs",
+    "before": "? \"RAM PRIVATA\"",
+    "after": "? \"WS PRIVATO\"",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "Text=\"RAM PRIVATA\"",
+    "after": "Text=\"WS PRIVATO\"",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "DetailMemoryLabel.Text = \"RAM PRIVATA\"",
+    "after": "DetailMemoryLabel.Text = \"WS PRIVATO\"",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "                    <Border Background=\"#EAF7EE\" CornerRadius=\"6\" Padding=\"8,3\" Margin=\"0,0,0,5\">\n                        <TextBlock Text=\"Analisi basata su evidenze\" FontSize=\"11\" FontWeight=\"SemiBold\" Foreground=\"#276749\"/>\n                    </Border>",
+    "after": "",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "Interroga il PID selezionato: ProcessLens risponde usando solo evidenze osservabili e segnala quando progresso o ETA non sono determinabili.",
+    "after": "Scegli una domanda sul processo selezionato.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "Evidenze e fonti dell'identificazione",
+    "after": "Dati e fonti dell'identificazione",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "Evidenze organizzate per argomento.",
+    "after": "Dati per argomento.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "Testo completo delle evidenze",
+    "after": "Dati originali completi",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "Le associazioni e le funzioni suggerite derivano da regole; non sono una misura delle azioni compiute ora dal processo. Le regole e i punteggi sono nei dettagli tecnici.",
+    "after": "Ruolo stimato dalle regole. Attività attuale e criteri nei dettagli.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "La sintesi mostra nomi utili; il punteggio euristico resta nei dettagli tecnici.",
+    "after": "La sintesi mostra i nomi; punteggi nei dettagli tecnici.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "Le informazioni sono quelle raccolte da Windows e dal classificatore locale.",
+    "after": "Dati Windows e classificazione locale.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "Gli effetti dipendono dal processo e dal suo stato. ProcessLens non termina processi automaticamente.",
+    "after": "Effetti variabili. Chiusura solo su richiesta.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "Contiene anche identificativi interni e metadati non riformattati. Consultalo soltanto quando servono informazioni di debug.",
+    "after": "Identificativi interni e metadati originali.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "Seleziona il testo e premi Ctrl+C; con il tasto destro puoi copiare tutto il blocco.",
+    "after": "Seleziona e premi Ctrl+C. Tasto destro: copia tutto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "Registro verifiche RAM — cosa e' stato misurato",
+    "after": "Registro analisi RAM",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "PANORAMICA DEL REGISTRO",
+    "after": "RIEPILOGO",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "Passa il mouse su Analisi approfondita; seleziona una voce per ottenere la diagnosi.",
+    "after": "Scegli un’analisi dal menu.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "Apri solo la sezione che ti interessa.",
+    "after": "Apri una sezione.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "I parametri preceduti da -- sono disposti su righe distinte per la sola lettura. La riga originale non viene modificata.",
+    "after": "Un parametro -- per riga. Originale disponibile sotto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "Windows riporta il processo {process.Name} (PID {process.Pid}).",
+    "after": "Windows: {process.Name} · PID {process.Pid}.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "{insight.OwnerApp}: il collegamento è suggerito dal nome del processo padre ",
+    "after": "{insight.OwnerApp}: collegamento stimato dal nome del padre ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "({process.ParentName}). Questo dato non dimostra chi possieda il processo.",
+    "after": "({process.ParentName}). Proprietà non verificata.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "{insight.OwnerApp}: associazione proposta dall'analisi locale. ",
+    "after": "{insight.OwnerApp}: associazione stimata. ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "La fonte utilizzata è consultabile nei dettagli tecnici.",
+    "after": "Fonte nei dettagli tecnici.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "La funzione specifica non è determinabile con i dati disponibili.",
+    "after": "Funzione sconosciuta.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "Nei parametri è stato individuato lo script {insight.Summary[17..]}. ",
+    "after": "Script nei parametri: {insight.Summary[17..]}. ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "Il nome dello script non indica quale istruzione stia eseguendo ora.",
+    "after": "Istruzione in corso non rilevata.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "Le informazioni disponibili sono compatibili con «{insight.Role}». ",
+    "after": "Ruolo stimato: {insight.Role}. ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "Questo descrive il tipo del processo, non le sue singole azioni in tempo reale.",
+    "after": "Attività attuale non verificata.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "Non determinata con i dati disponibili",
+    "after": "Funzione sconosciuta",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "L’attività attuale non è stata verificata da questa classificazione.",
+    "after": "Attività attuale non verificata dalla classificazione.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "Corrispondenza con regole interne; nessuna misura dell’attività attuale.",
+    "after": "Corrispondenza alle regole. Attività attuale non misurata.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "{evidenceFacts.Count - limit} voci nel rapporto originale non mostrate in questa sintesi.",
+    "after": "Altre {evidenceFacts.Count - limit} voci nel rapporto originale.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "Editore dichiarato nei metadati",
+    "after": "Editore dichiarato",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "before": "|| label.StartsWith(\"RAM\", StringComparison.OrdinalIgnoreCase)",
+    "after": "|| label.StartsWith(\"RAM\", StringComparison.OrdinalIgnoreCase)\n            || label.StartsWith(\"Working Set\", StringComparison.OrdinalIgnoreCase)",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessMemoryGuide.cs",
+    "before": "Il Working Set totale include già la parte privata: non sommarli. ",
+    "after": "Il totale include il privato: non sommarli. ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessMemoryGuide.cs",
+    "before": "Il commit non corrisponde necessariamente alla RAM fisica. ",
+    "after": "Commit e RAM fisica sono contatori diversi. ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessMemoryGuide.cs",
+    "before": "N/D indica una misura non accessibile, non un consumo zero.",
+    "after": "N/D: dato non disponibile; non equivale a zero.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Windows lo considera parte critica del sistema operativo.",
+    "after": "Componente critico del sistema operativo.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Il flag critico è riportato da Windows; non identifica chi ha richiesto l’avvio.",
+    "after": "Flag critico: Windows. Autore dell’avvio sconosciuto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Il processo contiene uno o più servizi registrati nel Service Control Manager.",
+    "after": "Ospita servizi registrati in SCM.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "SCM associa questo PID al servizio {services}; la causa storica dell’avvio non è identificata.",
+    "after": "Servizi SCM: {services}. Motivo dell’avvio sconosciuto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Padre riportato: {p.ParentName}; autore e motivo dell’avvio non identificati.",
+    "after": "Padre: {p.ParentName}. Autore e motivo dell’avvio sconosciuti.",
+    "occurrences": 9
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Il motivo specifico dell'avvio non è disponibile.",
+    "after": "Motivo dell’avvio sconosciuto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Processo padre indicato: {p.ParentName}. Il motivo specifico dell'avvio non è determinato.",
+    "after": "Padre: {p.ParentName}. Motivo dell’avvio sconosciuto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Sono riportati processi figli omonimi. Questa informazione è compatibile con un processo principale, ma non conferma l’attività di coordinamento.",
+    "after": "Sottoprocessi con lo stesso nome. Possibile processo principale; coordinamento non misurato.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "La presenza di processi figli omonimi suggerisce un componente principale, senza dimostrare un’attività di coordinamento.",
+    "after": "Possibile processo principale: sottoprocessi con lo stesso nome. Coordinamento non misurato.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Il nome del padre riportato coincide con il nome del PID selezionato. Senza verifica dell’istanza padre e dei suoi orari non possiamo attribuirgli una funzione specifica.",
+    "after": "Stesso nome del padre. Parentela e ruolo da verificare con gli orari di avvio.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Il parametro --type dichiara un ruolo; il motivo dell’avvio non è osservato.",
+    "after": "Ruolo dal parametro --type. Motivo dell’avvio sconosciuto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Il parametro --type=renderer suggerisce la funzione del processo; autore e motivo dell’avvio non sono osservati.",
+    "after": "Ruolo dal parametro --type=renderer. Autore e motivo dell’avvio sconosciuti.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Il parametro --type=gpu-process suggerisce un componente grafico; non misura utilizzo della GPU o motivo dell’avvio.",
+    "after": "Ruolo grafico dal parametro --type=gpu-process. Carico GPU e motivo dell’avvio non misurati.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Parametri compatibili con un",
+    "after": "Parametri: possibile",
+    "occurrences": 10
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Origine non disponibile.",
+    "after": "Origine sconosciuta.",
+    "occurrences": 6
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "; motivo dell’avvio non osservato.",
+    "after": "; motivo dell’avvio sconosciuto.",
+    "occurrences": 5
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "; il motivo dell’avvio non è misurato.",
+    "after": "; motivo dell’avvio sconosciuto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Il processo appartiene all’ambiente WSL; lo specifico utilizzatore o lavoro corrente non è identificato.",
+    "after": "Componente WSL. Utilizzatore e lavoro in corso sconosciuti.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "                string detail = map.ReadWritePrivateMb > 0\n                    ? $\" (di cui {map.ReadWritePrivateMb:F1} MiB in heap/strutture dati dinamiche RW\" +\n                      (map.LargeBlocksCount > 0 ? $\" e {map.LargeBlocksCount} grandi blocchi ≥4 MiB per {map.LargeBlocksMb:F1} MiB)\" : \")\")\n                    : \"\";\n                primaryDriver = $\" La quota principale dello spazio impegnato è costituita da allocazioni private ({map.PrivateMb:F1} MiB{detail}).\";",
+    "after": "                string detail = map.ReadWritePrivateMb > 0\n                    ? $\"\\n• Pagine private in lettura/scrittura (RW): {map.ReadWritePrivateMb:F1} MiB.\" +\n                      (map.LargeBlocksCount > 0 ? $\"\\n• Blocchi ≥4 MiB: {map.LargeBlocksCount} · totale {map.LargeBlocksMb:F1} MiB.\" : \"\")\n                    : \"\";\n                primaryDriver = $\"\\nLa memoria impegnata è composta soprattutto da allocazioni private: {map.PrivateMb:F1} MiB.\" + detail;",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": " La quota principale dello spazio virtuale è occupata da moduli eseguibili e librerie DLL ({map.ImageMb:F1} MiB).",
+    "after": "\\nLa memoria impegnata è composta soprattutto da eseguibili e DLL: {map.ImageMb:F1} MiB.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": " Una parte rilevante dello spazio virtuale è costituita da file mappati e sezioni condivise ({map.MappedMb:F1} MiB).",
+    "after": "\\nFile mappati e sezioni condivise: {map.MappedMb:F1} MiB.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "                   $\"Il processo {processLabel} [{roleLabel}, {i.Framework}] occupa attualmente {residentHeadline}. \" +",
+    "after": "                   $\"Processo: {processLabel}\\nRuolo: {roleLabel} · {i.Framework}\\n• Uso attuale: {residentHeadline}.\\n\" +",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Working Set complessivo: {p.WorkingSetMb:F1} MiB | Commit privato: {(p.PrivateCommitAvailable ? $\"{p.PrivateMb:F1} MiB\" : \"N/D\")}. ",
+    "after": "• Working Set totale: {p.WorkingSetMb:F1} MiB\\n• Commit privato: {(p.PrivateCommitAvailable ? $\"{p.PrivateMb:F1} MiB\" : \"N/D\")}\\n",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Negli ultimi {trend.Seconds / 60d:F1} min la {trend.Metric.ToLowerInvariant()} è salita di +{trend.DeltaMb:F1} MiB (da {trend.FirstMb:F1} a {trend.CurrentMb:F1} MiB).",
+    "after": "{trend.Metric}: +{trend.DeltaMb:F1} MiB negli ultimi {trend.Seconds / 60d:F1} min · {trend.FirstMb:F1} -> {trend.CurrentMb:F1} MiB.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Negli ultimi {trend.Seconds / 60d:F1} min la {trend.Metric.ToLowerInvariant()} è scesa di {Math.Abs(trend.DeltaMb):F1} MiB (da {trend.FirstMb:F1} a {trend.CurrentMb:F1} MiB).",
+    "after": "{trend.Metric}: -{Math.Abs(trend.DeltaMb):F1} MiB negli ultimi {trend.Seconds / 60d:F1} min · {trend.FirstMb:F1} -> {trend.CurrentMb:F1} MiB.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Negli ultimi {trend.Seconds / 60d:F1} min la {trend.Metric.ToLowerInvariant()} ha una variazione netta inferiore a 5 MiB ({trend.DeltaMb:+0.0;-0.0;0.0} MiB; escursione min/picco {trend.ExcursionMb:F1} MiB con possibili oscillazioni intermedie).",
+    "after": "{trend.Metric}: {trend.DeltaMb:+0.0;-0.0;0.0} MiB negli ultimi {trend.Seconds / 60d:F1} min. Escursione: {trend.ExcursionMb:F1} MiB; possibili oscillazioni intermedie.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Raccolta storica in corso (servono almeno 3 campioni in 20 secondi per calcolare il trend).",
+    "after": "Tendenza: in attesa di 3 campioni su almeno 20 s.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Non emerge una pressione elevata sulla RAM fisica complessiva del computer.",
+    "after": "Il carico sulla RAM del sistema è normale.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "La pressione complessiva è elevata (oltre la soglia dell'85%): valuta l'insieme dei processi attivi e non attribuire il problema automaticamente a questo singolo PID.",
+    "after": "Uso RAM elevato: almeno 85%. Valuta tutti i processi; il dato non identifica un responsabile.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Il carico globale sulla memoria è moderatamente alto: tieni monitorata la RAM libera se apri altri carichi pesanti.",
+    "after": "Uso RAM tra 75% e 85%: controlla la memoria disponibile.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Misura della RAM globale di sistema non disponibile.",
+    "after": "RAM del sistema: N/D.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "IN CRESCITA RILEVANTE (+{trend!.DeltaMb:F1} MiB in {trend.Seconds / 60d:F1} min): il processo sta accumulando memoria rapidamente; tienilo sotto osservazione per verificare se si stabilizza.",
+    "after": "CONSUMO IN AUMENTO: +{trend!.DeltaMb:F1} MiB negli ultimi {trend.Seconds / 60d:F1} min. Verifica se si stabilizza.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "SALDO IN DIMINUZIONE ({trend.DeltaMb:F1} MiB nel periodo): il processo ha rilasciato parte della memoria rispetto all'inizio dell'osservazione.",
+    "after": "CONSUMO IN CALO: {trend.DeltaMb:F1} MiB negli ultimi {trend.Seconds / 60d:F1} min.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "SALDO QUASI INVARIATO ({trend.DeltaMb:+0.0;-0.0;0.0} MiB tra inizio e fine periodo; minimo {trend.MinimumMb:F1} MiB, picco {trend.PeakMb:F1} MiB).",
+    "after": "VARIAZIONE NETTA LIMITATA: {trend.DeltaMb:+0.0;-0.0;0.0} MiB negli ultimi {trend.Seconds / 60d:F1} min.\\nMinimo: {trend.MinimumMb:F1} MiB · picco: {trend.PeakMb:F1} MiB.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "IN OSSERVAZIONE: raccolta campioni in corso per determinare se l'allocazione è stabile o in aumento.",
+    "after": "TENDENZA DA VERIFICARE: servono altri campioni confrontabili.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Rapporto RAM fisica / Commit: il {residencyPct:F0}% della memoria privata impegnata ({p.PrivateWorkingSetMb:F1} su {p.PrivateMb:F1} MiB) risiede attivamente in RAM fisica, mentre {nonResidentCommitMb:F1} MiB sono impegnati ma non occupano pagine fisiche in questo istante.",
+    "after": "Working Set privato / commit: {residencyPct:F0}%.\\n• Working Set privato: {p.PrivateWorkingSetMb:F1} MiB.\\n• Commit privato: {p.PrivateMb:F1} MiB.\\n• Differenza tra contatori: {nonResidentCommitMb:F1} MiB; non è una misura delle pagine fuori RAM.\\nLe pagine non residenti sono allocate ma al momento non occupano RAM fisica.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": " — È la memoria fisica esclusiva di questo processo (la quota che si libera chiudendolo).",
+    "after": " — Pagine private presenti in RAM.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": " — Include sia la RAM privata sia le pagine di DLL e risorse condivisibili con altri processi.",
+    "after": " — Include pagine private e condivisibili.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Quota residente condivisibile (DLL di sistema / runtime)",
+    "after": "Quota residente condivisibile",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": " — Spazio virtuale allocato dal processo per cui Windows garantisce copertura (in RAM o su file di paging).",
+    "after": " — Memoria con copertura garantita da Windows; può non essere residente in RAM.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Nota contabile: il Working Set totale include già la Working Set privato; i tre valori misurano viste diverse e non vanno sommati tra loro.",
+    "after": "Il Working Set totale include il privato. Non sommare Working Set e commit.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Si osserva un incremento netto: verifica se il processo sta eseguendo un'elaborazione attiva o se continua a crescere anche a riposo.",
+    "after": "Consumo in aumento. Verifica se cresce anche a riposo.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Si osserva un rilascio netto di memoria (es. svuotamento cache o garbage collection completata).",
+    "after": "Consumo in calo. La causa del calo non è misurata.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Le variazioni rientrano nelle normali fluttuazioni operative dei buffer in memoria.",
+    "after": "Variazione netta contenuta. Controlla anche minimo e picco.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Una sola finestra non dimostra un memory leak.",
+    "after": "Un solo intervallo non basta per diagnosticare un memory leak.",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Scomposizione anatomica della memoria privata (per permessi di pagina):",
+    "after": "Memoria privata per permessi di pagina:",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Heap, strutture dati e buffer attivi (READWRITE)",
+    "after": "Pagine private in lettura/scrittura (READWRITE)",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Codice compilato in tempo reale / JIT (EXECUTE)",
+    "after": "Pagine private eseguibili (EXECUTE)",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Tabelle e costanti private (READONLY)",
+    "after": "Pagine private in sola lettura (READONLY)",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Pagine di guardia / Stack dei thread (PAGE_GUARD)",
+    "after": "Pagine di guardia (PAGE_GUARD)",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "MAPPA DELLA MEMORIA VIRTUALE (SCOMPOSIZIONE ANATOMICA)",
+    "after": "MAPPA DELLA MEMORIA VIRTUALE",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "In base all'architettura rilevata ({roleLabel} · {i.Framework}), i blocchi di memoria misurati sopra ospitano tipicamente:",
+    "after": "Componenti tipici di {roleLabel} · {i.Framework}; non misurati da questa analisi:",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "CAUSE INTERNE: IPOTESI, NON MISURE DI SINGOLI OGGETTI",
+    "after": "COMPONENTI TIPICI · NON MISURATI",
+    "applied": true
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Quando intervenire: preoccupati solo se la RAM privata cresce senza sosta a parità di lavoro E la RAM fisica del PC supera l'85%.",
+    "after": "Quando approfondire: Working Set privato in crescita continua a parità di lavoro; attenzione anche all’uso RAM del sistema.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "Evita forzature esterne (EmptyWorkingSet): svuotare forzatamente la RAM di un processo attivo costringe Windows a rileggerla dal disco rallentando il programma.",
+    "after": "EmptyWorkingSet rimuove pagine dal Working Set. Gli accessi successivi possono causare page fault e rallentamenti.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "before": "ANALISI COMPLETA CONTATORI, REGIONI VIRTUALI E CAMPIONE WORKING SET",
+    "after": "CONTATORI · REGIONI VIRTUALI · CAMPIONE PAGINE",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessMemoryGuide.cs",
+    "before": "PID {process.Pid}: Working Set privato {privateResident}; ",
+    "after": "PID {process.Pid}\\n• Working Set privato: {privateResident}\\n",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessMemoryGuide.cs",
+    "before": "Working Set totale {residentTotal}; ",
+    "after": "• Working Set totale: {residentTotal}\\n",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessMemoryGuide.cs",
+    "before": "commit privato {privateCommit}. ",
+    "after": "• Commit privato: {privateCommit}\\n",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceExplanation.cs",
+    "before": "Il servizio è installato ma risulta arrestato. Il tipo di avvio indica come può essere avviato, non prova che sia necessario ora.",
+    "after": "Servizio arrestato. La modalità di avvio è una configurazione, non una richiesta in corso.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceExplanation.cs",
+    "before": "Il servizio è nello stato '{service.StateLabel}'. La causa della transizione non è disponibile nello snapshot SCM.",
+    "after": "Stato: {service.StateLabel}. Motivo del cambio sconosciuto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceExplanation.cs",
+    "before": "È configurato per l'avvio automatico di Windows.",
+    "after": "Avvio automatico configurato.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceExplanation.cs",
+    "before": "È configurato per l'avvio su richiesta: può essere stato attivato da Windows, da un trigger, da un altro servizio o da un'app.",
+    "after": "Avvio su richiesta. Può dipendere da Windows, trigger, servizi o app.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceExplanation.cs",
+    "before": "Risulta attivo nonostante l'avvio attualmente disabilitato: la configurazione potrebbe essere cambiata dopo l'avvio.",
+    "after": "Attivo con avvio ora disabilitato. La configurazione può essere cambiata dopo l’avvio.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceExplanation.cs",
+    "before": "Il servizio è in esecuzione, ma il tipo di avvio non identifica chi lo abbia avviato.",
+    "after": "Servizio in esecuzione. Autore dell’avvio sconosciuto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceExplanation.cs",
+    "before": " Il Service Control Manager non espone nello stato corrente il programma che ne ha richiesto l'avvio.",
+    "after": " Richiedente non disponibile in SCM.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceExplanation.cs",
+    "before": "SCM riporta il servizio arrestato. Questo non descrive l’attività di altri servizi o componenti nel processo ospitante.",
+    "after": "Servizio arrestato. Gli altri servizi nello stesso PID possono restare attivi.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceExplanation.cs",
+    "before": "Potrebbe fornire funzionalità a Windows o ad altre applicazioni. Lo stato del servizio e le dipendenze dichiarate non bastano per stabilire se sia sicuro arrestarlo. L’arresto SCM è disponibile solo su richiesta e conferma; il processo ospitante non viene terminato forzatamente.",
+    "after": "L’arresto può interrompere funzioni di Windows o delle app. Valuta le dipendenze. Arresto solo su conferma; nessuna terminazione forzata del PID.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceExplanation.cs",
+    "before": "Nessun PID attivo assegnato a questo servizio nello snapshot corrente.",
+    "after": "PID ospitante: N/D.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceExplanation.cs",
+    "before": "SCM associa il servizio al PID {service.ProcessId} ({name}){other} Questo prova il processo ospitante, non quale applicazione abbia causato l'avvio.",
+    "after": "Host SCM: {name} · PID {service.ProcessId}{other} Richiedente sconosciuto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceHistoryInterpretation.cs",
+    "before": "SCM registra un controllo: {Clean(p1)}. L'evento non dimostra quale applicazione lo abbia richiesto.",
+    "after": "Controllo: {Clean(p1)}. Richiedente sconosciuto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceHistoryInterpretation.cs",
+    "before": "Nuovo stato registrato: {Clean(p1)}. Non identifica il programma che ha causato il cambio.",
+    "after": "Stato: {Clean(p1)}. Richiedente sconosciuto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceHistoryInterpretation.cs",
+    "before": "Valore precedente: {Clean(p1)}; nuovo valore: {Clean(p2)}.",
+    "after": "Avvio: {Clean(p1)} -> {Clean(p2)}.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceHistoryInterpretation.cs",
+    "before": "SCM ha registrato l'installazione. Percorso dichiarato: {Clean(p1)}.",
+    "after": "Servizio installato. Percorso dichiarato: {Clean(p1)}.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceHistoryInterpretation.cs",
+    "before": "Non è stato possibile leggere la cronologia SCM. Il solo stato attuale non prova la causa dell'avvio.",
+    "after": "Cronologia SCM: N/D. Motivo dell’avvio sconosciuto.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceHistoryInterpretation.cs",
+    "before": "Nessun evento corrispondente nel periodo consultato. Il registro potrebbe essere stato ruotato, cancellato o non contenere le transizioni cercate.",
+    "after": "Nessun evento trovato nel periodo. Il registro può essere incompleto o cancellato.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceHistoryInterpretation.cs",
+    "before": "È una traccia storica osservata; non prova quale programma o utente abbia avviato il servizio. ",
+    "after": "Richiedente sconosciuto. ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ServiceHistoryInterpretation.cs",
+    "before": "Per attribuire la richiesta a un'app servirebbe telemetria causale registrata nel momento dell'operazione.",
+    "after": "Il registro SCM non identifica l’app o l’utente che ha richiesto l’avvio.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "Metadati versione Windows: ProductName (dichiarato dal file, non prova di autenticità).",
+    "after": "ProductName: metadato del file; autenticità non verificata.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "Metadati versione Windows: CompanyName (firma digitale non verificata da questa analisi).",
+    "after": "CompanyName: metadato del file; firma digitale non verificata.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "Metadati versione Windows: FileDescription (non prova di funzione o autenticità).",
+    "after": "FileDescription: metadato del file; funzione e autenticità non verificate.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "Funzione attribuita dal classificatore: {Clean(i.Role)}. {Clean(i.WhatIsIt)}",
+    "after": "Ruolo stimato: {Clean(i.Role)}. {Clean(i.WhatIsIt)}",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "Funzione non verificata in dettaglio: {Clean(i.Role)}. {Clean(i.WhatIsIt)}",
+    "after": "Ruolo da verificare: {Clean(i.Role)}. {Clean(i.WhatIsIt)}",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "Tipo suggerito dal classificatore locale; criteri e punteggio disponibili nei dettagli tecnici.",
+    "after": "Classificazione locale; criteri nei dettagli tecnici.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "Operazione interna specifica non identificata. Il nome del processo, la CPU e la RAM non rivelano da soli quali funzioni o file stia elaborando.",
+    "after": "Operazione interna sconosciuta. Nome, CPU e RAM non identificano funzioni o file elaborati.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": " Questo identifica il comando o la modalità avviata, non ne dimostra il successo né il progresso.",
+    "after": " Comando riconosciuto. Esito e avanzamento non rilevati.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "Contatore CPU del PID campionato da Windows; non identifica le funzioni eseguite.",
+    "after": "CPU: contatore Windows del PID. Funzioni eseguite non rilevate.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "Lo snapshot riporta {p.ChildCount} processi figli (di cui {p.SameNameChildCount} con lo stesso nome).",
+    "after": "Sottoprocessi: {p.ChildCount}. Con lo stesso nome: {p.SameNameChildCount}.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "Le prove approfondite su rete, finestre e DLL non sono ancora disponibili per questo PID.",
+    "after": "Rete, finestre e DLL: analisi approfondita non eseguita.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "COSA NON POSSIAMO PROVARE",
+    "after": "LIMITI",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "Questa analisi non legge automaticamente lo stack delle funzioni, l'heap o il contenuto dei file. ",
+    "after": "Stack, heap e contenuti dei file: non letti. ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "La firma digitale non è stata verificata, e i metadati dell'eseguibile possono essere falsificati. ",
+    "after": "Firma digitale: non verificata. Metadati del file: non autenticati. ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": "Una funzione attribuita dal classificatore non identifica necessariamente il codice in esecuzione.",
+    "after": "Ruolo stimato; codice in esecuzione non rilevato.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "before": " Gli stati TCP LISTEN/ESTABLISHED non dimostrano richieste accettate né byte trasferiti.",
+    "after": " TCP LISTEN/ESTABLISHED: richieste accettate e byte trasferiti non misurati.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessIntelligenceAnalyzer.cs",
+    "before": "Metodo: classificazione basata su regole.",
+    "after": "Metodo: regole locali.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessIntelligenceAnalyzer.cs",
+    "before": "Limite: la classificazione non identifica l’attività in corso.",
+    "after": "Attività in corso: non rilevata dalla classificazione.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessIntelligenceAnalyzer.cs",
+    "before": "Elementi registrati nel rapporto tecnico",
+    "after": "Dati del rapporto tecnico",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessOriginAnalyzer.cs",
+    "before": "Comando Git identificato. Non prova che l'operazione sia riuscita o sia ancora in avanzamento.",
+    "after": "Comando Git identificato. Esito e avanzamento sconosciuti.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessOriginAnalyzer.cs",
+    "before": "Non è possibile dedurre 'push' dal solo nome git.exe o dal suo processo padre.",
+    "after": "Operazione Git sconosciuta; il nome del processo non identifica un push.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessOriginAnalyzer.cs",
+    "before": "Dai dati di avvio non emerge un'operazione specifica.",
+    "after": "Operazione sconosciuta.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessOriginAnalyzer.cs",
+    "before": "Conoscere il processo padre non spiega, da solo, perché il processo figlio sia stato avviato.",
+    "after": "Motivo dell’avvio sconosciuto; il padre non basta a ricostruirlo.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessOriginAnalyzer.cs",
+    "before": "Windows indica il PID {process.ParentPid} come padre, ma il relativo processo non è disponibile nello snapshot.",
+    "after": "PPID: {process.ParentPid}. Processo padre non disponibile.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessOriginAnalyzer.cs",
+    "before": "Windows indica {nearest.Name} (PID {nearest.Pid}) come padre. Gli orari di avvio sono compatibili con questa relazione.",
+    "after": "Padre: {nearest.Name} · PID {nearest.Pid}. Orari di avvio compatibili.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessOriginAnalyzer.cs",
+    "before": "Windows indica {nearest.Name} (PID {nearest.Pid}) come possibile padre; mancano dati temporali sufficienti per verificare la relazione.",
+    "after": "Possibile padre: {nearest.Name} · PID {nearest.Pid}. Orari di avvio insufficienti per la verifica.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/ProcessOriginAnalyzer.cs",
+    "before": "start times",
+    "after": "orari di avvio",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "PID selezionato {row.Pid}; verifica dell'istanza durante la raccolta.",
+    "after": "PID={row.Pid}; verifica istanza in corso",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "Ispezione Windows di processo/moduli/ruolo completata. Non prova la causa di un'allocazione.",
+    "after": "Processo, moduli e ruolo: lettura terminata; causa allocazioni sconosciuta",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "Lettura interrotta: impossibile garantire che i MiB appartengano allo stesso processo.",
+    "after": "Interrotto: identità del processo non verificata",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "Working Set privato {row.Process.PrivateWorkingSetMb:F1} MiB (misura Windows).",
+    "after": "Working Set privato: {row.Process.PrivateWorkingSetMb:F1} MiB",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "Working Set totale {row.Process.WorkingSetMb:F1} MiB (incluse pagine condivisibili).",
+    "after": "Working Set totale: {row.Process.WorkingSetMb:F1} MiB; include pagine condivisibili",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "Commit privato {row.Process.PrivateMb:F1} MiB (NON RAM fisica).",
+    "after": "Commit privato: {row.Process.PrivateMb:F1} MiB; non RAM fisica",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "Le regioni virtuali non identificano oggetti/heap.",
+    "after": "Oggetti e heap non identificati",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "lettura delimitata.",
+    "after": "lettura terminata.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "Campioni insufficienti per giudicare una crescita nel tempo.",
+    "after": "Tendenza: campioni insufficienti",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "{memoryTrend.Samples} campioni comparabili, {memoryTrend.Seconds:F0} secondi, ",
+    "after": "{memoryTrend.Samples} campioni · {memoryTrend.Seconds:F0} s · ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "variazione {memoryTrend.DeltaMb:+0.0;-0.0;0.0} MiB.",
+    "after": "delta {memoryTrend.DeltaMb:+0.0;-0.0;0.0} MiB",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "Rapporto elaborato con le sole misure disponibili; ",
+    "after": "Rapporto pronto; ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "eventuali misure non accessibili sono indicate nel registro. ",
+    "after": "dati mancanti nel registro. ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "CAUSE INTERNE NON IDENTIFICATE: occorre un profiler dedicato.",
+    "after": "Oggetti interni: serve un profiler.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "Raccolgo le evidenze disponibili sul PID selezionato.",
+    "after": "Lettura del processo in corso…",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "Evidenze: ",
+    "after": "Fonti: ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+    "before": "Base e limiti della risposta: ",
+    "after": "Dati e limiti: ",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.App/MainWindow.xaml",
+    "before": "la Working Set privato",
+    "after": "il Working Set privato",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Core/ProcessSnapshot.cs",
+    "before": "Memoria fisica privata residente (Private Working Set). Confrontare la stessa istanza del PID e lo stesso contatore nello stesso intervallo; le colonne di Gestione attività possono usare metriche o aggregazioni diverse.",
+    "after": "Pagine private presenti in RAM. Confronta la stessa istanza, contatore e intervallo; Gestione attività può usare aggregazioni diverse.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Padre riportato: {p.ParentName}; il nome non verifica la catena di avvio né identifica autore o motivo dell’avvio.",
+    "after": "Padre: {p.ParentName}. Catena di avvio non verificata. Autore e motivo dell’avvio sconosciuti.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "autore e motivo dell’avvio non identificati.",
+    "after": "autore e motivo dell’avvio sconosciuti.",
+    "occurrences": 1
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "Il motivo dell’avvio non è osservato.",
+    "after": "Motivo dell’avvio sconosciuto.",
+    "occurrences": 2
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "before": "il nome non dimostra il motivo dell’avvio.",
+    "after": "motivo dell’avvio sconosciuto.",
+    "occurrences": 4
+  }
+]

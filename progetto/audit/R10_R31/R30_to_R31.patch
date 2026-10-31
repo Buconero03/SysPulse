@@ -1,0 +1,1037 @@
+diff --git a/LEGGIMI.txt b/LEGGIMI.txt
+index e3064f6..d6cc5e5 100644
+--- a/LEGGIMI.txt
++++ b/LEGGIMI.txt
+@@ -1,61 +1,64 @@
+-ProcessLens R30 - Clic sull'icona accanto all'orologio
++ProcessLens R31 - Ricerca, schede degli host Windows e menu dell'icona
+ 
+ AVVIO
+ Chiudi la versione precedente con Esci. Estrai in una cartella nuova e apri
+-AVVIA_PROCESSLENS.cmd. Il primo avvio compila e verifica R30; gli altri sono diretti.
+-I test Windows mostrano una finestra di prova e la riducono/riaprono.
++AVVIA_PROCESSLENS.cmd. Il primo avvio compila e verifica R31; gli altri sono diretti.
+ 
+-ICONA ACCANTO ALL'OROLOGIO
+-L'intervento R30 riguarda l'icona nell'area notifiche, anche nel riquadro aperto
+-con la freccia vicino all'orologio. E distinta dal pulsante Riduci nella finestra.
+-- Clic sinistro con finestra aperta: riduci.
+-- Un clic successivo con finestra ridotta: riapri.
+-- Doppio clic / notifiche duplicate dello stesso clic: una sola azione.
+-- Tasto destro: Mostra ProcessLens, Riduci a icona, Esci da ProcessLens.
+-La barra applicazioni resta disponibile come percorso di riapertura.
++RICERCA
++Clicca su Cerca o sul campo con bordo visibile. Ctrl+F porta il cursore nel campo
++e seleziona il testo. La ricerca usa nome visualizzato, eseguibile e PID esatto.
++Accetta anche i titoli delle quattro schede locali (es. Host delle anteprime).
++Il filtro continua ad escludere corrispondenze solo nel padre, nei parametri
++segreti o nei percorsi. Nessun risultato viene indicato con il testo cercato.
++Le sezioni con ricerca propria mantengono il loro campo dedicato.
++
++HOST DI WINDOWS
++Schede locali con riferimenti Microsoft per svchost.exe, prevhost.exe,
++RuntimeBroker.exe e smartscreen.exe. Nessuna interrogazione web automatica.
++Il contesto esistente viene mantenuto per gli altri componenti gia descritti.
++La scheda distingue funzione tipica e dati osservati nel campione.
++Il titolo del gruppo svchost mostra i servizi SCM, ricercabili anche da Cerca.
++Per un PID che ospita servizi, la riga mostra i primi nomi SCM disponibili,
++con ellissi per gli altri. Non viene inventato un servizio quando manca l'elenco.
++Il solo nome non verifica autore, firma, origine, attività o sicurezza.
++Catalogo Sistema Windows: 31 famiglie finite, incluse anteprime e SmartScreen.
++Non e un inventario esaustivo di Windows. Le app Node.js restano distinte.
+ 
+-COSA E CAMBIATO
+-R29 accettava solo NIN_SELECT/NIN_KEYSELECT quando era negoziato il protocollo
+-moderno. Il normale rilascio sinistro WM_LBUTTONUP poteva essere ignorato.
+-R30 decodifica i due formati documentati dei callback Windows, verifica l'ID
+-della propria icona e gestisce rilascio sinistro, doppio clic, selezione e tastiera.
+-La protezione dai duplicati evita che il secondo evento riapra subito la finestra.
+-Questo corregge il percorso del codice; il clic fisico sul tuo PC va verificato.
++ICONA ACCANTO ALL'OROLOGIO
++Clic sinistro: riduci/riapri. Tasto destro: menu. X riduce; Esci chiude.
++Il menu non richiama piu in primo piano la finestra principale ridotta:
++attiva il proprio popup, e ignora la seconda notifica dello stesso menu.
++Riduci a icona viene disabilitato se finestra e log sono gia ridotti/nascosti.
++Il Log finestra segue la riduzione del proprietario e viene riaperto senza
++richiedere il primo piano. La barra applicazioni resta un percorso di riapertura.
++Nel log compaiono anche logVisibile e figlieVisibili per distinguere le finestre.
++Il testo del log usa caratteri piu grandi e righe a capo, senza scorrimento orizzontale.
+ 
+-SE L'ICONA NON RISPONDE
+-1. Clicca l'icona accanto all'orologio, poi attendi almeno 3 secondi.
+-2. Riapri dalla barra applicazioni se necessario.
+-3. Apri Log finestra, Aggiorna e Copia tutto. Incolla il rapporto per analizzarlo.
++RISCONTRO E LIMITI
++Il log R30 ricevuto conferma la riduzione della finestra principale e registra
++un menu destro, non un clic sinistro sull'icona. Non dimostra un errore delle API.
++L'attivazione della finestra principale all'apertura del menu e stata rimossa
++come comportamento indesiderato. La causa specifica sul PC non e dichiarata provata.
++Se ricapita: attendi 3 s, apri Log finestra, Aggiorna, Copia tutto.
+ File: %LOCALAPPDATA%\ProcessLens\logs\window-actions.log
+-TRAY_REGISTER / TRAY_FILTER: registrazione dell'icona e filtro dei callback.
+-TRAY_CALLBACK: evento e parametri ricevuti PRIMA della selezione dell'azione.
+-TRAY_DECISION: riduci, ripristina, duplicato ignorato o altro evento senza azione.
+-TRAY_INPUT / TRAY_BEFORE: nuovo tentativo dall'icona, con stato iniziale.
+-MINIMIZE_RETURN / STATE / UI_CHECK: stato della finestra dopo l'azione.
+-Il semplice movimento del puntatore non viene registrato. Se manca TRAY_CALLBACK,
+-non si presume la causa: serve capire se il messaggio arriva alla finestra corretta.
+-Il log e selezionabile/copiabile, non modale e con scrittura locale in background.
+-Ultime 256 righe in memoria, coda 256, rotazione file a circa 1 MiB e una copia.
+-Nessun invio automatico, cattura schermo o registrazione del testo dei tasti.
++Il rapporto resta copiabile anche se la scrittura su disco fallisce.
+ 
+-VERIFICHE
+-787 asserzioni portabili; 37 controlli PowerShell; 17 fixture launcher;
+-10 controlli negativi runtime e 14 controlli risorse superati.
++PROVE
++822 asserzioni portabili; 38 controlli PowerShell; 17 fixture launcher;
++11 controlli negativi runtime e 14 controlli risorse superati.
+ C# di 9 assembly WindowsDesktop verificato con stub dei campi XAML.
+-NON equivale a compilazione XAML/BAML, esecuzione WPF, prova DPI o misura RAM.
+-La build Windows verifica anche callback sintetici nel vero HWND della MainWindow:
+-rilascio sinistro v4, select duplicato, clic successivo, formato legacy, tastiera,
+-ID diverso e hover. Non equivale a un clic fisico generato da Explorer.
+-Prove in progetto\audit\R10_R30; i rapporti precedenti restano storici.
+-Il log R29 fornito dall'utente conferma il pulsante della finestra; non conteneva
+-i callback grezzi del clic sull'icona. Non basta per attribuire la causa sul suo PC.
++NON equivale a compilazione XAML/BAML, esecuzione WPF, verifica DPI o misura RAM.
++La build Windows include la prova della vera MainWindow: focus Cerca/Find,
++menu destro con proprietario ridotto, log aperto e nascosto/ripristinato,
++callback sintetici dell'icona, pulsante, X e riapertura. Non e eseguita qui.
++Le prove sul clic fisico di Explorer restano da confermare sul tuo Windows.
++Risultati in progetto\audit\R10_R31; i rapporti precedenti restano storici.
+ 
+ PACCHETTO LEGGERO
+-Nessun SDK, runtime, driver o nuova dipendenza aggiunta; nessun processo in piu,
+-nuovo polling o finestra nativa nascosta per gestire l'icona.
+-Riusa SDK/cache R20 o uno SDK .NET 8 installato. NuGet puo richiedere rete se manca
+-la cache. Nessuna installazione automatica di SDK o driver.
+-Per ricompilare elimina solo supporto/build-r30.ok.
+-Icone dei processi, layout principale, scorrimento, campionamento CPU/RAM,
+-Guardian, rete, servizi, profiler e MemoryAgent mantengono il codice R29.
+-Il consumo effettivo di RAM non e stato misurato in questa sessione.
++Nessun SDK, runtime, driver, nuova dipendenza, polling o processo aggiunto.
++Usa SDK/cache R20 o uno SDK .NET 8 installato; NuGet puo richiedere rete se manca
++la cache. Nessuna installazione automatica. Un solo launcher nella radice.
++Per ricompilare elimina solo supporto/build-r31.ok.
++Guardian, MemoryAgent, rete, profiler, acquisizione nativa, contatori CPU/RAM,
++politica di chiusura/ripristino, icone originali e scorrimento mantengono R30.
++Il consumo RAM effettivo non e stato misurato in questa sessione.
+diff --git a/progetto/audit/tools/check_powershell_r31.py b/progetto/audit/tools/check_powershell_r31.py
+new file mode 100644
+index 0000000..21af0f2
+--- /dev/null
++++ b/progetto/audit/tools/check_powershell_r31.py
+@@ -0,0 +1,17 @@
++"""Run PowerShell source preflight and isolated launcher fixtures, never a build or installation."""
++import argparse,json,hashlib,subprocess
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--shell',type=Path,required=True);p.add_argument('--pwsh',type=Path,required=True);a=p.parse_args()
++r=a.project.resolve();shell=a.shell.resolve();audit=r/'audit/R10_R31';sha=lambda b:hashlib.sha256(b).hexdigest()
++# Same 30 authorized baseline source stages, plus the R24 wiring gate.
++stages=[x['file'] for x in json.loads((r/'audit/R10_R23_R1/powershell-evidence.json').read_text())['stages']]+['audit/tools/check_live_metrics_r24.ps1','audit/tools/check_process_groups_r25.ps1','audit/tools/check_scroll_minimize_r26.ps1','audit/tools/check_windows_icons_r27.ps1','audit/tools/check_window_controls_r28.ps1','audit/tools/check_window_diagnostics_r29.ps1','audit/tools/check_tray_callbacks_r30.ps1','audit/tools/check_search_hosts_r31.ps1'];results=[];logs=[]
++for n in stages:
++ x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(r/n)],cwd=r,capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;logs.append(n+'\n'+log)
++ if x.returncode:(audit/'preflight.log').write_text('\n'.join(logs));raise SystemExit(log)
++ results.append({'file':n,'sha256':sha((r/n).read_bytes()),'status':'PASS'})
++(audit/'preflight.log').write_text('\n'.join(logs))
++fixture=r/'audit/tools/test_launcher_r31.ps1';launcher=shell/'supporto/avvia.ps1'
++x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(fixture),'-Launcher',str(launcher)],capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;(audit/'launcher-fixture.log').write_text(log)
++if x.returncode:raise SystemExit(log)
++count=sum(line.startswith('PASS R31 launcher:') for line in log.splitlines());assert count==17,count
++(audit/'powershell-evidence.json').write_text(json.dumps({'PowerShell':'7.4.21 Linux; no Windows runtime execution','stages':results,'launcher_fixture_checks':count,'launcher_sha256':sha(launcher.read_bytes()),'fixture_sha256':sha(fixture.read_bytes())},indent=2)+'\n');print('PASS',len(results),'source stages;',count,'launcher checks')
+diff --git a/progetto/audit/tools/check_search_hosts_r31.ps1 b/progetto/audit/tools/check_search_hosts_r31.ps1
+new file mode 100644
+index 0000000..1ee682b
+--- /dev/null
++++ b/progetto/audit/tools/check_search_hosts_r31.ps1
+@@ -0,0 +1,17 @@
++$ErrorActionPreference='Stop'
++$root=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
++function Source([string]$name) { Get-Content (Join-Path $root $name) -Raw -Encoding UTF8 }
++$tray=Source 'src/ProcessLens.App/TrayWindowController.cs'
++$trace=Source 'src/ProcessLens.App/WindowActionDiagnostics.cs'
++$main=Source 'src/ProcessLens.App/MainWindow.xaml.cs'
++$xaml=Source 'src/ProcessLens.App/MainWindow.xaml'
++$dictionary=Source 'src/ProcessLens.Core/WindowsHostReference.cs'
++$ui=Source 'tests/ProcessLens.ProcessGroupsUiTests/Program.cs'
++foreach($v in @('SetForegroundWindow(popup.Handle)','_menuOpenQueued || _menu.IsOpen','_minimizeMenuItem.IsEnabled = !reduced','_diagnostics?.SetOwnerMinimized(true)','_diagnostics?.SetOwnerMinimized(false)')) { if(-not $tray.Contains($v)){throw ('FAIL R31 tray/owner: '+$v)} }
++if($tray.Contains('SetForegroundWindow(_hwnd)')){throw 'FAIL R31 context menu must not foreground the minimized main window.'}
++foreach($v in @('SetOwnerMinimized','_logWindow.Hide()','_logWindow.ShowActivated = false','logVisibile={LogVisible}','figlieVisibili=')) { if(-not $trace.Contains($v)){throw ('FAIL R31 log child state: '+$v)} }
++foreach($v in @('FocusSearch','ApplicationCommands.Find','Key.F','WindowsHostReference.Matches','Nessun risultato','hostReference.Title')) { if(-not $main.Contains($v)){throw ('FAIL R31 search/reference: '+$v)} }
++foreach($v in @('Name="SearchSurface"','MouseLeftButtonDown="SearchSurface_MouseLeftButtonDown"','CaretBrush="#175CD3"','Cerca per nome visualizzato')) { if(-not $xaml.Contains($v)){throw ('FAIL R31 search editor: '+$v)} }
++foreach($v in @('prevhost.exe','RuntimeBroker.exe','smartscreen.exe','svchost.exe','StringComparison.OrdinalIgnoreCase','text.All(char.IsAsciiDigit)','ServiceDisplayNames.Take(2)')) { if(-not $dictionary.Contains($v)){throw ('FAIL R31 local references: '+$v)} }
++foreach($v in @('R31 shown search field receives keyboard focus','R31 minimizing also hides','R31 right-click menu preserves minimized','R31 Show from tray restores','R31 search finds the visible dictionary title')) { if(-not $ui.Contains($v)){throw ('FAIL R31 owned UI fixture: '+$v)} }
++Write-Host 'PASS R31 source: focused search and visible editor, local Microsoft host references with exact-name boundaries, popup-only menu activation and owned-log minimize/restore. Actual WPF/shell checks remain Windows-only.'
+diff --git a/progetto/audit/tools/mutate_search_hosts_r31.py b/progetto/audit/tools/mutate_search_hosts_r31.py
+new file mode 100644
+index 0000000..a410293
+--- /dev/null
++++ b/progetto/audit/tools/mutate_search_hosts_r31.py
+@@ -0,0 +1,36 @@
++"""Runtime negative controls for Windows icon classification, snapshot fixtures only."""
++import argparse,json,hashlib,subprocess
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.project.resolve();sdk=a.sdk.resolve();work=a.work.resolve();root=work/'mutants-r31';root.mkdir(exist_ok=True);audit=r/'audit/R10_R31';sha=lambda b:hashlib.sha256(b).hexdigest()
++refs=sorted((sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll'));globals=work/'runtime/GlobalUsings.cs'
++core_sources=sorted((r/'src/ProcessLens.Core').glob('*.cs'))
++sources=[r/'tests/ProcessLens.ProcessGroupsTests/Program.cs']+[r/'src/ProcessLens.Windows'/n for n in ['NativeMethods.cs','OwnedNetworkTableReader.cs','WindowsDeepProcessInspector.cs']]+[r/'src/ProcessLens.App'/n for n in ['ProcessDisplayFormatter.cs','ProcessNetworkPresentation.cs','WindowLifetimePolicy.cs','ReadingPositionPolicy.cs','WindowsProcessIconPolicy.cs','IconPreferencePolicy.cs','DeferredDiagnosticWriter.cs','WindowDiagnosticJournal.cs','NativeIconPreference.cs','TrayCallbackRouter.cs','WindowsComponentContext.cs']]
++mutations=[
++ ('override-specific-native-icon','src/ProcessLens.App/IconPreferencePolicy.cs','windowsComponent && (original is null || generic)','windowsComponent','R28 Explorer or another Windows component keeps its distinct executable icon'),
++ ('defer-ordinary-click','src/ProcessLens.App/WindowLifetimePolicy.cs','_pending = null; // A queued restore must not undo this explicit click.\n        minimize();','_pending = null; // A queued restore must not undo this explicit click.\n        Schedule(minimize);','R28 explicit minimize acts before the queued dispatcher turn'),
++ ('stale-restore-after-minimize','src/ProcessLens.App/WindowLifetimePolicy.cs','_pending = null; // A queued restore must not undo this explicit click.','_pending = restore; // Deliberately retain a stale restore for this mutant.','R28 old queued restore cannot undo an immediate minimize'),
++ ('synchronous-window-log','src/ProcessLens.App/DeferredDiagnosticWriter.cs','post(Drain); return true;','Drain(); return true;','R28 window logging never writes from the caller thread'),
++ ('generic-icon-hides-resource','src/ProcessLens.App/NativeIconPreference.cs','shell is not null && !generic(shell)','shell is not null','R29 embedded executable icon replaces only a generic Shell icon'),
++ ('unbounded-window-journal','src/ProcessLens.App/WindowDiagnosticJournal.cs','if (_lines.Count >= Math.Clamp(capacity, 1, 256)) _lines.Dequeue();','// Deliberately keep all lines.','R29 journal retains at most its fixed capacity'),
++ ('culture-sensitive-window-clock','src/ProcessLens.App/WindowDiagnosticJournal.cs','string.Create(CultureInfo.InvariantCulture,','string.Create(CultureInfo.CurrentCulture,','R29 trace captures event time and invariant monotonic elapsed time'),
++ ('ignored-v4-mouse-release','src/ProcessLens.App/TrayCallbackRouter.cs','0x0202 or 0x0203 or','0x0203 or','R30 ordinary left-button release activates the v4 tray icon'),
++ ('other-tray-id-accepted','src/ProcessLens.App/TrayCallbackRouter.cs','packedId == expectedIconId','true','R30 another packed icon cannot trigger a window action'),
++ ('packed-event-not-masked','src/ProcessLens.App/TrayCallbackRouter.cs','(int)(bits & 0xFFFF)','(int)bits','R30 v4 decodes event and icon ID separately from coordinates'),
++ ('host-lookalike-accepted','src/ProcessLens.Core/WindowsHostReference.cs','x.Executable.Equals(name, StringComparison.OrdinalIgnoreCase)','name.Contains(x.Executable, StringComparison.OrdinalIgnoreCase)','R31 host dictionary rejects lookalike and path-as-name')]
++results=[]
++for name,file,before,after,expected in mutations:
++ out=root/name;out.mkdir(exist_ok=True);original=r/file;data=original.read_text();assert before in data;mutated=out/'mutated.cs';mutated.write_text(data.replace(before,after,1));core=out/'ProcessLens.Core.dll'
++ def compile(target,inputs,extra=(),library=False):
++  args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-target:'+('library' if library else 'exe'),'-out:'+str(target)]
++  args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
++  args+=['-r:'+str(f) for f in [*refs,*extra]]+[str(globals)]+[str(mutated if f==original else f) for f in inputs]
++  x=subprocess.run(args,capture_output=True,text=True,timeout=60);assert x.returncode==0,x.stdout+x.stderr
++ if file.startswith('src/ProcessLens.Core/'):compile(core,core_sources,library=True)
++ else:core.write_bytes((work/'runtime/ProcessLens.Core.dll').read_bytes())
++ (out/'ProcessLens.Semantics.dll').write_bytes((work/'runtime/ProcessLens.Semantics.dll').read_bytes())
++ dll=out/'ProcessLens.ProcessGroupsTests.dll';compile(dll,sources,[core,out/'ProcessLens.Semantics.dll']);dll.with_suffix('.runtimeconfig.json').write_text(json.dumps({'runtimeOptions':{'tfm':'net8.0','framework':{'name':'Microsoft.NETCore.App','version':'8.0.32'}}}))
++ x=subprocess.run([str(sdk/'dotnet'),str(dll)],capture_output=True,text=True,timeout=45);log=x.stdout+x.stderr;(audit/(name+'-expected-failure.log')).write_text(log)
++ assert x.returncode!=0 and expected in log,log
++ results.append({'mutation':name,'expected_failure':expected,'expected_runtime_failure_observed':True,'status':'PASS','production_file':file,'production_sha256':sha(original.read_bytes()),'test_sha256':sha(sources[0].read_bytes())})
++(audit/'mutation-evidence.json').write_text(json.dumps(results,indent=2)+'\n');print('PASS',len(results),'runtime negative controls')
+diff --git a/progetto/audit/tools/package_search_hosts_r31.py b/progetto/audit/tools/package_search_hosts_r31.py
+new file mode 100644
+index 0000000..8e23ae4
+--- /dev/null
++++ b/progetto/audit/tools/package_search_hosts_r31.py
+@@ -0,0 +1,80 @@
++"""Create a lightweight R31 candidate; assert the precise R30 delta, evidence hashes and manifests."""
++import argparse,csv,difflib,hashlib,json,shutil,subprocess,tempfile,zipfile
++from pathlib import Path
++import xml.etree.ElementTree as ET
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--shell',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True);p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()
++shell=a.shell.resolve();r=shell/'progetto';audit=r/'audit/R10_R31';sha=lambda b:hashlib.sha256(b).hexdigest()
++assert sha(a.baseline_zip.read_bytes())=='6331971ce39d46cf3653abfec31d08b2d74fc0b50cec3d8f8e1cd6113564f5b5'
++with zipfile.ZipFile(a.baseline_zip) as z:before={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++for d in sorted(shell.rglob('__pycache__'),reverse=True):shutil.rmtree(d)
++after={f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file()}
++modified={'LEGGIMI.txt','supporto/avvia.ps1','progetto/build-dashboard.ps1',*[f'progetto/src/ProcessLens.App/{n}' for n in ['TrayWindowController.cs','WindowActionDiagnostics.cs','ProcessLens.App.csproj','MainWindow.xaml','MainWindow.xaml.cs','ProcessRow.cs','WindowsComponentContext.cs']], 'progetto/src/ProcessLens.Core/WindowsComponentCatalog.cs','progetto/src/ProcessLens.Semantics/RoleClassifier.cs',*[f'progetto/tests/{n}' for n in ['ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj','ProcessLens.ProcessGroupsTests/Program.cs','ProcessLens.ProcessGroupsUiTests/Program.cs','ProcessLens.WindowsComponentTests/Program.cs']]}
++added={'progetto/src/ProcessLens.Core/WindowsHostReference.cs',*[f'progetto/audit/tools/{n}' for n in ['run_process_groups_r31.py','typecheck_wpf_sources_r31.py','check_powershell_r31.py','check_search_hosts_r31.ps1','test_launcher_r31.ps1','mutate_search_hosts_r31.py','package_search_hosts_r31.py']]}
++manifests={'SHA256SUMS.txt','progetto/SHA256SUMS_R10.txt'}
++assert all(n in after for n in before),'No baseline file may disappear'
++assert {n for n,b in before.items() if n not in manifests and after[n]!=b}==modified,'Unexpected modification or missing intended change'
++assert {n for n in after if n not in before and not n.startswith('progetto/audit/R10_R31/')}==added,'Unexpected new file'
++assert not any(n.startswith('progetto/progetto/') for n in after),'Nested duplicate project'
++for n,b in after.items():
++ if n.endswith(('.xaml','.csproj')):ET.fromstring(b)
++assert all(after[n]==b for n,b in before.items() if n not in modified and n.startswith(('progetto/src/ProcessLens.Core/','progetto/src/ProcessLens.Semantics/','progetto/src/ProcessLens.Windows/','progetto/src/ProcessLens.Guardian/','progetto/src/ProcessLens.MemoryAgent/','progetto/src/ProcessLens.Profiler/','progetto/src/ProcessLens.RamMonitor/')))
++for n in ['AutomaticViewport.cs','ReadingPositionPolicy.cs','WindowLifetimePolicy.cs','WindowsProcessIconPolicy.cs','IconPreferencePolicy.cs','DeferredDiagnosticWriter.cs','ProcessIconResolver.cs','NativeIconPreference.cs','AppDiagnostics.cs']:
++ assert after['progetto/src/ProcessLens.App/'+n]==before['progetto/src/ProcessLens.App/'+n],n
++for filename,key in [('runtime-evidence.json','source_hashes'),('wpf-typecheck-evidence.json','inputs')]:
++ data=json.loads((audit/filename).read_text());assert data[key]
++ for n,h in data[key].items():assert sha((r/n).read_bytes())==h,(filename,n)
++runtime=json.loads((audit/'runtime-evidence.json').read_text());assert len(runtime['outcomes'])==13 and all(x['status']=='PASS' for x in runtime['outcomes']);assert sum(x['assertions'] for x in runtime['outcomes'])==822
++wpf=json.loads((audit/'wpf-typecheck-evidence.json').read_text());assert len(wpf['assemblies'])==9 and all(x['status']=='PASS' for x in wpf['assemblies'])
++ps=json.loads((audit/'powershell-evidence.json').read_text());assert len(ps['stages'])==38 and ps['launcher_fixture_checks']==17
++for x in ps['stages']:assert x['status']=='PASS' and sha((r/x['file']).read_bytes())==x['sha256']
++assert sha((shell/'supporto/avvia.ps1').read_bytes())==ps['launcher_sha256']
++assert sha((r/'audit/tools/test_launcher_r31.ps1').read_bytes())==ps['fixture_sha256']
++negative=json.loads((audit/'mutation-evidence.json').read_text());assert len(negative)==11
++for x in negative:
++ assert x['status']=='PASS' and x['expected_runtime_failure_observed']
++ assert sha((r/x['production_file']).read_bytes())==x['production_sha256']
++ assert sha((r/'tests/ProcessLens.ProcessGroupsTests/Program.cs').read_bytes())==x['test_sha256']
++resource=json.loads((audit/'live-resource-guards.json').read_text());assert len(resource)==14 and all(x['status']=='PASS' for x in resource)
++(audit/'scope-evidence.json').write_text(json.dumps({'baseline_sha256':sha(a.baseline_zip.read_bytes()),'modified_files':sorted(modified),'new_files':sorted(added),'protected':'Native acquisition, Guardian, MemoryAgent, profiler, RAM monitor, icon retrieval, scrolling and lifetime policies byte identical to R30; Core/Semantics changes restricted to the declared reference catalog and two role cases','new_dependencies':0,'Windows_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'},indent=2)+'\n')
++with (audit/'string-ledger.csv').open('w',newline='') as f:
++ w=csv.writer(f);w.writerow(['file','side','changed_text'])
++ for n in sorted(modified|added):
++  for line in difflib.unified_diff(before.get(n,b'').decode('utf-8-sig').splitlines(),after[n].decode('utf-8-sig').splitlines(),n,n,n=0):
++   if line.startswith(('+','-')) and not line.startswith(('+++','---')):w.writerow([n,'after' if line[0]=='+' else 'before',line[1:]])
++with (audit/'files-changed.csv').open('w',newline='') as f:
++ w=csv.writer(f);w.writerow(['file','kind','sha256_before','sha256_after'])
++ for n in sorted(modified|added):w.writerow([n,'added' if n in added else 'modified',sha(before[n]) if n in before else '',sha(after[n])])
++include=lambda n:n not in manifests and not n.startswith('progetto/audit/R10_R31/')
++with tempfile.TemporaryDirectory(prefix='processlens-r31-') as tmp:
++ t=Path(tmp);bdir=t/'before';adir=t/'after';bdir.mkdir();adir.mkdir()
++ for base,data in [(bdir,before),(adir,after)]:
++  for n,b in data.items():
++   if include(n):p=base/n;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b)
++ x=subprocess.run(['git','diff','--no-index','--no-renames','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=t,capture_output=True);assert x.returncode==1
++ lines=[]
++ for line in x.stdout.splitlines(keepends=True):
++  if line.startswith((b'diff --git ',b'--- ',b'+++ ')):
++   for prefix in [b'a/before/',b'a/after/']:line=line.replace(prefix,b'a/')
++   for prefix in [b'b/before/',b'b/after/']:line=line.replace(prefix,b'b/')
++  lines.append(line)
++ patch=b''.join(lines);path=audit/'R30_to_R31.patch';path.write_bytes(patch)
++ x=subprocess.run(['git','apply','--check',str(path)],cwd=bdir,capture_output=True);assert x.returncode==0,x.stderr
++ subprocess.run(['git','apply',str(path)],cwd=bdir,check=True)
++ assert {f.relative_to(bdir).as_posix():f.read_bytes() for f in bdir.rglob('*') if f.is_file()}=={n:b for n,b in after.items() if include(n)}
++(audit/'patch-evidence.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','patch_sha256':sha(patch),'excluded_from_diff_only':'current R31 audit and recursive manifests; all included in final ZIP'},indent=2)+'\n')
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt'}
++(r/'SHA256SUMS_R10.txt').write_text(''.join(sha(b)+'  '+n+'\n' for n,b in sorted(current.items())))
++files={f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file() and f.name!='SHA256SUMS.txt'}
++assert not any(n.endswith(('.dll','.exe','.pdb','.deb','.nupkg','.pyc','.ok')) for n in files),'Build/SDK artifacts forbidden'
++assert all(len(b)<10*1024*1024 for b in files.values())
++manifest=''.join(sha(b)+'  '+n+'\n' for n,b in sorted(files.items()));files['SHA256SUMS.txt']=manifest.encode();(shell/'SHA256SUMS.txt').write_text(manifest)
++a.output_directory.mkdir(parents=True,exist_ok=True);target=a.output_directory/'ProcessLens-R31-ricerca-host-finestre.zip'
++with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
++ for n,b in sorted(files.items()):z.writestr('ProcessLens-Leggero/'+n,b)
++with zipfile.ZipFile(target) as z:
++ assert z.testzip() is None
++ for line in manifest.splitlines():h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/'+n))==h
++ for line in (r/'SHA256SUMS_R10.txt').read_text().splitlines():h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/progetto/'+n))==h
++ assert {n.split('/')[1] for n in z.namelist()}=={'AVVIA_PROCESSLENS.cmd','LEGGIMI.txt','supporto','progetto','SHA256SUMS.txt'}
++result={'zip':str(target.resolve()),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files)-1,'portable_assertions':822,'PowerShell_source_stages':38,'launcher_fixture_checks':17,'runtime_negative_controls':11,'resource_guard_checks':14,'CSharp_WindowsDesktop_typechecked_assemblies':9,'Windows_WPF_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'}
++(a.output_directory/'verification-r31.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
+diff --git a/progetto/audit/tools/run_process_groups_r31.py b/progetto/audit/tools/run_process_groups_r31.py
+new file mode 100644
+index 0000000..e7cbf0f
+--- /dev/null
++++ b/progetto/audit/tools/run_process_groups_r31.py
+@@ -0,0 +1,33 @@
++"""Run actual portable component and native-parser regressions; no WPF/native Windows acquisition."""
++import argparse,hashlib,json,subprocess
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();work.mkdir(parents=True,exist_ok=True);audit=r/'audit/R10_R31';audit.mkdir(exist_ok=True)
++refs=sorted((sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll'));sha=lambda b:hashlib.sha256(b).hexdigest()
++globals=work/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))
++hashes={};outcomes=[]
++def compile(name,sources,extra=(),library=False):
++ hashes.update({f.relative_to(r).as_posix():sha(f.read_bytes()) for f in sources})
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(work/(name+'.dll'))]
++ args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
++ args+=['-r:'+str(f) for f in [*refs,*extra]]+[str(globals)]+[str(f) for f in sources]
++ x=subprocess.run(args,capture_output=True,text=True,timeout=60);(audit/(name+'-build.log')).write_text(x.stdout+x.stderr)
++ if x.returncode:raise SystemExit(x.stdout+x.stderr)
++compile('ProcessLens.Core',sorted((r/'src/ProcessLens.Core').glob('*.cs')),library=True)
++compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),extra=[work/'ProcessLens.Core.dll'],library=True)
++for suite in ['WindowsComponentTests','SystemProcessTests','NewTaskTests','CpuTests','MemoryTests','MemoryEfficiencyTests','RefreshPolicyTests','LiveMetricsTests','CopyTests','ProcessGroupsTests','PresentationTests','BehaviorTests','TerminologyTests']:
++ name='ProcessLens.'+suite;sources=[r/'tests'/name/'Program.cs']
++ if suite=='SystemProcessTests':sources+=[r/'src/ProcessLens.Windows/WindowsSystemProcessSource.cs']
++ if suite=='LiveMetricsTests':sources += [r/'src/ProcessLens.Windows'/f for f in ['WindowsMemorySampler.cs','WindowsLiveCpuSampler.cs','NativeMethods.cs']] + [r/'src/ProcessLens.App'/f for f in ['WindowLifetimePolicy.cs','MemoryObservationBuffer.cs']]
++ if suite=='MemoryEfficiencyTests':sources += [r/'src/ProcessLens.App'/f for f in ['BoundedCache.cs','MemoryObservationBuffer.cs']]
++ if suite=='CopyTests':sources += [r/'src/ProcessLens.App'/f for f in ['CopyTextFormat.cs','ReportLayout.cs','ProcessExitNotice.cs','WindowLifetimePolicy.cs','AuditLogPresentation.cs','ServiceNavigation.cs']]
++ if suite=='ProcessGroupsTests':sources += [r/'src/ProcessLens.Windows'/f for f in ['NativeMethods.cs','OwnedNetworkTableReader.cs','WindowsDeepProcessInspector.cs']] + [r/'src/ProcessLens.App'/f for f in ['ProcessDisplayFormatter.cs','ProcessNetworkPresentation.cs','WindowLifetimePolicy.cs','ReadingPositionPolicy.cs','WindowsProcessIconPolicy.cs','IconPreferencePolicy.cs','DeferredDiagnosticWriter.cs','WindowDiagnosticJournal.cs','NativeIconPreference.cs','TrayCallbackRouter.cs','WindowsComponentContext.cs']]
++ if suite=='PresentationTests':sources += [r/'src/ProcessLens.App'/f for f in ['ProcessDisplayFormatter.cs','ProcessNetworkPresentation.cs']]
++ if suite=='NewTaskTests':sources+=[r/'src/ProcessLens.Windows/WindowsNewTaskLauncher.cs']
++ compile(name,sources,extra=[work/'ProcessLens.Core.dll',work/'ProcessLens.Semantics.dll'])
++ (work/(name+'.runtimeconfig.json')).write_text(json.dumps({'runtimeOptions':{'tfm':'net8.0','framework':{'name':'Microsoft.NETCore.App','version':'8.0.32'}}}))
++ x=subprocess.run([str(sdk/'dotnet'),str(work/(name+'.dll'))],capture_output=True,text=True,timeout=45);log=x.stdout+x.stderr;(audit/(name+'-run.log')).write_text(log)
++ if x.returncode:raise SystemExit(log)
++ outcomes.append({'suite':name,'status':'PASS','assertions':sum(l.startswith('PASS ') for l in log.splitlines())})
++e={'environment':'Linux x64; direct Roslyn SDK 8.0.426 / .NET 8.0.32; no MSBuild or WPF; synthetic fixtures only','outcomes':outcomes,'source_hashes':hashes}
++(audit/'runtime-evidence.json').write_text(json.dumps(e,indent=2)+'\n');print(json.dumps(outcomes,indent=2))
+diff --git a/progetto/audit/tools/test_launcher_r31.ps1 b/progetto/audit/tools/test_launcher_r31.ps1
+new file mode 100644
+index 0000000..fcb3d7c
+--- /dev/null
++++ b/progetto/audit/tools/test_launcher_r31.ps1
+@@ -0,0 +1,76 @@
++﻿param([string] $Launcher)
++$ErrorActionPreference = 'Stop'
++. $Launcher -FunctionsOnly
++$count = 0
++function Check([bool] $Ok, [string] $Label) {
++    if (-not $Ok) { throw ('FAIL R31 launcher: ' + $Label) }
++    Write-Host ('PASS R31 launcher: ' + $Label); $script:count++
++}
++function Touch([string] $Path) {
++    New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
++    Set-Content -LiteralPath $Path -Value 'fixture only' -Encoding ASCII
++}
++function Make-Runtime([string] $Path, [string] $Version='8.0.32') {
++    Touch (Join-Path $Path 'dotnet.exe')
++    New-Item -ItemType Directory -Path (Join-Path $Path 'shared/Microsoft.NETCore.App/8.0.32') -Force | Out-Null
++    New-Item -ItemType Directory -Path (Join-Path $Path ('shared/Microsoft.WindowsDesktop.App/' + $Version)) -Force | Out-Null
++}
++$temporary = Join-Path ([IO.Path]::GetTempPath()) ('processlens-r23-' + [Guid]::NewGuid().ToString('N'))
++$saved = @{}
++foreach ($name in @('PATH','DOTNET_ROOT','DOTNET_ROOT_X64','NUGET_PACKAGES')) { $saved[$name] = [Environment]::GetEnvironmentVariable($name) }
++try {
++    $root = Join-Path $temporary 'bundle with space'; $profile = Join-Path $temporary 'profile with space'
++    New-Item -ItemType Directory -Path $root,$profile,(Join-Path $root 'supporto') -Force | Out-Null
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'empty package has no runnable GUI'
++    $installed = Join-Path $profile 'Programs/ProcessLens/R20'
++    Touch (Join-Path $installed 'app/win-x64/ProcessLens.exe'); Touch (Join-Path $installed 'start-installed.ps1')
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'completed old installation cannot silently substitute its old GUI'
++    $exe = Join-Path $root 'progetto/publish/win-x64/ProcessLens.exe'; Touch $exe
++    $receipt = Join-Path $root 'supporto/build-r31.ok'
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'publication without successful R31 receipt is not accepted'
++    Set-Content -LiteralPath $receipt -Value 'older version'
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'receipt for another revision is rejected'
++    Remove-Item -LiteralPath $receipt
++    $sdk = Join-Path $installed 'dotnet'; Make-Runtime $sdk
++    New-Item -ItemType Directory -Path (Join-Path $sdk 'sdk/8.0.426'),(Join-Path $installed 'packages') -Force | Out-Null
++    # Stub only the compiler entry point and project build script; no dotnet, app or service is launched.
++    function global:dotnet { throw 'fixture must not launch a real compiler' }
++    $build = Join-Path $root 'progetto/build-dashboard.ps1'
++    Set-Content -LiteralPath $build -Value 'throw "synthetic failed tests"'
++    $failed = $false
++    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('synthetic failed tests') }
++    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'failed tests cannot issue a build receipt or launch a stale publication'
++    Check ($env:NUGET_PACKAGES -eq (Join-Path $installed 'packages')) 'completed R20 cache reused without copying packages into ZIP'
++    [xml]$config = Get-Content -LiteralPath (Join-Path $root 'progetto/NuGet.Config') -Raw
++    Check ($config.configuration.packageSources.clear -ne $null -and -not $config.configuration.packageSources.add) 'R20 cache build has no configured network feed'
++    Remove-Item -LiteralPath $exe
++    Set-Content -LiteralPath $build -Value '# fixture successful script but no executable'
++    $failed = $false
++    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('senza eseguibile') }
++    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'missing executable after build remains an error'
++    Set-Content -LiteralPath $build -Value 'New-Item -ItemType Directory -Path "publish/win-x64" -Force | Out-Null; Set-Content -LiteralPath "publish/win-x64/ProcessLens.exe" -Value "fixture"'
++    Invoke-ProcessLensBuild $root $profile
++    $target = Resolve-ProcessLensLaunch $root $profile
++    Check ($target.Kind -eq 'Exe' -and $target.Entry -eq $exe -and $target.Runtime -eq $sdk) 'successful owned build resolves new publication with existing private runtime'
++    Set-Content -LiteralPath $build -Value 'throw "fast path must not rebuild"'
++    Check ((Resolve-ProcessLensLaunch $root $profile).Entry -eq $exe) 'subsequent resolution needs no build or SDK command'
++    $incomplete = Join-Path $temporary 'incomplete'; Touch (Join-Path $incomplete 'dotnet.exe')
++    Check (-not (Test-DesktopRuntime8 $incomplete)) 'missing desktop runtime is not accepted'
++    Make-Runtime $incomplete '9.0.1'
++    Check (-not (Test-DesktopRuntime8 $incomplete)) 'wrong desktop runtime major is not accepted'
++    Check ((Quote-LaunchArgument 'C:\Program Files\ProcessLens\ProcessLens.exe') -eq '"C:\Program Files\ProcessLens\ProcessLens.exe"') 'paths with spaces remain one UAC argument'
++    foreach ($bad in @('C:\bad"path', "C:\bad`npath")) {
++        $failed = $false; try { Quote-LaunchArgument $bad | Out-Null } catch { $failed = $true }
++        Check $failed 'quotes and newlines cannot create extra launch arguments'
++    }
++    $tokens = $null; $errors = $null
++    $ast = [System.Management.Automation.Language.Parser]::ParseFile($Launcher,[ref]$tokens,[ref]$errors)
++    Check ($errors.Count -eq 0) 'real PowerShell parser accepts complete launcher'
++    $commands = @($ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] },$true) | ForEach-Object { $_.GetCommandName() })
++    Check (@($commands | Where-Object { $_ -in @('Expand-Archive','Invoke-WebRequest','Install-Package','Install-Module','Set-Service','Start-Service','Stop-Service','Stop-Process') }).Count -eq 0) 'launcher installs no dependencies and changes no services or running processes'
++    Write-Host ('R31 launcher fixture complete: ' + $count + ' checks; synthetic files only, no Windows app or UAC.')
++} finally {
++    Remove-Item function:global:dotnet -ErrorAction SilentlyContinue
++    foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name,$saved[$name]) }
++    if (Test-Path -LiteralPath $temporary) { Remove-Item -LiteralPath $temporary -Recurse -Force }
++}
+diff --git a/progetto/audit/tools/typecheck_wpf_sources_r31.py b/progetto/audit/tools/typecheck_wpf_sources_r31.py
+new file mode 100644
+index 0000000..6f16caf
+--- /dev/null
++++ b/progetto/audit/tools/typecheck_wpf_sources_r31.py
+@@ -0,0 +1,44 @@
++"""Type-check real C# against WindowsDesktop reference assemblies with explicit generated-field stubs.
++This is NOT WPF markup compilation, BAML, MSBuild, or runtime validation. Stubs live outside the deliverable.
++"""
++import argparse,hashlib,json,subprocess,xml.etree.ElementTree as ET
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();out=work/'typecheck';out.mkdir(exist_ok=True);audit=r/'audit/R10_R31';sha=lambda b:hashlib.sha256(b).hexdigest()
++base={p.name:p for p in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll')};desktop=list((work/'wpf-ref').glob('*.dll'))
++assert len(desktop)>20
++for f in desktop:base[f.name]=f
++refs=list(base.values());event=sdk/'packs/Microsoft.AspNetCore.App.Ref/8.0.32/ref/net8.0/System.Diagnostics.EventLog.dll';sqlite=work/'Microsoft.Data.Sqlite.dll'
++globals=out/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))
++x='{http://schemas.microsoft.com/winfx/2006/xaml}';stubs=[];inputs={}
++for path in (r/'src/ProcessLens.App').glob('*.xaml'):
++ tree=ET.parse(path).getroot();cls=tree.get(x+'Class');assert cls
++ fields=[]
++ for e in tree.iter():
++  name=e.get(x+'Name')
++  if not name:continue
++  tag=e.tag.split('}',1)[1]
++  if e.tag.startswith('{clr-namespace:ProcessLens.App}'):typ='ProcessLens.App.'+tag
++  elif tag=='Polyline':typ='System.Windows.Shapes.Polyline'
++  else:typ='System.Windows.Controls.'+tag
++  fields.append('internal '+typ+' '+name+' = null!;')
++ ns,short=cls.rsplit('.',1);stubs.append('namespace '+ns+' { public partial class '+short+' { '+ ' '.join(fields)+' private void InitializeComponent() {} } }')
++ inputs[path.relative_to(r).as_posix()]=sha(path.read_bytes())
++stub=out/'MarkupFieldStubs.cs';stub.write_text('\n'.join(stubs));results=[]
++def compile(name,sources,extra=(),library=True):
++ for f in sources:
++  if f.is_relative_to(r):inputs[f.relative_to(r).as_posix()]=sha(f.read_bytes())
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(out/(name+'.dll'))]
++ args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
++ args+=['-r:'+str(f) for f in [*refs,event,*extra]]+[str(globals)]+[str(f) for f in sources]
++ result=subprocess.run(args,capture_output=True,text=True);log=result.stdout+result.stderr;(audit/(name+'-typecheck.log')).write_text(log)
++ print(name, 'PASS' if result.returncode==0 else 'FAIL');results.append({'assembly':name,'status':'PASS' if result.returncode==0 else 'FAIL','warning_count':log.count('warning CS')})
++ if result.returncode:raise SystemExit(log)
++core=work/'runtime/ProcessLens.Core.dll';assert core.is_file()
++compile('ProcessLens.Windows',sorted((r/'src/ProcessLens.Windows').glob('*.cs')),[core])
++compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),[core])
++extra=[core,out/'ProcessLens.Windows.dll',out/'ProcessLens.Semantics.dll',sqlite]
++compile('ProcessLens',sorted((r/'src/ProcessLens.App').rglob('*.cs'))+[stub],extra)
++for name in ['NetworkUiTests','CopyUiTests','SystemProcessUiTests','NewTaskUiTests','LiveMetricsUiTests','ProcessGroupsUiTests']:
++ compile('ProcessLens.'+name,[r/'tests'/('ProcessLens.'+name)/'Program.cs'],extra+[out/'ProcessLens.dll'],False)
++(audit/'wpf-typecheck-evidence.json').write_text(json.dumps({'qualification':'C# type checking with generated-field stubs only; NOT actual WPF markup compilation or runtime','assemblies':results,'inputs':inputs,'stub_sha256':sha(stub.read_bytes()),'reference_hashes':{f.name:sha(f.read_bytes()) for f in [*desktop,event,sqlite]}},indent=2)+'\n')
+diff --git a/progetto/build-dashboard.ps1 b/progetto/build-dashboard.ps1
+index a289b42..3927646 100644
+--- a/progetto/build-dashboard.ps1
++++ b/progetto/build-dashboard.ps1
+@@ -44,6 +44,7 @@ Write-Host 'Controllo sintassi di tutti gli script PowerShell...' -ForegroundCol
+ & (Join-Path $PSScriptRoot 'audit\tools\check_window_controls_r28.ps1')
+ & (Join-Path $PSScriptRoot 'audit\tools\check_window_diagnostics_r29.ps1')
+ & (Join-Path $PSScriptRoot 'audit\tools\check_tray_callbacks_r30.ps1')
++& (Join-Path $PSScriptRoot 'audit\tools\check_search_hosts_r31.ps1')
+ Write-Host 'Test catalogo eventi, struttura JSONL e privacy...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.DiagnosticsTests' -Project '.\tests\ProcessLens.DiagnosticsTests\ProcessLens.DiagnosticsTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.DiagnosticsTests\ProcessLens.DiagnosticsTests.csproj','-c','Release')
+ Write-Host 'Test del lettore SQLite (solo lettura, dati sintetici)...' -ForegroundColor Cyan
+diff --git a/progetto/src/ProcessLens.App/MainWindow.xaml b/progetto/src/ProcessLens.App/MainWindow.xaml
+index 95089c7..04c51b2 100644
+--- a/progetto/src/ProcessLens.App/MainWindow.xaml
++++ b/progetto/src/ProcessLens.App/MainWindow.xaml
+@@ -298,7 +298,7 @@
+                 <Button x:Name="NewTaskButton" Content="Esegui nuova attività" Margin="2"
+                         Style="{StaticResource ActionButtonStyle}" Click="NewTask_Click"/>
+             </WrapPanel>
+-            <Border Grid.Column="2" Style="{StaticResource PanelStyle}" Padding="12,9">
++            <Border x:Name="SearchSurface" Grid.Column="2" Style="{StaticResource PanelStyle}" Padding="12,9" MouseLeftButtonDown="SearchSurface_MouseLeftButtonDown">
+                 <Grid>
+                     <Grid.ColumnDefinitions>
+                         <ColumnDefinition Width="Auto"/>
+@@ -308,11 +308,11 @@
+                     <TextBox x:Name="SearchBox"
+                              Grid.Column="1"
+                              Height="34"
+-                             BorderThickness="0"
+-                             Background="Transparent"
++                             BorderThickness="1" BorderBrush="#98A2B3" Padding="6,0"
++                             Background="White" Foreground="#101828" CaretBrush="#175CD3"
+                              FontSize="14"
+                              VerticalContentAlignment="Center"
+-                             ToolTip="Cerca per nome, PID, tipo suggerito, progetto o padre"
++                             ToolTip="Cerca per nome visualizzato, eseguibile o PID esatto. Ctrl+F per scrivere."
+                              TextChanged="SearchBox_TextChanged"/>
+                 </Grid>
+             </Border>
+diff --git a/progetto/src/ProcessLens.App/MainWindow.xaml.cs b/progetto/src/ProcessLens.App/MainWindow.xaml.cs
+index f44abd5..7afe49b 100644
+--- a/progetto/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/progetto/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -114,6 +114,11 @@ public partial class MainWindow : Window
+         _monitoringEnabled = startMonitoring;
+         InitializeComponent();
+         WindowDiagnostics = new WindowActionDiagnostics(this, MinimizeWindowButton, startMonitoring);
++        CommandBindings.Add(new System.Windows.Input.CommandBinding(System.Windows.Input.ApplicationCommands.Find,
++            (_, e) => { FocusSearch(selectAll: true); e.Handled = true; },
++            (_, e) => { e.CanExecute = SearchBox.IsEnabled; e.Handled = true; }));
++        InputBindings.Add(new System.Windows.Input.KeyBinding(System.Windows.Input.ApplicationCommands.Find,
++            System.Windows.Input.Key.F, System.Windows.Input.ModifierKeys.Control));
+         _listViewport = new AutomaticViewport(ProcessList, () => FindVisualChild<ScrollViewer>(ProcessList));
+         _detailViewport = new AutomaticViewport(ProcessDetailsScroll, () => ProcessDetailsScroll);
+         ProcessList.ItemsSource = _visibleRows;
+@@ -586,7 +591,7 @@ public partial class MainWindow : Window
+ 
+         if (!string.IsNullOrWhiteSpace(search))
+         {
+-            rows = rows.Where(row => ProcessIdentitySearch.Matches(row.Process, search, row.FriendlyName));
++            rows = rows.Where(row => ProcessIdentitySearch.Matches(row.Process, search, row.FriendlyName) || WindowsHostReference.Matches(row.Process, search));
+         }
+ 
+         rows = ApplySort(rows);
+@@ -602,7 +607,7 @@ public partial class MainWindow : Window
+         {
+             var members = family.Members.Where(x => rowByPid.ContainsKey(x.Pid)).Select(x => rowByPid[x.Pid]).ToArray();
+             if (members.Length == 0) continue;
+-            string title = allByPid[family.Root.Pid].FriendlyName;
++            string title = WindowsHostReference.ListTitle(allByPid[family.Root.Pid].Process, allByPid[family.Root.Pid].FriendlyName);
+             if (!previousGroups.TryGetValue(family.Key, out var group))
+                 group = new ProcessGroupRow(family.Key, title, members, family.Members.Count)
+                     { IsExpanded = _groupExpansion.GetValueOrDefault(family.Key) };
+@@ -641,6 +646,9 @@ public partial class MainWindow : Window
+             CurrentFilterText.Text = (_activeFilter == "Tutti" ? "Vista: tutti i processi" : $"Vista: {_activeFilter}") +
+                 (grouped ? $" · {_processGroups.Count} gruppi · {visible.Count} PID" : "");
+ 
++            if (search.Length > 0) CurrentFilterText.Text += visible.Count == 0
++                ? " · Nessun risultato per «" + search[..Math.Min(search.Length, 100)] + "»"
++                : " · Cerca: «" + search[..Math.Min(search.Length, 100)] + "»";
+             ProcessRow? item = null;
+ 
+             if (selectedPid is not null)
+@@ -740,6 +748,19 @@ public partial class MainWindow : Window
+         if (IsLoaded && ProcessList is not null) ApplyFilter(_selectedPid, preserveScroll: true);
+     }
+ 
++    internal bool FocusSearch(bool selectAll = false)
++    {
++        if (!SearchBox.IsEnabled) return false;
++        bool focused = SearchBox.Focus();
++        if (selectAll) SearchBox.SelectAll();
++        return focused;
++    }
++    private void SearchSurface_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
++    {
++        // Unhandled border/label clicks focus the field; clicks inside the editor retain caret/selection.
++        if (!SearchBox.IsKeyboardFocusWithin) FocusSearch();
++    }
++
+     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+     {
+         if (!IsLoaded || SearchBox is null || ProcessList is null || ServiceList is null) return;
+@@ -1071,6 +1092,8 @@ public partial class MainWindow : Window
+         var windowsContext = WindowsComponentContext.Describe(p);
+         WindowsComponentContextExpander.Visibility = windowsContext.IsApplicable ? Visibility.Visible : Visibility.Collapsed;
+         WindowsComponentContextText.Text = ReportLayout.Sections(windowsContext.Report)[0].Body;
++        WindowsComponentContextExpander.Header = WindowsHostReference.Find(p.Name) is { } hostReference
++            ? hostReference.Title + " · scheda Microsoft" : "Componente Windows · ruolo e dati";
+         DetailOwnerText.Text = i.OwnerApp;
+         DetailTypeText.Text = i.Role;
+         var identification = ProcessDetailPresentation.IdentificationExplanation(p, i);
+diff --git a/progetto/src/ProcessLens.App/ProcessLens.App.csproj b/progetto/src/ProcessLens.App/ProcessLens.App.csproj
+index cc10f90..eee4183 100644
+--- a/progetto/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/progetto/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R30-tray-click-routing-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R31-search-hosts-window-menu-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+diff --git a/progetto/src/ProcessLens.App/ProcessRow.cs b/progetto/src/ProcessLens.App/ProcessRow.cs
+index 1868fe3..01dce67 100644
+--- a/progetto/src/ProcessLens.App/ProcessRow.cs
++++ b/progetto/src/ProcessLens.App/ProcessRow.cs
+@@ -36,7 +36,9 @@ public sealed class ProcessRow(ProcessSnapshot process, ProcessInsight insight)
+         foreach (var change in MemoryChanges) PropertyChanged?.Invoke(this, change);
+     }
+     public ProcessGroupRow? Group { get; internal set; }
+-    public string MemberLabel => $"{Insight.Role} · PID {Pid}";
++    public string MemberLabel => (Process.ServiceDisplayNames.Count > 0 || Process.ServiceNames.Count > 0
++        ? WindowsHostReference.Services(Process)
++        : WindowsHostReference.Find(Process.Name) is { } host ? $"Dal nome: {host.Title}" : Insight.Role) + $" · PID {Pid}";
+     public string Name => Process.Name;
+     public ImageSource? IconSource => ProcessIconResolver.GetIcon(Process);
+     public string IconDescription => ProcessIconResolver.IconDescription(Process);
+diff --git a/progetto/src/ProcessLens.App/TrayWindowController.cs b/progetto/src/ProcessLens.App/TrayWindowController.cs
+index db333b0..cbe6737 100644
+--- a/progetto/src/ProcessLens.App/TrayWindowController.cs
++++ b/progetto/src/ProcessLens.App/TrayWindowController.cs
+@@ -18,6 +18,8 @@ internal sealed class TrayWindowController : IDisposable
+     private readonly HwndSource _source;
+     private readonly IntPtr _hwnd;
+     private readonly ContextMenu _menu;
++    private readonly MenuItem _minimizeMenuItem;
++    private bool _menuOpenQueued;
+     private readonly Action _shutdown;
+     private readonly Action<bool> _activity;
+     private readonly DeferredWindowActions _actions;
+@@ -47,6 +49,8 @@ internal sealed class TrayWindowController : IDisposable
+         var open = new MenuItem { Header = "Mostra ProcessLens" };
+         open.Click += (_, _) => { _diagnostics?.BeginTrayAttempt("menu Mostra ProcessLens"); _diagnostics?.Record("RESTORE_SOURCE", "menu Mostra ProcessLens"); RequestRestore(); };
+         var minimize = new MenuItem { Header = "Riduci a icona" };
++        _minimizeMenuItem = minimize;
++        _menu.Opened += MenuOpened;
+         minimize.Click += (_, _) => { _diagnostics?.BeginTrayAttempt("menu Riduci a icona"); _diagnostics?.Record("MINIMIZE_SOURCE", "menu tray"); RequestMinimize(); };
+         var exit = new MenuItem { Header = "Esci da ProcessLens" };
+         exit.Click += (_, _) => { AllowExit(); _shutdown(); };
+@@ -88,6 +92,7 @@ internal sealed class TrayWindowController : IDisposable
+     {
+         if (_disposed || _exitRequested) return;
+         _diagnostics?.Snapshot("MINIMIZE_ENTER");
++        _diagnostics?.SetOwnerMinimized(true);
+         _menu.IsOpen = false;
+         _window.ShowInTaskbar = true;
+         int generation = ++_transitionGeneration;
+@@ -151,6 +156,7 @@ internal sealed class TrayWindowController : IDisposable
+         if (IsIconic(hwnd)) ShowWindow(hwnd, 9); // SW_RESTORE before restoring the saved WPF state.
+         _window.WindowState = restoreState;
+         bool activated = _window.Activate();
++        _diagnostics?.SetOwnerMinimized(false);
+         AppDiagnostics.RecordWindowAction($"Ripristino finestra: visibile={_window.IsVisible}, stato={_window.WindowState}, primo piano={activated}.");
+         QueueActivityUpdate();
+     }
+@@ -205,8 +211,7 @@ internal sealed class TrayWindowController : IDisposable
+             else if (TrayCallbackRouter.IsContextMenu(packet))
+             {
+                 _diagnostics?.Record("TRAY_MENU", "tasto destro; apertura menu");
+-                SetForegroundWindow(_hwnd);
+-                _menu.IsOpen = true;
++                OpenTrayMenu();
+             }
+             else if (packet.Notification != 0x0200)
+                 _diagnostics?.Record("TRAY_DECISION", packet.Identified ? "evento senza azione" : "ID/formato non corrispondente alla nostra icona");
+@@ -215,6 +220,32 @@ internal sealed class TrayWindowController : IDisposable
+         return IntPtr.Zero;
+     }
+ 
++    private void OpenTrayMenu()
++    {
++        if (_disposed || _exitRequested) return;
++        if (_menuOpenQueued || _menu.IsOpen) { _diagnostics?.Record("TRAY_MENU", "seconda notifica dello stesso menu ignorata"); return; }
++        _menuOpenQueued = true;
++        _window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() => {
++            _menuOpenQueued = false;
++            if (_disposed || _exitRequested) return;
++            var hwnd = new WindowInteropHelper(_window).Handle;
++            bool reduced = _window.WindowState == WindowState.Minimized || (hwnd != IntPtr.Zero && IsIconic(hwnd));
++            _minimizeMenuItem.IsEnabled = !reduced || _diagnostics?.LogVisible == true;
++            _minimizeMenuItem.ToolTip = _minimizeMenuItem.IsEnabled ? "Riduce la finestra e il log aperto." : "ProcessLens è già ridotto. Usa Mostra ProcessLens per riaprirlo.";
++            _menu.IsOpen = true;
++        }));
++    }
++    private void MenuOpened(object sender, RoutedEventArgs e)
++    {
++        // Foreground the menu's own popup, never the minimized application window.
++        bool popupActivated = false;
++        if (PresentationSource.FromVisual(_menu) is HwndSource popup && popup.Handle != IntPtr.Zero)
++            popupActivated = SetForegroundWindow(popup.Handle);
++        _diagnostics?.Record("TRAY_MENU_POPUP", $"richiesta primo piano al solo menu: esito={popupActivated}");
++        _menu.Focus();
++        _diagnostics?.Snapshot("TRAY_MENU_OPENED");
++    }
++
+     private void AllowCallback(uint message, string name)
+     {
+         bool allowed = ChangeWindowMessageFilterEx(_hwnd, message, 1, IntPtr.Zero);
+@@ -258,6 +289,7 @@ internal sealed class TrayWindowController : IDisposable
+         _disposed = true;
+         _actions.Dispose();
+         _menu.IsOpen = false;
++        _menu.Opened -= MenuOpened;
+         _window.Closing -= Closing; _window.Closed -= Closed;
+         _window.StateChanged -= StateChanged; _window.IsVisibleChanged -= VisibilityChanged;
+         if (!_source.IsDisposed) _source.RemoveHook(WindowMessage);
+diff --git a/progetto/src/ProcessLens.App/WindowActionDiagnostics.cs b/progetto/src/ProcessLens.App/WindowActionDiagnostics.cs
+index e380af8..2856aff 100644
+--- a/progetto/src/ProcessLens.App/WindowActionDiagnostics.cs
++++ b/progetto/src/ProcessLens.App/WindowActionDiagnostics.cs
+@@ -23,7 +23,11 @@ internal sealed class WindowActionDiagnostics : IDisposable
+     private bool _disposed;
+     private long _inputTicks;
+     private Window? _logWindow;
+-    internal string Report => "ProcessLens · diagnostica finestra e icona R30" + Environment.NewLine +
++    private bool _logHiddenForOwner;
++    private WindowState _logRestoreState = WindowState.Normal;
++    private bool _logSyncQueued;
++    internal bool LogVisible => _logWindow?.IsVisible == true;
++    internal string Report => "ProcessLens · diagnostica finestra e icona R31" + Environment.NewLine +
+         "Versione: " + typeof(WindowActionDiagnostics).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion + Environment.NewLine +
+         "File: " + AppDiagnostics.WindowLogFile + Environment.NewLine +
+         (_persist ? AppDiagnostics.WindowTraceStatus : "Modalità prova: nessuna scrittura del log su disco.") + Environment.NewLine +
+@@ -54,7 +58,7 @@ internal sealed class WindowActionDiagnostics : IDisposable
+         _window.StateChanged += StateChanged;
+         _window.IsVisibleChanged += VisibilityChanged;
+         _window.Closed += Closed;
+-        Record("SESSIONE", $"PID={Environment.ProcessId}; R30; log locale; nessuna acquisizione processi/rete");
++        Record("SESSIONE", $"PID={Environment.ProcessId}; R31; log locale; nessuna acquisizione processi/rete");
+     }
+     internal void BeginTrayAttempt(string detail)
+     {
+@@ -101,7 +105,7 @@ internal sealed class WindowActionDiagnostics : IDisposable
+             Record(stage, $"HWND={hwnd.ToInt64():X}; WPF={_window.WindowState}; visibile={_window.IsVisible}; " +
+                 $"iconica={(hwnd != IntPtr.Zero && IsIconic(hwnd))}; visibileWin32={(hwnd != IntPtr.Zero && IsWindowVisible(hwnd))}; " +
+                 $"primoPiano={(hwnd != IntPtr.Zero && GetForegroundWindow() == hwnd)}; barra={_window.ShowInTaskbar}; " +
+-                $"attiva={_window.IsActive}; pulsanteAbilitato={_button.IsEnabled}; modalita={_window.ResizeMode}; finestreFiglie={_window.OwnedWindows.Count}");
++                $"attiva={_window.IsActive}; logVisibile={LogVisible}; figlieVisibili={_window.OwnedWindows.Cast<Window>().Count(x => x.IsVisible)}; pulsanteAbilitato={_button.IsEnabled}; modalita={_window.ResizeMode}; finestreFiglie={_window.OwnedWindows.Count}");
+         } catch (Exception ex) { Record("SNAPSHOT_ERROR", ex.GetType().Name); }
+     }
+     internal void NativeMessage(int message, long parameter)
+@@ -113,7 +117,29 @@ internal sealed class WindowActionDiagnostics : IDisposable
+         } else if (message == 0x0010) Begin("CLOSE", "WM_CLOSE; X segue la politica di riduzione");
+         else if (message == 0x0005 && parameter is >= 0 and <= 2) Record("WM_SIZE", $"tipo={parameter} (0 ripristino, 1 riduzione, 2 ingrandimento)");
+     }
+-    private void StateChanged(object? sender, EventArgs e) => Snapshot("STATE");
++    private void StateChanged(object? sender, EventArgs e)
++    {
++        Snapshot("STATE");
++        if (_disposed || _logSyncQueued) return;
++        _logSyncQueued = true;
++        _window.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
++            _logSyncQueued = false;
++            if (!_disposed) SetOwnerMinimized(_window.WindowState == WindowState.Minimized);
++        }));
++    }
++    internal void SetOwnerMinimized(bool minimized)
++    {
++        try
++        {
++            if (minimized && _logWindow?.IsVisible == true) {
++                _logHiddenForOwner = true; _logWindow.Hide(); Record("LOG_WINDOW", "nascosto con la finestra principale");
++            } else if (!minimized && _logHiddenForOwner && _logWindow is not null) {
++                _logHiddenForOwner = false; _logWindow.ShowActivated = false; _logWindow.WindowState = _logRestoreState; _logWindow.Show();
++                Record("LOG_WINDOW", "riaperto con la finestra principale, senza richiedere il primo piano");
++            }
++        }
++        catch (Exception ex) { Record("LOG_WINDOW_ERROR", ex.GetType().Name); }
++    }
+     private void VisibilityChanged(object sender, DependencyPropertyChangedEventArgs e) => Snapshot("VISIBILITA");
+     private void Closed(object? sender, EventArgs e) => Dispose();
+     internal void ShowLog()
+@@ -122,14 +148,16 @@ internal sealed class WindowActionDiagnostics : IDisposable
+         var panel = CreateLogContent();
+         var log = new Window { Owner = _window, Title = "ProcessLens · Log finestra", Width = 900, Height = 540,
+             MinWidth = 420, MinHeight = 260, Content = panel, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+-        _logWindow = log; log.Closed += (_, _) => _logWindow = null;
++        _logRestoreState = WindowState.Normal;
++        log.StateChanged += (_, _) => { if (log.WindowState != WindowState.Minimized) _logRestoreState = log.WindowState; };
++        _logWindow = log; log.Closed += (_, _) => { _logWindow = null; _logHiddenForOwner = false; };
+         log.Show(); // Modeless: it must not disable the Minimize button being diagnosed.
+     }
+     internal DockPanel CreateLogContent()
+     {
+-        var text = new TextBox { IsReadOnly = true, AcceptsReturn = true, TextWrapping = TextWrapping.NoWrap,
+-            VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+-            FontFamily = new System.Windows.Media.FontFamily("Consolas"), FontSize = 12, Margin = new Thickness(8), Text = Report };
++        var text = new TextBox { IsReadOnly = true, AcceptsReturn = true, TextWrapping = TextWrapping.Wrap,
++            VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
++            FontFamily = new System.Windows.Media.FontFamily("Consolas"), FontSize = 13, Margin = new Thickness(8), Text = Report };
+         var controls = new WrapPanel { Margin = new Thickness(6) };
+         Button ActionButton(string label, Action action) {
+             var b = new Button { Content = label, Margin = new Thickness(2), Padding = new Thickness(10, 7, 10, 7),
+diff --git a/progetto/src/ProcessLens.App/WindowsComponentContext.cs b/progetto/src/ProcessLens.App/WindowsComponentContext.cs
+index a9e5e87..36cdf23 100644
+--- a/progetto/src/ProcessLens.App/WindowsComponentContext.cs
++++ b/progetto/src/ProcessLens.App/WindowsComponentContext.cs
+@@ -27,6 +27,7 @@ internal static class WindowsComponentContext
+                 "https://learn.microsoft.com/en-us/windows/win32/dwm/dwm-overview"),
+             _ => ("Funzione sconosciuta. I servizi associati non identificano l’autore dell’eseguibile.", "")
+         };
++        if (WindowsHostReference.Find(p.Name) is { } host) reference = (host.Summary, host.Source);
+         bool applicable = reference.Source.Length > 0 || p.ServiceNames.Count > 0 || p.IsCritical;
+         string services = p.ServiceNames.Count > 0
+             ? string.Join(", ", p.ServiceNames.Take(16)) + (p.ServiceNames.Count > 16 ? " (elenco parziale)" : "")
+diff --git a/progetto/src/ProcessLens.Core/WindowsComponentCatalog.cs b/progetto/src/ProcessLens.Core/WindowsComponentCatalog.cs
+index fa61d4c..420f206 100644
+--- a/progetto/src/ProcessLens.Core/WindowsComponentCatalog.cs
++++ b/progetto/src/ProcessLens.Core/WindowsComponentCatalog.cs
+@@ -87,6 +87,10 @@ public static class WindowsComponentCatalog
+             "Gestisce l'indice di ricerca. Il campione non verifica lo stato dell'indice o il documento in elaborazione.", @"System32\SearchIndexer.exe"),
+         new("searchprotocolhost", "SearchProtocolHost.exe", "Servizi", "Host dei protocolli di Windows Search",
+             "Ospita i gestori che accedono alle fonti da indicizzare, anche di terze parti. Il campione non legge i contenuti indicizzati.", @"System32\SearchProtocolHost.exe"),
++        new("prevhost", "prevhost.exe", "Desktop e console", "Host delle anteprime di file",
++            "Ospita gestori di anteprima fuori dal processo chiamante. Il campione non identifica il file visualizzato o il gestore caricato.", @"System32\prevhost.exe"),
++        new("smartscreen", "smartscreen.exe", "Sicurezza", "Controlli di reputazione SmartScreen",
++            "Componente dei controlli di reputazione di Microsoft Defender SmartScreen. La presenza non prova una verifica o una minaccia in corso.", @"System32\smartscreen.exe"),
+         new("searchfilterhost", "SearchFilterHost.exe", "Servizi", "Host dei filtri di Windows Search",
+             "Ospita filtri e gestori delle proprietà per estrarre dati da indicizzare. La presenza non identifica il filtro o il file elaborato.", @"System32\SearchFilterHost.exe")
+     });
+@@ -104,7 +108,7 @@ public static class WindowsComponentCatalog
+         string actual = p.Path.Replace('/', '\\');
+         if (actual.Equals(expected, StringComparison.OrdinalIgnoreCase)) return d;
+         // Explicit 32-bit Windows host locations; not an arbitrary path or name wildcard.
+-        if (d.Id is "ctfmon" or "dllhost" or "wmiprvse" or "searchprotocolhost" or "searchfilterhost")
++        if (d.Id is "prevhost" or "ctfmon" or "dllhost" or "wmiprvse" or "searchprotocolhost" or "searchfilterhost")
+             return actual.Equals(windowsDirectory.Replace('/', '\\').TrimEnd('\\') + "\\SysWOW64\\" + d.RelativePath[9..],
+                 StringComparison.OrdinalIgnoreCase) ? d : null;
+         return null;
+diff --git a/progetto/src/ProcessLens.Core/WindowsHostReference.cs b/progetto/src/ProcessLens.Core/WindowsHostReference.cs
+new file mode 100644
+index 0000000..a4a5002
+--- /dev/null
++++ b/progetto/src/ProcessLens.Core/WindowsHostReference.cs
+@@ -0,0 +1,47 @@
++namespace ProcessLens.Core;
++
++public sealed record WindowsHostEntry(string Executable, string Title, string Summary, string Source);
++// Architectural reference, matched by exact executable name, not an authenticity check.
++public static class WindowsHostReference
++{
++    public static IReadOnlyList<WindowsHostEntry> Entries { get; } = Array.AsReadOnly(new[] {
++        new WindowsHostEntry("svchost.exe", "Host di servizi Windows",
++            "Carica servizi implementati in DLL. I servizi ospitati variano tra PID: usa l’associazione SCM del campione, non il solo nome.",
++            "https://learn.microsoft.com/en-us/windows/application-management/svchost-service-refactoring"),
++        new("prevhost.exe", "Host delle anteprime",
++            "Ospita gestori che mostrano anteprime di file fuori dal processo chiamante. Il nome non rivela il file visualizzato o il gestore caricato.",
++            "https://learn.microsoft.com/en-us/windows/win32/shell/preview-handlers"),
++        new("RuntimeBroker.exe", "Runtime Broker · permessi delle app",
++            "Supporta la gestione dei permessi delle app Microsoft Store. Il campione non identifica quale app o autorizzazione sia coinvolta.",
++            "https://support.microsoft.com/en-us/windows/runtime-broker-is-using-too-much-memory-ca6ed4e3-2a36-964c-4d2e-8c93980d8a98"),
++        new("smartscreen.exe", "Microsoft Defender SmartScreen",
++            "Componente dei controlli di reputazione contro file e applicazioni potenzialmente dannosi. La presenza del processo non prova una scansione o una minaccia in corso.",
++            "https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/")
++    });
++    public static WindowsHostEntry? Find(string name) => Entries.FirstOrDefault(x =>
++        x.Executable.Equals(name, StringComparison.OrdinalIgnoreCase) ||
++        x.Executable[..^4].Equals(name, StringComparison.OrdinalIgnoreCase));
++    public static bool Matches(ProcessSnapshot process, string query)
++    {
++        string text = query.Trim();
++        if (text.Length == 0 || text.All(char.IsAsciiDigit)) return false;
++        var entry = Find(process.Name);
++        if (entry is null) return false;
++        if (entry.Title.Contains(text, StringComparison.OrdinalIgnoreCase)) return true;
++        return entry.Executable == "svchost.exe" && process.ServiceDisplayNames.Concat(process.ServiceNames).Take(16)
++            .Any(name => name.Contains(text, StringComparison.OrdinalIgnoreCase));
++    }
++    public static string ListTitle(ProcessSnapshot p, string fallback)
++    {
++        var entry = Find(p.Name);
++        if (entry is null) return fallback;
++        var names = p.ServiceDisplayNames.Count > 0 ? p.ServiceDisplayNames : p.ServiceNames;
++        if (entry.Executable == "svchost.exe" && names.Count > 0)
++            return "Host servizi · " + string.Join(", ", names.Take(2)) + (names.Count > 2 ? "…" : "");
++        return entry.Title;
++    }
++    public static string Services(ProcessSnapshot p) => p.ServiceDisplayNames.Count > 0
++        ? "Servizi: " + string.Join(", ", p.ServiceDisplayNames.Take(2)) + (p.ServiceDisplayNames.Count > 2 ? "…" : "")
++        : p.ServiceNames.Count > 0 ? "Servizi: " + string.Join(", ", p.ServiceNames.Take(2)) + (p.ServiceNames.Count > 2 ? "…" : "")
++        : "Servizi ospitati: elenco non disponibile";
++}
+diff --git a/progetto/src/ProcessLens.Semantics/RoleClassifier.cs b/progetto/src/ProcessLens.Semantics/RoleClassifier.cs
+index db288b3..0b572cb 100644
+--- a/progetto/src/ProcessLens.Semantics/RoleClassifier.cs
++++ b/progetto/src/ProcessLens.Semantics/RoleClassifier.cs
+@@ -403,6 +403,14 @@ internal static partial class RoleClassifier
+                     "Ospita task pianificati di Windows; il singolo task attivo non è esposto nel nome.",
+                     "Interrompe le attività pianificate attualmente ospitate in questo processo.", "MEDIO", "Windows", 96,
+                     "eseguibile Task Host Windows (taskhostw.exe)");
++            case "prevhost" or "smartscreen":
++                var reference = WindowsHostReference.Find(p.Name)!;
++                return R(reference.Title + " (dal nome)", "Dal nome: " + reference.Title,
++                    reference.Summary + " Funzione tipica dal nome; identità e attività corrente non verificate.",
++                    "Motivo dell’avvio sconosciuto.",
++                    "La chiusura può interrompere il componente ospitato; l’operazione corrente non è identificata.",
++                    "DA VERIFICARE", p.ExecutablePath is { } hostPath && SystemProcessPresentation.UnderWindows(hostPath, Environment.GetFolderPath(Environment.SpecialFolder.Windows)) ? "Windows" : "Background", 75,
++                    $"nome eseguibile: {p.Name}; riferimento Microsoft: {reference.Source}");
+             case "runtimebroker":
+                 return R("Runtime Broker di Windows", "Media permessi e risorse di sistema per le app pacchettizzate",
+                     "Gestisce le autorizzazioni e i contratti di sistema per le applicazioni Windows/UWP.",
+diff --git a/progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj b/progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj
+index 50d9794..86ba797 100644
+--- a/progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj
++++ b/progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj
+@@ -5,4 +5,4 @@
+ <Compile Include="../../src/ProcessLens.Windows/WindowsDeepProcessInspector.cs" Link="WindowsDeepProcessInspector.cs"/>
+ <Compile Include="../../src/ProcessLens.App/ProcessDisplayFormatter.cs" Link="ProcessDisplayFormatter.cs"/>
+ <Compile Include="../../src/ProcessLens.App/ProcessNetworkPresentation.cs" Link="ProcessNetworkPresentation.cs"/>
+-<Compile Include="../../src/ProcessLens.App/WindowLifetimePolicy.cs" Link="WindowLifetimePolicy.cs"/><Compile Include="../../src/ProcessLens.App/ReadingPositionPolicy.cs" Link="ReadingPositionPolicy.cs"/><Compile Include="../../src/ProcessLens.App/WindowsProcessIconPolicy.cs" Link="WindowsProcessIconPolicy.cs"/><Compile Include="../../src/ProcessLens.App/IconPreferencePolicy.cs" Link="IconPreferencePolicy.cs"/><Compile Include="../../src/ProcessLens.App/DeferredDiagnosticWriter.cs" Link="DeferredDiagnosticWriter.cs"/><Compile Include="../../src/ProcessLens.App/WindowDiagnosticJournal.cs" Link="WindowDiagnosticJournal.cs"/><Compile Include="../../src/ProcessLens.App/NativeIconPreference.cs" Link="NativeIconPreference.cs"/><Compile Include="../../src/ProcessLens.App/TrayCallbackRouter.cs" Link="TrayCallbackRouter.cs"/></ItemGroup></Project>
++<Compile Include="../../src/ProcessLens.App/WindowLifetimePolicy.cs" Link="WindowLifetimePolicy.cs"/><Compile Include="../../src/ProcessLens.App/ReadingPositionPolicy.cs" Link="ReadingPositionPolicy.cs"/><Compile Include="../../src/ProcessLens.App/WindowsProcessIconPolicy.cs" Link="WindowsProcessIconPolicy.cs"/><Compile Include="../../src/ProcessLens.App/IconPreferencePolicy.cs" Link="IconPreferencePolicy.cs"/><Compile Include="../../src/ProcessLens.App/DeferredDiagnosticWriter.cs" Link="DeferredDiagnosticWriter.cs"/><Compile Include="../../src/ProcessLens.App/WindowDiagnosticJournal.cs" Link="WindowDiagnosticJournal.cs"/><Compile Include="../../src/ProcessLens.App/NativeIconPreference.cs" Link="NativeIconPreference.cs"/><Compile Include="../../src/ProcessLens.App/TrayCallbackRouter.cs" Link="TrayCallbackRouter.cs"/><Compile Include="../../src/ProcessLens.App/WindowsComponentContext.cs" Link="WindowsComponentContext.cs"/></ItemGroup></Project>
+diff --git a/progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs b/progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs
+index 71ecc37..ffeb34b 100644
+--- a/progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs
++++ b/progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs
+@@ -342,3 +342,31 @@ using(var window30=new DeferredWindowActions(a=>queue30.Enqueue(a),()=>{minimize
+     Check(queue30.Count==0,"R30 exit/disposal stops pending tray window work");
+ }
+ Console.WriteLine("R30 notification-area routing and duplicate-callback regressions complete.");
++
++// R31 local host references are not executable identity checks.
++foreach(var entry31 in WindowsHostReference.Entries)
++{
++    Check(ReferenceEquals(WindowsHostReference.Find(entry31.Executable.ToUpperInvariant()),entry31),"R31 host dictionary exact name lookup: "+entry31.Executable);
++    Check(WindowsHostReference.Find("fake-"+entry31.Executable) is null&&WindowsHostReference.Find(@"C:\fake\"+entry31.Executable) is null,"R31 host dictionary rejects lookalike and path-as-name: "+entry31.Executable);
++    var p31=new ProcessSnapshot{Pid=9131,ParentPid=0,Name=entry31.Executable,CommandLine="SECRET_NOT_IN_REFERENCE"};
++    Check(WindowsHostReference.Matches(p31,entry31.Title),"R31 displayed host reference title is searchable: "+entry31.Executable);
++    Check(!WindowsHostReference.Matches(p31,"913")&&!WindowsHostReference.Matches(p31,"SECRET_NOT_IN_REFERENCE"),"R31 host alias never broadens PID or argument search: "+entry31.Executable);
++    var context31=WindowsComponentContext.Describe(p31);
++    Check(context31.IsApplicable&&context31.Report.Contains(entry31.Source)&&!context31.Report.Contains("SECRET_NOT_IN_REFERENCE"),"R31 context keeps the Microsoft source and omits secret arguments: "+entry31.Executable);
++}
++var svc31=new ProcessSnapshot{Pid=9132,ParentPid=0,Name="svchost.exe",ServiceNames=new[]{"One","Two","Three"},ServiceDisplayNames=new[]{"Primo","Secondo","Terzo"}};
++Check(WindowsHostReference.Services(svc31)=="Servizi: Primo, Secondo…","R31 SCM display names are bounded and remain actual snapshot data");
++Check(WindowsHostReference.Services(svc31 with {ServiceDisplayNames=Array.Empty<string>()})=="Servizi: One, Two…","R31 SCM technical names are retained when display names are missing");
++Check(WindowsHostReference.Services(svc31 with {ServiceDisplayNames=Array.Empty<string>(),ServiceNames=Array.Empty<string>()}).Contains("non disponibile"),"R31 absent SCM acquisition does not invent hosted services");
++var analyzer31=new ProcessLens.Semantics.ProcessIntelligenceAnalyzer();
++foreach(string name31 in new[]{"prevhost.exe","smartscreen.exe"})
++{
++    var i31=analyzer31.Analyze(new ProcessSnapshot{Pid=9133,ParentPid=0,Name=name31});
++    Check(i31.Role.Contains("dal nome")&&i31.WhatIsIt.Contains("attività corrente non verificate")&&i31.WhyRunning.Contains("sconosciuto"),"R31 name reference cannot prove identity current work or launch cause: "+name31);
++}
++Console.WriteLine("R31 host references and search boundaries complete.");
++
++Check(WindowsHostReference.ListTitle(svc31,"generic")=="Host servizi · Primo, Secondo…","R31 collapsed service host group exposes actual bounded SCM labels");
++Check(WindowsHostReference.Matches(svc31,"Secondo")&&!WindowsHostReference.Matches(svc31,"913"),"R31 search matches actual hosted SCM labels while retaining exact PID boundary");
++Check(WindowsHostReference.ListTitle(svc31 with {Name="thirdparty.exe"},"Original app")=="Original app","R31 reference dictionary cannot rename an unrelated application group");
++Check(WindowsHostReference.ListTitle(svc31 with {Name="prevhost.exe",ServiceDisplayNames=Array.Empty<string>(),ServiceNames=Array.Empty<string>()},"unknown")=="Host delle anteprime","R31 collapsed preview host has a useful reference title");
+diff --git a/progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs b/progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs
+index b29231f..06715ce 100644
+--- a/progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs
++++ b/progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs
+@@ -97,6 +97,14 @@ internal static class Program
+         var logContent29=main.WindowDiagnostics.CreateLogContent();
+         var box29=logContent29.Children.OfType<TextBox>().Single();
+         Check(box29.IsReadOnly&&box29.Text==main.WindowDiagnostics.Report,"R29 log text is selectable and matches the complete report without showing a window");
++        var reference31=new ProcessSnapshot{Pid=9131,ParentPid=0,Name="prevhost.exe",StartTime=start};
++        Set(main,"_allRows",new List<ProcessRow>{new(reference31,analyzer.Analyze(reference31)),Row(cloud)});
++        search.Text="Host delle anteprime";Filter(main);Drain();
++        Check(list.Items.Count==1&&((ProcessRow)list.Items[0]).Pid==9131,"R31 search finds the visible dictionary title without unrelated processes");
++        Check(((ProcessRow)list.Items[0]).Group!.Title.StartsWith("Host delle anteprime"),"R31 collapsed group uses the same readable host title as the search");
++        search.Text="no-result-fixture-31";Filter(main);
++        Check(list.Items.Count==0&&((SelectableText)main.FindName("CurrentFilterText")).Text.Contains("Nessun risultato"),"R31 missing search result explains the active query");
++        Check(((TextBox)main.FindName("SearchBox")).BorderThickness.Left>0&&main.FindName("SearchSurface") is Border,"R31 search has a visible editor and clickable label surface");
+         main.Close();Application.Current.Shutdown();
+         Console.WriteLine("R25 WPF fixture complete: no shown window, native process/network reads, tray registration or user clipboard.");
+     }
+@@ -113,7 +121,7 @@ internal static class Program
+     static void MainWindowSmoke()
+     {
+         // Real controls/activity callback, 100 synthetic rows. No process or network acquisition.
+-        var main=new MainWindow(false){Title="ProcessLens — prova finestra R30"};
++        var main=new MainWindow(false){Title="ProcessLens — prova finestra R31"};
+         var p=new ProcessSnapshot{Pid=2147400000,ParentPid=0,Name="fixture.exe",StartTime=DateTime.UtcNow.AddMinutes(-1),
+             PrivateWorkingSetAvailable=true,PrivateWorkingSetBytes=1048576,WorkingSetAvailable=true,WorkingSetBytes=2097152};
+         var analyzer=new ProcessIntelligenceAnalyzer();
+@@ -161,9 +169,25 @@ internal static class Program
+         Tray30(0x202,true,2);Tray30(0x406);Drain();
+         Check(!IsIconic(Handle()),"R30 actual HWND wrong icon and hover leave the window unchanged");
+         Check(main.WindowDiagnostics.Report.Contains("TRAY_CALLBACK")&&main.WindowDiagnostics.Report.Contains("TRAY_DECISION")&&main.WindowDiagnostics.Report.Contains("duplicato ignorato"),"R30 actual callback hook records packets before filtering and duplicate decisions");
++        Check(main.FocusSearch(),"R31 shown search field receives keyboard focus");
++        var search31=(TextBox)main.FindName("SearchBox");
++        System.Windows.Input.ApplicationCommands.Find.Execute(null,main);
++        Check(search31.IsKeyboardFocusWithin,"R31 Find command routes to the actual search editor");
+         ((Button)main.FindName("WindowLogButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+         var log29=main.OwnedWindows.Cast<Window>().Single(x=>x.Title.Contains("Log finestra"));
+         Check(main.IsEnabled&&log29.Content is DockPanel,"R29 log view is modeless and leaves the Minimize button usable");
++        controller.RequestMinimize();Until(()=>IsIconic(Handle())&&!log29.IsVisible);Drain();
++        Check(!log29.IsVisible,"R31 minimizing also hides the owned diagnostic window");
++        Tray30(0x205);Tray30(0x7B);Drain();
++        var menu31=(ContextMenu)typeof(TrayWindowController).GetField("_menu",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(controller)!;
++        Until(()=>menu31.IsOpen);
++        Check(IsIconic(Handle())&&!((MenuItem)menu31.Items[1]).IsEnabled,"R31 right-click menu preserves minimized state and disables redundant minimize");
++        ((MenuItem)menu31.Items[0]).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
++        Until(()=>!IsIconic(Handle())&&log29.IsVisible);Drain();
++        Check(log29.IsVisible&&log29.WindowState!=WindowState.Minimized,"R31 Show from tray restores the hidden diagnostic window with its owner");
++        SendMessageW(Handle(),0x112,new IntPtr(0xF020),IntPtr.Zero);Until(()=>IsIconic(Handle())&&!log29.IsVisible);Drain();
++        controller.RequestRestore();Until(()=>!IsIconic(Handle())&&log29.IsVisible&&log29.WindowState!=WindowState.Minimized);Drain();
++        Check(log29.WindowState==WindowState.Normal,"R31 native caption minimize also restores the diagnostic child to its saved normal state");
+         log29.Close();
+         Check(main.WindowDiagnostics.Report.Contains("MINIMIZE_RETURN")&&main.WindowDiagnostics.Report.Contains("STATE"),"R29 actual minimize records controller and WPF transitions");
+         SendMessageW(Handle(),0x112,new IntPtr(0xF020),IntPtr.Zero);Until(()=>IsIconic(Handle()));Drain();
+diff --git a/progetto/tests/ProcessLens.WindowsComponentTests/Program.cs b/progetto/tests/ProcessLens.WindowsComponentTests/Program.cs
+index 22962d1..cb02011 100644
+--- a/progetto/tests/ProcessLens.WindowsComponentTests/Program.cs
++++ b/progetto/tests/ProcessLens.WindowsComponentTests/Program.cs
+@@ -6,8 +6,8 @@ static void Check(bool ok, string label)
+ static SystemProcessEntry Row(int pid, string name, string? path = null, long? ram = null) =>
+     new(pid, 4, name, 2, 10, 0, ram, path, new DateTime(2026, 10, 21, 0, 0, 0, DateTimeKind.Utc));
+ const string win = @"D:\Windows";
+-Check(WindowsComponentCatalog.Definitions.Count == 29 && WindowsComponentCatalog.Definitions.Select(d => d.Id).Distinct().Count() == 29,
+-    "expanded finite catalog has 29 distinct component families");
++Check(WindowsComponentCatalog.Definitions.Count == 31 && WindowsComponentCatalog.Definitions.Select(d => d.Id).Distinct().Count() == 31,
++    "expanded finite catalog has 31 distinct component families");
+ foreach (var d in WindowsComponentCatalog.Definitions)
+ {
+     var row = Row(120, d.Name, d.RelativePath is null ? null : win + "\\" + d.RelativePath);
+diff --git a/supporto/avvia.ps1 b/supporto/avvia.ps1
+index 47ad03f..5f28a50 100644
+--- a/supporto/avvia.ps1
++++ b/supporto/avvia.ps1
+@@ -16,9 +16,9 @@ function Resolve-ProcessLensLaunch([string] $Root, [string] $UserLocalAppData) {
+         if (Test-DesktopRuntime8 $candidate) { $runtime = $candidate; break }
+     }
+     $exe = Join-Path $Root 'progetto/publish/win-x64/ProcessLens.exe'
+-    $receipt = Join-Path $Root 'supporto/build-r30.ok'
++    $receipt = Join-Path $Root 'supporto/build-r31.ok'
+     if ((Test-Path -LiteralPath $exe -PathType Leaf) -and (Test-Path -LiteralPath $receipt -PathType Leaf) -and
+-        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R30-tray-click-routing') {
++        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R31-search-hosts-window-menu') {
+         return [PSCustomObject]@{ Kind='Exe'; Entry=$exe; Runtime=$runtime }
+     }
+     return $null
+@@ -47,14 +47,14 @@ function Invoke-ProcessLensBuild([string] $Root, [string] $UserLocalAppData) {
+     if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
+         throw 'SDK .NET non trovato. Usa lo SDK 8 gia installato oppure quello della precedente installazione R20. Nessun download automatico.'
+     }
+-    Write-Host 'Primo avvio R30: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
++    Write-Host 'Primo avvio R31: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
+     Write-Host 'Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.'
+     Push-Location -LiteralPath $project
+     try { & (Join-Path $project 'build-dashboard.ps1') }
+     finally { Pop-Location }
+     $exe = Join-Path $project 'publish/win-x64/ProcessLens.exe'
+     if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { throw 'Compilazione senza eseguibile R23. Avvio interrotto.' }
+-    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r30.ok') -Value 'ProcessLens-R30-tray-click-routing' -Encoding ASCII
++    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r31.ok') -Value 'ProcessLens-R31-search-hosts-window-menu' -Encoding ASCII
+ }
+ function Quote-LaunchArgument([string] $Value) {
+     if ($Value.Contains('"') -or $Value -match "[`r`n]") { throw 'Percorso non valido.' }

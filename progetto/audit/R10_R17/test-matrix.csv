@@ -1,0 +1,14 @@
+test,kind,status,details
+NativeCaptureTests,Roslyn + .NET 8 Linux,PASS,"75 assertions; independent binary fixtures and owned fake API, no live driver"
+NativeNetworkTests,Roslyn + .NET 8 Linux,PASS,40 assertions; synthetic Security XML and audit API boundary
+WindowsComponentTests,Roslyn + .NET 8 Linux,PASS,58 assertions
+SystemProcessTests,Roslyn + .NET 8 Linux,PASS PORTABLE,22 assertions; live Windows branch skipped
+NetworkDeviceTests,Roslyn + .NET 8 Linux,PASS,81 assertions; synthetic tables and real temporary catalog files
+Edited C# syntax,Roslyn syntax parser,PASS,6 files; not markup compilation
+Windows / Semantics / App and three UI test assemblies,Roslyn + WindowsDesktop references + generated-field stubs,PASS TYPE CHECK ONLY,"6 assemblies, zero compiler warnings; NOT markup/BAML compilation or test execution"
+WPF runtime including R17 native fixtures,Windows Dispatcher fixtures,NOT EXECUTED,"Fixture supplied for lazy discovery, explicit source, copying, pending/coalesced operations, close/reopen and unavailable Wi-Fi"
+Native PktMon and WLAN calls,Live Windows,NOT EXECUTED,"No packet capture, radio changes or real permissions tested here"
+Complete build / publish / PowerShell syntax,Windows build-dashboard.ps1,NOT EXECUTED,Standard stages retained; new native source gate and portable suite added
+DPI / real RAM / CPU / radio compatibility,Windows manual,NOT EXECUTED,No total RAM overhead or saving asserted
+Current R17 source and evidence guards,Python source/XML/mutations,PASS,188 checks; no C# execution
+R16 to R17 patch replay,git apply and byte comparison,PASS,26 changed or added files; audit metadata and manifest excluded

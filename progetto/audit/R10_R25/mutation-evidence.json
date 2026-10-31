@@ -1,0 +1,38 @@
+[
+  {
+    "mutation": "search-arguments",
+    "expected_failure": "parent, arguments and PID substrings cannot add unrelated search results",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.Core/ProcessGrouping.cs",
+    "production_sha256": "d7884fcc697c34e68960849158d51cf691cf24e95a4ed23be963241129a023e2",
+    "test_sha256": "8177bc386a6af481694ebec4cf3bfb93f8cce7983c0b461dff740fe96e31ad96"
+  },
+  {
+    "mutation": "name-only-group",
+    "expected_failure": "homonymous executable from another path is not the same app",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.Core/ProcessGrouping.cs",
+    "production_sha256": "d7884fcc697c34e68960849158d51cf691cf24e95a4ed23be963241129a023e2",
+    "test_sha256": "8177bc386a6af481694ebec4cf3bfb93f8cce7983c0b461dff740fe96e31ad96"
+  },
+  {
+    "mutation": "table-error-as-empty",
+    "expected_failure": "expected denial",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.Windows/OwnedNetworkTableReader.cs",
+    "production_sha256": "32b8c45523bb9859a01c48b38ad809b9bab545105c890347cdbd557ba58aef00",
+    "test_sha256": "8177bc386a6af481694ebec4cf3bfb93f8cce7983c0b461dff740fe96e31ad96"
+  },
+  {
+    "mutation": "duplicate-tray-click",
+    "expected_failure": "duplicate or double-click notification cannot immediately reopen minimized window",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/WindowLifetimePolicy.cs",
+    "production_sha256": "7a8dea117216419190a07f23af727e4abcba67406f3a849fe479fb441cad3ba1",
+    "test_sha256": "8177bc386a6af481694ebec4cf3bfb93f8cce7983c0b461dff740fe96e31ad96"
+  }
+]

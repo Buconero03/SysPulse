@@ -1,0 +1,113 @@
+{
+  "Items": {
+    "Using": [
+      {
+        "Identity": "System",
+        "FullPath": "/workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/System",
+        "RootDir": "/",
+        "Filename": "System",
+        "Extension": "",
+        "RelativeDir": "",
+        "Directory": "workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/",
+        "RecursiveDir": "",
+        "ModifiedTime": "",
+        "CreatedTime": "",
+        "AccessedTime": "",
+        "DefiningProjectFullPath": "/workspace/scratch/3c80859a1061/ProcessLens/test/r26/sdk/sdk/8.0.426/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.Sdk.CSharp.props",
+        "DefiningProjectDirectory": "/workspace/scratch/3c80859a1061/ProcessLens/test/r26/sdk/sdk/8.0.426/Sdks/Microsoft.NET.Sdk/targets/",
+        "DefiningProjectName": "Microsoft.NET.Sdk.CSharp",
+        "DefiningProjectExtension": ".props"
+      },
+      {
+        "Identity": "System.Collections.Generic",
+        "FullPath": "/workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/System.Collections.Generic",
+        "RootDir": "/",
+        "Filename": "System.Collections",
+        "Extension": ".Generic",
+        "RelativeDir": "",
+        "Directory": "workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/",
+        "RecursiveDir": "",
+        "ModifiedTime": "",
+        "CreatedTime": "",
+        "AccessedTime": "",
+        "DefiningProjectFullPath": "/workspace/scratch/3c80859a1061/ProcessLens/test/r26/sdk/sdk/8.0.426/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.Sdk.CSharp.props",
+        "DefiningProjectDirectory": "/workspace/scratch/3c80859a1061/ProcessLens/test/r26/sdk/sdk/8.0.426/Sdks/Microsoft.NET.Sdk/targets/",
+        "DefiningProjectName": "Microsoft.NET.Sdk.CSharp",
+        "DefiningProjectExtension": ".props"
+      },
+      {
+        "Identity": "System.Linq",
+        "FullPath": "/workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/System.Linq",
+        "RootDir": "/",
+        "Filename": "System",
+        "Extension": ".Linq",
+        "RelativeDir": "",
+        "Directory": "workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/",
+        "RecursiveDir": "",
+        "ModifiedTime": "",
+        "CreatedTime": "",
+        "AccessedTime": "",
+        "DefiningProjectFullPath": "/workspace/scratch/3c80859a1061/ProcessLens/test/r26/sdk/sdk/8.0.426/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.Sdk.CSharp.props",
+        "DefiningProjectDirectory": "/workspace/scratch/3c80859a1061/ProcessLens/test/r26/sdk/sdk/8.0.426/Sdks/Microsoft.NET.Sdk/targets/",
+        "DefiningProjectName": "Microsoft.NET.Sdk.CSharp",
+        "DefiningProjectExtension": ".props"
+      },
+      {
+        "Identity": "System.Threading",
+        "FullPath": "/workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/System.Threading",
+        "RootDir": "/",
+        "Filename": "System",
+        "Extension": ".Threading",
+        "RelativeDir": "",
+        "Directory": "workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/",
+        "RecursiveDir": "",
+        "ModifiedTime": "",
+        "CreatedTime": "",
+        "AccessedTime": "",
+        "DefiningProjectFullPath": "/workspace/scratch/3c80859a1061/ProcessLens/test/r26/sdk/sdk/8.0.426/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.Sdk.CSharp.props",
+        "DefiningProjectDirectory": "/workspace/scratch/3c80859a1061/ProcessLens/test/r26/sdk/sdk/8.0.426/Sdks/Microsoft.NET.Sdk/targets/",
+        "DefiningProjectName": "Microsoft.NET.Sdk.CSharp",
+        "DefiningProjectExtension": ".props"
+      },
+      {
+        "Identity": "System.Threading.Tasks",
+        "FullPath": "/workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/System.Threading.Tasks",
+        "RootDir": "/",
+        "Filename": "System.Threading",
+        "Extension": ".Tasks",
+        "RelativeDir": "",
+        "Directory": "workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/",
+        "RecursiveDir": "",
+        "ModifiedTime": "",
+        "CreatedTime": "",
+        "AccessedTime": "",
+        "DefiningProjectFullPath": "/workspace/scratch/3c80859a1061/ProcessLens/test/r26/sdk/sdk/8.0.426/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.Sdk.CSharp.props",
+        "DefiningProjectDirectory": "/workspace/scratch/3c80859a1061/ProcessLens/test/r26/sdk/sdk/8.0.426/Sdks/Microsoft.NET.Sdk/targets/",
+        "DefiningProjectName": "Microsoft.NET.Sdk.CSharp",
+        "DefiningProjectExtension": ".props"
+      }
+    ],
+    "Content": [],
+    "EmbeddedResource": [
+      {
+        "Identity": "Assets/ProcessLens.ico",
+        "LogicalName": "ProcessLens.AppIcon",
+        "FullPath": "/workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/Assets/ProcessLens.ico",
+        "RootDir": "/",
+        "Filename": "ProcessLens",
+        "Extension": ".ico",
+        "RelativeDir": "Assets/",
+        "Directory": "workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/Assets/",
+        "RecursiveDir": "",
+        "ModifiedTime": "",
+        "CreatedTime": "",
+        "AccessedTime": "",
+        "DefiningProjectFullPath": "/workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/ProcessLens.App.csproj",
+        "DefiningProjectDirectory": "/workspace/scratch/3c80859a1061/ProcessLens/r32r2/ProcessLens-Leggero/progetto/src/ProcessLens.App/",
+        "DefiningProjectName": "ProcessLens.App",
+        "DefiningProjectExtension": ".csproj"
+      }
+    ]
+  }
+}
+

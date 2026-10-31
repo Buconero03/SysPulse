@@ -1,0 +1,8 @@
+{
+  "original_upload": "PRESERVATO, SHA256 invariato",
+  "prior_R9_zip": "PRESERVATO per confronto",
+  "generated_input_files_excluded": 591,
+  "temporary_patch_replay": "RIMOSSO dopo verifica esatta",
+  "extracted_comparison_copies": "RIMOSSE solo dopo verifica del pacchetto finale; ZIP originali mantenuti",
+  "release": "Candidata corrente completa R10 R9; precedenti consegne conservate"
+}

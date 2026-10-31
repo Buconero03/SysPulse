@@ -1,0 +1,13 @@
+{
+  "source_trees": 1,
+  "patch_replay_temporary_tree_removed": true,
+  "baseline": "R18 R1 retained for byte comparisons",
+  "no_bin_obj_pycache_in_release": true,
+  "source_check_count": 260,
+  "actual_PowerShell_checks": 48,
+  "Windows_runtime_and_RAM_measurement": "NOT EXECUTED",
+  "Windows_PowerShell_5_1": "NOT EXECUTED",
+  "retained_portable_runtime_assertions": 332,
+  "portable_runtime_rerun": false,
+  "R18_R2_WPF_runtime": "NOT EXECUTED"
+}

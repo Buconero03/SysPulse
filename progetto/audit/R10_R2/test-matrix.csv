@@ -1,0 +1,8 @@
+test,kind,status
+structural checks (44),Python portable,PASS
+button regressions (6),Python portable,PASS
+R1 to R2 patch replay,git apply + SHA256,PASS
+CopyUiTests initialization/template/height/wrapping/selection,WPF runtime,NON ESEGUITO
+other .NET build and tests,dotnet,NON ESEGUITO
+PowerShell scripts,PowerShell,NON ESEGUITO
+WPF visual and DPI,Windows,NON ESEGUITO

@@ -1,0 +1,372 @@
+diff --git a/CORREZIONE_REGISTRO_DISPOSITIVI_R14_R1.md b/CORREZIONE_REGISTRO_DISPOSITIVI_R14_R1.md
+new file mode 100644
+index 0000000..9523f5e
+--- /dev/null
++++ b/CORREZIONE_REGISTRO_DISPOSITIVI_R14_R1.md
+@@ -0,0 +1,29 @@
++# ProcessLens R14 R1 — registro dispositivi
++
++Corregge l'eccezione `File troppo grande.` di NetworkDeviceTests riportata sulla R14. Lo stesso difetto riguardava schema sconosciuto, lista non valida o duplicati: InvalidDataException non era compresa nel filtro degli errori gestiti dal lettore.
++
++Il file viene rifiutato con motivo esplicito, senza interrompere l'applicazione o trasformare i riconoscimenti in dati validi. Il limite resta **524.288 byte** e il massimo resta **512 dispositivi**. Non viene eliminato o riscritto un file non valido. Un file JSON valido esattamente al limite resta ammesso.
++
++La correzione di produzione consiste nell'aggiunta esplicita di InvalidDataException al filtro catch, oltre al numero della candidata. Sono conservate la sezione Sistema Windows, la rete e l'integrazione Wireshark della R14.
++
++## Riprovare su Windows
++
++Estrarre questo ZIP in una nuova cartella e lanciare dalla radice del progetto:
++
++```powershell
++.\build-dashboard.ps1
++```
++
++Non occorre cancellare riconoscimenti, log, Guardian o configurazioni locali. Le fasi successive devono completarsi prima di considerare verificato l'intero build Windows.
++
++## Controlli eseguiti qui
++
++- Compilazione diretta Roslyn .NET 8: Core, NetworkDeviceTests, SystemProcessTests, PacketCaptureTests e sorgenti Windows collegati alle suite.
++- **NetworkDeviceTests: 81 asserzioni superate**, con letture/scritture reali su file temporanei e culture it-IT/en-US. File oltre il limite, schema non supportato, elementi nulli, duplicati, numero eccessivo, JSON vuoto e soglia esatta; verificata la conservazione dei byte e l'assenza di file temporanei residui.
++- **SystemProcessTests: 22 asserzioni portabili superate**; ramo di lettura Windows reale saltato.
++- Stesso eseguibile di test rete contro il Core originale R14: riprodotta la stessa eccezione non gestita; con il Core corretto la suite passa.
++- PacketCaptureTests compilata, non eseguita. Nessuna cattura o driver avviato.
++
++È stata usata compilazione diretta perché il normale avvio della CLI SDK incontra una restrizione sulle informazioni di processo dell'host. Questo non equivale a eseguire il progetto con MSBuild, gli analizzatori del progetto o il build completo Windows.
++
++**Non eseguiti:** build-dashboard.ps1, PowerShell, avvio/test WPF, API Windows reali, DPI e misura RAM. Rapporti, log, patch e hash in `audit/R10_R14_R1`. I rapporti R14 e precedenti rimangono storici.
+diff --git a/README.md b/README.md
+index 2307d6e..4e25f0c 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,5 @@
++> **Candidata R14 R1:** corretto il crash del registro dispositivi su file troppo grandi o schema non valido. 81 verifiche rete e 22 verifiche portabili sistema eseguite in .NET 8 su Linux. WPF e build Windows da verificare. Dettagli in `CORREZIONE_REGISTRO_DISPOSITIVI_R14_R1.md`.
++
+ > **Candidata R14:** nuova sezione **Sistema Windows** con inventario manuale, voci interne quando esposte dal sistema, dettagli N/D conservati e memoria del kernel. Istruzioni e limiti in `SISTEMA_WINDOWS_R14.md`. Test .NET/WPF e letture Windows non eseguiti qui.
+ 
+ > **Candidata R13:** in Rete è aggiunta la scheda Wireshark / Wi-Fi con verifiche, cattura limitata e analisi di file. Installazione e istruzioni in `INTEGRAZIONE_WIRESHARK_R13.md`.
+diff --git a/audit/tools/check_device_catalog_r14r1.py b/audit/tools/check_device_catalog_r14r1.py
+new file mode 100644
+index 0000000..a5dcc72
+--- /dev/null
++++ b/audit/tools/check_device_catalog_r14r1.py
+@@ -0,0 +1,49 @@
++"""R14 R1 source checks + correlation with retained real .NET test logs. Not a Windows build."""
++import argparse,hashlib,json,zipfile
++from pathlib import Path
++import xml.etree.ElementTree as ET
++from network_device_rules import violations as network_violations
++
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--candidate',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True)
++    p.add_argument('--output',type=Path,required=True);a=p.parse_args();root=a.candidate.resolve()
++    sha=lambda data:hashlib.sha256(data).hexdigest()
++    assert sha(a.baseline_zip.read_bytes())=='4ea232b848acc675ab3c39a907460e0ab147b90fa42537c6c448a1bc12525955'
++    with zipfile.ZipFile(a.baseline_zip) as z:old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++    files={f.relative_to(root).as_posix():f.read_text(encoding='utf-8-sig') for f in root.rglob('*') if f.suffix in {'.cs','.xaml','.ps1'}}
++    results=[]
++    def check(label,ok):
++        results.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/retained runtime evidence'})
++        print(results[-1]['status'],label)
++    core='src/ProcessLens.Core/NetworkDevices.cs';app='src/ProcessLens.App/ProcessLens.App.csproj';test='tests/ProcessLens.NetworkDeviceTests/Program.cs'
++    before='ex is IOException or UnauthorizedAccessException or JsonException or ArgumentException'
++    after='ex is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or ArgumentException'
++    check('production catalog delta is exactly one explicit exception alternative',
++        old[core].count(before.encode())==1 and (root/core).read_bytes()==old[core].replace(before.encode(),after.encode(),1))
++    check('App project delta changes only candidate identity',(root/app).read_bytes()==old[app].replace(b'R14-system-processes-candidate',b'R14-R1-device-catalog-fix-candidate'))
++    changed={n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}
++    check('only catalog handler and candidate version change in production',changed=={core,app})
++    check('all other production sources and prior C# tests exact to R14',all((root/n).read_bytes()==data for n,data in old.items() if (n.startswith('src/') and n not in {core,app}) or (n.startswith('tests/') and n.endswith('.cs') and n!=test)))
++    check('current network guards pass',not network_violations(files))
++    t=files[test]
++    check('real file tests retain oversized schema null duplicate boundary and overwrite checks',all(s in t for s in ['MaximumBytes + 1','null device list','null device entry','duplicate identities','too many devices','empty JSON','exact byte limit','File.ReadAllBytes(path).SequenceEqual(bytes)','store.Save(known) == loaded.Error','it-IT','en-US']))
++    ledger=json.loads((root/'audit/R10_R14_R1/authorized-source-edits.json').read_text())['files']
++    check('authorized fix hashes exact',len(ledger)==2 and all(sha((root/r['file']).read_bytes())==r['sha256_after'] for r in ledger))
++    evidence=json.loads((root/'audit/R10_R14_R1/runtime-evidence.json').read_text())
++    check('retained compiled source hashes match current source',all(sha((root/n).read_bytes())==digest for n,digest in evidence['source_hashes'].items()))
++    d=root/'audit/R10_R14_R1'
++    network=(d/'network-tests-run.log').read_text();system=(d/'system-tests-run.log').read_text();baseline=(d/'baseline-repro.log').read_text()
++    check('81 actual network assertions retained',sum(s.startswith('PASS ') for s in network.splitlines())==81 and 'Network device regressions complete' in network)
++    check('22 portable system assertions retained with Windows branch skipped',sum(s.startswith('PASS ') for s in system.splitlines())==22 and 'SKIP live Windows read' in system)
++    check('same suite reproduces original unhandled exception on R14 Core','InvalidDataException' in baseline and 'File troppo grande.' in baseline and 'Network device regressions complete' not in baseline)
++    for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]:ET.parse(f)
++    check('XAML and project XML parse',True)
++    for label,before,after in [('missing semantic error handling',after,'ex is IOException or UnauthorizedAccessException or JsonException or ArgumentException'),
++        ('corrupt file overwrite','if (!existing.Available) return existing.Error;','if (false) return existing.Error;'),
++        ('byte limit removed','MaximumBytes = 524288','MaximumBytes = int.MaxValue')]:
++        changed=dict(files);assert before in changed[core];changed[core]=changed[core].replace(before,after)
++        check('source guard rejects '+label,bool(network_violations(changed)))
++    a.output.parent.mkdir(exist_ok=True,parents=True);a.output.write_text(json.dumps(results,indent=2)+'\n')
++    raise SystemExit(0 if all(r['status']=='PASS' for r in results) else 1)
++if __name__=='__main__':main()
+diff --git a/audit/tools/check_packet_capture_r13.py b/audit/tools/check_packet_capture_r13.py
+index 98974cf..01971f8 100644
+--- a/audit/tools/check_packet_capture_r13.py
++++ b/audit/tools/check_packet_capture_r13.py
+@@ -54,12 +54,12 @@ def main():
+     def check(label,ok):rows.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML or source mutation only'});print(rows[-1]['status'],label)
+     check('packet integration satisfies all source guards',not violations(files))
+     allowed={'src/ProcessLens.App/NetworkDevicesView.xaml','src/ProcessLens.App/NetworkDevicesView.xaml.cs','src/ProcessLens.App/ProcessLens.App.csproj'}
+-    check('R13 changes plus exact authorized R14 source integration since R12',
+-          {rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel] and not approved_feature(root,rel,'R10_R14')}==allowed - {rel for rel in allowed if approved_feature(root,rel,'R10_R14')})
+-    check('existing sources exact to R12 outside R13 and exact authorized R14 integration',
+-          all((root/rel).read_bytes()==data or approved_feature(root,rel,'R10_R14') for rel,data in old.items() if rel.startswith('src/') and rel not in allowed))
++    check('R13 changes plus exact authorized R14/R14 R1 source integration since R12',
++          {rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel] and not any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1'))}==allowed - {rel for rel in allowed if any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1'))})
++    check('existing sources exact to R12 outside R13 and exact authorized R14/R14 R1 integration',
++          all((root/rel).read_bytes()==data or any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1')) for rel,data in old.items() if rel.startswith('src/') and rel not in allowed))
+     approved=json.loads((root/'audit/R10_R13/authorized-source-edits.json').read_text())['files']
+-    check('R13 source hashes retained or superseded by exact authorized R14 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or approved_feature(root,r['file'],'R10_R14') for r in approved))
++    check('R13 source hashes retained or superseded by exact authorized R14/R14 R1 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],revision) for revision in ('R10_R14','R10_R14_R1')) for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]:ET.parse(f)
+     check('all XAML and project XML parse',True)
+     view=ET.parse(root/'src/ProcessLens.App/NetworkCaptureView.xaml').getroot();x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
+diff --git a/audit/tools/check_system_processes_r14.py b/audit/tools/check_system_processes_r14.py
+index 9afcfc2..cdb1fff 100644
+--- a/audit/tools/check_system_processes_r14.py
++++ b/audit/tools/check_system_processes_r14.py
+@@ -6,6 +6,7 @@ from test_clipboard_calls_r10r9 import invalid_calls
+ from button_layout_rules import violations as button_violations
+ from check_packet_capture_r13 import violations as packet_violations
+ from network_device_rules import violations as network_violations
++from ux_writing_rules import approved_feature
+ 
+ def violations(files):
+     c=files['src/ProcessLens.Windows/WindowsSystemProcessSource.cs']
+@@ -61,12 +62,12 @@ def main():
+     changed={rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel]}
+     allowed={'src/ProcessLens.App/MainWindow.xaml','src/ProcessLens.App/MainWindow.xaml.cs',
+              'src/ProcessLens.App/ProcessLens.App.csproj','src/ProcessLens.App/CopyTestVisibility.cs'}
+-    check('only four existing production files changed since R13',changed==allowed)
+-    check('existing native collectors Core semantics Guardian profiler RAM monitor and network exact to R13',
+-          all((root/p).read_bytes()==data for p,data in old.items() if p.startswith('src/') and p not in allowed))
++    check('only R14 UI changes and exact recorded R14 R1 catalog fix since R13',changed - {p for p in changed if approved_feature(root,p,'R10_R14_R1')} == allowed - {p for p in allowed if approved_feature(root,p,'R10_R14_R1')})
++    check('existing sources exact to R13 outside R14 UI and exact R14 R1 catalog fix',
++          all((root/p).read_bytes()==data or approved_feature(root,p,'R10_R14_R1') for p,data in old.items() if p.startswith('src/') and p not in allowed))
+     check('no baseline file deleted',all((root/p).is_file() for p in old))
+     approved=json.loads((root/'audit/R10_R14/authorized-source-edits.json').read_text())['files']
+-    check('all R14 production hashes match exact feature ledger',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] for r in approved))
++    check('R14 production hashes retained or replaced by exact R14 R1 fix hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or approved_feature(root,r['file'],'R10_R14_R1') for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]: ET.parse(f)
+     check('all project XML and XAML parse',True)
+     view=ET.parse(root/'src/ProcessLens.App/SystemProcessesView.xaml').getroot();x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
+diff --git a/audit/tools/network_device_rules.py b/audit/tools/network_device_rules.py
+index 5fada92..8b7c490 100644
+--- a/audit/tools/network_device_rules.py
++++ b/audit/tools/network_device_rules.py
+@@ -48,6 +48,8 @@ def violations(files):
+     need('MaximumDevices = 512' in core and 'MaximumBytes = 524288' in core and
+          'stream.Length > MaximumBytes' in core and 'if (!existing.Available) return existing.Error;' in core,
+          'bounded registry and corrupt or unreadable catalog cannot be replaced silently')
++    need('ex is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or ArgumentException' in core,
++         'semantic catalog validation errors become unavailable data rather than unhandled exceptions')
+     need('File.Move(temporary, _path, true)' in core and 'File.Delete(temporary)' in core and
+          'd.Name.Length is > 0 and <= 80' in core, 'atomic persistence and bounded user labels')
+     need('network && NetworkDevices is null' in main and 'NetworkDevicesHost.Content = NetworkDevices;' in main and
+diff --git a/audit/tools/package_device_catalog_r14r1.py b/audit/tools/package_device_catalog_r14r1.py
+new file mode 100644
+index 0000000..222c70d
+--- /dev/null
++++ b/audit/tools/package_device_catalog_r14r1.py
+@@ -0,0 +1,85 @@
++"""Package the R14 R1 catalog hotfix with retained .NET evidence. This does not compile or qualify Windows runtime."""
++import argparse, csv, difflib, hashlib, json, shutil, subprocess, tempfile, zipfile
++from pathlib import Path
++
++def sha(data): return hashlib.sha256(data).hexdigest()
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--candidate',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True)
++    p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()
++    root=a.candidate.resolve();audit=root/'audit/R10_R14_R1';output=a.output_directory.resolve()
++    assert sha(a.baseline_zip.read_bytes())=='4ea232b848acc675ab3c39a907460e0ab147b90fa42537c6c448a1bc12525955'
++    for d in sorted(root.rglob('__pycache__'),reverse=True):shutil.rmtree(d)
++    with zipfile.ZipFile(a.baseline_zip) as z:
++        assert z.testzip() is None
++        old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++    assert all((root/n).is_file() for n in old)
++    for row in json.loads((audit/'authorized-source-edits.json').read_text())['files']:
++        assert sha((root/row['file']).read_bytes())==row['sha256_after'],row['file']
++    results=[]
++    for n,count in [('catalog-source-results.json',15),('system-source-results.json',33),('resource-source-mutations.json',14),('monitor-navigation-source-mutations.json',13)]:
++        rows=json.loads((audit/n).read_text());assert len(rows)==count and all(row['status']=='PASS' for row in rows)
++        results.extend(rows)
++    # Preserve all added/changed source contexts in the current string ledger.
++    with (audit/'string-ledger.csv').open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerow(['file','line','added_or_modified_source_text','context'])
++        for row in json.loads((audit/'authorized-source-edits.json').read_text())['files']:
++            n=row['file'];before=old.get(n,b'').decode('utf-8-sig').splitlines();after=(root/n).read_text(encoding='utf-8-sig').splitlines()
++            for tag,i,j,k,l in difflib.SequenceMatcher(None,before,after).get_opcodes():
++                if tag not in ('insert','replace'):continue
++                for number,line in enumerate(after[k:l],k+1):
++                    if '"' in line:writer.writerow([n,number,line.strip(),'UI/report or technical source context'])
++    def included(n):return not n.startswith('audit/R10_R14_R1/') and n!='SHA256SUMS_R10.txt'
++    current={f.relative_to(root).as_posix():f.read_bytes() for f in root.rglob('*') if f.is_file()}
++    delta=[n for n,data in sorted(current.items()) if included(n) and old.get(n)!=data]
++    with (audit/'files-changed.csv').open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerow(['file','kind','sha256_before','sha256_after'])
++        for n in delta:writer.writerow([n,'modified' if n in old else 'added',sha(old[n]) if n in old else '',sha(current[n])])
++    staging=root.parent.parent/'test';staging.mkdir(exist_ok=True)
++    with tempfile.TemporaryDirectory(prefix='patch-replay-r14r1-',dir=staging) as temporary:
++        temp=Path(temporary);before=temp/'before';after=temp/'after';before.mkdir();after.mkdir()
++        for base,values in [(before,old),(after,current)]:
++            for n,data in values.items():
++                if not included(n):continue
++                path=base/n;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
++        diff=subprocess.run(['git','diff','--no-index','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=temp,capture_output=True)
++        assert diff.returncode==1,diff.stderr.decode()
++        lines=[]
++        for line in diff.stdout.splitlines(keepends=True):
++            if line.startswith((b'diff --git ', b'--- ', b'+++ ')):
++                for prefix in (b'a/before/',b'a/after/'):line=line.replace(prefix,b'a/')
++                for prefix in (b'b/before/',b'b/after/'):line=line.replace(prefix,b'b/')
++            lines.append(line)
++        patch=b''.join(lines)
++        path=audit/'R14_to_R14_R1.patch';path.write_bytes(patch)
++        subprocess.run(['git','apply','--check',str(path)],cwd=before,check=True,capture_output=True)
++        subprocess.run(['git','apply',str(path)],cwd=before,check=True,capture_output=True)
++        mismatch=[n for n,data in current.items() if included(n) and (before/n).read_bytes()!=data]
++        assert not mismatch,mismatch
++    (audit/'patch-replay-results.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','delta_files':len(delta),'patch_sha256':sha(patch),'excluded':'Current audit metadata and current manifest only; excluded for self-reference.'},indent=2)+'\n')
++    (audit/'retention.json').write_text(json.dumps({'source_trees':1,'patch_replay_temporary_tree_removed':True,'baseline':'R14 retained for byte comparisons','no_bin_obj_pycache_in_release':True,'source_check_count':len(results),'Windows_runtime_and_RAM_measurement':'NOT EXECUTED','portable_runtime_assertions':103},indent=2)+'\n')
++    matrix=audit/'test-matrix.csv'
++    with matrix.open(newline='') as f:
++        matrix_rows=[row for row in csv.reader(f) if row and row[0] not in
++            {'Current R14 R1 source and evidence guards','R14 to R14 R1 patch replay'}]
++    with matrix.open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerows(matrix_rows)
++        writer.writerow(['Current R14 R1 source and evidence guards','Python source/XML/mutations','PASS',f'{len(results)} checks; no C# execution'])
++        writer.writerow(['R14 to R14 R1 patch replay','git apply and byte comparison','PASS',f'{len(delta)} changed or added files; audit metadata and manifest excluded'])
++    for d in root.rglob('*'):
++        assert not (d.is_dir() and d.name in ('__pycache__','bin','obj')),d
++    files=sorted(f for f in root.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt')
++    (root/'SHA256SUMS_R10.txt').write_text(''.join(sha(f.read_bytes())+'  '+f.relative_to(root).as_posix()+'\n' for f in files))
++    output.mkdir(parents=True,exist_ok=True)
++    target=output/'ProcessLens-v0.19.16-R10-R14-R1-device-catalog-fix-candidate.zip'
++    with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
++        for f in sorted(root.rglob('*')):
++            if f.is_file():z.write(f,root.name+'/'+f.relative_to(root).as_posix())
++    with zipfile.ZipFile(target) as z:
++        assert z.testzip() is None
++        for line in z.read(root.name+'/SHA256SUMS_R10.txt').decode().splitlines():
++            expected,n=line.split('  ',1);assert sha(z.read(root.name+'/'+n))==expected,n
++        assert len({n.split('/')[0] for n in z.namelist()})==1
++    result={'zip':str(target),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files),'delta_files':len(delta),'source_checks':len(results),'Windows_runtime':'NOT EXECUTED','portable_runtime_assertions':103}
++    (output/'verification-r14r1.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
++if __name__=='__main__':main()
+diff --git a/audit/tools/ux_writing_rules.py b/audit/tools/ux_writing_rules.py
+index 2c20b7d..d27d0b3 100644
+--- a/audit/tools/ux_writing_rules.py
++++ b/audit/tools/ux_writing_rules.py
+@@ -18,7 +18,7 @@ def approved_revision(root, relative):
+     """R11 editorial delta or separately recorded, user-requested R12/R13/R14 feature delta."""
+     if approved_editorial(root, relative):
+         return True
+-    return any(approved_feature(root, relative, revision) for revision in ('R10_R12', 'R10_R13', 'R10_R14'))
++    return any(approved_feature(root, relative, revision) for revision in ('R10_R12', 'R10_R13', 'R10_R14', 'R10_R14_R1'))
+ 
+ 
+ def approved_feature(root, relative, revision):
+diff --git a/src/ProcessLens.App/ProcessLens.App.csproj b/src/ProcessLens.App/ProcessLens.App.csproj
+index 2294717..466ee8d 100644
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R14-system-processes-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R14-R1-device-catalog-fix-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+diff --git a/src/ProcessLens.Core/NetworkDevices.cs b/src/ProcessLens.Core/NetworkDevices.cs
+index 06af07b..6b25853 100644
+--- a/src/ProcessLens.Core/NetworkDevices.cs
++++ b/src/ProcessLens.Core/NetworkDevices.cs
+@@ -151,7 +151,7 @@ public sealed class DeviceRecognitionStore
+         }
+         catch (FileNotFoundException) { return new(Array.Empty<DeviceRecognition>(), ""); }
+         catch (DirectoryNotFoundException) { return new(Array.Empty<DeviceRecognition>(), ""); }
+-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or ArgumentException)
++        catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or ArgumentException)
+         { return new(Array.Empty<DeviceRecognition>(), "Riconoscimenti non disponibili: " + ex.Message); }
+     }
+ 
+diff --git a/tests/ProcessLens.NetworkDeviceTests/Program.cs b/tests/ProcessLens.NetworkDeviceTests/Program.cs
+index 9c64bce..de1a2c0 100644
+--- a/tests/ProcessLens.NetworkDeviceTests/Program.cs
++++ b/tests/ProcessLens.NetworkDeviceTests/Program.cs
+@@ -1,5 +1,7 @@
+ using System.Globalization;
+ using System.Runtime.InteropServices;
++using System.Text;
++using System.Text.Json;
+ using ProcessLens.Core;
+ using ProcessLens.Windows;
+ 
+@@ -102,10 +104,49 @@ try
+     File.WriteAllText(path, "{broken");
+     Check(!store.Load().Available && store.Save(known).Length > 0 && File.ReadAllText(path) == "{broken",
+         "corrupt registry cannot be silently replaced");
+-    File.WriteAllBytes(path, new byte[DeviceRecognitionStore.MaximumBytes + 1]);
+-    Check(!store.Load().Available, "oversized registry is rejected before deserialization");
+-    File.WriteAllText(path, "{\"Version\":2,\"Devices\":[]}");
+-    Check(!store.Load().Available, "unknown registry schema is explicit");
++    // R14 R1: exercise real files through both Load and Save; no exception is expected.
++    void RejectedWithoutOverwrite(byte[] bytes, string label, string? expectedError = null)
++    {
++        File.WriteAllBytes(path, bytes);
++        var loaded = store.Load();
++        Check(!loaded.Available && loaded.Devices.Count == 0 &&
++            loaded.Error.StartsWith("Riconoscimenti non disponibili:", StringComparison.Ordinal) &&
++            (expectedError is null || loaded.Error.Contains(expectedError, StringComparison.Ordinal)),
++            "R14 R1 " + label + " returns an unavailable catalog with its reason");
++        Check(store.Save(known) == loaded.Error && File.ReadAllBytes(path).SequenceEqual(bytes) &&
++            !Directory.EnumerateFiles(temporary, "*.tmp-*").Any(),
++            "R14 R1 " + label + " blocks overwrite and preserves exact bytes without temporary files");
++    }
++    foreach (string cultureName in new[] { "it-IT", "en-US" })
++    {
++        var saved = CultureInfo.CurrentCulture;
++        try
++        {
++            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(cultureName);
++            RejectedWithoutOverwrite(new byte[DeviceRecognitionStore.MaximumBytes + 1],
++                "oversized registry [" + cultureName + "]", "File troppo grande.");
++            RejectedWithoutOverwrite(Encoding.UTF8.GetBytes("{\"Version\":2,\"Devices\":[]}"),
++                "unknown schema [" + cultureName + "]", "Formato non valido.");
++            RejectedWithoutOverwrite(Encoding.UTF8.GetBytes("{\"Version\":1,\"Devices\":null}"),
++                "null device list [" + cultureName + "]", "Formato non valido.");
++            RejectedWithoutOverwrite(Encoding.UTF8.GetBytes("{\"Version\":1,\"Devices\":[null]}"),
++                "null device entry [" + cultureName + "]", "Formato non valido.");
++            RejectedWithoutOverwrite(JsonSerializer.SerializeToUtf8Bytes(new { Version = 1,
++                Devices = new[] { known.Devices[0], known.Devices[0] } }),
++                "duplicate identities [" + cultureName + "]", "Formato non valido.");
++            RejectedWithoutOverwrite(JsonSerializer.SerializeToUtf8Bytes(new { Version = 1,
++                Devices = Enumerable.Repeat(known.Devices[0], DeviceRecognitionStore.MaximumDevices + 1).ToArray() }),
++                "too many devices [" + cultureName + "]", "Formato non valido.");
++            RejectedWithoutOverwrite(Array.Empty<byte>(), "empty JSON [" + cultureName + "]");
++            // Exactly the byte limit remains valid; trailing JSON whitespace is legal.
++            byte[] atLimit = Enumerable.Repeat((byte)' ', DeviceRecognitionStore.MaximumBytes).ToArray();
++            Encoding.UTF8.GetBytes("{\"Version\":1,\"Devices\":[]}").CopyTo(atLimit, 0);
++            File.WriteAllBytes(path, atLimit);
++            Check(store.Load() is { Available: true, Devices.Count: 0 } && File.ReadAllBytes(path).SequenceEqual(atLimit),
++                "R14 R1 exact byte limit is accepted without rewriting [" + cultureName + "]");
++        }
++        finally { CultureInfo.CurrentCulture = saved; }
++    }
+ }
+ finally { Directory.Delete(temporary, true); }
+ 
+diff --git a/tests/check-network-devices-r12.ps1 b/tests/check-network-devices-r12.ps1
+index 292268d..2431f90 100644
+--- a/tests/check-network-devices-r12.ps1
++++ b/tests/check-network-devices-r12.ps1
+@@ -33,4 +33,7 @@ foreach ($token in @('capture.Partial ||', '"#64748B"', 'MaximumDevices = 512',
+     'if (!existing.Available) return existing.Error;', 'File.Move(temporary, _path, true)', 'current.Count > 1024')) {
+     if (-not $core.Contains($token)) { throw "FAIL R12 interpretation or persistence: $token" }
+ }
++if (-not $core.Contains('ex is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or ArgumentException')) {
++    throw 'FAIL R14 R1: invalid catalog format or oversized file must return an unavailable catalog.'
++}
+ Write-Host 'PASS R12: passive network view, manual refresh, scoped labels, incomplete-data states and copy. Source checks only.'

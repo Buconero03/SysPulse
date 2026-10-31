@@ -1,0 +1,17 @@
+{
+  "source": "User Windows log 2026-10-17 02:02 Europe/Rome",
+  "baseline_sha256": "e429b8e0b717cb772a8ac5a104e6213d6c3a1c94978198b364644925d3c54dc6",
+  "reported_pass": [
+    "PowerShell syntax: 55 scripts",
+    "WPF context menus",
+    "UI readability",
+    "R8 memory/lifecycle source guards"
+  ],
+  "reported_failure": {
+    "script": "check-ui-format-r9.ps1",
+    "message": "FAIL R9: unstyled or fixed-height button."
+  },
+  "following_stages": "NON ESEGUITE",
+  "Guardian": "Non modificato, come riportato dal launcher",
+  "R1_Windows_execution": "NON ESEGUITO"
+}

@@ -1,0 +1,10 @@
+check,environment,status,scope
+Presentation tests,Roslyn/.NET 8 Linux,PASS,86 assertions including 18 new RAM regressions
+CSharp type checks,WindowsDesktop references with generated-field stubs Linux,PASS,Six assemblies and zero warnings; no BAML or WPF execution
+PowerShell source preflight,PowerShell 7.4.21 Linux,PASS,30 scripts including syntax of all 69 scripts
+Source and scope guards,Python Linux,PASS,Current scope and historical regressions with exact successor hashes
+Network/system portable runtime,Prior R18 evidence,RETAINED,332 assertions; exact inputs verified and not rerun
+Full build and WPF runtime,Windows,NOT EXECUTED,Run build-dashboard.ps1
+Visual layout and DPI 100/150/200,Windows,NOT EXECUTED,Manual checklist in INTERFACCIA_E_RAM_R19.md
+Windows PowerShell 5.1,Windows,NOT EXECUTED,Must be confirmed on target Windows
+Live CPU/RAM overhead,Windows,NOT EXECUTED,No quantitative overhead claim

@@ -1,0 +1,24 @@
+PASS system: published process header size
+PASS system: published Unicode PID and Working Set offsets
+PASS system: PSAPI performance ABI size
+PASS system: PSAPI page-size offset
+PASS system: idle retained and placeholder RAM does not become measured zero
+PASS system: independent raw fixture retains internal process name PID counters and physical total Working Set
+PASS system: reject header overlap
+PASS system: reject out-of-range next offset
+PASS system: reject name outside record
+PASS system: reject odd Unicode byte length
+PASS system: reject duplicate PID
+PASS system: reject truncated header
+PASS system: cancellation stops inventory parsing
+PASS system: page units preserve zero and reject overflow or unknown page size
+PASS system: internal names exact and suffix lookalike not classified as compression
+PASS system: Windows directory boundaries and traversal rejected
+PASS system: familiar name in user directory never certifies Windows ownership
+PASS system: analysis navigation requires exact PID executable and known creation time across UTC and local time
+PASS system: culture and unavailable memory it-IT
+PASS system: global kernel counters retain source errors and cannot become process totals it-IT
+PASS system: culture and unavailable memory en-US
+PASS system: global kernel counters retain source errors and cannot become process totals en-US
+SKIP live Windows read: non-Windows host.
+System process tests complete.

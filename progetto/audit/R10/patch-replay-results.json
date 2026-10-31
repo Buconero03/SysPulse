@@ -1,0 +1,7 @@
+{
+  "git_apply_check": "PASS",
+  "actual_git_apply": "PASS",
+  "changed_files_exact": 188,
+  "unchanged_input_files_exact": 281,
+  "scope": "All changed source/tests/scripts/docs and earlier audit files; current audit/R10 and SHA256SUMS_R10 excluded."
+}

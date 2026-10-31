@@ -1,0 +1,142 @@
+[
+  {
+    "test": "network feature satisfies all source guards",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "only four authorized existing UI sources differ from R11 R2",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "all prior collectors Core semantics Guardian profiler and RAM monitor are byte identical",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "every network source matches an exact R12 or authorized R13 feature manifest",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "all WPF markup and project XML parse",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "network view names are unique and handlers exist",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "network table read-only copied and virtualized",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "all network outputs wrap and buttons avoid fixed heights",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "every application clipboard call retains two required arguments",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "independent ABI byte fixtures and culture/missing-data regressions supplied",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "WPF fixture tests use a fake source and cover lifecycle copy and navigation",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject IPv6 omitted",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject native allocation leaked",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject table padding ignored",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject enumeration cap removed",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject network change keeps old scope",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject UI publication accepts old generation",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject refresh coalescing removed",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject deactivation retains displayed rows",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject partial capture allows recognition",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject partial result becomes complete",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject unavailable count becomes zero",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject cached entry claims current connection",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject recognition ignores network",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject unbounded novelty history",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject registry size cap removed",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject corrupt file overwritten",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  },
+  {
+    "test": "reject automatic acquisition added",
+    "status": "PASS",
+    "kind": "source/XML or source guard mutation only"
+  }
+]

@@ -1,0 +1,38 @@
+namespace ProcessLens.App;
+
+// One worker and a bounded queue. UI window commands never write files or wait for this sink.
+internal sealed class DeferredDiagnosticWriter(Action<Action> post, Action<string> write, int capacity = 8)
+{
+    private readonly object _gate = new();
+    private readonly Queue<string> _queue = new();
+    private bool _scheduled;
+    internal bool Enqueue(string text)
+    {
+        lock (_gate)
+        {
+            if (_queue.Count >= capacity) return false;
+            _queue.Enqueue(text);
+            if (_scheduled) return true;
+            _scheduled = true;
+        }
+        try { post(Drain); return true; }
+        catch
+        {
+            lock (_gate) { _scheduled = false; _queue.Clear(); }
+            return false;
+        }
+    }
+    private void Drain()
+    {
+        while (true)
+        {
+            string text;
+            lock (_gate)
+            {
+                if (_queue.Count == 0) { _scheduled = false; return; }
+                text = _queue.Dequeue();
+            }
+            try { write(text); } catch { /* Diagnostics never interrupt window actions. */ }
+        }
+    }
+}

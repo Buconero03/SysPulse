@@ -1,0 +1,5 @@
+ProcessLens.Windows PASS
+ProcessLens.Semantics PASS
+ProcessLens FAIL
+ProcessLens/r32r1-test/negative/src/ProcessLens.App/TrayWindowController.cs(321,13): error CS0103: The name 'Path' does not exist in the current context
+

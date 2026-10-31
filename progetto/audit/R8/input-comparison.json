@@ -1,0 +1,12 @@
+{
+  "source_test_differences_from_prior_R7R2": [
+    "src/ProcessLens.App/MainWindow.xaml",
+    "src/ProcessLens.App/MainWindow.xaml.cs",
+    "src/ProcessLens.App/ProcessRow.cs",
+    "src/ProcessLens.Core/ProcessTerminology.cs",
+    "src/ProcessLens.Semantics/ProcessBehaviorExplainer.cs",
+    "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+    "tests/ProcessLens.TerminologyTests/Program.cs"
+  ],
+  "input_sha256": "27311cec98f41ccfebf6702064bd07bfb27efdb269ed5d05471d8c8c69f730a3"
+}

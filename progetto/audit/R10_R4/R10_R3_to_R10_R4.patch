@@ -1,0 +1,462 @@
+--- a/CHANGELOG_R10.md
++++ b/CHANGELOG_R10.md
+@@ -1,3 +1,9 @@
++# R10 R4 — notifica di chiusura del processo
++
++Leggere `NOTIFICA_CHIUSURA_R10_R4.md`. Piccolo avviso nella finestra quando Windows segnala la fine del processo selezionato o di quello oggetto della richiesta esplicita. Nome e PID, durata 8 secondi, nessuno spostamento del focus. Richiesta accettata e uscita confermata restano distinte. R3 inclusa; componenti protetti e terminazione nativa invariati. Build/test .NET/PowerShell, WPF e DPI: **NON ESEGUITO** qui. Manifest corrente `SHA256SUMS_R10.txt`.
++
++---
++
+ # R10 R3 — quadro generale e gerarchia dei rapporti
+ 
+ Leggere `GERARCHIA_RAPPORTI_R10_R3.md`. Aggiunti quadro generale iniziale, capitoli numerati, titoli a capo e blocchi distinti per API, allocazioni e DLL. Testo originale conservato per la copia completa; paragrafi senza titolo mantenuti anche nella vista strutturata. I controlli si creano aprendo il capitolo. R2 resta inclusa. Acquisizione Windows e componenti protetti invariati. Build/test .NET/PowerShell, WPF e DPI: **NON ESEGUITO** qui. Manifest corrente `SHA256SUMS_R10.txt`, rigenerato per R3.
+--- /dev/null
++++ b/NOTIFICA_CHIUSURA_R10_R4.md
+@@ -0,0 +1,45 @@
++# R10 R4 — piccolo avviso quando il processo si chiude
++
++Quando Windows segnala l'uscita del processo selezionato, ProcessLens mostra in basso a destra nella propria finestra un avviso: **Il processo esempio.exe (PID 1234) si è chiuso.** Il testo riporta il nome eseguibile dell'istanza osservata. L'avviso dura 8 secondi, rimane selezionabile e non cambia il focus né richiede OK.
++
++La richiesta esplicita Termina processo continua a richiedere la conferma già presente. Per l'esito positivo viene usato lo stesso piccolo avviso al posto del successivo messaggio modale. Un risultato di richiesta accettata senza uscita confermata conserva il messaggio originale sotto Esito richiesta; non viene trasformato in Processo chiuso. Errori e rifiuti restano nei dialoghi esistenti. Le regole e l'esecutore nativo della terminazione restano byte per byte invariati.
++
++## Fonte e identità
++
++La nuova funzionalità introduce una sola osservazione nativa in lettura, confinata nella GUI. L'aggiunta è necessaria per la richiesta dell'utente: l'assenza dall'elenco filtrato o da uno snapshot incompleto non dimostra che un processo sia terminato.
++
++`ProcessExitWatch` apre un handle con `SYNCHRONIZE | PROCESS_QUERY_LIMITED_INFORMATION`, confronta esattamente il timestamp di creazione con l'istanza selezionata tramite `GetProcessTimes` e registra un'attesa a segnale Windows, singola e senza timeout. La conferma di uscita deriva dal segnale di quell'handle. PID e nome da soli non bastano. Non vengono richiesti diritti di scrittura o terminazione da questo osservatore.
++
++Si osservano il processo selezionato e, durante una richiesta esplicita, il suo destinatario: al massimo due osservatori. I due segnali della stessa istanza producono un solo avviso. La deduplicazione conserva al massimo 16 identità. Selezione cambiata, dettagli cancellati o finestra chiusa rilasciano gli osservatori pertinenti; non si aggiunge polling su tutti i processi. La chiusura può essere naturale o provocata da un altro programma: l'avviso non ne inventa la causa.
++
++Limiti: se l'orario di creazione non è disponibile o Windows nega l'accesso in lettura/attesa, non viene inventata una conferma automatica. Uscite precedenti all'aggancio, processi non selezionati e applicazione già chiusa non hanno una notifica garantita. Il processo oggetto di una richiesta esplicita resta osservato finché esce, viene sostituito da un'altra richiesta o viene chiusa la finestra. Questa è una notifica interna alla finestra, non una notifica del Centro notifiche Windows. Non viene mantenuto uno storico completo delle uscite.
++
++## Test e continuità
++
++La R3 con gerarchia, titoli a capo e copia è inclusa. Collector, Core, Semantics, Guardian, MemoryAgent, profiler e terminazione nativa sono invariati rispetto alla R3. Non è stato terminato o profilato alcun processo durante questo lavoro.
++
++Le regressioni pure fornite coprono testo dell'avviso, richiesta non confermata, identità mancante, duplicati, PID riutilizzato e storico limitato. La suite Windows include una verifica indipendente e in sola lettura sul proprio processo di test: aggancio al timestamp corretto, rifiuto del timestamp errato, rilascio idempotente senza falsa uscita. Non avvia o termina un processo bersaglio. Il test WPF controlla anche presenza, tipo selezionabile e stato inizialmente nascosto dell'avviso.
++
++Eseguiti qui: controlli strutturali Python/XML, regressioni portabili preesistenti, patch replay reale, confronto byte/SHA-256, ZIP e manifest. **NON ESEGUITO:** test .NET/WPF inclusa la verifica nativa appena descritta, PowerShell, build/pubblicazione, scenario reale di uscita e DPI. Ambiente Linux senza dotnet/pwsh. Nessuna riduzione o misura RAM dichiarata.
++
++Su Windows, estrarre in una cartella nuova e dalla radice con `src` e `tests`:
++
++```powershell
++.\build-dashboard.ps1
++```
++
++Solo se termina con successo:
++
++```powershell
++.\run-release.ps1
++```
++
++Verifica manuale proposta: selezionare un'applicazione ordinaria già aperta e chiuderla normalmente; controllare nome/PID e scomparsa dell'avviso dopo 8 secondi. Cambiare soltanto filtro o ricerca non deve produrre Processo chiuso. Se si prova Termina processo, usare un bersaglio senza lavoro da salvare e la conferma già esistente; l'esito non deve richiedere un secondo OK. La sola suite automatica non effettua questa terminazione.
++
++Audit `audit/R10_R4/`, rapporto prima/dopo e registro stringhe inclusi; manifest corrente `SHA256SUMS_R10.txt`. Le criticità RAM già documentate nella R10 restano aperte. Unica radice del progetto conservata.
++
++Fonti primarie:
++
++- https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes
++- https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool.registerwaitforsingleobject
++- https://learn.microsoft.com/en-us/dotnet/api/system.threading.registeredwaithandle.unregister
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,10 @@
+-﻿# R10 R3 — quadro generale e gerarchia dei rapporti
++﻿# R10 R4 — notifica di chiusura del processo
++
++Leggere `NOTIFICA_CHIUSURA_R10_R4.md`. Piccolo avviso nella finestra quando Windows segnala la fine del processo selezionato o di quello oggetto della richiesta esplicita. Nome e PID, durata 8 secondi, nessuno spostamento del focus. Richiesta accettata e uscita confermata restano distinte. R3 inclusa; componenti protetti e terminazione nativa invariati. Build/test .NET/PowerShell, WPF e DPI: **NON ESEGUITO** qui. Manifest corrente `SHA256SUMS_R10.txt`.
++
++---
++
++# R10 R3 — quadro generale e gerarchia dei rapporti
+ 
+ Leggere `GERARCHIA_RAPPORTI_R10_R3.md`. Aggiunti quadro generale iniziale, capitoli numerati, titoli a capo e blocchi distinti per API, allocazioni e DLL. Testo originale conservato per la copia completa; paragrafi senza titolo mantenuti anche nella vista strutturata. I controlli si creano aprendo il capitolo. R2 resta inclusa. Acquisizione Windows e componenti protetti invariati. Build/test .NET/PowerShell, WPF e DPI: **NON ESEGUITO** qui. Manifest corrente `SHA256SUMS_R10.txt`, rigenerato per R3.
+ 
+--- a/VERSION.txt
++++ b/VERSION.txt
+@@ -1 +1 @@
+-0.19.16-R10-R3-report-layout-candidate
++0.19.16-R10-R4-exit-notice-candidate
+--- a/audit/tools/check_r10.py
++++ b/audit/tools/check_r10.py
+@@ -101,5 +101,25 @@
+     (b/'src/ProcessLens.Windows/WindowsProcessCollector.cs').read_bytes()==user['src/ProcessLens.Windows/WindowsProcessCollector.cs'] and
+     '_copyAnswerBody = result.Answer;' in ui and 'ReportLayout' not in (b/'src/ProcessLens.App/CopyTextFormat.cs').read_text(),
+     'Enumerator and source report copy do not depend on visual formatting')
++exit_watch=(b/'src/ProcessLens.App/ProcessExitWatch.cs').read_text()
++check('exit notice bound to verified process object',all(t in exit_watch for t in [
++    'OpenProcess(Synchronize | QueryLimitedInformation', 'GetProcessTimes(handle.SafeWaitHandle',
++    'DateTime.FromFileTimeUtc(created).Ticks != identity.StartUtcTicks',
++    'ThreadPool.RegisterWaitForSingleObject(handle', 'Timeout.Infinite, executeOnlyOnce: true']),
++    'One handle for exact creation-time verification and signal wait, no enumeration-based exit inference')
++check('exit watcher has read-only rights and lifecycle',not re.search(r'\b(?:TerminateProcess|WriteProcessMemory|VirtualAllocEx)\s*\(',exit_watch) and
++    '_registration?.Unregister(null);' in exit_watch and '_handle.Dispose();' in exit_watch and 'Interlocked.Exchange(ref _disposed' in exit_watch,
++    'Read-only observation; unregister and release handle on replacement/close, at most two active watchers')
++check('exit toast passive and temporary',all(t in ui for t in ['TimeSpan.FromSeconds(8)', 'ShowProcessNotice("Processo chiuso", message)',
++    '_processNoticeTimer.Stop();', '_selectedExitWatch?.Dispose();', '_requestedExitWatch?.Dispose();']) and
++    'ProcessNoticeCard' in main_names and main_names['ProcessNoticeCard'].get('Visibility')=='Collapsed',
++    'In-window notice with executable/PID; no focus change or modal success acknowledgement')
++check('termination request does not become assumed exit','else if (identity is null || !_exitNotices.WasShown(identity))' in ui and
++    'ShowProcessNotice("Esito richiesta", result.Message)' in ui and '_exitNotices.Confirm(identity)' in ui,
++    'Confirmed exit comes from the signal callback; existing native result message retained separately')
++check('exit notice regressions and backend self-check supplied',all(t in test for t in [
++    'read-only Windows exit watch binds to this test process', 'native handle rejects a different creation timestamp',
++    'ProcessNoticeCard']) and 'reused PID with a different creation timestamp' in (b/'tests/ProcessLens.CopyTests/Program.cs').read_text(),
++    'Independent read-only Windows self-process binding plus pure deduplication tests; NOT EXECUTED here')
+ output=a.output or b/'audit/R10/structural-results.json';output.parent.mkdir(parents=True,exist_ok=True);output.write_text(json.dumps(results,ensure_ascii=False,indent=2)+'\n')
+ raise SystemExit(0 if all(r['status']=='PASS' for r in results) else 1)
+--- a/src/ProcessLens.App/MainWindow.xaml
++++ b/src/ProcessLens.App/MainWindow.xaml
+@@ -1074,5 +1074,16 @@
+                 </ScrollViewer>
+             </Border>
+         </Grid>
++        <!-- Passive, in-window notice: no focus change or confirmation dialog. -->
++        <Border x:Name="ProcessNoticeCard" Grid.RowSpan="3" Panel.ZIndex="20" Visibility="Collapsed"
++                HorizontalAlignment="Right" VerticalAlignment="Bottom" MaxWidth="420" Margin="12"
++                Padding="14,11" Background="#EDF7F1" BorderBrush="#8DBDA2" BorderThickness="1" CornerRadius="8">
++            <StackPanel>
++                <local:SelectableText x:Name="ProcessNoticeTitleText" Text="Processo chiuso"
++                                      FontSize="13" FontWeight="SemiBold" Foreground="#195734"/>
++                <local:SelectableText x:Name="ProcessNoticeText" FontSize="12.5" TextWrapping="Wrap"
++                                      Foreground="#234B35" Margin="0,5,0,0"/>
++            </StackPanel>
++        </Border>
+     </Grid>
+ </Window>
+--- a/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -29,6 +29,13 @@
+     private readonly WindowsVirtualMemoryInspector _memoryInspector = new();
+     private readonly WindowsAllocationInspector _allocationInspector = new();
+     private readonly DispatcherTimer _timer;
++    private readonly DispatcherTimer _processNoticeTimer = new() { Interval = TimeSpan.FromSeconds(8) };
++    private readonly ProcessExitNotice _exitNotices = new();
++    private ProcessExitWatch? _selectedExitWatch;
++    private ProcessExitWatch? _requestedExitWatch;
++    private ProcessExitIdentity? _watchedSelectionIdentity;
++    private bool _terminationBusy;
++    private bool _windowClosed;
+     private DateTime _lastSlowRefreshLoggedUtc = DateTime.MinValue;
+     private DateTime _lastSlowServiceLoggedUtc = DateTime.MinValue;
+     private List<ProcessRow> _allRows = new();
+@@ -85,6 +92,11 @@
+             Height = Math.Max(MinHeight, workArea.Height);
+ 
+         _timer = new DispatcherTimer { Interval = MonitorRefreshPolicy.NormalProcessInterval };
++        _processNoticeTimer.Tick += (_, _) =>
++        {
++            _processNoticeTimer.Stop();
++            ProcessNoticeCard.Visibility = Visibility.Collapsed;
++        };
+         _timer.Tick += async (_, _) =>
+         {
+             try
+@@ -126,6 +138,10 @@
+ 
+         Closed += (_, _) =>
+         {
++            _windowClosed = true;
++            _processNoticeTimer.Stop();
++            _selectedExitWatch?.Dispose();
++            _requestedExitWatch?.Dispose();
+             _timer.Stop();
+             GuardianDashboard?.SetActive(false);
+             MemoryDashboard?.SetActive(false);
+@@ -474,7 +490,7 @@
+     private async void TerminateProcessMenuItem_Click(object sender, RoutedEventArgs e)
+     {
+         var row = MenuTargetRow(sender);
+-        if (row is null)
++        if (row is null || _terminationBusy)
+             return;
+ 
+         // Capture the row the user right-clicked; never act on whichever selection
+@@ -501,16 +517,70 @@
+ 
+         try
+         {
++            _terminationBusy = true;
++            _requestedExitWatch?.Dispose();
++            var identity = ProcessExitIdentity.From(target.Pid, target.StartTime, target.Name);
++            _requestedExitWatch = identity is null ? null : ProcessExitWatch.TryCreate(identity, ProcessExitObserved);
+             var result = await Task.Run(() => new WindowsProcessTerminator().Terminate(target, Environment.ProcessId));
+-            MessageBox.Show(this, result.Message, result.Succeeded ? "Esito terminazione" : "Operazione annullata",
+-                MessageBoxButton.OK, result.Succeeded ? MessageBoxImage.Information : MessageBoxImage.Warning);
++            if (_windowClosed) return;
++            if (!result.Succeeded)
++            {
++                _requestedExitWatch?.Dispose();
++                _requestedExitWatch = null;
++                MessageBox.Show(this, result.Message, "Operazione annullata", MessageBoxButton.OK, MessageBoxImage.Warning);
++            }
++            else if (identity is null || !_exitNotices.WasShown(identity))
++                ShowProcessNotice("Esito richiesta", result.Message);
+             await RefreshAsync();
+         }
+         catch (Exception ex)
+         {
++            _requestedExitWatch?.Dispose();
++            _requestedExitWatch = null;
++            if (_windowClosed) return;
+             MessageBox.Show(this, $"Errore durante la verifica/terminazione: {ex.Message}",
+                 "Operazione non completata", MessageBoxButton.OK, MessageBoxImage.Error);
+         }
++        finally { _terminationBusy = false; }
++    }
++
++    private void TrackSelectedProcessExit(ProcessRow row)
++    {
++        if (_windowClosed) return;
++        var identity = ProcessExitIdentity.From(row.Pid, row.Process.StartTime, row.Process.Name);
++        if (identity == _watchedSelectionIdentity) return;
++        _selectedExitWatch?.Dispose();
++        _watchedSelectionIdentity = identity;
++        _selectedExitWatch = identity is null ? null : ProcessExitWatch.TryCreate(identity, ProcessExitObserved);
++    }
++
++    private void ProcessExitObserved(ProcessExitIdentity identity)
++    {
++        if (Dispatcher.HasShutdownStarted || Dispatcher.HasShutdownFinished) return;
++        try
++        {
++            Dispatcher.BeginInvoke(new Action(() =>
++            {
++                if (_windowClosed) return;
++                string? message = _exitNotices.Confirm(identity);
++                if (message is not null) ShowProcessNotice("Processo chiuso", message);
++                if (_selectedExitWatch?.Identity == identity)
++                { _selectedExitWatch.Dispose(); _selectedExitWatch = null; }
++                if (_requestedExitWatch?.Identity == identity)
++                { _requestedExitWatch.Dispose(); _requestedExitWatch = null; }
++            }));
++        }
++        catch (InvalidOperationException) { /* Dispatcher closed while the signal was queued. */ }
++    }
++
++    private void ShowProcessNotice(string title, string message)
++    {
++        if (_windowClosed) return;
++        ProcessNoticeTitleText.Text = title;
++        ProcessNoticeText.Text = message;
++        ProcessNoticeCard.Visibility = Visibility.Visible;
++        _processNoticeTimer.Stop();
++        _processNoticeTimer.Start();
+     }
+ 
+     private async void StopHostedServiceMenuItem_Click(object sender, RoutedEventArgs e)
+@@ -630,6 +700,7 @@
+             ? "ProcessLens ha identificato una possibile funzione del processo. Apri i dettagli per sapere quali dati ha utilizzato."
+             : "Le informazioni disponibili non bastano a identificare la funzione di questo processo.";
+         _currentDetailRow = row;
++        TrackSelectedProcessExit(row);
+         RefreshClassificationFacts();
+         // Il rapporto grezzo rimane disponibile su richiesta, senza confondere i
+         // codici delle regole con le evidenze visibili nella spiegazione principale.
+@@ -1597,6 +1668,9 @@
+ 
+     private void ClearDetails()
+     {
++        _selectedExitWatch?.Dispose();
++        _selectedExitWatch = null;
++        _watchedSelectionIdentity = null;
+         _currentDetailRow = null;
+         _renderedEvidenceGroupsPid = null;
+         _renderedEvidenceGroupsStartTime = null;
+--- /dev/null
++++ b/src/ProcessLens.App/ProcessExitNotice.cs
+@@ -0,0 +1,23 @@
++namespace ProcessLens.App;
++
++internal sealed record ProcessExitIdentity(int Pid, long StartUtcTicks, string Name)
++{
++    public static ProcessExitIdentity? From(int pid, DateTime? start, string name) =>
++        pid > 0 && start.HasValue && start.Value != DateTime.MinValue
++            ? new(pid, start.Value.ToUniversalTime().Ticks, name) : null;
++}
++
++// UI-thread state; duplicate signals from selection and explicit termination produce one notice.
++internal sealed class ProcessExitNotice
++{
++    private readonly Queue<(int Pid, long Start)> _recent = new();
++    public bool WasShown(ProcessExitIdentity identity) => _recent.Contains((identity.Pid, identity.StartUtcTicks));
++
++    public string? Confirm(ProcessExitIdentity identity)
++    {
++        if (identity.Pid <= 0 || identity.StartUtcTicks <= 0 || WasShown(identity)) return null;
++        _recent.Enqueue((identity.Pid, identity.StartUtcTicks));
++        while (_recent.Count > 16) _recent.Dequeue();
++        return $"Il processo {identity.Name} (PID {identity.Pid}) si è chiuso.";
++    }
++}
+--- /dev/null
++++ b/src/ProcessLens.App/ProcessExitWatch.cs
+@@ -0,0 +1,66 @@
++using System.Runtime.InteropServices;
++using Microsoft.Win32.SafeHandles;
++
++namespace ProcessLens.App;
++
++// Read-only observation of one process object, not inference from a missing/filtered row.
++// The same handle verifies creation time and receives the Windows exit signal.
++internal sealed class ProcessExitWatch : IDisposable
++{
++    private const uint Synchronize = 0x00100000;
++    private const uint QueryLimitedInformation = 0x1000;
++    private sealed class ProcessWaitHandle : WaitHandle
++    {
++        public ProcessWaitHandle(SafeWaitHandle handle) { SafeWaitHandle = handle; }
++    }
++
++    private readonly ProcessWaitHandle _handle;
++    private RegisteredWaitHandle? _registration;
++    private int _disposed;
++    public ProcessExitIdentity Identity { get; }
++
++    private ProcessExitWatch(ProcessWaitHandle handle, ProcessExitIdentity identity)
++    { _handle = handle; Identity = identity; }
++
++    public static ProcessExitWatch? TryCreate(ProcessExitIdentity identity, Action<ProcessExitIdentity> exited)
++    {
++        IntPtr raw = OpenProcess(Synchronize | QueryLimitedInformation, false, (uint)identity.Pid);
++        if (raw == IntPtr.Zero) return null;
++        var handle = new ProcessWaitHandle(new SafeWaitHandle(raw, ownsHandle: true));
++        ProcessExitWatch? watch = null;
++        try
++        {
++            if (!GetProcessTimes(handle.SafeWaitHandle, out long created, out _, out _, out _) ||
++                DateTime.FromFileTimeUtc(created).Ticks != identity.StartUtcTicks)
++            { handle.Dispose(); return null; }
++            var activeWatch = new ProcessExitWatch(handle, identity);
++            watch = activeWatch;
++            activeWatch._registration = ThreadPool.RegisterWaitForSingleObject(handle, (_, timedOut) =>
++            {
++                if (!timedOut && Volatile.Read(ref activeWatch._disposed) == 0) exited(identity);
++            }, null, Timeout.Infinite, executeOnlyOnce: true);
++            return watch;
++        }
++        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or
++            System.ComponentModel.Win32Exception or NotSupportedException)
++        {
++            if (watch is not null) watch.Dispose(); else handle.Dispose();
++            return null;
++        }
++    }
++
++    public void Dispose()
++    {
++        if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
++        _registration?.Unregister(null);
++        _handle.Dispose();
++    }
++
++    [DllImport("kernel32.dll", SetLastError = true)]
++    private static extern IntPtr OpenProcess(uint access, [MarshalAs(UnmanagedType.Bool)] bool inheritHandle, uint pid);
++
++    [DllImport("kernel32.dll", SetLastError = true)]
++    [return: MarshalAs(UnmanagedType.Bool)]
++    private static extern bool GetProcessTimes(SafeWaitHandle handle, out long creation, out long exit,
++        out long kernel, out long user);
++}
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R3-report-layout-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R4-exit-notice-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+--- a/start-processlens-all.ps1
++++ b/start-processlens-all.ps1
+@@ -27,7 +27,7 @@
+ }
+ 
+ try {
+-    Write-Host 'ProcessLens v0.19.16 R10 R3 candidata - Avvio guidato in sequenza' -ForegroundColor Green
++    Write-Host 'ProcessLens v0.19.16 R10 R4 candidata - Avvio guidato in sequenza' -ForegroundColor Green
+     Write-Host ('Modalita: ' + $Mode)
+     Write-Host ('Cartella: ' + $PSScriptRoot)
+     $isAdmin = Test-IsAdministrator
+--- a/tests/ProcessLens.CopyTests/ProcessLens.CopyTests.csproj
++++ b/tests/ProcessLens.CopyTests/ProcessLens.CopyTests.csproj
+@@ -6,5 +6,6 @@
+   <ItemGroup>
+     <Compile Include="../../src/ProcessLens.App/CopyTextFormat.cs" Link="CopyTextFormat.cs" />
+     <Compile Include="../../src/ProcessLens.App/ReportLayout.cs" Link="ReportLayout.cs" />
++    <Compile Include="../../src/ProcessLens.App/ProcessExitNotice.cs" Link="ProcessExitNotice.cs" />
+   </ItemGroup>
+ </Project>
+--- a/tests/ProcessLens.CopyTests/Program.cs
++++ b/tests/ProcessLens.CopyTests/Program.cs
+@@ -57,3 +57,17 @@
+     ReportLayout.EvidenceGroup("Ruolo non verificato", "Funzione") == "Funzione", "evidence chapters distinguish modules and acquisition status without altering other groups");
+ Check(CopyTextFormat.Report("RAM", structured, "", "").Contains(structured, StringComparison.Ordinal),
+     "complete copied report remains original CRLF text independent of visual hierarchy");
++
++var notices = new ProcessExitNotice();
++var instance = ProcessExitIdentity.From(1234, new DateTime(2026, 10, 17, 12, 0, 0, DateTimeKind.Utc), "esempio.exe")!;
++Check(!notices.WasShown(instance), "accepted request alone has no confirmed exit notice");
++Check(notices.Confirm(instance) == "Il processo esempio.exe (PID 1234) si è chiuso.",
++    "confirmed exit notice identifies executable and PID without inventing its cause");
++Check(notices.Confirm(instance with { Name = "nome alternativo" }) is null,
++    "selection and termination signals for the same instance produce one notice");
++Check(notices.Confirm(instance with { StartUtcTicks = instance.StartUtcTicks + 1 }) is not null,
++    "reused PID with a different creation timestamp is a separate process");
++Check(ProcessExitIdentity.From(1234, null, "N/D") is null && ProcessExitIdentity.From(0, DateTime.UtcNow, "N/D") is null &&
++    notices.Confirm(new ProcessExitIdentity(2, 0, "N/D")) is null, "missing identity cannot produce a confirmed exit notice");
++for (int n = 0; n < 32; n++) notices.Confirm(instance with { Pid = 2000 + n });
++Check(!notices.WasShown(instance), "exit-notice deduplication history stays bounded");
+--- a/tests/ProcessLens.CopyUiTests/Program.cs
++++ b/tests/ProcessLens.CopyUiTests/Program.cs
+@@ -35,6 +35,21 @@
+     public static void Main()
+     {
+         _ = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
++        // Independent read-only binding check on this test process. No target is launched or terminated.
++        using (var self = System.Diagnostics.Process.GetCurrentProcess())
++        {
++            var selfIdentity = ProcessExitIdentity.From(self.Id, self.StartTime, self.ProcessName)!;
++            int exits = 0;
++            using var selfWatch = ProcessExitWatch.TryCreate(selfIdentity, _ => Interlocked.Increment(ref exits));
++            Check(selfWatch is not null, "read-only Windows exit watch binds to this test process");
++            using var wrongLifetime = ProcessExitWatch.TryCreate(selfIdentity with {
++                StartUtcTicks = selfIdentity.StartUtcTicks + TimeSpan.TicksPerDay
++            }, _ => Interlocked.Increment(ref exits));
++            Check(wrongLifetime is null, "native handle rejects a different creation timestamp for the same PID");
++            selfWatch!.Dispose();
++            selfWatch.Dispose();
++            Check(Volatile.Read(ref exits) == 0, "disposing a live-process watch is idempotent and does not report an exit");
++        }
+         string copied = "";
+         var text = new SelectableText(value => copied = value);
+         // Standalone WPF controls have no parent/XAML loader to complete initialization.
+@@ -128,6 +143,10 @@
+         Check(window.FindName("ProcessQueryOverviewLabel") is SelectableText &&
+             window.FindName("DetailEvidenceOverviewText") is SelectableText,
+             "actual query and evidence panels contain initial overview controls");
++        var noticeCard = (Border)window.FindName("ProcessNoticeCard");
++        Check(noticeCard.Visibility == Visibility.Collapsed && noticeCard.MaxWidth == 420 &&
++            window.FindName("ProcessNoticeText") is SelectableText,
++            "exit notice starts hidden, stays compact and its text can be copied");
+         var memory = new MemoryDashboardView();
+         var guardian = new GuardianDashboardView();
+         Check(memory.FindName("RefreshStatus") is SelectableText && guardian.FindName("StatusText") is SelectableText,
+--- a/tests/check-copy-ui-r10.ps1
++++ b/tests/check-copy-ui-r10.ps1
+@@ -40,3 +40,13 @@
+ }
+ if (-not $layout.Contains('else lines.Add(line);')) { throw 'FAIL report hierarchy: unheaded source lines are not retained.' }
+ Write-Host 'PASS R10 R3 hierarchy: overview, chapters, wrapping, source retention and lazy controls. Source checks only.'
++$watch = Get-Content (Join-Path $root 'src\ProcessLens.App\ProcessExitWatch.cs') -Raw -Encoding UTF8
++foreach ($token in @('TrackSelectedProcessExit(row)', 'ProcessExitObserved', '_processNoticeTimer.Stop();',
++    '_selectedExitWatch?.Dispose();', '_requestedExitWatch?.Dispose();', 'ProcessNoticeCard')) {
++    if (-not $code.Contains($token)) { throw ('FAIL exit notice: missing UI/lifecycle: ' + $token) }
++}
++foreach ($token in @('Synchronize | QueryLimitedInformation', 'GetProcessTimes(handle.SafeWaitHandle',
++    'DateTime.FromFileTimeUtc(created).Ticks != identity.StartUtcTicks', 'executeOnlyOnce: true')) {
++    if (-not $watch.Contains($token)) { throw ('FAIL exit notice: missing verified read-only signal: ' + $token) }
++}
++Write-Host 'PASS R10 R4 exit notice: verified instance, Windows exit signal and bounded UI lifecycle. Source checks only.'

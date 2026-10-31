@@ -1,0 +1,120 @@
+﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Text;
+using ProcessLens.Core;
+
+namespace ProcessLens.Windows;
+
+/// <summary>
+/// Explicit single-process termination. Uses one Windows handle for identity validation
+/// and termination, so a recycled PID cannot be substituted between separate API calls.
+/// No forceful escalation, driver, process-tree kill or auto-retry is attempted.
+/// </summary>
+public sealed class WindowsProcessTerminator
+{
+    private const uint ProcessTerminate = 0x0001;
+    private const uint Synchronize = 0x00100000;
+    private const uint ProcessQueryLimitedInformation = 0x1000;
+    private const uint WaitObject0 = 0;
+    private const uint WaitTimeout = 0x00000102;
+
+    public TerminationResult Terminate(ProcessSnapshot snapshot, int applicationPid)
+    {
+        var decision = ProcessTerminationPolicy.Evaluate(snapshot, applicationPid);
+        if (!decision.Allowed)
+            return new(false, decision.Reason);
+
+        IntPtr handle = OpenProcess(ProcessTerminate | Synchronize | ProcessQueryLimitedInformation,
+            false, (uint)snapshot.Pid);
+        if (handle == IntPtr.Zero)
+        {
+            int code = Marshal.GetLastWin32Error();
+            return new(false, $"Impossibile aprire il processo PID {snapshot.Pid}: {new Win32Exception(code).Message} (Win32 {code}). Non è stata richiesta elevazione automatica.");
+        }
+
+        try
+        {
+            if (!GetProcessTimes(handle, out var createTime, out _, out _, out _))
+                return new(false, "Windows non permette di verificare l'orario di creazione: terminazione annullata.");
+
+            DateTime currentStart;
+            try { currentStart = DateTime.FromFileTimeUtc(createTime.ToInt64()); }
+            catch (ArgumentOutOfRangeException)
+            { return new(false, "Timestamp di creazione non valido: terminazione annullata."); }
+
+            if (!ProcessTerminationPolicy.IsSameCreationTime(snapshot.StartTime!.Value, currentStart))
+                return new(false, "Il PID è stato riutilizzato o il processo è cambiato. Seleziona nuovamente la riga.");
+
+            var image = new StringBuilder(32768);
+            uint size = (uint)image.Capacity;
+            if (!QueryFullProcessImageNameW(handle, 0, image, ref size))
+                return new(false, "Impossibile confermare il percorso dell'eseguibile: terminazione annullata.");
+            var actualPath = image.ToString();
+            if (!string.Equals(actualPath, snapshot.ExecutablePath, StringComparison.OrdinalIgnoreCase))
+                return new(false, "Il percorso del processo corrente non corrisponde a quello selezionato: terminazione annullata.");
+            if (ProcessTerminationPolicy.IsProtectedName(Path.GetFileName(actualPath)))
+                return new(false, "Il processo corrisponde a un eseguibile Windows protetto.");
+
+            // A failed criticality query is NOT interpreted as 'not critical'.
+            if (!IsProcessCritical(handle, out bool critical))
+                return new(false, "Impossibile verificare se il processo è critico: terminazione annullata.");
+            if (critical)
+                return new(false, "Windows segnala che il processo è critico. Operazione bloccata.");
+
+            if (!TerminateProcess(handle, 1))
+            {
+                int code = Marshal.GetLastWin32Error();
+                return new(false, $"Windows ha rifiutato la terminazione: {new Win32Exception(code).Message} (Win32 {code}).");
+            }
+
+            uint wait = WaitForSingleObject(handle, 2000);
+            return wait switch
+            {
+                WaitObject0 => new(true, $"Il processo {snapshot.Name} (PID {snapshot.Pid}) è terminato."),
+                WaitTimeout => new(true, "Richiesta di terminazione accettata; il processo non ha ancora segnalato la fine. Controlla l'elenco."),
+                _ => new(true, "Richiesta di terminazione accettata; impossibile confermare l'uscita. Aggiorna l'elenco.")
+            };
+        }
+        finally
+        {
+            CloseHandle(handle);
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct FileTime
+    {
+        public uint LowDateTime;
+        public uint HighDateTime;
+        public readonly long ToInt64() => ((long)HighDateTime << 32) | LowDateTime;
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern IntPtr OpenProcess(uint access, [MarshalAs(UnmanagedType.Bool)] bool inheritHandle, uint processId);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetProcessTimes(IntPtr handle, out FileTime creation, out FileTime exit,
+        out FileTime kernel, out FileTime user);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool QueryFullProcessImageNameW(IntPtr handle, uint flags, StringBuilder fileName, ref uint size);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool IsProcessCritical(IntPtr handle, [MarshalAs(UnmanagedType.Bool)] out bool critical);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool TerminateProcess(IntPtr handle, uint exitCode);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern uint WaitForSingleObject(IntPtr handle, uint milliseconds);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool CloseHandle(IntPtr handle);
+}
+
+public sealed record TerminationResult(bool Succeeded, string Message);

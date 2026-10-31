@@ -1,0 +1,1177 @@
+diff --git a/LEGGIMI.txt b/LEGGIMI.txt
+index 075dcb3..2adf692 100644
+--- a/LEGGIMI.txt
++++ b/LEGGIMI.txt
+@@ -1,55 +1,44 @@
+-ProcessLens R25 - Gruppi, ricerca, porte e icona
++ProcessLens R26 - Scorrimento e riduzione a icona
+ 
+-1. Esci dalla vecchia istanza. Se il suo menu non risponde, chiudi soltanto
+-   ProcessLens da Gestione attivita prima di avviare la nuova candidata.
+-2. Estrai TUTTO lo ZIP in una cartella nuova.
+-3. Apri soltanto AVVIA_PROCESSLENS.cmd.
+-   Il primo avvio esegue test e compilazione; i successivi aprono direttamente R25.
++AVVIO
++1. Chiudi la vecchia versione con Esci.
++2. Estrai questo ZIP in una cartella nuova e apri AVVIA_PROCESSLENS.cmd.
++Il primo avvio esegue test e compilazione; i successivi avviano la nuova versione.
+ 
+-NOVITA
+-- Raggruppa app: gruppi espandibili, ciascun PID resta selezionabile.
+-  Gruppo per stesso eseguibile/percorso e catena di avvio con orari compatibili.
+-  Istanze indipendenti possono restare in gruppi separati. Altri eseguibili non
+-  vengono aggiunti per il solo nome del produttore o per un padre omonimo.
+-- CPU e Working Set del gruppo: somma dei PID mostrati. Copertura indicata se
+-  mancano contatori; il totale residente non viene mescolato al privato.
+-- Cerca: nome visualizzato, eseguibile o PID esatto. Parametri, padre e descrizioni
+-  tecniche non aggiungono altre app. Il filtro viene riapplicato agli aggiornamenti.
+-- Riduci a icona: comando Windows e controllo dello stato effettivo. Anche la X
+-  riduce. Barra applicazioni e icona restano percorsi di riapertura.
+-- Clic sull'icona accanto all'orologio: riduci/riapri. Notifiche duplicate e doppio
+-  clic non annullano subito il comando. Tasto destro: Mostra, Riduci, Esci.
+-- Esci e disponibile anche in alto nella finestra, separato da Riduci a icona.
+-- Seleziona un PID e attendi l'analisi: Aggiorna porte del PID e del gruppo rilegge
+-  TCP/UDP IPv4/IPv6 su richiesta. Mostra proprietario PID, porta locale e remota,
+-  ora del campione, errori e limiti. Nessuna cattura pacchetti o scansione di rete.
+-  Elenco endpoint campionato, non elenco completo illimitato; limiti nel rapporto.
+-
+-RESTANO
+-CPU/RAM per PID ogni secondo nominale a finestra visibile; inventario e metadati
+-ogni 15-45 s. Il monitoraggio rapido si sospende mentre la finestra e ridotta.
+-R22 copertura componenti Windows, R23 nuova attivita e R23 R1 validazione NUL
+-mantenute. Guardian, MemoryAgent, profiler e monitor RAM non modificati.
++COSA CAMBIA
++La disposizione della schermata resta la stessa.
++- CPU e RAM restano aggiornate. La lista conserva righe e gruppi esistenti.
++- L'ordine resta fermo mentre leggi sotto l'inizio della lista, hai il puntatore
++  sull'elenco o lo usi con la tastiera. Torna automatico all'inizio quando
++  puntatore e fuoco tastiera sono fuori dall'elenco. Una scelta esplicita
++  dell'ordinamento applica subito il nuovo ordine.
++- Gli aggiornamenti conservano la posizione nella lista e nei dettagli.
++  Un nuovo comando di scorrimento annulla il ripristino precedente.
++- Riduci a icona e X usano lo stesso comando sulla finestra Windows.
++  La riduzione non attende la registrazione dell'icona nell'area di notifica.
++  Riapri dalla barra delle applicazioni o dall'icona ProcessLens. Esci chiude.
+ 
+ PACCHETTO LEGGERO
+-Nessun SDK, pacchetto NuGet, driver o dipendenza aggiunta nello ZIP.
+-Riusa lo SDK e la cache R20 gia presenti in %LOCALAPPDATA%\Programs\ProcessLens\R20,
+-oppure uno SDK .NET 8 gia installato. In assenza della cache locale il normale
+-ripristino NuGet puo richiedere la rete. Nessuna installazione automatica di SDK.
+-Per ricompilare dopo modifiche elimina soltanto supporto/build-r25.ok.
++Nessuna nuova dipendenza, SDK, driver o runtime nello ZIP.
++Riusa lo SDK/cache R20 gia presenti oppure uno SDK .NET 8 installato.
++Il normale ripristino NuGet puo richiedere rete se la cache non e presente.
++Nessuna installazione automatica di SDK o driver.
++Per ricompilare dopo modifiche elimina soltanto supporto/build-r26.ok.
+ 
+-VERIFICHE E LIMITI
+-645 asserzioni C# portabili superate su Linux, 32 fasi PowerShell e 17 prove
+-launcher. Controllo C# WindowsDesktop con stub XAML: non e una build WPF reale.
+-La compilazione Windows normale esegue anche le suite WPF e una prova delle porte
+-con un listener loopback del solo processo fixture; nessuna connessione esterna.
+-Il comportamento reale della shell, DPI e il costo CPU/RAM vanno verificati su
+-Windows. Nessuna misura di risparmio RAM e nessuna uguaglianza istantanea con
+-Gestione attivita sono dichiarate.
++VERIFICHE
++661 asserzioni C# portabili, 33 controlli PowerShell, 17 prove del launcher
++superati su Linux. Tre errori introdotti su copie di prova vengono rilevati.
++Controllo C# di 9 assembly con riferimenti WindowsDesktop e stub dei campi XAML:
++non equivale a una compilazione WPF/BAML o esecuzione della shell Windows.
++Le prove reali di scorrimento, DPI, riduzione e riapertura restano da eseguire
++su Windows. Nessun consumo o risparmio RAM nuovo e stato misurato qui.
++Guardian, MemoryAgent, profiler, monitor RAM e acquisizioni Windows invariati.
+ 
+-Prova shell opzionale, dalla cartella progetto, dopo la build:
++PROVE WINDOWS OPZIONALI (DOPO LA BUILD, DALLA CARTELLA progetto)
++dotnet run --project tests/ProcessLens.ProcessGroupsUiTests -c Release -- --scroll-smoke
+ dotnet run --project tests/ProcessLens.ProcessGroupsUiTests -c Release -- --shell-smoke
+-Apre e opera soltanto su una propria finestra/icona fixture. Il clic reale
+-sull'icona e il riavvio di Explorer restano prove manuali.
++La prima apre una finestra con dati simulati, senza raccolta processi o rete.
++La seconda opera solo sulla propria finestra/icona fixture. Clic reali sull'icona
++ed Explorer riavviato richiedono comunque una verifica manuale.
+ Log riduzione/riapertura: %LOCALAPPDATA%\ProcessLens\logs\startup.log.
+-Dettagli, patch e risultati: progetto\audit\R10_R25.
++Patch, limiti e risultati: progetto\audit\R10_R26.
+diff --git a/progetto/audit/tools/check_powershell_r26.py b/progetto/audit/tools/check_powershell_r26.py
+new file mode 100644
+index 0000000..9a6aa4c
+--- /dev/null
++++ b/progetto/audit/tools/check_powershell_r26.py
+@@ -0,0 +1,17 @@
++"""Run PowerShell source preflight and isolated launcher fixtures, never a build or installation."""
++import argparse,json,hashlib,subprocess
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--shell',type=Path,required=True);p.add_argument('--pwsh',type=Path,required=True);a=p.parse_args()
++r=a.project.resolve();shell=a.shell.resolve();audit=r/'audit/R10_R26';sha=lambda b:hashlib.sha256(b).hexdigest()
++# Same 30 authorized baseline source stages, plus the R24 wiring gate.
++stages=[x['file'] for x in json.loads((r/'audit/R10_R23_R1/powershell-evidence.json').read_text())['stages']]+['audit/tools/check_live_metrics_r24.ps1','audit/tools/check_process_groups_r25.ps1','audit/tools/check_scroll_minimize_r26.ps1'];results=[];logs=[]
++for n in stages:
++ x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(r/n)],cwd=r,capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;logs.append(n+'\n'+log)
++ if x.returncode:(audit/'preflight.log').write_text('\n'.join(logs));raise SystemExit(log)
++ results.append({'file':n,'sha256':sha((r/n).read_bytes()),'status':'PASS'})
++(audit/'preflight.log').write_text('\n'.join(logs))
++fixture=r/'audit/tools/test_launcher_r26.ps1';launcher=shell/'supporto/avvia.ps1'
++x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(fixture),'-Launcher',str(launcher)],capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;(audit/'launcher-fixture.log').write_text(log)
++if x.returncode:raise SystemExit(log)
++count=sum(line.startswith('PASS R26 launcher:') for line in log.splitlines());assert count==17,count
++(audit/'powershell-evidence.json').write_text(json.dumps({'PowerShell':'7.4.21 Linux; no Windows runtime execution','stages':results,'launcher_fixture_checks':count,'launcher_sha256':sha(launcher.read_bytes()),'fixture_sha256':sha(fixture.read_bytes())},indent=2)+'\n');print('PASS',len(results),'source stages;',count,'launcher checks')
+diff --git a/progetto/audit/tools/check_process_groups_r25.ps1 b/progetto/audit/tools/check_process_groups_r25.ps1
+index 37f110e..0ac8fbe 100644
+--- a/progetto/audit/tools/check_process_groups_r25.ps1
++++ b/progetto/audit/tools/check_process_groups_r25.ps1
+@@ -6,7 +6,7 @@ $native=Get-Content (Join-Path $root 'src/ProcessLens.Windows/WindowsDeepProcess
+ foreach($token in @('ProcessIdentitySearch.Matches(row.Process, search, row.FriendlyName)','ProcessGrouping.Build(','new PropertyGroupDescription(nameof(ProcessRow.Group))','foreach (var group in _processGroups) group.Refresh()','RefreshProcessPorts_Click')) {
+  if(-not $main.Contains($token)){throw ('FAIL R25 UI wiring: '+$token)}
+ }
+-foreach($token in @('SystemCommands.MinimizeWindow(_window)','IsIconic(_hwnd)','_trayActivation.Activate','_trayVersion4 = Shell_NotifyIconW','ChangeWindowMessageFilterEx')) {
++foreach($token in @('ShowWindow(_hwnd, 6)','IsIconic(_hwnd)','_trayActivation.Activate','_trayVersion4 = Shell_NotifyIconW','ChangeWindowMessageFilterEx')) {
+  if(-not $tray.Contains($token)){throw ('FAIL R25 tray wiring: '+$token)}
+ }
+ foreach($token in @('ProcessGrouping.IdentityMatches','OwnedNetworkTableReader.Read','NetworkAcquisitionComplete = notes.Count == 0','NetworkCapturedUtc = DateTime.UtcNow')) {
+diff --git a/progetto/audit/tools/check_scroll_minimize_r26.ps1 b/progetto/audit/tools/check_scroll_minimize_r26.ps1
+new file mode 100644
+index 0000000..09d7a04
+--- /dev/null
++++ b/progetto/audit/tools/check_scroll_minimize_r26.ps1
+@@ -0,0 +1,22 @@
++$ErrorActionPreference='Stop'
++$root=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
++$main=Get-Content (Join-Path $root 'src/ProcessLens.App/MainWindow.xaml.cs') -Raw -Encoding UTF8
++$tray=Get-Content (Join-Path $root 'src/ProcessLens.App/TrayWindowController.cs') -Raw -Encoding UTF8
++$guard=Get-Content (Join-Path $root 'src/ProcessLens.App/AutomaticViewport.cs') -Raw -Encoding UTF8
++foreach($token in @('ObservableCollection<ProcessRow> _visibleRows','ReadingPositionPolicy.Synchronize','old.UpdateFrom(next)','else group.UpdateMembers','if (grouped && item.Group is not null && (!preserveScroll || allowInitialSelection))','_detailViewport?.Begin()','if (_listViewport?.HoldsOrder == true) return;')) {
++ if(-not $main.Contains($token)){throw ('FAIL R26 update wiring: '+$token)}
++}
++if($main.Contains('scrollViewer.ScrollToVerticalOffset(previousVerticalOffset)') -or $main.Contains('ProcessList.ItemsSource = visible')){throw 'R26 must not restore old unguarded offsets or reset ItemsSource.'}
++foreach($token in @('root.PreviewMouseWheel','root.PreviewMouseMove','root.PreviewKeyDown','root.PreviewTouchDown','RequestBringIntoViewEvent','_policy.IsCurrent(ticket)','_pending?.Abort()','_root.IsMouseCaptureWithin','FindDataAnchor','DispatcherPriority.ContextIdle','viewer.Content as UIElement','_bringBoundary?.AddHandler')) {
++ if(-not $guard.Contains($token)){throw ('FAIL R26 viewport guard: '+$token)}
++}
++$request=[regex]::Match($tray,'(?s)public void RequestMinimize\(.*?(?=private void Minimize)').Value
++if($request.Contains('EnsureTray()') -or -not $request.Contains('_actions.Minimize()')){throw 'R26 minimize must not depend on Explorer icon registration.'}
++if($tray.Contains('SystemCommands.MinimizeWindow') -or $tray.Contains('DispatcherPriority.ContextIdle')){throw 'R26 must not queue duplicate system commands or idle minimize work.'}
++foreach($token in @('ShowWindow(_hwnd, 6)','WindowLifetimePolicy.IsMinimizeMessage','DispatcherPriority.Input','IsIconic(_hwnd)')) {
++ if(-not $tray.Contains($token)){throw ('FAIL R26 native window command: '+$token)}
++}
++[xml]$xaml=Get-Content (Join-Path $root 'src/ProcessLens.App/MainWindow.xaml') -Raw -Encoding UTF8
++$list=$xaml.SelectSingleNode("//*[@*[local-name()='Name']='ProcessList']")
++if($list.GetAttribute('VirtualizingPanel.ScrollUnit') -ne 'Pixel' -or $list.GetAttribute('VirtualizingPanel.VirtualizationMode') -ne 'Recycling'){throw 'R26 must keep pixel scrolling and virtualized recycling.'}
++Write-Host 'PASS R26 source: stable rows/groups, guarded viewports, reading order and direct owned-HWND minimize; Windows rendering/shell verification remains separate.'
+diff --git a/progetto/audit/tools/mutate_scroll_minimize_r26.py b/progetto/audit/tools/mutate_scroll_minimize_r26.py
+new file mode 100644
+index 0000000..02f6f17
+--- /dev/null
++++ b/progetto/audit/tools/mutate_scroll_minimize_r26.py
+@@ -0,0 +1,27 @@
++"""Runtime negative controls on production copies: search scope, executable identity, table errors and tray duplicate clicks."""
++import argparse,json,hashlib,subprocess
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.project.resolve();sdk=a.sdk.resolve();work=a.work.resolve();root=work/'mutants-r26';root.mkdir(exist_ok=True);audit=r/'audit/R10_R26';sha=lambda b:hashlib.sha256(b).hexdigest()
++refs=sorted((sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll'));globals=work/'runtime/GlobalUsings.cs'
++core_sources=sorted((r/'src/ProcessLens.Core').glob('*.cs'))
++sources=[r/'tests/ProcessLens.ProcessGroupsTests/Program.cs']+[r/'src/ProcessLens.Windows'/n for n in ['NativeMethods.cs','OwnedNetworkTableReader.cs','WindowsDeepProcessInspector.cs']]+[r/'src/ProcessLens.App'/n for n in ['ProcessDisplayFormatter.cs','ProcessNetworkPresentation.cs','WindowLifetimePolicy.cs','ReadingPositionPolicy.cs']]
++mutations=[
++ ('stale-scroll-ticket','src/ProcessLens.App/ReadingPositionPolicy.cs','ticket == _revision','true','R26 user input cancels an older queued position'),
++ ('reorder-during-reading','src/ProcessLens.App/ReadingPositionPolicy.cs','if (holdOrder)','if (false)','R26 changed rank and a new PID retain reader order'),
++ ('intercept-real-exit','src/ProcessLens.App/WindowLifetimePolicy.cs','!exiting && (message ==','(message ==','R26 restore and explicit exit are not intercepted')]
++results=[]
++for name,file,before,after,expected in mutations:
++ out=root/name;out.mkdir(exist_ok=True);original=r/file;data=original.read_text();assert before in data;mutated=out/'mutated.cs';mutated.write_text(data.replace(before,after,1));core=out/'ProcessLens.Core.dll'
++ def compile(target,inputs,extra=(),library=False):
++  args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-target:'+('library' if library else 'exe'),'-out:'+str(target)]
++  args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
++  args+=['-r:'+str(f) for f in [*refs,*extra]]+[str(globals)]+[str(mutated if f==original else f) for f in inputs]
++  x=subprocess.run(args,capture_output=True,text=True,timeout=60);assert x.returncode==0,x.stdout+x.stderr
++ if file.startswith('src/ProcessLens.Core/'):compile(core,core_sources,library=True)
++ else:core.write_bytes((work/'runtime/ProcessLens.Core.dll').read_bytes())
++ dll=out/'ProcessLens.ProcessGroupsTests.dll';compile(dll,sources,[core]);dll.with_suffix('.runtimeconfig.json').write_text(json.dumps({'runtimeOptions':{'tfm':'net8.0','framework':{'name':'Microsoft.NETCore.App','version':'8.0.32'}}}))
++ x=subprocess.run([str(sdk/'dotnet'),str(dll)],capture_output=True,text=True,timeout=45);log=x.stdout+x.stderr;(audit/(name+'-expected-failure.log')).write_text(log)
++ assert x.returncode!=0 and expected in log,log
++ results.append({'mutation':name,'expected_failure':expected,'expected_runtime_failure_observed':True,'status':'PASS','production_file':file,'production_sha256':sha(original.read_bytes()),'test_sha256':sha(sources[0].read_bytes())})
++(audit/'mutation-evidence.json').write_text(json.dumps(results,indent=2)+'\n');print('PASS',len(results),'runtime negative controls')
+diff --git a/progetto/audit/tools/package_scroll_minimize_r26.py b/progetto/audit/tools/package_scroll_minimize_r26.py
+new file mode 100644
+index 0000000..717222c
+--- /dev/null
++++ b/progetto/audit/tools/package_scroll_minimize_r26.py
+@@ -0,0 +1,87 @@
++"""Package the complete lightweight R26 source candidate and verify exact scope, evidence, patch and hashes."""
++import argparse,csv,difflib,hashlib,json,shutil,subprocess,tempfile,zipfile
++from pathlib import Path
++import xml.etree.ElementTree as ET
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--shell',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True);p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()
++r=a.project.resolve();shell=a.shell.resolve();audit=r/'audit/R10_R26';sha=lambda b:hashlib.sha256(b).hexdigest()
++assert sha(a.baseline_zip.read_bytes())=='a879ff1363aad04bde00658a5585185b36370c7b98e395a25bf6de0efb366fc3'
++with zipfile.ZipFile(a.baseline_zip) as z:before={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++for base in [r,shell]:
++ for d in sorted(base.rglob('__pycache__'),reverse=True):shutil.rmtree(d)
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file()}
++old={n[len('progetto/'):]:b for n,b in before.items() if n.startswith('progetto/')}
++allowed = {'src/ProcessLens.App/TrayWindowController.cs', 'tests/ProcessLens.ProcessGroupsUiTests/Program.cs', 'src/ProcessLens.App/ProcessRow.cs', 'src/ProcessLens.App/ReadingPositionPolicy.cs', 'src/ProcessLens.App/ProcessLens.App.csproj', 'tests/ProcessLens.ProcessGroupsTests/Program.cs', 'src/ProcessLens.App/MainWindow.xaml', 'tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj', 'src/ProcessLens.App/ProcessGroupRow.cs', 'src/ProcessLens.App/AutomaticViewport.cs', 'src/ProcessLens.App/WindowLifetimePolicy.cs', 'src/ProcessLens.App/MainWindow.xaml.cs'}
++changes={n for n,b in current.items() if n.startswith(('src/','tests/')) and old.get(n)!=b}
++assert changes==allowed,(changes,allowed)
++assert current['src/ProcessLens.Core/NewTaskLaunch.cs']==old['src/ProcessLens.Core/NewTaskLaunch.cs'], 'R23 R1 NUL fix must remain byte identical'
++assert current['tests/ProcessLens.NewTaskTests/Program.cs']==old['tests/ProcessLens.NewTaskTests/Program.cs']
++for name in ['WindowsLiveCpuSampler.cs','WindowsMemorySampler.cs','WindowsProcessCollector.cs']:
++ assert current['src/ProcessLens.Windows/'+name]==old['src/ProcessLens.Windows/'+name], 'R24 CPU/RAM sampling must remain byte identical'
++assert b'Tests.ProcessLens.NewTaskTests' in current['build-dashboard.ps1'] and b'Tests.ProcessLens.NewTaskUiTests' in current['build-dashboard.ps1']
++assert all(n in current for n in old), 'No R23 project file may disappear'
++assert all(current[n]==b for n,b in old.items() if n not in allowed and n.startswith(('src/ProcessLens.Windows/','src/ProcessLens.Guardian/','src/ProcessLens.MemoryAgent/','src/ProcessLens.Profiler/','src/ProcessLens.RamMonitor/')))
++for n,b in current.items():
++ if n.endswith(('.xaml','.csproj')):ET.fromstring(b)
++for name,key in [('runtime-evidence.json','source_hashes'),('wpf-typecheck-evidence.json','inputs')]:
++ e=json.loads((audit/name).read_text());assert e[key]
++ assert all(sha(current[n])==h for n,h in e[key].items()), name
++runtime=json.loads((audit/'runtime-evidence.json').read_text());assert [x['assertions'] for x in runtime['outcomes']]==[103,22,48,27,20,17,9,46,52,57,86,70,104]
++types=json.loads((audit/'wpf-typecheck-evidence.json').read_text());assert len(types['assemblies'])==9 and all(x['status']=='PASS' for x in types['assemblies'])
++e=json.loads((audit/'powershell-evidence.json').read_text());assert e['launcher_fixture_checks']==17 and len(e['stages'])==33
++assert sha((shell/'supporto/avvia.ps1').read_bytes())==e['launcher_sha256']
++assert all(x['status']=='PASS' and sha(current[x['file']])==x['sha256'] for x in e['stages'])
++assert sha(current['audit/tools/test_launcher_r26.ps1'])==e['fixture_sha256']
++(audit/'scope-evidence.json').write_text(json.dumps({'baseline_sha256':sha(a.baseline_zip.read_bytes()),'changed_production_and_test_files':sorted(changes),'protected_components':'Guardian, MemoryAgent, profiler, RAM monitor, R24 CPU/RAM samplers and other native acquisitions BYTE IDENTICAL TO R25; all Core and native acquisitions unchanged','new_dependencies':0,'new_binary':'NOT INCLUDED; full Windows build required once','WPF_runtime_DPI_UAC_RAM':'NOT EXECUTED / NOT MEASURED'},indent=2)+'\n')
++negative=json.loads((audit/'mutation-evidence.json').read_text());assert len(negative)==3
++for item in negative:
++ assert item['expected_runtime_failure_observed'] and item['status']=='PASS'
++ assert item['production_sha256']==sha(current[item['production_file']])
++ assert item['test_sha256']==sha(current['tests/ProcessLens.ProcessGroupsTests/Program.cs'])
++guards=json.loads((audit/'live-resource-guards.json').read_text());assert len(guards)==14 and all(x['status']=='PASS' for x in guards)
++with (audit/'string-ledger.csv').open('w',newline='') as f:
++ w=csv.writer(f);w.writerow(['file','line','before_or_after','changed_text'])
++ for n in sorted(changes):
++  for line in difflib.unified_diff(old.get(n,b'').decode('utf-8-sig').splitlines(),current[n].decode('utf-8-sig').splitlines(),n,n,n=0):
++   if line.startswith(('+','-')) and not line.startswith(('+++','---')):w.writerow([n,'see patch','after' if line[0]=='+' else 'before',line[1:]])
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file()}
++after={**{f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file() and f.name!='SHA256SUMS.txt'},**{'progetto/'+n:b for n,b in current.items()}}
++include=lambda n:not n.startswith('progetto/audit/R10_R26/') and n not in {'SHA256SUMS.txt','progetto/SHA256SUMS_R10.txt'}
++delta=sorted(n for n in set(before)|set(after) if include(n) and before.get(n)!=after.get(n))
++with (audit/'files-changed.csv').open('w',newline='') as f:
++ w=csv.writer(f);w.writerow(['file','kind','sha256_before','sha256_after'])
++ for n in delta:w.writerow([n,'removed' if n not in after else 'added' if n not in before else 'modified',sha(before[n]) if n in before else '',sha(after[n]) if n in after else ''])
++with tempfile.TemporaryDirectory(prefix='patch-r23r1-',dir=r.parent.parent/'test') as d:
++ t=Path(d);bdir=t/'before';adir=t/'after';bdir.mkdir();adir.mkdir()
++ for base,values in [(bdir,before),(adir,after)]:
++  for n,b in values.items():
++   if include(n):f=base/n;f.parent.mkdir(parents=True,exist_ok=True);f.write_bytes(b)
++ x=subprocess.run(['git','diff','--no-index','--no-renames','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=t,capture_output=True);assert x.returncode==1
++ lines=[]
++ for line in x.stdout.splitlines(keepends=True):
++  if line.startswith((b'diff --git ',b'--- ',b'+++ ')):
++   for prefix in [b'a/before/',b'a/after/']:line=line.replace(prefix,b'a/')
++   for prefix in [b'b/before/',b'b/after/']:line=line.replace(prefix,b'b/')
++  lines.append(line)
++ patch=b''.join(lines);path=audit/'R25_to_R26.patch';path.write_bytes(patch)
++ x=subprocess.run(['git','apply','--check',str(path)],cwd=bdir,capture_output=True);assert x.returncode==0,x.stderr
++ subprocess.run(['git','apply',str(path)],cwd=bdir,capture_output=True,check=True)
++ assert {f.relative_to(bdir).as_posix():f.read_bytes() for f in bdir.rglob('*') if f.is_file()}=={n:b for n,b in after.items() if include(n)}
++(audit/'patch-evidence.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','delta_files':len(delta),'patch_sha256':sha(patch),'qualification':'Current audit folder and recursive manifests excluded from diff only, included in final full ZIP'},indent=2)+'\n')
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt'}
++(r/'SHA256SUMS_R10.txt').write_text(''.join(sha(b)+'  '+n+'\n' for n,b in sorted(current.items())))
++current['SHA256SUMS_R10.txt']=(r/'SHA256SUMS_R10.txt').read_bytes()
++files={**{f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file() and f.name!='SHA256SUMS.txt'},**{'progetto/'+n:b for n,b in current.items()}}
++assert not any(n.endswith(('.nupkg','.deb','.dll','.exe','.pdb')) or '/setup/payload/' in n or n.endswith('build-r26.ok') for n in files)
++assert not any(n.startswith(('sdk/','runtime/','app/')) for n in files)
++assert all(len(b)<10*1024*1024 for b in files.values())
++manifest=''.join(sha(b)+'  '+n+'\n' for n,b in sorted(files.items()));files['SHA256SUMS.txt']=manifest.encode()
++out=a.output_directory.resolve();out.mkdir(exist_ok=True,parents=True);target=out/'ProcessLens-R26-scorrimento-icona.zip'
++with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
++ for n,b in sorted(files.items()):z.writestr('ProcessLens-Leggero/'+n,b)
++with zipfile.ZipFile(target) as z:
++ assert z.testzip() is None
++ for line in manifest.splitlines():
++  h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/'+n))==h
++ assert {n.split('/')[1] for n in z.namelist()}=={'AVVIA_PROCESSLENS.cmd','LEGGIMI.txt','supporto','progetto','SHA256SUMS.txt'}
++result={'zip':str(target),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files)-1,'portable_assertions':661,'PowerShell_fixtures':17,'source_preflight_stages':33,'WPF_CSharp_typechecked_assemblies':9,'WPF_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'}
++(out/'verification-r26.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
+diff --git a/progetto/audit/tools/run_process_groups_r26.py b/progetto/audit/tools/run_process_groups_r26.py
+new file mode 100644
+index 0000000..977435d
+--- /dev/null
++++ b/progetto/audit/tools/run_process_groups_r26.py
+@@ -0,0 +1,33 @@
++"""Run actual portable component and native-parser regressions; no WPF/native Windows acquisition."""
++import argparse,hashlib,json,subprocess
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();work.mkdir(parents=True,exist_ok=True);audit=r/'audit/R10_R26';audit.mkdir(exist_ok=True)
++refs=sorted((sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll'));sha=lambda b:hashlib.sha256(b).hexdigest()
++globals=work/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))
++hashes={};outcomes=[]
++def compile(name,sources,extra=(),library=False):
++ hashes.update({f.relative_to(r).as_posix():sha(f.read_bytes()) for f in sources})
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(work/(name+'.dll'))]
++ args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
++ args+=['-r:'+str(f) for f in [*refs,*extra]]+[str(globals)]+[str(f) for f in sources]
++ x=subprocess.run(args,capture_output=True,text=True,timeout=60);(audit/(name+'-build.log')).write_text(x.stdout+x.stderr)
++ if x.returncode:raise SystemExit(x.stdout+x.stderr)
++compile('ProcessLens.Core',sorted((r/'src/ProcessLens.Core').glob('*.cs')),library=True)
++compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),extra=[work/'ProcessLens.Core.dll'],library=True)
++for suite in ['WindowsComponentTests','SystemProcessTests','NewTaskTests','CpuTests','MemoryTests','MemoryEfficiencyTests','RefreshPolicyTests','LiveMetricsTests','CopyTests','ProcessGroupsTests','PresentationTests','BehaviorTests','TerminologyTests']:
++ name='ProcessLens.'+suite;sources=[r/'tests'/name/'Program.cs']
++ if suite=='SystemProcessTests':sources+=[r/'src/ProcessLens.Windows/WindowsSystemProcessSource.cs']
++ if suite=='LiveMetricsTests':sources += [r/'src/ProcessLens.Windows'/f for f in ['WindowsMemorySampler.cs','WindowsLiveCpuSampler.cs','NativeMethods.cs']] + [r/'src/ProcessLens.App'/f for f in ['WindowLifetimePolicy.cs','MemoryObservationBuffer.cs']]
++ if suite=='MemoryEfficiencyTests':sources += [r/'src/ProcessLens.App'/f for f in ['BoundedCache.cs','MemoryObservationBuffer.cs']]
++ if suite=='CopyTests':sources += [r/'src/ProcessLens.App'/f for f in ['CopyTextFormat.cs','ReportLayout.cs','ProcessExitNotice.cs','WindowLifetimePolicy.cs','AuditLogPresentation.cs','ServiceNavigation.cs']]
++ if suite=='ProcessGroupsTests':sources += [r/'src/ProcessLens.Windows'/f for f in ['NativeMethods.cs','OwnedNetworkTableReader.cs','WindowsDeepProcessInspector.cs']] + [r/'src/ProcessLens.App'/f for f in ['ProcessDisplayFormatter.cs','ProcessNetworkPresentation.cs','WindowLifetimePolicy.cs','ReadingPositionPolicy.cs']]
++ if suite=='PresentationTests':sources += [r/'src/ProcessLens.App'/f for f in ['ProcessDisplayFormatter.cs','ProcessNetworkPresentation.cs']]
++ if suite=='NewTaskTests':sources+=[r/'src/ProcessLens.Windows/WindowsNewTaskLauncher.cs']
++ compile(name,sources,extra=[work/'ProcessLens.Core.dll',work/'ProcessLens.Semantics.dll'])
++ (work/(name+'.runtimeconfig.json')).write_text(json.dumps({'runtimeOptions':{'tfm':'net8.0','framework':{'name':'Microsoft.NETCore.App','version':'8.0.32'}}}))
++ x=subprocess.run([str(sdk/'dotnet'),str(work/(name+'.dll'))],capture_output=True,text=True,timeout=45);log=x.stdout+x.stderr;(audit/(name+'-run.log')).write_text(log)
++ if x.returncode:raise SystemExit(log)
++ outcomes.append({'suite':name,'status':'PASS','assertions':sum(l.startswith('PASS ') for l in log.splitlines())})
++e={'environment':'Linux x64; direct Roslyn SDK 8.0.426 / .NET 8.0.32; no MSBuild or WPF; synthetic fixtures only','outcomes':outcomes,'source_hashes':hashes}
++(audit/'runtime-evidence.json').write_text(json.dumps(e,indent=2)+'\n');print(json.dumps(outcomes,indent=2))
+diff --git a/progetto/audit/tools/test_launcher_r26.ps1 b/progetto/audit/tools/test_launcher_r26.ps1
+new file mode 100644
+index 0000000..8bf79f3
+--- /dev/null
++++ b/progetto/audit/tools/test_launcher_r26.ps1
+@@ -0,0 +1,76 @@
++﻿param([string] $Launcher)
++$ErrorActionPreference = 'Stop'
++. $Launcher -FunctionsOnly
++$count = 0
++function Check([bool] $Ok, [string] $Label) {
++    if (-not $Ok) { throw ('FAIL R26 launcher: ' + $Label) }
++    Write-Host ('PASS R26 launcher: ' + $Label); $script:count++
++}
++function Touch([string] $Path) {
++    New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
++    Set-Content -LiteralPath $Path -Value 'fixture only' -Encoding ASCII
++}
++function Make-Runtime([string] $Path, [string] $Version='8.0.32') {
++    Touch (Join-Path $Path 'dotnet.exe')
++    New-Item -ItemType Directory -Path (Join-Path $Path 'shared/Microsoft.NETCore.App/8.0.32') -Force | Out-Null
++    New-Item -ItemType Directory -Path (Join-Path $Path ('shared/Microsoft.WindowsDesktop.App/' + $Version)) -Force | Out-Null
++}
++$temporary = Join-Path ([IO.Path]::GetTempPath()) ('processlens-r23-' + [Guid]::NewGuid().ToString('N'))
++$saved = @{}
++foreach ($name in @('PATH','DOTNET_ROOT','DOTNET_ROOT_X64','NUGET_PACKAGES')) { $saved[$name] = [Environment]::GetEnvironmentVariable($name) }
++try {
++    $root = Join-Path $temporary 'bundle with space'; $profile = Join-Path $temporary 'profile with space'
++    New-Item -ItemType Directory -Path $root,$profile,(Join-Path $root 'supporto') -Force | Out-Null
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'empty package has no runnable GUI'
++    $installed = Join-Path $profile 'Programs/ProcessLens/R20'
++    Touch (Join-Path $installed 'app/win-x64/ProcessLens.exe'); Touch (Join-Path $installed 'start-installed.ps1')
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'completed old installation cannot silently substitute its old GUI'
++    $exe = Join-Path $root 'progetto/publish/win-x64/ProcessLens.exe'; Touch $exe
++    $receipt = Join-Path $root 'supporto/build-r26.ok'
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'publication without successful R26 receipt is not accepted'
++    Set-Content -LiteralPath $receipt -Value 'older version'
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'receipt for another revision is rejected'
++    Remove-Item -LiteralPath $receipt
++    $sdk = Join-Path $installed 'dotnet'; Make-Runtime $sdk
++    New-Item -ItemType Directory -Path (Join-Path $sdk 'sdk/8.0.426'),(Join-Path $installed 'packages') -Force | Out-Null
++    # Stub only the compiler entry point and project build script; no dotnet, app or service is launched.
++    function global:dotnet { throw 'fixture must not launch a real compiler' }
++    $build = Join-Path $root 'progetto/build-dashboard.ps1'
++    Set-Content -LiteralPath $build -Value 'throw "synthetic failed tests"'
++    $failed = $false
++    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('synthetic failed tests') }
++    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'failed tests cannot issue a build receipt or launch a stale publication'
++    Check ($env:NUGET_PACKAGES -eq (Join-Path $installed 'packages')) 'completed R20 cache reused without copying packages into ZIP'
++    [xml]$config = Get-Content -LiteralPath (Join-Path $root 'progetto/NuGet.Config') -Raw
++    Check ($config.configuration.packageSources.clear -ne $null -and -not $config.configuration.packageSources.add) 'R20 cache build has no configured network feed'
++    Remove-Item -LiteralPath $exe
++    Set-Content -LiteralPath $build -Value '# fixture successful script but no executable'
++    $failed = $false
++    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('senza eseguibile') }
++    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'missing executable after build remains an error'
++    Set-Content -LiteralPath $build -Value 'New-Item -ItemType Directory -Path "publish/win-x64" -Force | Out-Null; Set-Content -LiteralPath "publish/win-x64/ProcessLens.exe" -Value "fixture"'
++    Invoke-ProcessLensBuild $root $profile
++    $target = Resolve-ProcessLensLaunch $root $profile
++    Check ($target.Kind -eq 'Exe' -and $target.Entry -eq $exe -and $target.Runtime -eq $sdk) 'successful owned build resolves new publication with existing private runtime'
++    Set-Content -LiteralPath $build -Value 'throw "fast path must not rebuild"'
++    Check ((Resolve-ProcessLensLaunch $root $profile).Entry -eq $exe) 'subsequent resolution needs no build or SDK command'
++    $incomplete = Join-Path $temporary 'incomplete'; Touch (Join-Path $incomplete 'dotnet.exe')
++    Check (-not (Test-DesktopRuntime8 $incomplete)) 'missing desktop runtime is not accepted'
++    Make-Runtime $incomplete '9.0.1'
++    Check (-not (Test-DesktopRuntime8 $incomplete)) 'wrong desktop runtime major is not accepted'
++    Check ((Quote-LaunchArgument 'C:\Program Files\ProcessLens\ProcessLens.exe') -eq '"C:\Program Files\ProcessLens\ProcessLens.exe"') 'paths with spaces remain one UAC argument'
++    foreach ($bad in @('C:\bad"path', "C:\bad`npath")) {
++        $failed = $false; try { Quote-LaunchArgument $bad | Out-Null } catch { $failed = $true }
++        Check $failed 'quotes and newlines cannot create extra launch arguments'
++    }
++    $tokens = $null; $errors = $null
++    $ast = [System.Management.Automation.Language.Parser]::ParseFile($Launcher,[ref]$tokens,[ref]$errors)
++    Check ($errors.Count -eq 0) 'real PowerShell parser accepts complete launcher'
++    $commands = @($ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] },$true) | ForEach-Object { $_.GetCommandName() })
++    Check (@($commands | Where-Object { $_ -in @('Expand-Archive','Invoke-WebRequest','Install-Package','Install-Module','Set-Service','Start-Service','Stop-Service','Stop-Process') }).Count -eq 0) 'launcher installs no dependencies and changes no services or running processes'
++    Write-Host ('R26 launcher fixture complete: ' + $count + ' checks; synthetic files only, no Windows app or UAC.')
++} finally {
++    Remove-Item function:global:dotnet -ErrorAction SilentlyContinue
++    foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name,$saved[$name]) }
++    if (Test-Path -LiteralPath $temporary) { Remove-Item -LiteralPath $temporary -Recurse -Force }
++}
+diff --git a/progetto/audit/tools/typecheck_wpf_sources_r26.py b/progetto/audit/tools/typecheck_wpf_sources_r26.py
+new file mode 100644
+index 0000000..fdd6bcc
+--- /dev/null
++++ b/progetto/audit/tools/typecheck_wpf_sources_r26.py
+@@ -0,0 +1,44 @@
++"""Type-check real C# against WindowsDesktop reference assemblies with explicit generated-field stubs.
++This is NOT WPF markup compilation, BAML, MSBuild, or runtime validation. Stubs live outside the deliverable.
++"""
++import argparse,hashlib,json,subprocess,xml.etree.ElementTree as ET
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();out=work/'typecheck';out.mkdir(exist_ok=True);audit=r/'audit/R10_R26';sha=lambda b:hashlib.sha256(b).hexdigest()
++base={p.name:p for p in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll')};desktop=list((work/'wpf-ref').glob('*.dll'))
++assert len(desktop)>20
++for f in desktop:base[f.name]=f
++refs=list(base.values());event=sdk/'packs/Microsoft.AspNetCore.App.Ref/8.0.32/ref/net8.0/System.Diagnostics.EventLog.dll';sqlite=work/'Microsoft.Data.Sqlite.dll'
++globals=out/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))
++x='{http://schemas.microsoft.com/winfx/2006/xaml}';stubs=[];inputs={}
++for path in (r/'src/ProcessLens.App').glob('*.xaml'):
++ tree=ET.parse(path).getroot();cls=tree.get(x+'Class');assert cls
++ fields=[]
++ for e in tree.iter():
++  name=e.get(x+'Name')
++  if not name:continue
++  tag=e.tag.split('}',1)[1]
++  if e.tag.startswith('{clr-namespace:ProcessLens.App}'):typ='ProcessLens.App.'+tag
++  elif tag=='Polyline':typ='System.Windows.Shapes.Polyline'
++  else:typ='System.Windows.Controls.'+tag
++  fields.append('internal '+typ+' '+name+' = null!;')
++ ns,short=cls.rsplit('.',1);stubs.append('namespace '+ns+' { public partial class '+short+' { '+ ' '.join(fields)+' private void InitializeComponent() {} } }')
++ inputs[path.relative_to(r).as_posix()]=sha(path.read_bytes())
++stub=out/'MarkupFieldStubs.cs';stub.write_text('\n'.join(stubs));results=[]
++def compile(name,sources,extra=(),library=True):
++ for f in sources:
++  if f.is_relative_to(r):inputs[f.relative_to(r).as_posix()]=sha(f.read_bytes())
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(out/(name+'.dll'))]
++ args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
++ args+=['-r:'+str(f) for f in [*refs,event,*extra]]+[str(globals)]+[str(f) for f in sources]
++ result=subprocess.run(args,capture_output=True,text=True);log=result.stdout+result.stderr;(audit/(name+'-typecheck.log')).write_text(log)
++ print(name, 'PASS' if result.returncode==0 else 'FAIL');results.append({'assembly':name,'status':'PASS' if result.returncode==0 else 'FAIL','warning_count':log.count('warning CS')})
++ if result.returncode:raise SystemExit(log)
++core=work/'runtime/ProcessLens.Core.dll';assert core.is_file()
++compile('ProcessLens.Windows',sorted((r/'src/ProcessLens.Windows').glob('*.cs')),[core])
++compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),[core])
++extra=[core,out/'ProcessLens.Windows.dll',out/'ProcessLens.Semantics.dll',sqlite]
++compile('ProcessLens',sorted((r/'src/ProcessLens.App').rglob('*.cs'))+[stub],extra)
++for name in ['NetworkUiTests','CopyUiTests','SystemProcessUiTests','NewTaskUiTests','LiveMetricsUiTests','ProcessGroupsUiTests']:
++ compile('ProcessLens.'+name,[r/'tests'/('ProcessLens.'+name)/'Program.cs'],extra+[out/'ProcessLens.dll'],False)
++(audit/'wpf-typecheck-evidence.json').write_text(json.dumps({'qualification':'C# type checking with generated-field stubs only; NOT actual WPF markup compilation or runtime','assemblies':results,'inputs':inputs,'stub_sha256':sha(stub.read_bytes()),'reference_hashes':{f.name:sha(f.read_bytes()) for f in [*desktop,event,sqlite]}},indent=2)+'\n')
+diff --git a/progetto/build-dashboard.ps1 b/progetto/build-dashboard.ps1
+index 1da1a77..dace38d 100644
+--- a/progetto/build-dashboard.ps1
++++ b/progetto/build-dashboard.ps1
+@@ -39,6 +39,7 @@ Write-Host 'Controllo sintassi di tutti gli script PowerShell...' -ForegroundCol
+ & (Join-Path $PSScriptRoot 'tests\check-diagnostics-v01913.ps1')
+ & (Join-Path $PSScriptRoot 'audit\tools\check_live_metrics_r24.ps1')
+ & (Join-Path $PSScriptRoot 'audit\tools\check_process_groups_r25.ps1')
++& (Join-Path $PSScriptRoot 'audit\tools\check_scroll_minimize_r26.ps1')
+ Write-Host 'Test catalogo eventi, struttura JSONL e privacy...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.DiagnosticsTests' -Project '.\tests\ProcessLens.DiagnosticsTests\ProcessLens.DiagnosticsTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.DiagnosticsTests\ProcessLens.DiagnosticsTests.csproj','-c','Release')
+ Write-Host 'Test del lettore SQLite (solo lettura, dati sintetici)...' -ForegroundColor Cyan
+diff --git a/progetto/src/ProcessLens.App/AutomaticViewport.cs b/progetto/src/ProcessLens.App/AutomaticViewport.cs
+new file mode 100644
+index 0000000..2ea98d0
+--- /dev/null
++++ b/progetto/src/ProcessLens.App/AutomaticViewport.cs
+@@ -0,0 +1,115 @@
++using System.Windows;
++using System.Windows.Controls;
++using System.Windows.Input;
++using System.Windows.Media;
++using System.Windows.Threading;
++
++namespace ProcessLens.App;
++
++// Protect automatic updates only. User input and explicit navigation cancel pending restoration.
++internal sealed class AutomaticViewport
++{
++    private readonly FrameworkElement _root;
++    private readonly Func<ScrollViewer?> _viewer;
++    private readonly ReadingPositionPolicy _policy = new();
++    private DispatcherOperation? _pending;
++    private bool _automatic;
++    private UIElement? _bringBoundary;
++    private readonly RequestBringIntoViewEventHandler _bringHandler;
++    public AutomaticViewport(FrameworkElement root, Func<ScrollViewer?> viewer)
++    {
++        _root = root; _viewer = viewer;
++        _bringHandler = (_, e) => { if (_automatic) e.Handled = true; };
++        root.PreviewMouseWheel += (_, _) => Cancel();
++        root.PreviewMouseDown += (_, _) => Cancel();
++        root.PreviewMouseMove += (_, e) => { if (e.LeftButton == MouseButtonState.Pressed) Cancel(); };
++        root.PreviewKeyDown += (_, _) => Cancel();
++        root.PreviewTouchDown += (_, _) => Cancel();
++        root.Unloaded += (_, _) => Cancel();
++        root.AddHandler(FrameworkElement.RequestBringIntoViewEvent, _bringHandler, true);
++    }
++    internal bool HoldsOrder => ReadingPositionPolicy.HoldOrder(_viewer()?.VerticalOffset ?? 0,
++        _root.IsMouseOver, _root.IsKeyboardFocusWithin);
++    internal void Cancel()
++    {
++        _policy.UserInput(); _automatic = false;
++        _pending?.Abort(); _pending = null;
++    }
++    internal IDisposable Begin()
++    {
++        // Nested updates share one outer capture.
++        if (_automatic) return new Completion(() => { });
++        var viewer = _viewer();
++        if (viewer is null || !viewer.IsLoaded || _root.IsMouseCaptureWithin) return new Completion(() => { });
++        // Intercept BELOW ScrollViewer, before its class handler or the outer ListView handles the event.
++        var boundary = viewer.Content as UIElement;
++        if (!ReferenceEquals(boundary, _bringBoundary))
++        {
++            _bringBoundary?.RemoveHandler(FrameworkElement.RequestBringIntoViewEvent, _bringHandler);
++            _bringBoundary = boundary;
++            _bringBoundary?.AddHandler(FrameworkElement.RequestBringIntoViewEvent, _bringHandler, true);
++        }
++        long ticket = _policy.Capture();
++        double offset = viewer.VerticalOffset;
++        var anchor = FindAnchor(viewer);
++        object? anchorData = _root is ListView ? anchor?.DataContext : null;
++        double y = anchor?.TranslatePoint(new Point(), viewer).Y ?? 0;
++        _automatic = true;
++        return new Completion(() =>
++        {
++            // TextBoxView can finish wrapping at Background; settle after that work, never before it.
++            _pending = _root.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
++            {
++                _pending = null;
++                if (!_policy.IsCurrent(ticket) || !viewer.IsLoaded) { _automatic = false; return; }
++                try
++                {
++                    var current = anchor is not null && anchor.IsVisible && viewer.IsAncestorOf(anchor) &&
++                        (anchorData is null || ReferenceEquals(anchor.DataContext, anchorData)) ? anchor : null;
++                    if (current is null && anchorData is not null) current = FindDataAnchor(viewer, anchorData);
++                    double target = offset <= 0.5 ? 0 : current is null ? offset : ReadingPositionPolicy.AnchoredOffset(
++                        viewer.VerticalOffset, y, current.TranslatePoint(new Point(), viewer).Y);
++                    viewer.ScrollToVerticalOffset(target);
++                }
++                finally { _automatic = false; }
++            }));
++        });
++    }
++    private static FrameworkElement? FindDataAnchor(DependencyObject root, object data)
++    {
++        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
++        {
++            var child = VisualTreeHelper.GetChild(root, i);
++            if (child is FrameworkElement element && (element is ListViewItem || element is Expander) &&
++                ReferenceEquals(element.DataContext, data)) return element;
++            if (FindDataAnchor(child, data) is { } found) return found;
++        }
++        return null;
++    }
++    private FrameworkElement? FindAnchor(ScrollViewer viewer)
++    {
++        // Realized visuals only: never create offscreen containers or force layout.
++        FrameworkElement? best = null; double bestY = double.MaxValue;
++        void Visit(DependencyObject node)
++        {
++            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(node); i++)
++            {
++                var child = VisualTreeHelper.GetChild(node, i);
++                if (child is FrameworkElement element && element.IsVisible && element.ActualHeight > 0 &&
++                    (_root is ListView ? element is ListViewItem || element is Expander : element is SelectableText && element.Name.Length > 0))
++                {
++                    double top = element.TranslatePoint(new Point(), viewer).Y;
++                    if (top + element.ActualHeight > 0 && top < viewer.ActualHeight && Math.Abs(top) < bestY)
++                    { best = element; bestY = Math.Abs(top); }
++                }
++                Visit(child);
++            }
++        }
++        Visit(viewer); return best;
++    }
++    private sealed class Completion(Action complete) : IDisposable
++    {
++        private Action? _complete = complete;
++        public void Dispose() { var action = _complete; _complete = null; action?.Invoke(); }
++    }
++}
+diff --git a/progetto/src/ProcessLens.App/MainWindow.xaml b/progetto/src/ProcessLens.App/MainWindow.xaml
+index d6e88e1..aae6058 100644
+--- a/progetto/src/ProcessLens.App/MainWindow.xaml
++++ b/progetto/src/ProcessLens.App/MainWindow.xaml
+@@ -436,7 +436,7 @@
+                               Background="Transparent"
+                               SelectionChanged="ProcessList_SelectionChanged"
+                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+-                              ScrollViewer.CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True"
++                              ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.IsVirtualizing="True"
+                               VirtualizingPanel.VirtualizationMode="Recycling"
+                               VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                               ItemContainerStyle="{StaticResource ProcessListItemStyle}">
+@@ -1061,7 +1061,7 @@
+                     </Grid>
+                     <ListView x:Name="ServiceList" Grid.Row="1" BorderThickness="0" Background="Transparent"
+                               SelectionChanged="ServiceList_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+-                              ScrollViewer.CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True"
++                              ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.IsVirtualizing="True"
+                               VirtualizingPanel.VirtualizationMode="Recycling"
+                               ItemContainerStyle="{StaticResource ServiceListItemStyle}">
+                         <ListView.ItemTemplate>
+diff --git a/progetto/src/ProcessLens.App/MainWindow.xaml.cs b/progetto/src/ProcessLens.App/MainWindow.xaml.cs
+index a09a4c7..fcb9dc7 100644
+--- a/progetto/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/progetto/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -1,4 +1,5 @@
+ using System.Diagnostics;
++using System.Collections.ObjectModel;
+ using System.Windows;
+ using System.Windows.Controls;
+ using System.Windows.Input;
+@@ -14,6 +15,9 @@ namespace ProcessLens.App;
+ 
+ public partial class MainWindow : Window
+ {
++    private readonly ObservableCollection<ProcessRow> _visibleRows = new();
++    private AutomaticViewport? _listViewport, _detailViewport;
++    private bool? _groupedView;
+     private ProcessRow? _currentDetailRow;
+     private List<ProcessGroupRow> _processGroups = new();
+     private readonly Dictionary<string, bool> _groupExpansion = new();
+@@ -103,9 +107,13 @@ public partial class MainWindow : Window
+ 
+ 
+ 
+-    public MainWindow()
++    public MainWindow() : this(true) { }
++    internal MainWindow(bool startMonitoring)
+     {
+         InitializeComponent();
++        _listViewport = new AutomaticViewport(ProcessList, () => FindVisualChild<ScrollViewer>(ProcessList));
++        _detailViewport = new AutomaticViewport(ProcessDetailsScroll, () => ProcessDetailsScroll);
++        ProcessList.ItemsSource = _visibleRows;
+ 
+         // DPI elevato e schermi piccoli: evita che l'interfaccia parta fuori schermo.
+         // Non altera risoluzione o impostazioni di Windows.
+@@ -144,6 +152,7 @@ public partial class MainWindow : Window
+ 
+         Loaded += async (_, _) =>
+         {
++            if (!startMonitoring) return; // Visual fixtures never start native acquisition.
+             AppDiagnostics.Record("Interfaccia caricata: prima lettura processi in corso");
+             try
+             {
+@@ -353,6 +362,7 @@ public partial class MainWindow : Window
+                 _resetCpu = true;
+                 return;
+             }
++            using var detailUpdate = _detailViewport?.Begin();
+             UpdateSystemRam(result.SystemMemory);
+             _latestCpu = result.Cpu.Processes;
+             foreach (var row in _allRows) row.UpdateCpu(RecentCpu(row.Pid));
+@@ -362,7 +372,7 @@ public partial class MainWindow : Window
+             if ((_sortMode == "CPU" || _sortMode == "Memoria") && !_servicesMode && !_guardianMode && !_memoryMode && !_networkMode && !_systemMode && ProcessList.ItemsSource is not null)
+             {
+                 _suppressSelectionEvents = true;
+-                try { CollectionViewSource.GetDefaultView(ProcessList.ItemsSource).Refresh(); }
++                try { RefreshLiveProcessOrder(); }
+                 finally { _suppressSelectionEvents = false; }
+             }
+             var sys = result.Cpu.System;
+@@ -546,8 +556,18 @@ public partial class MainWindow : Window
+ 
+     private void ApplyFilter(int? selectedPid = null, bool preserveScroll = false, bool allowInitialSelection = false)
+     {
+-        var scrollViewer = FindVisualChild<ScrollViewer>(ProcessList);
+-        double previousVerticalOffset = preserveScroll ? scrollViewer?.VerticalOffset ?? 0 : 0;
++        if (!preserveScroll) { _listViewport?.Cancel(); _detailViewport?.Cancel(); }
++        using var listUpdate = preserveScroll ? _listViewport?.Begin() : null;
++        using var detailUpdate = preserveScroll ? _detailViewport?.Begin() : null;
++        bool holdOrder = preserveScroll && _listViewport?.HoldsOrder == true;
++        var previousRows = _visibleRows.ToDictionary(x => x.Pid);
++        for (int index = 0; index < _allRows.Count; index++)
++        {
++            var next = _allRows[index];
++            if (previousRows.TryGetValue(next.Pid, out var old) && !ReferenceEquals(old, next) &&
++                ProcessGrouping.IdentityMatches(old.Process, next.Process))
++            { old.UpdateFrom(next); _allRows[index] = old; }
++        }
+ 
+         string search = SearchBox.Text.Trim();
+         IEnumerable<ProcessRow> rows = _allRows;
+@@ -573,15 +593,23 @@ public partial class MainWindow : Window
+         var rowByPid = visible.ToDictionary(x => x.Pid);
+         var allByPid = _allRows.ToDictionary(x => x.Pid);
+         var families = ProcessGrouping.Build(_allRows.Select(x => x.Process).ToArray());
++        bool regroup = false;
++        var previousGroups = _processGroups.ToDictionary(x => x.Key);
+         var groups = new List<ProcessGroupRow>();
+         foreach (var family in families)
+         {
+             var members = family.Members.Where(x => rowByPid.ContainsKey(x.Pid)).Select(x => rowByPid[x.Pid]).ToArray();
+             if (members.Length == 0) continue;
+             string title = allByPid[family.Root.Pid].FriendlyName;
+-            var group = new ProcessGroupRow(family.Key, title, members, family.Members.Count)
+-                { IsExpanded = _groupExpansion.GetValueOrDefault(family.Key) };
+-            foreach (var member in members) member.Group = group;
++            if (!previousGroups.TryGetValue(family.Key, out var group))
++                group = new ProcessGroupRow(family.Key, title, members, family.Members.Count)
++                    { IsExpanded = _groupExpansion.GetValueOrDefault(family.Key) };
++            else group.UpdateMembers(title, members, family.Members.Count);
++            foreach (var member in members)
++            {
++                if (!ReferenceEquals(member.Group, group) && _visibleRows.Contains(member)) regroup = true;
++                member.Group = group;
++            }
+             groups.Add(group);
+         }
+         _processGroups = groups;
+@@ -592,33 +620,21 @@ public partial class MainWindow : Window
+         _suppressSelectionEvents = true;
+         try
+         {
+-            ProcessList.ItemsSource = visible;
+             bool grouped = GroupApplicationsCheckBox.IsChecked == true;
+-            ProcessList.ItemTemplate = (DataTemplate)FindResource(grouped ? "ProcessMemberTemplate" : "ProcessCardTemplate");
+-            var processView = CollectionViewSource.GetDefaultView(ProcessList.ItemsSource);
+-            processView.GroupDescriptions.Clear();
+-            if (grouped) processView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ProcessRow.Group)));
+-            if (_sortMode == "CPU")
++            if (_groupedView != grouped)
+             {
+-                var cpuView = CollectionViewSource.GetDefaultView(ProcessList.ItemsSource);
+-                using (cpuView.DeferRefresh())
++                ProcessList.ItemTemplate = (DataTemplate)FindResource(grouped ? "ProcessMemberTemplate" : "ProcessCardTemplate");
++                var processView = CollectionViewSource.GetDefaultView(ProcessList.ItemsSource);
++                using (processView.DeferRefresh())
+                 {
+-                    if (grouped) cpuView.SortDescriptions.Add(new SortDescription("Group.CpuPercent", ListSortDirection.Descending));
+-                    cpuView.SortDescriptions.Add(new SortDescription(nameof(ProcessRow.CpuPercent), ListSortDirection.Descending));
+-                    cpuView.SortDescriptions.Add(new SortDescription(nameof(ProcessRow.MemoryDisplayMb), ListSortDirection.Descending));
+-                }
+-            }
+-            if (_sortMode == "Memoria")
+-            {
+-                var memoryView = CollectionViewSource.GetDefaultView(ProcessList.ItemsSource);
+-                using (memoryView.DeferRefresh())
+-                {
+-                    if (grouped) memoryView.SortDescriptions.Add(new SortDescription("Group.MemoryDisplayMb", ListSortDirection.Descending));
+-                    memoryView.SortDescriptions.Add(new SortDescription("Process.PrivateWorkingSetAvailable", ListSortDirection.Descending));
+-                    memoryView.SortDescriptions.Add(new SortDescription(nameof(ProcessRow.MemoryAvailable), ListSortDirection.Descending));
+-                    memoryView.SortDescriptions.Add(new SortDescription(nameof(ProcessRow.MemoryDisplayMb), ListSortDirection.Descending));
++                    processView.SortDescriptions.Clear();
++                    processView.GroupDescriptions.Clear();
++                    if (grouped) processView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ProcessRow.Group)));
+                 }
++                _groupedView = grouped;
+             }
++            bool orderChanged = SynchronizeVisibleRows(visible, holdOrder);
++            if (grouped && (regroup || orderChanged)) CollectionViewSource.GetDefaultView(ProcessList.ItemsSource).Refresh();
+             VisibleCountText.Text = visible.Count.ToString();
+             CurrentFilterText.Text = (_activeFilter == "Tutti" ? "Vista: tutti i processi" : $"Vista: {_activeFilter}") +
+                 (grouped ? $" · {_processGroups.Count} gruppi · {visible.Count} PID" : "");
+@@ -639,7 +655,7 @@ public partial class MainWindow : Window
+ 
+             if (item is not null)
+             {
+-                if (grouped && item.Group is not null) item.Group.IsExpanded = true;
++                if (grouped && item.Group is not null && (!preserveScroll || allowInitialSelection)) item.Group.IsExpanded = true;
+                 ProcessList.SelectedItem = item;
+                 ShowDetails(item);
+                 QueueDeepInspection(item);
+@@ -648,7 +664,7 @@ public partial class MainWindow : Window
+             {
+                 ProcessList.SelectedItem = null;
+                 _selectedPid = null;
+-                ClearDetails();
++                if (_currentDetailRow is not null || !preserveScroll) ClearDetails();
+             }
+         }
+         finally
+@@ -656,13 +672,36 @@ public partial class MainWindow : Window
+             _suppressSelectionEvents = false;
+         }
+ 
+-        if (preserveScroll && scrollViewer is not null)
++    }
++
++    private bool SynchronizeVisibleRows(IReadOnlyList<ProcessRow> desired, bool holdOrder)
++    {
++        var ordered = holdOrder ? desired : OrderVisibleRows(desired).ToArray();
++        var previous = _visibleRows.ToArray();
++        ReadingPositionPolicy.Synchronize(_visibleRows, ordered, holdOrder);
++        return !previous.SequenceEqual(_visibleRows);
++    }
++
++    private IEnumerable<ProcessRow> OrderVisibleRows(IEnumerable<ProcessRow> rows)
++    {
++        var sorted = ApplySort(rows);
++        if (GroupApplicationsCheckBox.IsChecked != true) return sorted;
++        return _sortMode switch
+         {
+-            Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
+-            {
+-                scrollViewer.ScrollToVerticalOffset(previousVerticalOffset);
+-            }));
+-        }
++            "CPU" => sorted.OrderByDescending(x => x.Group?.CpuPercent ?? 0),
++            "Memoria" => sorted.OrderByDescending(x => x.Group?.MemoryDisplayMb ?? 0),
++            _ => sorted
++        };
++    }
++
++    internal void RefreshLiveProcessOrder()
++    {
++        // Update values without moving the targets beneath a reader or pointer.
++        if (_listViewport?.HoldsOrder == true) return;
++        using var update = _listViewport?.Begin();
++        bool changed = SynchronizeVisibleRows(_visibleRows.ToArray(), holdOrder: false);
++        if (changed && GroupApplicationsCheckBox.IsChecked == true)
++            CollectionViewSource.GetDefaultView(ProcessList.ItemsSource).Refresh();
+     }
+ 
+     private IEnumerable<ProcessRow> ApplySort(IEnumerable<ProcessRow> rows) => _sortMode switch
+diff --git a/progetto/src/ProcessLens.App/ProcessGroupRow.cs b/progetto/src/ProcessLens.App/ProcessGroupRow.cs
+index 5af65d4..ed52c1a 100644
+--- a/progetto/src/ProcessLens.App/ProcessGroupRow.cs
++++ b/progetto/src/ProcessLens.App/ProcessGroupRow.cs
+@@ -7,8 +7,17 @@ namespace ProcessLens.App;
+ public sealed class ProcessGroupRow(string key, string name, IReadOnlyList<ProcessRow> members, int totalMembers) : INotifyPropertyChanged
+ {
+     public string Key { get; } = key;
+-    public string Title => totalMembers == Members.Count ? $"{name} ({Members.Count})" : $"{name} ({Members.Count}/{totalMembers})";
+-    public IReadOnlyList<ProcessRow> Members { get; } = members;
++    public string Title => _totalMembers == Members.Count ? $"{_name} ({Members.Count})" : $"{_name} ({Members.Count}/{_totalMembers})";
++    public IReadOnlyList<ProcessRow> Members { get; private set; } = members;
++    private string _name = name;
++    private int _totalMembers = totalMembers;
++    internal void UpdateMembers(string title, IReadOnlyList<ProcessRow> rows, int total)
++    {
++        _name = title; _totalMembers = total; Members = rows;
++        Refresh();
++        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Title)));
++        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IconSource)));
++    }
+     public ImageSource? IconSource => Members.FirstOrDefault()?.IconSource;
+     private bool _expanded;
+     public bool IsExpanded
+diff --git a/progetto/src/ProcessLens.App/ProcessLens.App.csproj b/progetto/src/ProcessLens.App/ProcessLens.App.csproj
+index e3d9090..0337f75 100644
+--- a/progetto/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/progetto/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R25-groups-filter-ports-tray-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R26-scroll-native-minimize-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+diff --git a/progetto/src/ProcessLens.App/ProcessRow.cs b/progetto/src/ProcessLens.App/ProcessRow.cs
+index 2283667..69186de 100644
+--- a/progetto/src/ProcessLens.App/ProcessRow.cs
++++ b/progetto/src/ProcessLens.App/ProcessRow.cs
+@@ -7,7 +7,12 @@ namespace ProcessLens.App;
+ public sealed class ProcessRow(ProcessSnapshot process, ProcessInsight insight) : INotifyPropertyChanged
+ {
+     public ProcessSnapshot Process { get; private set; } = process;
+-    public ProcessInsight Insight { get; } = insight;
++    public ProcessInsight Insight { get; private set; } = insight;
++    internal void UpdateFrom(ProcessRow next)
++    {
++        Process = next.Process; Insight = next.Insight;
++        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
++    }
+     private static readonly PropertyChangedEventArgs[] CpuChanges =
+         new[] { nameof(Process), nameof(CpuPercent), nameof(CpuDisplay), nameof(RuntimeCpuState) }
+             .Select(n => new PropertyChangedEventArgs(n)).ToArray();
+diff --git a/progetto/src/ProcessLens.App/ReadingPositionPolicy.cs b/progetto/src/ProcessLens.App/ReadingPositionPolicy.cs
+new file mode 100644
+index 0000000..6fc1d4b
+--- /dev/null
++++ b/progetto/src/ProcessLens.App/ReadingPositionPolicy.cs
+@@ -0,0 +1,34 @@
++using System.Collections.ObjectModel;
++
++namespace ProcessLens.App;
++
++// One ticket per pending layout operation; no timers or retained history.
++internal sealed class ReadingPositionPolicy
++{
++    private long _revision;
++    public long Capture() => ++_revision;
++    public void UserInput() => ++_revision;
++    public bool IsCurrent(long ticket) => ticket == _revision;
++    public static bool HoldOrder(double offset, bool pointerWithin, bool keyboardWithin) =>
++        offset > 0.5 || pointerWithin || keyboardWithin;
++    public static void Synchronize<T>(ObservableCollection<T> target, IReadOnlyList<T> desired, bool holdOrder) where T : class
++    {
++        var wanted = desired.ToHashSet();
++        for (int i = target.Count - 1; i >= 0; i--) if (!wanted.Contains(target[i])) target.RemoveAt(i);
++        if (holdOrder)
++        {
++            var existing = target.ToHashSet();
++            foreach (var item in desired) if (existing.Add(item)) target.Add(item);
++            return;
++        }
++        for (int i = 0; i < desired.Count; i++)
++        {
++            if (i < target.Count && ReferenceEquals(target[i], desired[i])) continue;
++            int current = target.IndexOf(desired[i]);
++            if (current < 0) target.Insert(i, desired[i]);
++            else target.Move(current, i);
++        }
++    }
++    public static double AnchoredOffset(double currentOffset, double previousY, double currentY) =>
++        Math.Max(0, currentOffset + currentY - previousY);
++}
+diff --git a/progetto/src/ProcessLens.App/TrayWindowController.cs b/progetto/src/ProcessLens.App/TrayWindowController.cs
+index e485bb2..8c7f25b 100644
+--- a/progetto/src/ProcessLens.App/TrayWindowController.cs
++++ b/progetto/src/ProcessLens.App/TrayWindowController.cs
+@@ -31,7 +31,7 @@ internal sealed class TrayWindowController : IDisposable
+     public TrayWindowController(Window window, Action shutdown, Action<bool> activity)
+     {
+         _window = window; _shutdown = shutdown; _activity = activity;
+-        _actions = new(action => window.Dispatcher.BeginInvoke(action), Minimize, Restore);
++        _actions = new(action => window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, action), Minimize, Restore);
+         _hwnd = new WindowInteropHelper(window).EnsureHandle();
+         _source = HwndSource.FromHwnd(_hwnd) ?? throw new InvalidOperationException("Finestra Windows non disponibile.");
+         _source.AddHook(WindowMessage);
+@@ -58,7 +58,7 @@ internal sealed class TrayWindowController : IDisposable
+ 
+     private void Closing(object? sender, CancelEventArgs e)
+     {
+-        var action = WindowLifetimePolicy.Close(_exitRequested, _exitRequested || EnsureTray());
++        var action = WindowLifetimePolicy.Close(_exitRequested, _trayPresent);
+         if (action == WindowCloseAction.Exit) return;
+         e.Cancel = true;
+         RequestMinimize();
+@@ -67,7 +67,7 @@ internal sealed class TrayWindowController : IDisposable
+     public void RequestMinimize()
+     {
+         if (_disposed || _exitRequested || _window.Dispatcher.HasShutdownStarted) return;
+-        EnsureTray();
++        // Explorer registration must not delay minimizing the owned window.
+         _actions.Minimize();
+     }
+ 
+@@ -78,13 +78,14 @@ internal sealed class TrayWindowController : IDisposable
+         // Always retain the taskbar route if Explorer hides or loses the tray entry.
+         _window.ShowInTaskbar = true;
+         int generation = ++_transitionGeneration;
+-        SystemCommands.MinimizeWindow(_window);
+-        _window.WindowState = WindowState.Minimized;
+-        _window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>
++        ShowWindow(_hwnd, 6); // SW_MINIMIZE, owned HWND only; no duplicate queued system command.
++        if (!IsIconic(_hwnd)) _window.WindowState = WindowState.Minimized;
++        _window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, new Action(() =>
+         {
+             if (_disposed || _exitRequested || generation != _transitionGeneration) return;
+-            if (!IsIconic(_hwnd)) ShowWindow(_hwnd, 6); // SW_MINIMIZE: act on this owned HWND only.
+-            AppDiagnostics.Record($"Riduzione verificata: HWND ridotto={IsIconic(_hwnd)}, WPF={_window.WindowState}.");
++            bool iconic = IsIconic(_hwnd);
++            AppDiagnostics.Record($"Riduzione verificata R26: HWND ridotto={iconic}, WPF={_window.WindowState}.");
++            if (!iconic) AppDiagnostics.Record("Riduzione non confermata da Windows; usare Esci per chiudere ProcessLens.");
+         }));
+         AppDiagnostics.Record("Finestra ridotta; riapri dalla barra applicazioni o dall’icona ProcessLens.");
+         UpdateActivity();
+@@ -129,6 +130,10 @@ internal sealed class TrayWindowController : IDisposable
+ 
+     private IntPtr WindowMessage(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
+     {
++        if (WindowLifetimePolicy.IsMinimizeMessage(message, wParam.ToInt64(), _exitRequested))
++        {
++            RequestMinimize(); handled = true; return IntPtr.Zero;
++        }
+         if (RestoreMessage != 0 && message == RestoreMessage)
+         {
+             if (_disposed || _exitRequested) return IntPtr.Zero;
+diff --git a/progetto/src/ProcessLens.App/WindowLifetimePolicy.cs b/progetto/src/ProcessLens.App/WindowLifetimePolicy.cs
+index 6bb8310..bcca55c 100644
+--- a/progetto/src/ProcessLens.App/WindowLifetimePolicy.cs
++++ b/progetto/src/ProcessLens.App/WindowLifetimePolicy.cs
+@@ -6,6 +6,8 @@ internal static class WindowLifetimePolicy
+ {
+     public static WindowCloseAction Close(bool exitRequested, bool trayAvailable) =>
+         exitRequested ? WindowCloseAction.Exit : WindowCloseAction.MinimizeToTaskbar;
++    public static bool IsMinimizeMessage(int message, long parameter, bool exiting) =>
++        !exiting && (message == 0x0010 || (message == 0x0112 && (parameter & 0xFFF0) == 0xF020));
+     public static bool PollingActive(bool visible, bool minimized) => visible && !minimized;
+ }
+ 
+diff --git a/progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj b/progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj
+index bd8f965..7182a42 100644
+--- a/progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj
++++ b/progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj
+@@ -5,4 +5,4 @@
+ <Compile Include="../../src/ProcessLens.Windows/WindowsDeepProcessInspector.cs" Link="WindowsDeepProcessInspector.cs"/>
+ <Compile Include="../../src/ProcessLens.App/ProcessDisplayFormatter.cs" Link="ProcessDisplayFormatter.cs"/>
+ <Compile Include="../../src/ProcessLens.App/ProcessNetworkPresentation.cs" Link="ProcessNetworkPresentation.cs"/>
+-<Compile Include="../../src/ProcessLens.App/WindowLifetimePolicy.cs" Link="WindowLifetimePolicy.cs"/></ItemGroup></Project>
++<Compile Include="../../src/ProcessLens.App/WindowLifetimePolicy.cs" Link="WindowLifetimePolicy.cs"/><Compile Include="../../src/ProcessLens.App/ReadingPositionPolicy.cs" Link="ReadingPositionPolicy.cs"/></ItemGroup></Project>
+diff --git a/progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs b/progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs
+index 8c9cb2c..2a8c254 100644
+--- a/progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs
++++ b/progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs
+@@ -136,3 +136,34 @@ if(OperatingSystem.IsWindows())
+ }
+ else Console.WriteLine("NOT RUN: Windows native tables and owned loopback listener (Linux host).");
+ Console.WriteLine("R25 grouping, identity filter and network table regressions complete.");
++
++// R26: exercise the actual reconciliation and cancellation policy used by WPF.
++var position26 = new ReadingPositionPolicy();
++long ticket26 = position26.Capture(); position26.UserInput();
++Check(!position26.IsCurrent(ticket26), "R26 user input cancels an older queued position");
++long second26 = position26.Capture(); long third26 = position26.Capture();
++Check(!position26.IsCurrent(second26) && position26.IsCurrent(third26), "R26 only the latest ticket may restore a viewport");
++Check(ReadingPositionPolicy.HoldOrder(250,false,false), "R26 middle-page reading freezes rank");
++Check(ReadingPositionPolicy.HoldOrder(0,true,false) && ReadingPositionPolicy.HoldOrder(0,false,true), "R26 pointer and keyboard targets do not move");
++Check(!ReadingPositionPolicy.HoldOrder(0,false,false), "R26 automatic ranking resumes at top outside interaction");
++Check(ReadingPositionPolicy.AnchoredOffset(300,-10,-60)==250, "R26 removal above retains the anchor screen position");
++Check(ReadingPositionPolicy.AnchoredOffset(300,-10,40)==350, "R26 growth above retains the anchor screen position");
++Check(ReadingPositionPolicy.AnchoredOffset(0,10,0)==0, "R26 anchor offset cannot be negative");
++var a26=new object();var b26=new object();var c26=new object();var new26=new object();
++var reading26=new System.Collections.ObjectModel.ObservableCollection<object>(new[]{a26,b26,c26});
++var events26=new List<System.Collections.Specialized.NotifyCollectionChangedAction>();
++reading26.CollectionChanged+=(_,e)=>events26.Add(e.Action);
++ReadingPositionPolicy.Synchronize(reading26,new[]{c26,new26,a26,b26},true);
++Check(reading26.SequenceEqual(new[]{a26,b26,c26,new26}), "R26 changed rank and a new PID retain reader order");
++ReadingPositionPolicy.Synchronize(reading26,new[]{new26,c26,b26},true);
++Check(reading26.SequenceEqual(new[]{b26,c26,new26}), "R26 exited PID disappears without reordering survivors");
++ReadingPositionPolicy.Synchronize(reading26,new[]{new26,c26,b26},false);
++Check(reading26.SequenceEqual(new[]{new26,c26,b26}), "R26 explicit sorting applies current ranking in place");
++Check(!events26.Contains(System.Collections.Specialized.NotifyCollectionChangedAction.Reset), "R26 reconciliation never clears or resets the collection");
++events26.Clear();ReadingPositionPolicy.Synchronize(reading26,reading26.ToArray(),false);
++Check(events26.Count==0, "R26 unchanged inventory produces no collection events");
++ReadingPositionPolicy.Synchronize(reading26,Array.Empty<object>(),true);
++Check(reading26.Count==0, "R26 empty snapshot removes exited instances");
++Check(WindowLifetimePolicy.IsMinimizeMessage(0x112,0xF022,false) && WindowLifetimePolicy.IsMinimizeMessage(0x10,0,false), "R26 native minimize and close route to the owned window action");
++Check(!WindowLifetimePolicy.IsMinimizeMessage(0x112,0xF120,false) && !WindowLifetimePolicy.IsMinimizeMessage(0x10,0,true), "R26 restore and explicit exit are not intercepted");
++Console.WriteLine("R26 reading and native-command policy regressions complete.");
+diff --git a/progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs b/progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs
+index 141d652..34afa23 100644
+--- a/progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs
++++ b/progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs
+@@ -6,6 +6,7 @@ using System.Windows;
+ using System.Windows.Controls;
+ using System.Windows.Data;
+ using System.Windows.Threading;
++using System.Windows.Media;
+ using ProcessLens.App;
+ using ProcessLens.Core;
+ using ProcessLens.Semantics;
+@@ -23,6 +24,7 @@ internal static class Program
+     {
+         _=new Application{ShutdownMode=ShutdownMode.OnExplicitShutdown};
+         if(args.Contains("--shell-smoke")) { ShellSmoke();Application.Current.Shutdown();return; }
++        if(args.Contains("--scroll-smoke")) { ScrollSmoke();Application.Current.Shutdown();return; }
+         var main=new MainWindow();var analyzer=new ProcessIntelligenceAnalyzer();var start=DateTime.UtcNow.AddMinutes(-2);
+         ProcessSnapshot Chrome(int pid,int parent,int seconds)=>new(){Pid=pid,ParentPid=parent,Name="chrome.exe",FileDescription="Google Chrome",
+             ExecutablePath=@"C:\Chrome\chrome.exe",StartTime=start.AddSeconds(seconds),IsDeepInspected=true};
+@@ -38,9 +40,14 @@ internal static class Program
+         Check(view.Groups?.Count==1 && ((CollectionViewGroup)view.Groups[0]!).ItemCount==2,"real collection view contains one expandable group with two PID rows");
+         var group=(ProcessGroupRow)((CollectionViewGroup)view.Groups![0]!).Name;
+         Check(group.Title.Contains("(2)") && group.Members.Select(x=>x.Pid).Distinct().Count()==2,"group count retains individual PID selection targets");
++        var stableSource=list.ItemsSource;var stableRow=list.Items[0];
+         group.IsExpanded=true;Filter(main);Drain();
++        Check(ReferenceEquals(stableSource,list.ItemsSource) && ReferenceEquals(stableRow,list.Items[0]),"R26 metadata refresh retains collection and row identity");
+         group=(ProcessGroupRow)((CollectionViewGroup)CollectionViewSource.GetDefaultView(list.ItemsSource).Groups![0]!).Name;
+         Check(group.IsExpanded,"expansion survives snapshot/filter rebuild for the same process instance");
++        group.IsExpanded=false;Filter(main);Drain();
++        group=(ProcessGroupRow)((CollectionViewGroup)CollectionViewSource.GetDefaultView(list.ItemsSource).Groups![0]!).Name;
++        Check(!group.IsExpanded,"R26 automatic refresh retains a collapsed group");
+         rows[2]=Row(cloud with{WorkingSetBytes=1234});Filter(main);
+         Check(search.Text=="google" && list.Items.Count==2 && list.Items.Cast<ProcessRow>().All(x=>x.Name=="chrome.exe"),"asynchronous row replacement cannot bypass current search");
+         group=(ProcessGroupRow)((CollectionViewGroup)CollectionViewSource.GetDefaultView(list.ItemsSource).Groups![0]!).Name;
+@@ -79,7 +86,13 @@ internal static class Program
+         using var controller=new TrayWindowController(window,()=>window.Close(),_=>{});
+         var hwnd=new System.Windows.Interop.WindowInteropHelper(window).EnsureHandle();
+         window.Show();controller.RequestMinimize();Until(()=>IsIconic(hwnd));
++        Check(window.WindowState==WindowState.Minimized,"R26 native and WPF minimized states agree");
+         controller.RequestRestore();Until(()=>!IsIconic(hwnd)&&window.IsVisible);
++        for(int pass=0;pass<5;pass++)
++        {
++            SendMessageW(hwnd,0x112,new IntPtr(0xF020),IntPtr.Zero);Until(()=>IsIconic(hwnd));
++            controller.RequestRestore();Until(()=>!IsIconic(hwnd)&&window.IsVisible);
++        }
+         window.WindowState=WindowState.Maximized;controller.RequestMinimize();Until(()=>IsIconic(hwnd));
+         controller.RequestRestore();Until(()=>!IsIconic(hwnd)&&window.WindowState==WindowState.Maximized);
+         window.Close();Until(()=>IsIconic(hwnd));Check(window.IsVisible,"X retains taskbar restore route");
+@@ -87,5 +100,50 @@ internal static class Program
+         Check(!window.IsVisible,"explicit exit closes the owned fixture window");
+         Console.WriteLine("PASS R25 manual shell fixture; human click on tray and Explorer restart still require manual verification.");
+     }
++    static T? Find<T>(DependencyObject parent) where T:DependencyObject
++    {
++        for(int i=0;i<VisualTreeHelper.GetChildrenCount(parent);i++)
++        {
++            var child=VisualTreeHelper.GetChild(parent,i);
++            if(child is T match)return match;
++            if(Find<T>(child) is { } nested)return nested;
++        }
++        return null;
++    }
++    static void ScrollSmoke()
++    {
++        // Explicit visual fixture: real MainWindow XAML, automatic acquisition disabled.
++        var main=new MainWindow(false);var analyzer=new ProcessIntelligenceAnalyzer();
++        var start=DateTime.UtcNow.AddMinutes(-2);
++        ProcessRow Make(int i)
++        {
++            var p=new ProcessSnapshot{Pid=2147400000+i,ParentPid=0,Name="fixture.exe",StartTime=start.AddSeconds(i),
++                ExecutablePath=@"C:\ProcessLens-owned-fixture\fixture.exe",IsDeepInspected=true,
++                WorkingSetAvailable=true,WorkingSetBytes=(i+1)*1048576L};
++            return new(p,analyzer.Analyze(p));
++        }
++        var rows=Enumerable.Range(0,150).Select(Make).ToList();Set(main,"_allRows",rows);
++        ((CheckBox)main.FindName("GroupApplicationsCheckBox")).IsChecked=false;
++        Set(main,"_sortMode","Memoria");Filter(main);main.Show();Drain();main.UpdateLayout();
++        var list=(ListView)main.FindName("ProcessList");var viewer=Find<ScrollViewer>(list)!;
++        viewer.ScrollToVerticalOffset(600);Drain();double listOffset=viewer.VerticalOffset;
++        Check(listOffset>100,"R26 visual fixture reaches middle of real virtualized list");
++        var stableSource=list.ItemsSource;var stableOrder=list.Items.Cast<ProcessRow>().ToArray();
++        foreach(var row in rows)row.UpdateCpu(null);
++        main.RefreshLiveProcessOrder();Drain();
++        Check(ReferenceEquals(list.ItemsSource,stableSource)&&list.Items.Cast<ProcessRow>().SequenceEqual(stableOrder),"R26 live rank tick preserves middle-page order");
++        var detail=(ScrollViewer)main.FindName("ProcessDetailsScroll");
++        detail.ScrollToVerticalOffset(500);Drain();double detailOffset=detail.VerticalOffset;
++        Check(detailOffset>100,"R26 visual fixture reaches middle of actual details panel");
++        Filter(main);Drain();
++        Check(Math.Abs(viewer.VerticalOffset-listOffset)<1 && Math.Abs(detail.VerticalOffset-detailOffset)<1,"R26 metadata refresh preserves both viewports");
++        var guard=new AutomaticViewport(detail,()=>detail);
++        using(guard.Begin()) { ((SelectableText)main.FindName("DetailOriginOperationText")).Text="Fixture updated"; }
++        guard.Cancel();detail.ScrollToVerticalOffset(700);Drain();
++        Check(Math.Abs(detail.VerticalOffset-700)<1,"R26 new scroll cancels older queued restoration");
++        main.Close();
++        Console.WriteLine("PASS R26 visual scrolling fixture; no process inventory, network, clipboard or tray registration.");
++    }
++    [DllImport("user32.dll")]static extern IntPtr SendMessageW(IntPtr hwnd,int message,IntPtr wParam,IntPtr lParam);
+     [DllImport("user32.dll")][return:MarshalAs(UnmanagedType.Bool)]static extern bool IsIconic(IntPtr hwnd);
+ }
+diff --git a/supporto/avvia.ps1 b/supporto/avvia.ps1
+index 0aa43cf..11810a7 100644
+--- a/supporto/avvia.ps1
++++ b/supporto/avvia.ps1
+@@ -16,9 +16,9 @@ function Resolve-ProcessLensLaunch([string] $Root, [string] $UserLocalAppData) {
+         if (Test-DesktopRuntime8 $candidate) { $runtime = $candidate; break }
+     }
+     $exe = Join-Path $Root 'progetto/publish/win-x64/ProcessLens.exe'
+-    $receipt = Join-Path $Root 'supporto/build-r25.ok'
++    $receipt = Join-Path $Root 'supporto/build-r26.ok'
+     if ((Test-Path -LiteralPath $exe -PathType Leaf) -and (Test-Path -LiteralPath $receipt -PathType Leaf) -and
+-        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R25-groups-filter-ports-tray') {
++        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R26-scroll-native-minimize') {
+         return [PSCustomObject]@{ Kind='Exe'; Entry=$exe; Runtime=$runtime }
+     }
+     return $null
+@@ -47,14 +47,14 @@ function Invoke-ProcessLensBuild([string] $Root, [string] $UserLocalAppData) {
+     if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
+         throw 'SDK .NET non trovato. Usa lo SDK 8 gia installato oppure quello della precedente installazione R20. Nessun download automatico.'
+     }
+-    Write-Host 'Primo avvio R25: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
++    Write-Host 'Primo avvio R26: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
+     Write-Host 'Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.'
+     Push-Location -LiteralPath $project
+     try { & (Join-Path $project 'build-dashboard.ps1') }
+     finally { Pop-Location }
+     $exe = Join-Path $project 'publish/win-x64/ProcessLens.exe'
+     if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { throw 'Compilazione senza eseguibile R23. Avvio interrotto.' }
+-    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r25.ok') -Value 'ProcessLens-R25-groups-filter-ports-tray' -Encoding ASCII
++    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r26.ok') -Value 'ProcessLens-R26-scroll-native-minimize' -Encoding ASCII
+ }
+ function Quote-LaunchArgument([string] $Value) {
+     if ($Value.Contains('"') -or $Value -match "[`r`n]") { throw 'Percorso non valido.' }

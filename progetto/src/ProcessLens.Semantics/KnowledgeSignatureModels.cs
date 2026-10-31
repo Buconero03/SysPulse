@@ -1,0 +1,60 @@
+using System.Text.Json.Serialization;
+
+namespace ProcessLens.Semantics;
+
+internal sealed class SignatureRule
+{
+    public string Id { get; set; } = string.Empty;
+    public string Kind { get; set; } = string.Empty;
+    public string Label { get; set; } = string.Empty;
+    public string? Summary { get; set; }
+    public string? Meaning { get; set; }
+    public string? WhyRunning { get; set; }
+    public string? CloseImpact { get; set; }
+    public string? CloseRisk { get; set; }
+    public string? Category { get; set; }
+    public int MinScore { get; set; } = 60;
+    public int MinimumEvidenceCount { get; set; } = 1;
+    public bool RequiresDeepInspection { get; set; }
+    public string? FrameworkEquals { get; set; }
+    public List<WeightedSignal> ModuleExact { get; set; } = [];
+    public List<WeightedSignal> ModulePrefix { get; set; } = [];
+    public List<WeightedSignal> ModuleContains { get; set; } = [];
+    public List<WeightedSignal> CommandContains { get; set; } = [];
+    public List<WeightedSignal> NameContains { get; set; } = [];
+    public List<WeightedSignal> MetadataContains { get; set; } = [];
+    public List<WeightedSignal> PathContains { get; set; } = [];
+    public List<WeightedSignal> WindowClassContains { get; set; } = [];
+    public WeightedBooleanSignal? HasVisibleWindow { get; set; }
+    public WeightedBooleanSignal? HasTcpListen { get; set; }
+    public WeightedBooleanSignal? HasTcpEstablished { get; set; }
+    public WeightedBooleanSignal? ParentSameExecutable { get; set; }
+    public WeightedBooleanSignal? HasSameNameChildren { get; set; }
+}
+
+internal sealed class WeightedSignal
+{
+    public string Value { get; set; } = string.Empty;
+    public int Score { get; set; }
+    public string? Evidence { get; set; }
+}
+
+internal sealed class WeightedBooleanSignal
+{
+    public bool Value { get; set; } = true;
+    public int Score { get; set; }
+    public string? Evidence { get; set; }
+}
+
+internal sealed record KnowledgeMatch(
+    string Id,
+    string Kind,
+    string Label,
+    string? Summary,
+    string? Meaning,
+    string? WhyRunning,
+    string? CloseImpact,
+    string? CloseRisk,
+    string? Category,
+    int Score,
+    IReadOnlyList<string> Evidence);

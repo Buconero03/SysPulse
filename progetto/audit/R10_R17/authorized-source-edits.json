@@ -1,0 +1,78 @@
+{
+  "baseline_sha256": "dfc956ea3405d82e1a1e01d94c4d685030e183d73af53c4c1fa5399ea6a813e3",
+  "scope": "R17 native capture replacing the external-tool pane in navigation; legacy Wireshark source and fixture remain unchanged. No global CLI capture, monitor switch, audit policy or firewall mutation. Manual bounded own session only.",
+  "files": [
+    {
+      "file": "build-dashboard.ps1",
+      "sha256_before": "0b3b23d171aa0d55b9eb84e42bc4531b5ff371843460bac0b3dad2cc2c826ee2",
+      "sha256_after": "caf82e41559985a351550fb450875d4a7f5f982008068b64ad18df31216b29bc",
+      "scope": "R17 native capture, WLAN cache, exact navigation/version/pipeline delta and independent fixtures"
+    },
+    {
+      "file": "src/ProcessLens.App/NativeCaptureView.xaml",
+      "sha256_before": null,
+      "sha256_after": "0d29d42d33b191833576ac6de589b4395677bb5a429d6820281209bc5116f607",
+      "scope": "R17 native capture, WLAN cache, exact navigation/version/pipeline delta and independent fixtures"
+    },
+    {
+      "file": "src/ProcessLens.App/NativeCaptureView.xaml.cs",
+      "sha256_before": null,
+      "sha256_after": "b7ce5f6d347a86c132bbe3911c6225d69ccd5258dd9d60c679d9e180eb819b10",
+      "scope": "R17 native capture, WLAN cache, exact navigation/version/pipeline delta and independent fixtures"
+    },
+    {
+      "file": "src/ProcessLens.App/NetworkDevicesView.xaml",
+      "sha256_before": "59abbdfb2aea2b228fef88dfd0645ccf9b7e22563a86a28a1b602ad12f46fcf0",
+      "sha256_after": "a5fb2894486cf9639853d6d6856af92c934147e4c9b646ab44225ec3ba817674",
+      "scope": "R17 native capture, WLAN cache, exact navigation/version/pipeline delta and independent fixtures"
+    },
+    {
+      "file": "src/ProcessLens.App/NetworkDevicesView.xaml.cs",
+      "sha256_before": "fd0579af2475d3e4bdfc412ed2568af7fa37fc4f7302f9891c1251b18b6b4354",
+      "sha256_after": "8fe1f889697ba416e95831358ed0135c16a33bbe9c9d84d58829bec0546e8cbc",
+      "scope": "R17 native capture, WLAN cache, exact navigation/version/pipeline delta and independent fixtures"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256_before": "a6c4457c1c958d85eb7cab2be9f762865b8cfedb0cb3c7b83a71f0ed0d7c325c",
+      "sha256_after": "21b1958be4170456b514f84ef25aa0f8b498f9d4e1933be2ad2a01d43e7347b4",
+      "scope": "R17 native capture, WLAN cache, exact navigation/version/pipeline delta and independent fixtures"
+    },
+    {
+      "file": "src/ProcessLens.Core/NativeCaptureEvidence.cs",
+      "sha256_before": null,
+      "sha256_after": "46bbdac76623da58181cbecff026eadd3833fe830d8a7827082005bef0f9ad70",
+      "scope": "R17 native capture, WLAN cache, exact navigation/version/pipeline delta and independent fixtures"
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsNativeCapture.cs",
+      "sha256_before": null,
+      "sha256_after": "ce6cef79ba1c82d9d24847b4a6c42c4a591fed718a2b2996c8695fc9a7f30c6b",
+      "scope": "R17 native capture, WLAN cache, exact navigation/version/pipeline delta and independent fixtures"
+    },
+    {
+      "file": "tests/ProcessLens.NativeCaptureTests/ProcessLens.NativeCaptureTests.csproj",
+      "sha256_before": null,
+      "sha256_after": "bc91025fd84026a9a0f5b71a60013408ceb6597a785be0915ce323e68ade432e",
+      "scope": "R17 native capture, WLAN cache, exact navigation/version/pipeline delta and independent fixtures"
+    },
+    {
+      "file": "tests/ProcessLens.NativeCaptureTests/Program.cs",
+      "sha256_before": null,
+      "sha256_after": "5251c2f9c22520a4bd6e0b0b9214efc8ac3e4ff08fa0728aa6b5ae1205906aea",
+      "scope": "R17 native capture, WLAN cache, exact navigation/version/pipeline delta and independent fixtures"
+    },
+    {
+      "file": "tests/ProcessLens.NetworkUiTests/Program.cs",
+      "sha256_before": "a32ea267de7e804b281febd0ee485004823744329ef350ddec879bb4ad2437e6",
+      "sha256_after": "1508f8240a2c08962cf3b23f16165bd7b26d3941043013464557f2fe58f277e8",
+      "scope": "R17 native capture, WLAN cache, exact navigation/version/pipeline delta and independent fixtures"
+    },
+    {
+      "file": "tests/check-native-capture-r17.ps1",
+      "sha256_before": null,
+      "sha256_after": "90d8483d816dd2314be1027eb74a659667d1c5c148b02bfb27eee973336dc314",
+      "scope": "R17 native capture, WLAN cache, exact navigation/version/pipeline delta and independent fixtures"
+    }
+  ]
+}

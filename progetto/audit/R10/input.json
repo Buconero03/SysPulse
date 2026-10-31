@@ -1,0 +1,11 @@
+{
+  "input_zip": "ProcessLens-v0.19.16-R7(1).zip",
+  "input_sha256": "5b20116017eaf03ee3bd6df51ce95f773825024ea7c504e9bdca6969cb05856f",
+  "prior_delivered_R9_sha256": "d60ea2b47c72d63aa4612fb11663beda783528e9375abeb9e7f0e6a41d8cb90f",
+  "comparison": "Previous user R7 reconstructed by actual reverse application of R9/R8 patches; source differences reviewed, no prior terminology audit restarted.",
+  "user_changed_files": 15,
+  "generated_input_files_excluded": 591,
+  "source_input_files": 301,
+  "copy_output_fields": 148,
+  "dynamic_render_sites": 5
+}

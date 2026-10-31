@@ -1,0 +1,20 @@
+PASS bundle: valid package with spaces accepted
+PASS bundle: tampered payload rejected
+PASS bundle: missing payload rejected
+PASS bundle: unsafe path rejected: ../outside.txt
+PASS bundle: unsafe path rejected: a/../../outside.txt
+PASS bundle: unsafe path rejected: /tmp/processlens-setup-fixture-08103ce947f54fd194bbc8534d38581b/absolute.txt
+PASS bundle: unknown schema rejected
+PASS bundle: integrity checked before extracting SDK
+PASS bundle: full build required before publishing installation
+PASS bundle: unowned destination protected
+PASS bundle: official SDK hash checked again at install
+PASS bundle: local NuGet feed isolated from user sources
+PASS bundle: audit query remains read only
+PASS bundle: no automatic action: Set-Service
+PASS bundle: no automatic action: Start-Service
+PASS bundle: no automatic action: Stop-Service
+PASS bundle: no automatic action: WlanScan(
+PASS bundle: no automatic action: AuditSetSystemPolicy
+PASS bundle: no automatic action: FwpmFilterAdd
+Bundle fixture complete: 19 checks. No Windows install or network access.

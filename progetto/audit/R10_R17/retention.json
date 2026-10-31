@@ -1,0 +1,10 @@
+{
+  "source_trees": 1,
+  "patch_replay_temporary_tree_removed": true,
+  "baseline": "R16 retained for byte comparisons",
+  "no_bin_obj_pycache_in_release": true,
+  "source_check_count": 188,
+  "Windows_runtime_and_RAM_measurement": "NOT EXECUTED",
+  "current_portable_runtime_assertions": 276,
+  "R17_WPF_runtime": "NOT EXECUTED"
+}

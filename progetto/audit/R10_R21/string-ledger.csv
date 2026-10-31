@@ -1,0 +1,106 @@
+file,line,source_text,scope
+AVVIA_PROCESSLENS.cmd,1,@echo off,Fast launcher or instructions; no application text changes
+AVVIA_PROCESSLENS.cmd,2,setlocal,Fast launcher or instructions; no application text changes
+AVVIA_PROCESSLENS.cmd,3,"""%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe"" -NoLogo -NoProfile -ExecutionPolicy Bypass -File ""%~dp0supporto\avvia.ps1""",Fast launcher or instructions; no application text changes
+AVVIA_PROCESSLENS.cmd,4,if errorlevel 1 pause,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,1,PROCESSLENS - PACCHETTO LEGGERO R21,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,2,,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,3,1. Estrai questa cartella.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,4,2. Fai doppio clic su AVVIA_PROCESSLENS.cmd.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,5,,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,6,L'avvio usa ProcessLens che hai gia installato con la R20.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,7,"Non installa nulla, non scarica dipendenze, non esegue test e non ricompila.",Fast launcher or instructions; no application text changes
+LEGGIMI.txt,8,Windows puo mostrare la consueta richiesta amministratore.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,9,,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,10,Mantieni per ora l'installazione R20: contiene l'eseguibile e il runtime,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,11,utilizzati dall'avvio rapido. Non occorre conservare anche il vecchio ZIP,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,12,per avviare il programma. Questo pacchetto NON contiene un nuovo EXE.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,13,,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,14,"Se compili i sorgenti nella sottocartella progetto, l'avvio preferisce",Fast launcher or instructions; no application text changes
+LEGGIMI.txt,15,progetto/publish/win-x64/ProcessLens.exe. In alternativa riconosce,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,16,"app/ProcessLens.exe, se aggiungi una pubblicazione gia compilata.",Fast launcher or instructions; no application text changes
+LEGGIMI.txt,17,,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,18,PERCHE IL VECCHIO ZIP ERA GRANDE,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,19,SDK .NET: circa 285 MB; NuGet: circa 46 MB; progetto: circa 3 MB.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,20,Servivano a compilare e verificare tutto senza Internet.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,21,Quasi il 99% del pacchetto era materiale per la compilazione offline.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,22,"Il nuovo ZIP contiene sorgenti e avvio rapido, senza SDK e cache NuGet.",Fast launcher or instructions; no application text changes
+LEGGIMI.txt,23,,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,24,"Il codice dell'app resta quello della R19, installato dalla R20.",Fast launcher or instructions; no application text changes
+LEGGIMI.txt,25,"RAM in alto, schermata Sistema Windows e funzioni di rete restano uguali.",Fast launcher or instructions; no application text changes
+LEGGIMI.txt,26,La riduzione dello ZIP non e una riduzione misurata della RAM dell'app.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,27,,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,28,I sorgenti e i controlli di sviluppo sono in progetto. Chi vuole modificarli,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,29,puo eseguire progetto/build-dashboard.ps1 con il proprio .NET 8 SDK.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,30,Questo percorso di sviluppo resta separato dall'avvio quotidiano.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,31,Il vincolo rigido sull'SDK 8.0.426 e stato tolto dal pacchetto leggero.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,32,NuGet deve poter ripristinare le librerie alla prima compilazione.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,33,,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,34,Non eliminare a mano la cartella .NET dell'installazione R20: l'avvio,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,35,puo usarne il runtime. Questo pacchetto non cambia o ripulisce il PC.,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,36,Il comportamento reale di avvio su Windows resta da verificare;,Fast launcher or instructions; no application text changes
+LEGGIMI.txt,37,"i test allegati verificano percorsi, selezione e assenza di compilazione.",Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,1,"param([switch] $FunctionsOnly, [string] $Executable, [string] $RuntimeRoot)",Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,2,$ErrorActionPreference = 'Stop',Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,3,function Test-DesktopRuntime8([string] $Root) {,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,4,    if (-not $Root -or -not (Test-Path -LiteralPath (Join-Path $Root 'dotnet.exe') -PathType Leaf)) { return $false },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,5,"    foreach ($name in @('Microsoft.NETCore.App', 'Microsoft.WindowsDesktop.App')) {",Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,6,        $folder = Join-Path $Root ('shared/' + $name),Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,7,        if (-not (Test-Path -LiteralPath $folder -PathType Container)) { return $false },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,8,        if (@(Get-ChildItem -LiteralPath $folder -Directory | Where-Object { $_.Name -match '^8\.0\.\d+$' }).Count -eq 0) { return $false },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,9,    },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,10,    return $true,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,11,},Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,12,"function Resolve-ProcessLensLaunch([string] $Root, [string] $UserLocalAppData) {",Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,13,    $installed = if ($UserLocalAppData) { Join-Path $UserLocalAppData 'Programs/ProcessLens/R20' } else { $null },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,14,    $runtime = $null,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,15,"    foreach ($candidate in @((Join-Path $Root 'runtime'), $(if ($installed) { Join-Path $installed 'dotnet' }))) {",Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,16,        if (Test-DesktopRuntime8 $candidate) { $runtime = $candidate; break },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,17,    },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,18,"    foreach ($candidate in @((Join-Path $Root 'app/ProcessLens.exe'), (Join-Path $Root 'progetto/publish/win-x64/ProcessLens.exe'))) {",Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,19,        if (Test-Path -LiteralPath $candidate -PathType Leaf) {,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,20,            return [PSCustomObject]@{ Kind='Exe'; Entry=$candidate; Runtime=$runtime },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,21,        },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,22,    },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,23,    if ($installed) {,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,24,        $exe = Join-Path $installed 'app/win-x64/ProcessLens.exe',Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,25,        $script = Join-Path $installed 'start-installed.ps1',Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,26,        if ((Test-Path -LiteralPath $exe -PathType Leaf) -and (Test-Path -LiteralPath $script -PathType Leaf)) {,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,27,            return [PSCustomObject]@{ Kind='Installed'; Entry=$script; Runtime=$null },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,28,        },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,29,    },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,30,    return $null,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,31,},Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,32,function Quote-LaunchArgument([string] $Value) {,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,33,"    if ($Value.Contains('""') -or $Value -match ""[`r`n]"") { throw 'Percorso non valido.' }",Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,34,"    return '""' + $Value + '""'",Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,35,},Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,36,if ($FunctionsOnly) { return },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,37,try {,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,38,    if ($env:OS -ne 'Windows_NT') { throw 'Avvio disponibile su Windows.' },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,39,    $root = Split-Path -Parent $PSScriptRoot,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,40,    if (-not $Executable) {,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,41,        $target = Resolve-ProcessLensLaunch $root $env:LOCALAPPDATA,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,42,"        if (-not $target) { throw 'ProcessLens non trovato. Apri la versione installata dal menu Start, oppure compila il progetto una volta. Nessun download o installazione automatica.' }",Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,43,        if ($target.Kind -eq 'Installed') { & $target.Entry; exit },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,44,        $Executable = $target.Entry; $RuntimeRoot = $target.Runtime,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,45,    },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,46,    if (-not (Test-Path -LiteralPath $Executable -PathType Leaf)) { throw 'Eseguibile ProcessLens non trovato.' },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,47,    $admin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator),Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,48,    if (-not $admin) {,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,49,        $ps = Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe',Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,50,        $argsText = '-NoLogo -NoProfile -ExecutionPolicy Bypass -File ' + (Quote-LaunchArgument $PSCommandPath) +,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,51,            ' -Executable ' + (Quote-LaunchArgument $Executable),Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,52,        if ($RuntimeRoot) { $argsText += ' -RuntimeRoot ' + (Quote-LaunchArgument $RuntimeRoot) },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,53,        Start-Process -FilePath $ps -Verb RunAs -ArgumentList $argsText,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,54,        exit,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,55,    },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,56,    if ($RuntimeRoot) {,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,57,        if (-not (Test-DesktopRuntime8 $RuntimeRoot)) { throw 'Runtime .NET 8 privato incompleto.' },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,58,        $env:DOTNET_ROOT = $RuntimeRoot; $env:DOTNET_ROOT_X64 = $RuntimeRoot,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,59,    },Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,60,    Start-Process -FilePath $Executable -WorkingDirectory (Split-Path -Parent $Executable),Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,61,} catch {,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,62,    Write-Host ('[ERRORE] ' + $_.Exception.Message) -ForegroundColor Red,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,63,    exit 1,Fast launcher or instructions; no application text changes
+supporto/avvia.ps1,64,},Fast launcher or instructions; no application text changes

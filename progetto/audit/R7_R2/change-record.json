@@ -1,0 +1,50 @@
+[
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "line_R1": 238,
+    "before": "$\"Padre riportato: {p.ParentName}; la catena di avvio richiede verifica temporale.\"",
+    "after": "$\"Padre riportato: {p.ParentName}; il nome non verifica la catena di avvio né identifica autore o motivo dell’avvio.\"",
+    "reason": "Rende esplicito il limite del solo ParentName nel ramo multiprocessing, senza negare una eventuale verifica disponibile separatamente nell’origine",
+    "test": "TerminologyTests Windows: NON ESEGUITO qui"
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/Program.cs",
+    "line_R1": 252,
+    "before": "Check(classified.WhyRunning.Contains(\"non\", StringComparison.OrdinalIgnoreCase),\n        \"R7 launch limitation explicit: \" + snapshot.Pid);",
+    "after": "if (snapshot.Pid == 704)\n        Check(classified.WhyRunning.Contains(\"il nome non verifica la catena di avvio\", StringComparison.Ordinal) &&\n              classified.WhyRunning.Contains(\"né identifica autore o motivo\", StringComparison.Ordinal),\n            \"R7 launch limitation explicit: \" + snapshot.Pid);\n    else\n        Check(classified.WhyRunning.Contains(\"non\", StringComparison.OrdinalIgnoreCase),\n            \"R7 launch limitation explicit: \" + snapshot.Pid);",
+    "reason": "Per il caso fallito, verifica il limite preciso su parentela e autore invece di una generica negazione",
+    "test": "TerminologyTests Windows: NON ESEGUITO qui"
+  },
+  {
+    "file": "VERSION.txt",
+    "line_R1": 1,
+    "before": "R7 R1 Candidate",
+    "after": "R7 R2 Candidate",
+    "reason": "Distingue candidata R2 dall’esecuzione R1 precedente",
+    "test": "TerminologyTests Windows: NON ESEGUITO qui"
+  },
+  {
+    "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+    "line_R1": 11,
+    "before": "0.19.16-R7-R1-candidate",
+    "after": "0.19.16-R7-R2-candidate",
+    "reason": "Distingue candidata R2 dall’esecuzione R1 precedente",
+    "test": "TerminologyTests Windows: NON ESEGUITO qui"
+  },
+  {
+    "file": "start-processlens-all.ps1",
+    "line_R1": 30,
+    "before": "v0.19.16 R7 R1 candidata",
+    "after": "v0.19.16 R7 R2 candidata",
+    "reason": "Distingue candidata R2 dall’esecuzione R1 precedente",
+    "test": "TerminologyTests Windows: NON ESEGUITO qui"
+  },
+  {
+    "file": "README.md",
+    "line_R1": 1,
+    "before": "# R7 R1 candidata — hotfix instradamento porte",
+    "after": "# R7 R2 candidata — chiarimento origine multiprocessing\n\nLeggere prima `HOTFIX_R7_R2.md`. La correzione delle porte R1 è conservata e i relativi test sono PASS nel log Windows fornito dall’utente. I test e le build R2 su Windows restano NON ESEGUITI qui.\n\n## Hotfix precedente R1",
+    "reason": "Aggiorna stato corrente senza sovrascrivere lo storico della revisione",
+    "test": "TerminologyTests Windows: NON ESEGUITO qui"
+  }
+]

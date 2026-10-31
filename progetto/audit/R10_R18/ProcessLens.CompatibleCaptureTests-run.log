@@ -1,0 +1,57 @@
+PASS compatible capture: invalid wildcard loopback multicast or non-IPv4 excluded: 0.0.0.0
+PASS compatible capture: invalid wildcard loopback multicast or non-IPv4 excluded: 127.0.0.1
+PASS compatible capture: invalid wildcard loopback multicast or non-IPv4 excluded: 255.255.255.255
+PASS compatible capture: invalid wildcard loopback multicast or non-IPv4 excluded: 224.0.0.1
+PASS compatible capture: invalid wildcard loopback multicast or non-IPv4 excluded: ::1
+PASS compatible capture: invalid wildcard loopback multicast or non-IPv4 excluded: 2001:db8::1
+PASS compatible capture: invalid wildcard loopback multicast or non-IPv4 excluded: garbage
+PASS compatible capture: explicit unicast and link-local IPv4 retained
+PASS compatible capture: constructor is lazy [it-IT]
+PASS compatible capture: native IP sources remain visible when PktMon exports are missing [it-IT]
+PASS compatible capture: owned raw socket feeds actual bounded decoder [it-IT]
+PASS compatible capture: IPLEVEL enabled and disabled only on own explicitly bound socket [it-IT]
+PASS compatible capture: finite poll and full IPv4 datagram buffer [it-IT]
+PASS compatible capture: unmeasured drops components and driver timestamps are not fabricated [it-IT]
+PASS compatible capture: copy retains actual source interval and unavailable loss counts [it-IT]
+PASS compatible capture: IP reused on another adapter cannot open a socket [it-IT]
+PASS compatible capture: rediscovery invalidates old opaque local source [it-IT]
+PASS compatible capture: release invalidates local source without background capture [it-IT]
+PASS compatible capture: screenshot state puts disabled WFP coverage before empty counts [it-IT]
+PASS compatible capture: enabled empty audit is explained as no matching events [it-IT]
+PASS compatible capture: failed Security acquisition cannot become a zero count [it-IT]
+PASS compatible capture: unknown audit policy stays distinct from disabled [it-IT]
+PASS compatible capture: constructor is lazy [en-US]
+PASS compatible capture: native IP sources remain visible when PktMon exports are missing [en-US]
+PASS compatible capture: owned raw socket feeds actual bounded decoder [en-US]
+PASS compatible capture: IPLEVEL enabled and disabled only on own explicitly bound socket [en-US]
+PASS compatible capture: finite poll and full IPv4 datagram buffer [en-US]
+PASS compatible capture: unmeasured drops components and driver timestamps are not fabricated [en-US]
+PASS compatible capture: copy retains actual source interval and unavailable loss counts [en-US]
+PASS compatible capture: IP reused on another adapter cannot open a socket [en-US]
+PASS compatible capture: rediscovery invalidates old opaque local source [en-US]
+PASS compatible capture: release invalidates local source without background capture [en-US]
+PASS compatible capture: screenshot state puts disabled WFP coverage before empty counts [en-US]
+PASS compatible capture: enabled empty audit is explained as no matching events [en-US]
+PASS compatible capture: failed Security acquisition cannot become a zero count [en-US]
+PASS compatible capture: unknown audit policy stays distinct from disabled [en-US]
+PASS compatible capture: duplicate local IPv4 across adapters is not a selectable ambiguous bind
+PASS compatible capture: failure reason retained: open
+PASS compatible capture: owned socket disposed after open
+PASS compatible capture: failure reason retained: bind
+PASS compatible capture: owned socket disposed after bind
+PASS compatible capture: failure reason retained: enable
+PASS compatible capture: owned socket disposed after enable
+PASS compatible capture: failure reason retained: poll
+PASS compatible capture: owned socket disposed after poll
+PASS compatible capture: failure reason retained: receive
+PASS compatible capture: owned socket disposed after receive
+PASS compatible capture: failure reason retained: disable
+PASS compatible capture: owned socket disposed after disable
+PASS compatible capture: failure reason retained: bad-length
+PASS compatible capture: owned socket disposed after bad-length
+PASS compatible capture: real loop caps synthetic observations and restores socket
+PASS compatible capture: cancellation during native polling restores only own socket
+PASS compatible capture: explicit PktMon selection delegates to its original verified source
+PASS compatible capture: mismatched engine source cannot start another backend
+PASS compatible capture: audit help limits configuration to failures and states conditional rollback
+Compatible capture tests complete; synthetic network interfaces, datagrams and owned fake sockets only. No live capture or configuration change.

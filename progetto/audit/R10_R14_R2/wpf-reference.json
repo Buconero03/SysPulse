@@ -1,0 +1,7 @@
+{
+  "source": "Microsoft dotnet/wpf v8.0.0",
+  "url": "https://github.com/dotnet/wpf/blob/v8.0.0/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/Controls/TabControl.cs",
+  "method": "TabControl.OnGeneratorStatusChanged",
+  "observation": "Automatic first-item selection is performed when the item container generator reports ContainersGenerated and no item is selected. The test creates the view without showing a window or applying a visual template. An explicit SelectedIndex removes that dependency.",
+  "scope": "Primary source review, not execution of WPF on this host."
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "mutation": "stale-scroll-ticket",
+    "expected_failure": "R26 user input cancels an older queued position",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/ReadingPositionPolicy.cs",
+    "production_sha256": "02907b021e8a4ed5501a471770ebba51740d86fa73dd2407595beaf387f951b5",
+    "test_sha256": "96f23b8a0dbbf6d8ef098dd7f52dfc5c96eafad060d25915d3d9251c7d23fa66"
+  },
+  {
+    "mutation": "reorder-during-reading",
+    "expected_failure": "R26 changed rank and a new PID retain reader order",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/ReadingPositionPolicy.cs",
+    "production_sha256": "02907b021e8a4ed5501a471770ebba51740d86fa73dd2407595beaf387f951b5",
+    "test_sha256": "96f23b8a0dbbf6d8ef098dd7f52dfc5c96eafad060d25915d3d9251c7d23fa66"
+  },
+  {
+    "mutation": "intercept-real-exit",
+    "expected_failure": "R26 restore and explicit exit are not intercepted",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/WindowLifetimePolicy.cs",
+    "production_sha256": "a394e8958761825acc4e3c964ca0831ed7ddfe07666861c6fd2b526f9d9a3862",
+    "test_sha256": "96f23b8a0dbbf6d8ef098dd7f52dfc5c96eafad060d25915d3d9251c7d23fa66"
+  }
+]

@@ -1,0 +1,5 @@
+{
+  "request": "Vedere i processi interni di Windows, anche non accessibili e componenti di memoria, in una sezione dedicata.",
+  "base": "R13, no reset of prior work",
+  "not_promised": "Completeness of hidden kernel objects, compression-store size, PPL bypass, runtime Windows or resource qualification."
+}

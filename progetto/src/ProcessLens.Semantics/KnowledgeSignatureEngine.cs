@@ -1,0 +1,164 @@
+using System.Text.Json;
+using ProcessLens.Core;
+
+namespace ProcessLens.Semantics;
+
+/// <summary>
+/// Generic, evidence-first knowledge engine. Rules describe technologies and roles,
+/// not specific end-user products. DLL/module fingerprints are only one source of
+/// evidence and are combined with command line, process relationships, windows and
+/// network observations.
+/// </summary>
+internal static class KnowledgeSignatureEngine
+{
+    private static readonly Lazy<IReadOnlyList<SignatureRule>> Rules = new(LoadRules, true);
+
+    public static KnowledgeMatch? MatchFramework(ProcessSnapshot process) =>
+        Match(process, "framework", frameworkName: null);
+
+    public static KnowledgeMatch? MatchRole(ProcessSnapshot process, string frameworkName) =>
+        Match(process, "role", frameworkName);
+
+    private static KnowledgeMatch? Match(ProcessSnapshot p, string kind, string? frameworkName)
+    {
+        KnowledgeMatch? best = null;
+
+        foreach (var rule in Rules.Value.Where(r => r.Kind.Equals(kind, StringComparison.OrdinalIgnoreCase)))
+        {
+            if (rule.RequiresDeepInspection && !p.IsDeepInspected)
+                continue;
+            if (!string.IsNullOrWhiteSpace(rule.FrameworkEquals) &&
+                !string.Equals(rule.FrameworkEquals, frameworkName, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var evidence = new List<string>();
+            int score = 0;
+
+            AddMatches(rule.ModuleExact, p.ModuleNames, (candidate, value) => candidate.Equals(value, StringComparison.OrdinalIgnoreCase), "DLL/modulo", evidence, ref score);
+            AddMatches(rule.ModulePrefix, p.ModuleNames, (candidate, value) => candidate.StartsWith(value, StringComparison.OrdinalIgnoreCase), "DLL/modulo", evidence, ref score);
+            AddMatches(rule.ModuleContains, p.ModuleNames, (candidate, value) => candidate.Contains(value, StringComparison.OrdinalIgnoreCase), "DLL/modulo", evidence, ref score);
+
+            string command = p.CommandLine ?? string.Empty;
+            AddTextMatches(rule.CommandContains, command, "command line", evidence, ref score);
+
+            AddTextMatches(rule.NameContains, p.Name, "nome processo", evidence, ref score);
+
+            string metadata = string.Join(" ", new[] { p.FileDescription, p.ProductName, p.CompanyName }.Where(x => !string.IsNullOrWhiteSpace(x)));
+            AddTextMatches(rule.MetadataContains, metadata, "metadati file", evidence, ref score);
+            AddTextMatches(rule.PathContains, p.ExecutablePath ?? string.Empty, "percorso", evidence, ref score);
+
+            foreach (var signal in rule.WindowClassContains)
+            {
+                if (p.WindowClasses.Any(c => c.Contains(signal.Value, StringComparison.OrdinalIgnoreCase)))
+                    AddSignal(signal, signal.Evidence ?? $"classe finestra contiene '{signal.Value}'", evidence, ref score);
+            }
+
+            AddBoolean(rule.HasVisibleWindow, p.HasVisibleWindow, "finestra top-level visibile", evidence, ref score);
+            AddBoolean(rule.HasTcpListen, p.TcpListeningCount > 0, $"{p.TcpListeningCount} socket TCP LISTEN", evidence, ref score);
+            AddBoolean(rule.HasTcpEstablished, p.TcpEstablishedCount > 0, $"{p.TcpEstablishedCount} connessioni TCP stabilite", evidence, ref score);
+            AddBoolean(rule.ParentSameExecutable, string.Equals(p.ParentName, p.Name, StringComparison.OrdinalIgnoreCase), "processo padre con lo stesso nome", evidence, ref score);
+            AddBoolean(rule.HasSameNameChildren, p.SameNameChildCount > 0, $"{p.SameNameChildCount} figli con lo stesso nome", evidence, ref score);
+
+            score = Math.Clamp(score, 0, 100);
+            if (evidence.Count < rule.MinimumEvidenceCount || score < rule.MinScore)
+                continue;
+
+            var match = new KnowledgeMatch(
+                rule.Id,
+                rule.Kind,
+                rule.Label,
+                rule.Summary,
+                rule.Meaning,
+                rule.WhyRunning,
+                rule.CloseImpact,
+                rule.CloseRisk,
+                rule.Category,
+                score,
+                evidence.Distinct(StringComparer.OrdinalIgnoreCase).ToArray());
+
+            if (best is null || match.Score > best.Score)
+                best = match;
+        }
+
+        return best;
+    }
+
+    private static void AddMatches(
+        IEnumerable<WeightedSignal> signals,
+        IReadOnlyList<string> candidates,
+        Func<string, string, bool> predicate,
+        string source,
+        List<string> evidence,
+        ref int score)
+    {
+        foreach (var signal in signals)
+        {
+            var candidate = candidates.FirstOrDefault(c => predicate(c, signal.Value));
+            if (candidate is null)
+                continue;
+            AddSignal(signal, signal.Evidence ?? $"{source} '{candidate}'", evidence, ref score);
+        }
+    }
+
+    private static void AddTextMatches(IEnumerable<WeightedSignal> signals, string text, string source, List<string> evidence, ref int score)
+    {
+        foreach (var signal in signals)
+        {
+            if (!text.Contains(signal.Value, StringComparison.OrdinalIgnoreCase))
+                continue;
+            AddSignal(signal, signal.Evidence ?? $"{source} contiene '{signal.Value}'", evidence, ref score);
+        }
+    }
+
+    private static void AddBoolean(WeightedBooleanSignal? signal, bool actual, string defaultEvidence, List<string> evidence, ref int score)
+    {
+        if (signal is null || actual != signal.Value)
+            return;
+        score += signal.Score;
+        evidence.Add(signal.Evidence ?? defaultEvidence);
+    }
+
+    private static void AddSignal(WeightedSignal signal, string defaultEvidence, List<string> evidence, ref int score)
+    {
+        score += signal.Score;
+        evidence.Add(defaultEvidence);
+    }
+
+    private static IReadOnlyList<SignatureRule> LoadRules()
+    {
+        try
+        {
+            string dir = Path.Combine(AppContext.BaseDirectory, "knowledge");
+            if (!Directory.Exists(dir))
+                return Array.Empty<SignatureRule>();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                AllowTrailingCommas = true
+            };
+
+            var rules = new List<SignatureRule>();
+            foreach (string file in Directory.EnumerateFiles(dir, "*.json", SearchOption.AllDirectories))
+            {
+                try
+                {
+                    string json = File.ReadAllText(file);
+                    var parsed = JsonSerializer.Deserialize<List<SignatureRule>>(json, options);
+                    if (parsed is not null)
+                        rules.AddRange(parsed.Where(r => !string.IsNullOrWhiteSpace(r.Id) && !string.IsNullOrWhiteSpace(r.Kind)));
+                }
+                catch
+                {
+                    // A malformed optional knowledge file must never prevent ProcessLens from starting.
+                }
+            }
+            return rules;
+        }
+        catch
+        {
+            return Array.Empty<SignatureRule>();
+        }
+    }
+}

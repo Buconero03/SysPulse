@@ -1,0 +1,155 @@
+file,line,added_or_modified_source_text,context
+src/ProcessLens.App/CopyTestVisibility.cs,6,"[assembly: InternalsVisibleTo(""ProcessLens.SystemProcessUiTests"")]",UI/report or technical source context
+src/ProcessLens.App/MainWindow.xaml,215,"<Button x:Name=""NavSystemButton"" Content=""Sistema Windows"" Style=""{StaticResource FilterButtonStyle}"" Click=""NavSystemButton_Click""/>",UI/report or technical source context
+src/ProcessLens.App/MainWindow.xaml,277,"<ContentControl x:Name=""SystemProcessesHost"" HorizontalContentAlignment=""Stretch"" VerticalContentAlignment=""Stretch"" Grid.Row=""2"" Visibility=""Collapsed""/>",UI/report or technical source context
+src/ProcessLens.App/MainWindow.xaml.cs,311,"if (_sortMode == ""CPU"" && !_servicesMode && !_guardianMode && !_memoryMode && !_networkMode && !_systemMode && ProcessList.ItemsSource is not null)",UI/report or technical source context
+src/ProcessLens.App/MainWindow.xaml.cs,2059,"bool system = mode == ""system"";",UI/report or technical source context
+src/ProcessLens.App/MainWindow.xaml.cs,2127,"private void NavSystemButton_Click(object sender, RoutedEventArgs e) => SetWorkspaceMode(""system"");",UI/report or technical source context
+src/ProcessLens.App/MainWindow.xaml.cs,2140,"SystemProcesses?.ShowNavigationProblem(""Processo terminato, istanza cambiata o avvio N/D. Aggiorna l'elenco; i dettagli non sono stati aperti."");",UI/report or technical source context
+src/ProcessLens.App/MainWindow.xaml.cs,2143,"_activeFilter = ""Tutti""; SearchBox.Clear(); SetFilterButtonState();",UI/report or technical source context
+src/ProcessLens.App/MainWindow.xaml.cs,2145,"SetWorkspaceMode(""processes""); ApplyFilter(target.Pid);",UI/report or technical source context
+src/ProcessLens.App/MainWindow.xaml.cs,2151,"SystemProcesses?.ShowNavigationProblem(""Analisi non disponibile: "" + ex.Message);",UI/report or technical source context
+src/ProcessLens.App/MainWindow.xaml.cs,2152,"AppDiagnostics.Record(""Apertura analisi da Sistema Windows non riuscita"", ex);",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,1,"<UserControl x:Class=""ProcessLens.App.SystemProcessesView""",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,2,"xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,3,"xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,4,"xmlns:local=""clr-namespace:ProcessLens.App"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,6,"<Style x:Key=""SystemAction"" TargetType=""Button"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,7,"<Setter Property=""MinHeight"" Value=""36""/><Setter Property=""Padding"" Value=""12,8""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,8,"<Setter Property=""Margin"" Value=""0,0,8,6""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,9,"<Setter Property=""ContentTemplate""><Setter.Value><DataTemplate>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,10,"<TextBlock Text=""{Binding}"" TextWrapping=""Wrap"" TextAlignment=""Center"" LineHeight=""20""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,13,"<Style x:Key=""SystemCell"" TargetType=""TextBlock"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,14,"<Setter Property=""TextWrapping"" Value=""Wrap""/><Setter Property=""Padding"" Value=""5""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,17,"<Grid Background=""White"" Margin=""0,0,0,2"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,19,"<RowDefinition Height=""Auto""/><RowDefinition Height=""*"" MinHeight=""80""/><RowDefinition Height=""Auto""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,21,"<ScrollViewer Grid.Row=""0"" MaxHeight=""220"" VerticalScrollBarVisibility=""Auto"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,23,"<StackPanel Margin=""12,10,12,4"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,24,"<TextBlock Text=""Sistema Windows"" FontSize=""21"" FontWeight=""SemiBold""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,25,"<local:SelectableText Text=""Processi, voci interne e memoria del kernel. Aggiornamento manuale; nessun nuovo monitor in background.""",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,26,"TextWrapping=""Wrap"" Margin=""0,5,0,0""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,28,"<WrapPanel Margin=""12,8,12,2"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,29,"<Button x:Name=""RefreshSystemButton"" Content=""Aggiorna elenco"" Style=""{StaticResource SystemAction}"" Click=""RefreshSystem_Click""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,30,"<Button x:Name=""AnalyzeSystemButton"" Content=""Apri analisi del processo"" Style=""{StaticResource SystemAction}""",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,31,"IsEnabled=""False"" Click=""AnalyzeSystem_Click""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,32,"<Button x:Name=""CopySystemButton"" Content=""Copia rapporto"" Style=""{StaticResource SystemAction}"" IsEnabled=""False"" Click=""CopySystem_Click""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,33,"<ComboBox x:Name=""SystemScopeBox"" SelectedIndex=""0"" Width=""240"" Margin=""0,0,8,6"" SelectionChanged=""Scope_Changed"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,34,"<ComboBoxItem Content=""Windows e voci interne""/><ComboBoxItem Content=""Tutti i processi rilevati""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,35,"<ComboBoxItem Content=""Origine non verificabile""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,37,"<TextBlock Text=""Cerca"" VerticalAlignment=""Center"" Margin=""0,0,8,6""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,38,"<TextBox x:Name=""SystemSearchBox"" Width=""180"" MaxLength=""128"" Margin=""0,0,0,6"" VerticalContentAlignment=""Center""",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,39,"ToolTip=""Cerca nome esatto o parziale; per PID usa solo cifre."" TextChanged=""Search_Changed""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,41,"<StackPanel Margin=""12,4,12,8"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,42,"<local:SelectableText x:Name=""SystemStatusText"" Text=""Premi Aggiorna elenco."" TextWrapping=""Wrap"" FontWeight=""SemiBold""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,43,"<local:SelectableText Text=""Il gruppo Windows usa percorso e nomi tipici; non verifica l'autenticità. Le voci con dettagli N/D restano nell'elenco.""",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,44,"TextWrapping=""Wrap"" Foreground=""#667085"" Margin=""0,4,0,0""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,45,"<Expander Header=""Memoria del sistema e limiti della lettura"" Margin=""0,7,0,0"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,46,"<ScrollViewer MaxHeight=""160"" VerticalScrollBarVisibility=""Auto"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,47,"<StackPanel Margin=""0,6,0,0"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,48,"<local:SelectableText x:Name=""SystemMemoryText"" Text=""Memoria: N/D"" TextWrapping=""Wrap""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,49,"<local:SelectableText x:Name=""SystemSourceText"" Text=""Nessuna lettura eseguita."" TextWrapping=""Wrap"" Margin=""0,7,0,0""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,50,"<local:SelectableText Text=""I processi brevi possono sfuggire al campione. Driver, interrupt, DPC e cache non sono tutti processi separati. Una voce Memory Compression può non essere esposta: assenza dall'elenco non significa compressione disattivata.""",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,51,"TextWrapping=""Wrap"" Margin=""0,7,0,0""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,58,"<DataGrid x:Name=""SystemProcessesTable"" Grid.Row=""1"" Margin=""12,0"" IsReadOnly=""True"" AutoGenerateColumns=""False""",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,59,"CanUserAddRows=""False"" CanUserDeleteRows=""False"" EnableRowVirtualization=""True"" EnableColumnVirtualization=""True""",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,60,"VirtualizingPanel.VirtualizationMode=""Recycling"" SelectionMode=""Single"" SelectionUnit=""FullRow""",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,61,"local:GridCopySupport.Enabled=""True"" MinRowHeight=""34"" SelectionChanged=""SystemSelection_Changed"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,63,"<DataGridTextColumn Header=""Nome rilevato"" Binding=""{Binding Name, Mode=OneWay}"" Width=""180"" ElementStyle=""{StaticResource SystemCell}""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,64,"<DataGridTextColumn Header=""PID"" Binding=""{Binding Pid, Mode=OneWay}"" Width=""65"" ElementStyle=""{StaticResource SystemCell}""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,65,"<DataGridTextColumn Header=""PID padre riportato"" Binding=""{Binding Parent, Mode=OneWay}"" Width=""95"" ElementStyle=""{StaticResource SystemCell}""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,66,"<DataGridTextColumn Header=""Origine / raggruppamento"" Binding=""{Binding Origin, Mode=OneWay}"" Width=""230"" ElementStyle=""{StaticResource SystemCell}""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,67,"<DataGridTextColumn Header=""Working Set totale"" Binding=""{Binding Resident, Mode=OneWay}"" Width=""130"" ElementStyle=""{StaticResource SystemCell}""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,68,"<DataGridTextColumn Header=""Thread"" Binding=""{Binding Threads, Mode=OneWay}"" Width=""70"" ElementStyle=""{StaticResource SystemCell}""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,69,"<DataGridTextColumn Header=""Handle"" Binding=""{Binding Handles, Mode=OneWay}"" Width=""70"" ElementStyle=""{StaticResource SystemCell}""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,70,"<DataGridTextColumn Header=""Sessione"" Binding=""{Binding Session, Mode=OneWay}"" Width=""75"" ElementStyle=""{StaticResource SystemCell}""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,71,"<DataGridTextColumn Header=""Accesso ai dettagli"" Binding=""{Binding Access, Mode=OneWay}"" Width=""230"" ElementStyle=""{StaticResource SystemCell}""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,74,"<ScrollViewer Grid.Row=""2"" MaxHeight=""140"" VerticalScrollBarVisibility=""Auto"" Margin=""12,9,12,12"">",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,75,"<local:SelectableText x:Name=""SystemSelectionText"" Text=""Seleziona una riga per leggere i dettagli.""",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml,76,"TextWrapping=""Wrap""/>",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,16,"public string Threads => Entry.Threads?.ToString(CultureInfo.CurrentCulture) ?? ""N/D"";",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,17,"public string Handles => Entry.Handles?.ToString(CultureInfo.CurrentCulture) ?? ""N/D"";",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,18,"public string Session => Entry.Session?.ToString(CultureInfo.CurrentCulture) ?? ""N/D"";",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,46,"SystemStatusText.Text = ""Elenco da aggiornare."";",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,47,"SystemMemoryText.Text = ""Memoria: N/D"";",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,48,"SystemSourceText.Text = ""Nessuna lettura corrente."";",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,49,"SystemSelectionText.Text = ""Seleziona una riga dopo l'aggiornamento."";",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,59,"SystemStatusText.Text = ""Lettura dei processi di sistema…"";",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,60,"SystemMemoryText.Text = ""Memoria: N/D""; SystemSourceText.Text = ""Lettura in corso."";",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,61,"SystemSelectionText.Text = ""Seleziona una riga dopo l'aggiornamento."";",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,69,"SystemSourceText.Text = result.Source + ""\n"" + result.Note;",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,76,"{ SystemStatusText.Text = ""Lettura non disponibile.""; SystemSourceText.Text = ex.Message; }",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,89,"{ SystemProcessesTable.ItemsSource = null; SystemStatusText.Text = ""Elenco non disponibile. Consulta i dettagli della lettura.""; return; }",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,101,"SystemStatusText.Text = $""Campione {c.CapturedUtc.ToLocalTime():HH:mm:ss} · {visible.Length} mostrati / {c.Processes.Count} rilevati"" +",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,102,"(c.Partial ? "" · fonte alternativa / dati parziali"" : """") + "" · aggiornamento manuale"";",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,103,"SystemSelectionText.Text = ""Seleziona una riga per leggere i dettagli."";",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,120,": ""Seleziona una riga per leggere i dettagli."";",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,130,"SystemStatusText.Text + ""\n"" + SystemSourceText.Text + ""\n\n"" + SystemMemoryText.Text + ""\n\n"" +",UI/report or technical source context
+src/ProcessLens.App/SystemProcessesView.xaml.cs,131,"GridCopySupport.CaptureTable(SystemProcessesTable, false) + ""\n\n"" + SystemSelectionText.Text);",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,7,"DateTime? StartUtc = null, string Access = ""Dettagli non letti"");",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,21,"{ ""System"", ""System Idle Process"", ""Idle"", ""Memory Compression"", ""Registry"", ""Secure System"",",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,22,"""smss.exe"", ""csrss.exe"", ""wininit.exe"", ""services.exe"", ""lsass.exe"", ""winlogon.exe"", ""svchost.exe"",",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,23,"""dwm.exe"", ""fontdrvhost.exe"", ""sihost.exe"", ""explorer.exe"", ""MsMpEng.exe"", ""NisSrv.exe"" };",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,24,"public static bool InternalName(string name) => name.ToLowerInvariant() is ""system"" or ""system idle process"" or ""idle"" or",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,25,"""memory compression"" or ""registry"" or ""secure system"";",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,32,"if (p.Pid is 0 or 4) return ""Voce di sistema · PID riservato"";",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,33,"if (UnderWindows(p.Path, windowsDirectory)) return ""Percorso nella cartella Windows"";",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,34,"if (Names.Contains(p.Name)) return ""Nome tipico di Windows · origine non verificata"";",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,35,"return p.Path is null ? ""Origine N/D"" : ""Percorso esterno a Windows"";",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,45,"if (parts.Any(x => x is ""."" or "".."")) return false;",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,46,"string prefix = directory.Replace('/', '\\').TrimEnd('\\') + ""\\"";",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,52,"? (bytes.Value / 1048576d).ToString(""N1"", CultureInfo.CurrentCulture) + "" MiB"" : ""N/D"";",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,54,"? ""Inattività CPU: voce contabile, non un'app in esecuzione.""",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,55,": p.Pid == 4 ? ""System: contiene attività in modalità kernel. I suoi contatori non rappresentano tutta la memoria del sistema.""",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,56,": p.Name.Equals(""Memory Compression"", StringComparison.OrdinalIgnoreCase)",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,57,"? ""Nome associato alla compressione delle pagine di memoria. Il Working Set della voce non misura la dimensione logica dei dati prima della compressione.""",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,58,": p.Name.Equals(""Registry"", StringComparison.OrdinalIgnoreCase)",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,59,"? ""Nome associato alla gestione del registro. Identità e operazione corrente non verificate dal solo nome.""",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,60,": p.Name.Equals(""Secure System"", StringComparison.OrdinalIgnoreCase)",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,61,"? ""Nome associato all'ambiente di sicurezza isolato di Windows. Non identifica tutti i servizi di sicurezza.""",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,62,": ""Per ruolo, CPU e servizi usa l'analisi della stessa istanza. Il nome e il percorso non verificano la firma digitale."";",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,64,"$""RAM fisica totale: {MiB(m.PhysicalTotal)}\nRAM disponibile: {MiB(m.PhysicalAvailable)}\n"" +",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,65,"$""Memoria impegnata: {MiB(m.Commit)} / limite {MiB(m.CommitLimit)}\n"" +",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,66,"$""Pool kernel paginabile: {MiB(m.KernelPaged)}\nPool kernel non paginabile: {MiB(m.KernelNonpaged)}\n"" +",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,67,"""Il pool paginabile può trovarsi anche fuori dalla RAM. Questi contatori si sovrappongono ad altre viste: non sommarli ai Working Set.\n"" + m.Note;",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,69,"$""{p.Name} · PID {p.Pid}\n{Role(p)}\n\nOrigine: {Origin(p, windowsDirectory)}\n"" +",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,70,"$""Percorso: {p.Path ?? ""N/D""}\nAvvio UTC: {(p.StartUtc.HasValue ? p.StartUtc.Value.ToString(""O"") : ""N/D"")}\n"" +",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,71,"$""Accesso ai dettagli: {p.Access}\nWorking Set totale: {MiB(p.WorkingSetBytes)}\n"" +",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,72,"""Working Set totale: pagine residenti private e condivise; non equivale al Working Set privato.\n"" +",UI/report or technical source context
+src/ProcessLens.Core/SystemProcessCatalog.cs,73,"""CPU istantanea e firma digitale non misurate in questa vista. La presenza nell'elenco non prova che il processo stia lavorando."";",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,52,"[DllImport(""ntdll.dll"", ExactSpelling = true)]",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,54,"[DllImport(""psapi.dll"", SetLastError = true)]",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,57,"[DllImport(""kernel32.dll"", SetLastError = true)] private static extern IntPtr CreateToolhelp32Snapshot(uint flags, uint pid);",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,58,"[DllImport(""kernel32.dll"", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,60,"[DllImport(""kernel32.dll"", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,62,"[DllImport(""kernel32.dll"", SetLastError = true)] private static extern IntPtr OpenProcess(uint access, bool inherit, uint pid);",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,63,"[DllImport(""kernel32.dll"")] [return: MarshalAs(UnmanagedType.Bool)] private static extern bool CloseHandle(IntPtr handle);",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,64,"[DllImport(""kernel32.dll"", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,66,"[DllImport(""kernel32.dll"", SetLastError = true)]",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,75,"string source = ""NtQuerySystemInformation · SystemProcessInformation"", note = """";",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,81,"note = ""Inventario nativo non disponibile: "" + ex.Message + ""\nFonte alternativa Toolhelp; le voci interne possono differire."";",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,82,"partial = true; source = ""Toolhelp · elenco alternativo"";",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,86,"{ return new(began, false, true, source, note + ""\n"" + fallback.Message, Array.Empty<SystemProcessEntry>(), memory); }",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,110,"if (next > MaximumBuffer) throw new InvalidDataException(""Inventario oltre il limite di 16 MiB."");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,113,"if (status < 0) throw new InvalidDataException($""NtQuerySystemInformation: NTSTATUS 0x{status:X8}."");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,114,"if (required == 0 || required > size) throw new InvalidDataException(""Dimensione dell'inventario non valida."");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,119,"throw new InvalidDataException(""Inventario variato durante la lettura; riprova."");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,124,"if (buffer == IntPtr.Zero || length < header || length > MaximumBuffer) throw new InvalidDataException(""Buffer processi non valido."");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,129,"if (offset > length - header || rows.Count >= MaximumRows) throw new InvalidDataException(""Elenco processi troncato o troppo lungo."");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,133,"throw new InvalidDataException(""Offset processi non valido."");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,137,"throw new InvalidDataException(""PID non valido o ripetuto."");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,142,"throw new InvalidDataException(""Nome processo fuori dal buffer."");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,143,"string name = n.Length == 0 ? (pid == 0 ? ""System Idle Process"" : ""Nome N/D"") :",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,144,"Marshal.PtrToStringUni(n.Buffer, n.Length / 2) ?? ""Nome N/D"";",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,161,"var entry = new ToolhelpEntry { Size = (uint)Marshal.SizeOf<ToolhelpEntry>(), Name = """" };",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,168,"throw new InvalidDataException(""Inventario Toolhelp oltre i limiti."");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,179,"if (row.Pid is 0 or 4) return row with { Access = ""Voce di sistema; dettagli limitati"" };",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,181,"if (handle == IntPtr.Zero) return row with { Access = ""Dettagli N/D · Win32 "" + Marshal.GetLastWin32Error() };",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,185,"return row with { Access = ""Avvio N/D; identità non verificabile"" };",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,188,"catch (ArgumentOutOfRangeException) { return row with { Access = ""Avvio non valido"" }; }",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,189,"if (start > began) return row with { Access = ""Istanza cambiata durante la lettura; aggiorna"" };",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,194,"if (error != 122) return row with { Access = ""Percorso N/D · Win32 "" + error };",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,197,"return row with { Access = ""Percorso N/D · Win32 "" + Marshal.GetLastWin32Error() };",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,201,"return row with { Access = ""Identità non verificabile dal percorso"" };",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,202,"return row with { Path = value, StartUtc = start, Access = ""Percorso e avvio letti"" };",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,212,"return new(null, null, null, null, null, null, ""GetPerformanceInfo: Win32 "" + Marshal.GetLastWin32Error());",UI/report or technical source context
+src/ProcessLens.Windows/WindowsSystemProcessSource.cs,217,"""Fonte: GetPerformanceInfo. Campione separato dall'inventario processi; non è una ripartizione esatta della RAM."");",UI/report or technical source context

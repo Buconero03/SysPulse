@@ -1,0 +1,16 @@
+{
+  "baseline_sha256": "35840fde94e8b978b11074f67ef0f95cbe3ea17fb293579f153dbf421018566c",
+  "changed_production_and_test_files": [
+    "src/ProcessLens.App/ProcessLens.App.csproj",
+    "src/ProcessLens.App/SystemProcessesView.xaml",
+    "src/ProcessLens.App/SystemProcessesView.xaml.cs",
+    "src/ProcessLens.Core/SystemProcessCatalog.cs",
+    "src/ProcessLens.Core/WindowsComponentCatalog.cs",
+    "tests/ProcessLens.SystemProcessUiTests/Program.cs",
+    "tests/ProcessLens.WindowsComponentTests/Program.cs"
+  ],
+  "native_acquisition_Guardian_MemoryAgent_profiler_RAM_monitor": "BYTE IDENTICAL TO R21",
+  "new_dependencies": 0,
+  "new_binary": "NOT INCLUDED; full Windows build required once",
+  "WPF_runtime_DPI_UAC_RAM": "NOT EXECUTED / NOT MEASURED"
+}

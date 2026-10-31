@@ -1,0 +1,18 @@
+{
+  "source": [
+    "18 October: parallel RAM logger for total ProcessLens consumption",
+    "19 October: double click service details and category navigation in RAM dashboard"
+  ],
+  "screenshot": {
+    "file": "image(20261019-110424).png",
+    "sha256": "da4819a2b8c94c7782e5e5c7cb9fc0299f99b230c7628628c7fb8eea4e363e86",
+    "shown_GUI_version": "not established"
+  },
+  "baseline": "Delivered R10 R7, retained by exact SHA256",
+  "Windows_execution": "NON ESEGUITO",
+  "RAM_measurement": "NON MISURATO",
+  "native_existing_files": "All existing Windows/Core/Semantics/Guardian/MemoryAgent/profiler files retained exact to R7",
+  "new_native_acquisition": "Separate read-only console monitor; minimal handles, exact executable scopes, optional dynamic parent query and creation checks",
+  "screenshots_in_deliverable": false,
+  "automatic_target_terminations_or_profiler_sessions": 0
+}

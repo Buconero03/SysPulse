@@ -1,0 +1,46 @@
+{
+  "baseline_sha256": "f01f5434192e34e7ce30d5496d3b777863ffa53ba49310c71cb6e26bbc318598",
+  "scope": "Offline setup wrapper only. Every existing production and test source unchanged.",
+  "files": [
+    {
+      "file": "global.json",
+      "sha256_before": null,
+      "sha256_after": "07b7c7dd361891336f9688143f7b3ad55021e9594afc66f64145411c8be7570e"
+    },
+    {
+      "file": "INSTALLA_PROCESSLENS.cmd",
+      "sha256_before": null,
+      "sha256_after": "b1387fb461e1704a4c8225fd7112edfa939badeab7dc16199a176034dfa5d776"
+    },
+    {
+      "file": "AVVIA_PROCESSLENS.cmd",
+      "sha256_before": null,
+      "sha256_after": "206e90e45203003062f60ae8bdfc075d700553cc834ad55d3c0be4800d616067"
+    },
+    {
+      "file": "DIAGNOSTICA_RETE.cmd",
+      "sha256_before": null,
+      "sha256_after": "f18225bbb5f9502ca0d17ca0db49c69c0573d8094929f67913482a5bc9f86440"
+    },
+    {
+      "file": "setup/diagnose-network.ps1",
+      "sha256_before": null,
+      "sha256_after": "2fb3c7fcf6417b6c4070c95a995e80121244f52206e473ee56c526fb57aaebfe"
+    },
+    {
+      "file": "setup/install-offline.ps1",
+      "sha256_before": null,
+      "sha256_after": "acdf2b67dd7a7cb1996d9e47f8fa51fc06a64a9598a06f93e9101cf4d2cee41e"
+    },
+    {
+      "file": "setup/offline-common.ps1",
+      "sha256_before": null,
+      "sha256_after": "e4fe06cace520192dc072669c9a5d491e3566abb8d61458a9ef7b71d1a50bb3d"
+    },
+    {
+      "file": "setup/start-installed.ps1",
+      "sha256_before": null,
+      "sha256_after": "829640319d2d69626b902ba7eee35489188f6b3aa347119a52f4b4a79ee0fb92"
+    }
+  ]
+}

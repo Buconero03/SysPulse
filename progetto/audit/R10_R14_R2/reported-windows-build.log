@@ -1,0 +1,395 @@
+ithout CPU does not exclude a stall
+PASS R7 high CPU does not establish process health
+PASS R7 partial network acquisition preserves error and does not assert absence
+PASS R7 family sockets do not prove delegation or erase direct listener
+PASS R7 launch text is not verified work progress
+PASS R7 title indicator source is explicit and private title omitted
+PASS R7 ETA range is arithmetic scenario rather than calibrated confidence
+PASS R7 equal endpoints do not prove stable intermediate usage
+PASS R7 CPU window is bounded and may be shorter than thirty seconds
+R7 behavior source and inference regressions passed.
+PASS R7 R1 port wording reaches network: Ha porte aperte?
+PASS R7 R1 port wording reaches network: Ha una porta aperta?
+PASS R7 R1 port wording reaches network: Quali PORTE sono aperte?
+PASS R7 R1 port wording reaches network: Open port?
+PASS R7 R1 port wording reaches network: Open ports?
+PASS R7 R1 embedded porta does not add Network: Il consumo di RAM comporta problemi?
+PASS R7 R1 embedded porta does not add Network: Riporta il consumo di RAM
+PASS R7 R1 embedded porta does not add Network: Supporta il confronto RAM?
+R7 R1 network question routing regressions passed.
+PASS R11 summary keeps each allocation number in a separate readable fact [it-IT]
+PASS R11 no nested parentheses or inferred heap objects; trend has explicit duration [it-IT]
+PASS R11 short wording preserves counter and object-measurement limits [it-IT]
+PASS R11 summary keeps each allocation number in a separate readable fact [en-US]
+PASS R11 no nested parentheses or inferred heap objects; trend has explicit duration [en-US]
+PASS R11 short wording preserves counter and object-measurement limits [en-US]
+Test terminologia e confini tra regole e osservazioni...
+PASS terminology: highest score describes rule correspondence
+PASS terminology: medium score is not called certain
+PASS terminology: unknown is not certainty
+PASS terminology: high classifier uses a concise, qualified label
+PASS terminology: partial role has clear label
+PASS terminology: insufficient score admits uncertainty
+PASS terminology: internal background category does not imply inactivity
+PASS terminology: other internal categories retained
+PASS terminology: unidentified process remains unidentified
+PASS terminology: classification clearly distinguished from direct measurement
+PASS terminology: internal rule identifiers remain hidden from summary
+PASS terminology: percentages do not appear as statistical confidence
+PASS terminology: function label does not claim moment-by-moment activity
+PASS terminology: renderer recognized by rules rather than fabricated evidence
+PASS terminology: raw evidence retained in diagnostics
+PASS terminology: Electron Node utility uses a professional term
+PASS terminology: Node utility summary is concise
+PASS terminology: reason for execution not invented from command line
+PASS terminology: classification cites its evidence type
+PASS terminology: role classification does not prove live activity
+PASS terminology: raw technical evidence preserved separately
+PASS terminology: UI identity comes from actual Windows snapshot
+PASS terminology: UI association explains why conda is proposed without claiming ownership
+PASS terminology: UI role distinguishes classification from observed activity and avoids numeric confidence
+PASS terminology: command line options are separated for display
+PASS terminology: original command line remains unchanged
+PASS terminology: visual line breaks preserve each command argument byte
+PASS terminology: quoted content not broken into false parameters
+PASS terminology: missing command line is explicit
+PASS terminology: technical facts are organized without losing original values
+PASS terminology: origin evidence has its own section
+PASS terminology: role evidence is separated from observed behavior
+PASS terminology: repetitive confidence phrases removed from evidence
+PASS terminology: technical role evidence kept under an explicit label
+PASS terminology: classification facts include actual executable identity
+PASS terminology: classification explains the concrete renderer parameter
+PASS terminology: classification summary excludes internal rule identifiers and sensitive arguments
+PASS terminology: classification explicitly states what has not been observed
+PASS terminology: unknown process cannot acquire an invented function
+PASS terminology: risk badge does not present a false precise grade
+PASS terminology: generic Windows product name does not hide executable identity
+PASS terminology: classification audit separates rule score from statistical probabilities
+PASS terminology: classification audit has a distinct role evidence section
+PASS terminology: classification audit never mutates original evidence
+PASS terminology: bounded audit rendering points to original evidence without fabricating details
+PASS terminology: audit labels avoid internal classifier wording
+PASS terminology: long metadata evidence renders as separately labelled fields
+PASS terminology: publisher metadata is displayed with a precise label
+PASS terminology: internal rule identifier stays in opt-in technical evidence
+PASS terminology: original semicolon-separated evidence remains unmodified
+PASS terminology: data source has a dedicated UI field
+PASS terminology: classification limitations do not repeat within the same facts panel
+Terminology and evidence boundary tests passed, including v0.19.15 controlled vocabulary.
+PASS terminology: TCP LISTEN reports socket state, not accepted client requests
+PASS terminology: TCP LISTEN explicitly declares accepted requests and byte transfers are not measured
+PASS terminology: TCP LISTEN retains the directly observed socket as technical evidence
+PASS terminology: TCP LISTEN user report separates socket state from unmeasured traffic
+PASS terminology: TCP ESTABLISHED does not infer byte transfer
+PASS terminology: network explanation separates observations from unmeasured traffic
+PASS terminology: matching parent name does not establish verified process instance
+PASS terminology: homonymous parent requires PID plus start-time verification
+PASS terminology: Chromium GPU label cites precise start parameter
+PASS terminology: GPU process role cannot prove current graphics operation
+PASS terminology: R7 role does not invent launch cause: 701
+PASS terminology: R7 launch limitation explicit: 701
+PASS terminology: R7 role does not invent launch cause: 702
+PASS terminology: R7 launch limitation explicit: 702
+PASS terminology: R7 role does not invent launch cause: 703
+PASS terminology: R7 launch limitation explicit: 703
+PASS terminology: R7 role does not invent launch cause: 704
+PASS terminology: R7 launch limitation explicit: 704
+PASS terminology: R7 role does not invent launch cause: 705
+PASS terminology: R7 launch limitation explicit: 705
+PASS terminology: R7 role does not invent launch cause: 706
+PASS terminology: R7 launch limitation explicit: 706
+PASS terminology: R7 role does not invent launch cause: 707
+PASS terminology: R7 launch limitation explicit: 707
+PASS terminology: R7 role does not invent launch cause: 708
+PASS terminology: R7 launch limitation explicit: 708
+PASS terminology: R7 visible window and children do not prove coordination
+PASS terminology: R7 updater name does not prove an active update
+PASS terminology: R7 crash handler name does not prove readiness
+PASS terminology: R7 critical flag does not identify launch cause
+PASS terminology: R7 no known runtime does not prove native execution
+R7 terminology contextual regressions passed.
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe --multiprocessing-fork
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe -c multiprocessing.spawn
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 multiprocessing role and input evidence retained: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 multiprocessing launch limits with/without parent: python.exe -c multiprocessing.forkserver
+PASS terminology: R7 R2 CPU and RAM do not establish multiprocessing launch cause: python.exe -c multiprocessing.forkserver
+R7 R2 multiprocessing provenance regressions passed.
+PASS terminology: R11 unknown summary is concise without inventing a function
+PASS terminology: R11 subprocess summary keeps the observed count
+PASS terminology: R11 current and legacy memory labels remain in resource facts
+Test formattazione numerica, durate e rete (it-IT/en-US)...
+PASS presentation: percent with separated unit [it-IT]: 26,0┬á%
+PASS presentation: sample interval with culture and unit [it-IT]: 16,5┬ás
+PASS presentation: screenshot CPU time, rounded display [it-IT]: 10┬ámin 36,063┬ás
+PASS presentation: genuinely measured zero [it-IT]: 0┬áms
+PASS presentation: positive sub-millisecond is not zero [it-IT]: < 1┬áms
+PASS presentation: one millisecond [it-IT]: 1┬áms
+PASS presentation: ten milliseconds, no leading zero [it-IT]: 10┬áms
+PASS presentation: sub-second rounding [it-IT]: 63┬áms
+PASS presentation: one second, no tick suffix [it-IT]: 1┬ás
+PASS presentation: fractional seconds [it-IT]: 16,5┬ás
+PASS presentation: carry into a second [it-IT]: 1┬ás
+PASS presentation: carry into a minute [it-IT]: 1┬ámin 0┬ás
+PASS presentation: carry into an hour [it-IT]: 1┬áh 0┬ás
+PASS presentation: carry into a day [it-IT]: 1┬ág 0┬ás
+PASS presentation: multi-day CPU time [it-IT]: 1┬ág 1┬áh 1┬ámin 1,125┬ás
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid interval is unavailable [it-IT]: N/D
+PASS presentation: invalid CPU percentage is unavailable [it-IT]: N/D
+PASS presentation: invalid interval is unavailable [it-IT]: N/D
+PASS presentation: invalid CPU percentage is unavailable [it-IT]: N/D
+PASS presentation: invalid interval is unavailable [it-IT]: N/D
+PASS presentation: invalid CPU percentage is unavailable [it-IT]: N/D
+PASS presentation: pending inspection has no invented zero [it-IT]
+PASS presentation: partial acquisition retains error and limits [it-IT]
+PASS presentation: direct counters and ports have separate lines [it-IT]
+PASS presentation: group counters separated from selected PID [it-IT]
+PASS presentation: role and related socket owner preserved [it-IT]
+PASS presentation: layout does not invent delegation or absence [it-IT]
+PASS presentation: related-process fallback and missing note [it-IT]
+PASS presentation: presentation preserves source counters and errors [it-IT]
+PASS presentation: percent with separated unit [en-US]: 26.0┬á%
+PASS presentation: sample interval with culture and unit [en-US]: 16.5┬ás
+PASS presentation: screenshot CPU time, rounded display [en-US]: 10┬ámin 36.063┬ás
+PASS presentation: genuinely measured zero [en-US]: 0┬áms
+PASS presentation: positive sub-millisecond is not zero [en-US]: < 1┬áms
+PASS presentation: one millisecond [en-US]: 1┬áms
+PASS presentation: ten milliseconds, no leading zero [en-US]: 10┬áms
+PASS presentation: sub-second rounding [en-US]: 63┬áms
+PASS presentation: one second, no tick suffix [en-US]: 1┬ás
+PASS presentation: fractional seconds [en-US]: 16.5┬ás
+PASS presentation: carry into a second [en-US]: 1┬ás
+PASS presentation: carry into a minute [en-US]: 1┬ámin 0┬ás
+PASS presentation: carry into an hour [en-US]: 1┬áh 0┬ás
+PASS presentation: carry into a day [en-US]: 1┬ág 0┬ás
+PASS presentation: multi-day CPU time [en-US]: 1┬ág 1┬áh 1┬ámin 1.125┬ás
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid interval is unavailable [en-US]: N/D
+PASS presentation: invalid CPU percentage is unavailable [en-US]: N/D
+PASS presentation: invalid interval is unavailable [en-US]: N/D
+PASS presentation: invalid CPU percentage is unavailable [en-US]: N/D
+PASS presentation: invalid interval is unavailable [en-US]: N/D
+PASS presentation: invalid CPU percentage is unavailable [en-US]: N/D
+PASS presentation: pending inspection has no invented zero [en-US]
+PASS presentation: partial acquisition retains error and limits [en-US]
+PASS presentation: direct counters and ports have separate lines [en-US]
+PASS presentation: group counters separated from selected PID [en-US]
+PASS presentation: role and related socket owner preserved [en-US]
+PASS presentation: layout does not invent delegation or absence [en-US]
+PASS presentation: related-process fallback and missing note [en-US]
+PASS presentation: presentation preserves source counters and errors [en-US]
+Presentation regressions complete (it-IT + en-US).
+Test copia testo, rapporti e tabelle...
+PASS copy: full body, closed sections and unheaded paragraphs preserved exactly
+PASS copy: visible measurement log included
+PASS copy: empty optional fields do not rewrite body
+PASS copy: no extra process metadata appended
+PASS copy: TSV retains tabs, newlines, quotes and missing-value labels
+PASS copy: copy preserves rendered decimal culture it-IT
+PASS copy: copy preserves rendered decimal culture en-US
+PASS copy: report layout retains unheaded paragraphs within the correct chapter
+PASS copy: report chapter split preserves every normalized source line
+PASS copy: preamble and heading-only final chapter are retained
+PASS copy: embedded square marker does not create a false chapter
+PASS copy: plain reports preserve all paragraphs
+PASS copy: API sources and unheaded limits get distinct readable blocks
+PASS copy: PSAPI visual lines retain exact numbers and units
+PASS copy: evidence chapters distinguish modules and acquisition status without altering other groups
+PASS copy: complete copied report remains original CRLF text independent of visual hierarchy
+PASS copy: accepted request alone has no confirmed exit notice
+PASS copy: confirmed exit notice identifies executable and PID without inventing its cause
+PASS copy: selection and termination signals for the same instance produce one notice
+PASS copy: reused PID with a different creation timestamp is a separate process
+PASS copy: missing identity cannot produce a confirmed exit notice
+PASS copy: exit-notice deduplication history stays bounded
+PASS copy: X preserves a taskbar restore route even when tray registration succeeded
+PASS copy: unavailable tray preserves a taskbar restore route
+PASS copy: explicit Exit and session ending can close with or without a tray icon
+PASS copy: UI polling resumes only for a visible non-minimized window
+PASS copy: audit layout separates real timestamp, stage and message
+PASS copy: audit continuation and actual local-log location retained
+PASS copy: audit overview counts source entries without declaring them successful
+PASS copy: audit overview explicitly labels an empty register
+PASS copy: audit complete copy retains original CRLF and repeated raw prefixes exactly
+PASS copy: profiler stages remain distinct without invented timestamps
+PASS copy: audit overview without a timestamp does not invent one
+PASS copy: profiler result keeps all continuation lines
+PASS copy: unknown and malformed audit text is retained without false events
+PASS copy: audit layout never reparses or reformats measured decimal text 44,0
+PASS copy: audit layout never reparses or reformats measured decimal text 44.0
+PASS copy: RAM group lookup accepts normalized executable name only with matching creation
+PASS copy: RAM navigation rejects reused or unidentified host
+PASS copy: single PID navigation cannot match a substring PID
+PASS copy: SCM scope uses exact host PID
+PASS copy: all-services and empty scoped views remain distinct
+PASS copy: RAM frame cannot acquire a process born after its acquisition began
+PASS copy: same PID with another executable cannot acquire RAM row navigation
+PASS copy: R11 compact log grammar and invariant timestamp [it-IT]
+PASS copy: R11 log parser retains numbers units delta continuation and exact source [it-IT]
+PASS copy: R11 overview counts one event rather than its continuation lines [it-IT]
+PASS copy: R11 legacy RAM logs remain readable [it-IT]
+PASS copy: R11 compact log grammar and invariant timestamp [en-US]
+PASS copy: R11 log parser retains numbers units delta continuation and exact source [en-US]
+PASS copy: R11 overview counts one event rather than its continuation lines [en-US]
+PASS copy: R11 legacy RAM logs remain readable [en-US]
+Test dispositivi rete: dati sintetici, riconoscimenti e layout nativo...
+PASS network devices: gateway changes cannot inherit recognition
+PASS network devices: IPv6 scope index changes do not replace the stable adapter and gateway fingerprint
+PASS network devices: missing gateway MAC cannot establish a recognition scope
+PASS network devices: MAC normalization retains locally administered addresses
+PASS network devices: invalid or multicast MAC rejected:
+PASS network devices: invalid or multicast MAC rejected: 00-00-00-00-00-00
+PASS network devices: invalid or multicast MAC rejected: FF-FF-FF-FF-FF-FF
+PASS network devices: invalid or multicast MAC rejected: 01-00-5E-00-00-01
+PASS network devices: invalid or multicast MAC rejected: garbage
+PASS network devices: invalid or multicast MAC rejected: 02-11
+PASS network devices: non-device address excluded: 127.0.0.1
+PASS network devices: non-device address excluded: 224.0.0.1
+PASS network devices: non-device address excluded: 255.255.255.255
+PASS network devices: non-device address excluded: 0.0.0.0
+PASS network devices: non-device address excluded: ::
+PASS network devices: non-device address excluded: ::%5
+PASS network devices: non-device address excluded: ::1
+PASS network devices: non-device address excluded: ff02::1
+PASS network devices: non-device address excluded: invalid
+PASS network devices: IPv4 and IPv6 share one MAC row [it-IT]
+PASS network devices: unknown device has no invented identity or intrusion claim [it-IT]
+PASS network devices: green means user-recognized observed entries only [it-IT]
+PASS network devices: partial acquisition cannot become green [it-IT]
+PASS network devices: IPv4 and IPv6 share one MAC row [en-US]
+PASS network devices: unknown device has no invented identity or intrusion claim [en-US]
+PASS network devices: green means user-recognized observed entries only [en-US]
+PASS network devices: partial acquisition cannot become green [en-US]
+PASS network devices: stale cache is not current connectivity
+PASS network devices: permanent entry is not confirmed presence
+PASS network devices: unresolved address retained but not counted as a device
+PASS network devices: empty cache cannot certify a safe or empty network
+PASS network devices: failed acquisition preserves its error and unavailable count
+PASS network devices: same MAC on another scope remains unrecognized
+PASS network devices: missing scope does not show an invented zero unknown devices
+PASS network devices: registry failure is visible and blocks recognition
+PASS network devices: same MAC on distinct adapters is not merged
+PASS network devices: first complete capture establishes baseline without a new-device alert
+PASS network devices: partial reads cannot change novelty history
+PASS network devices: new address alerts once across repeated refreshes
+PASS network devices: temporary absence does not create another new-device alert
+PASS network devices: another network gets its own initial baseline
+PASS network devices: a user-recognized device does not raise an unknown-device alert
+PASS network devices: missing local registry is an empty catalog
+PASS network devices: recognition and Unicode name survive save and reload
+PASS network devices: atomic save leaves no temporary files
+PASS network devices: invalid user labels cannot overwrite a valid registry
+PASS network devices: corrupt registry cannot be silently replaced
+PASS network devices: R14 R1 oversized registry [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 oversized registry [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 unknown schema [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 unknown schema [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 null device list [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 null device list [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 null device entry [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 null device entry [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 duplicate identities [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 duplicate identities [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 too many devices [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 too many devices [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 empty JSON [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 empty JSON [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 exact byte limit is accepted without rewriting [it-IT]
+PASS network devices: R14 R1 oversized registry [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 oversized registry [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 unknown schema [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 unknown schema [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 null device list [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 null device list [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 null device entry [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 null device entry [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 duplicate identities [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 duplicate identities [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 too many devices [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 too many devices [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 empty JSON [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 empty JSON [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 exact byte limit is accepted without rewriting [en-US]
+PASS network devices: native row stride and aligned table header match Windows SDK layout
+PASS network devices: independent IPv4 fixture decodes offsets and unreachable flag without live acquisition
+PASS network devices: independent IPv6 fixture retains scope and missing MAC
+PASS network devices: native table row cap reports truncation
+Network device regressions complete; no live network acquisition or probes.
+Test integrazione Wireshark: parser sintetici e processi fixture posseduti, nessuna cattura reale...
+PASS packet capture: local Npcap interface identifiers accepted
+PASS packet capture: remote pipe index or injected interface rejected: 1
+PASS packet capture: remote pipe index or injected interface rejected: -i anything
+PASS packet capture: remote pipe index or injected interface rejected: rpcap://host/interface
+PASS packet capture: remote pipe index or injected interface rejected: TCP@host:9
+PASS packet capture: remote pipe index or injected interface rejected: -
+PASS packet capture: remote pipe index or injected interface rejected: Wi-Fi
+PASS packet capture: remote pipe index or injected interface rejected: \Device\NPF_{not-a-guid}
+PASS packet capture: interface parser retains exact local identity and removes duplicates
+PASS packet capture: monitor check requires an actual declared 802.11 link type
+PASS packet capture: normal capture is explicitly selected bounded and not monitor mode
+PASS packet capture: monitor mode is an explicit separate argument
+PASS packet capture: unsafe or ambiguous capture destinations and interfaces fail closed
+PASS packet capture: beacon metadata is observed without inventing a phone hotspot [it-IT]
+PASS packet capture: missing radio values stay unavailable and broadcast MACs are not devices [it-IT]
+PASS packet capture: beacon metadata is observed without inventing a phone hotspot [en-US]
+PASS packet capture: missing radio values stay unavailable and broadcast MACs are not devices [en-US]
+PASS packet capture: no decoded Wi-Fi does not establish absence of wireless clients
+PASS packet capture: malformed output remains explicitly incomplete
+PASS packet capture: SSID control characters cannot create fake log lines
+PASS packet capture: probe request SSID does not become an advertised access point
+PASS packet capture: discovery only lists interfaces through the injected runner
+PASS packet capture: unverified monitor cannot create a file or launch capture
+PASS packet capture: monitor capability is tied to the selected tool and interface
+PASS packet capture: capture reserves a new file and applies explicit monitor arguments
+PASS packet capture: existing capture files cannot be overwritten
+PASS packet capture: analysis is offline bounded disables names and identifies the file hash
+PASS packet capture: failed decoder output cannot become a valid empty-network report
+PASS packet capture: oversized imported capture is rejected before a decoder is launched
+PASS packet capture: real runner passes arguments without a shell to its own fixture
+PASS packet capture: real runner stops only its own child at timeout
+PASS packet capture: real runner cancellation releases its own child
+PASS packet capture: real runner output budget cannot grow without bound
+Packet capture tests complete; synthetic data and owned test children only, no live capture or driver changes.
+Test WPF rete: sorgente simulata, nessuna lettura di rete reale...
+D:\.A2\ProcessLens-v0.19.16-R10-R14-R1-device-catalog-fix-candidate\ProcessLens-v0.19.16-R10\tests\ProcessLens.NetworkUiTests\Program.cs(116,33): warning CS8600: Conversione del valore letterale Null o di un possibile valore Null in un tipo che non ammette i valori Null. [D:\.A2\ProcessLens-v0.19.16-R10-R14-R1-device-catalog-fix-candidate\ProcessLens-v0.19.16-R10\tests\ProcessLens.NetworkUiTests\ProcessLens.NetworkUiTests.csproj]
+D:\.A2\ProcessLens-v0.19.16-R10-R14-R1-device-catalog-fix-candidate\ProcessLens-v0.19.16-R10\tests\ProcessLens.NetworkUiTests\Program.cs(117,46): warning CS8602: Dereferenziamento di un possibile riferimento Null. [D:\.A2\ProcessLens-v0.19.16-R10-R14-R1-device-catalog-fix-candidate\ProcessLens-v0.19.16-R10\tests\ProcessLens.NetworkUiTests\ProcessLens.NetworkUiTests.csproj]
+PASS network UI: construction is lazy and does not read a real network or write settings
+PASS network UI: activation does not automatically acquire network data
+PASS network UI: real table is read-only virtualized and supports copy
+Unhandled exception. System.Exception: FAIL network UI: first explicit refresh establishes baseline without a false new-device notice
+   at Program.Check(Boolean ok, String label) in D:\.A2\ProcessLens-v0.19.16-R10-R14-R1-device-catalog-fix-candidate\ProcessLens-v0.19.16-R10\tests\ProcessLens.NetworkUiTests\Program.cs:line 12
+   at Program.Main() in D:\.A2\ProcessLens-v0.19.16-R10-R14-R1-device-catalog-fix-candidate\ProcessLens-v0.19.16-R10\tests\ProcessLens.NetworkUiTests\Program.cs:line 47
+
+[ERRORE COMPILAZIONE] PL-BUILD-5002 | Fase: Tests.ProcessLens.NetworkUiTests
+Progetto: .\tests\ProcessLens.NetworkUiTests\ProcessLens.NetworkUiTests.csproj | Exit code: -532462766
+Fasi successive: NON ESEGUITE. Vedere il messaggio compiler completo sopra e build.jsonl.
+
+[ERRORE] Operazione interrotta: PL-BUILD-5002: fase Tests.ProcessLens.NetworkUiTests non riuscita, codice compilatore non disponibile, exit code -532462766
+[DETTAGLIO] Tipo eccezione: RuntimeException
+[DETTAGLIO] HRESULT: 0x80131501
+[DETTAGLIO] Sorgente: build-diagnostics.ps1
+Log eventi strutturati: %LOCALAPPDATA%\ProcessLens\logs\build.jsonl
+Sequenza interrotta. Controlla l errore prima di riprovare; Guardian non e stato modificato.
+PS D:\.A2\ProcessLens-v0.19.16-R10-R14-R1-device-catalog-fix-candidate\ProcessLens-v0.19.16-R10>

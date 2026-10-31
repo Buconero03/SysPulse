@@ -1,0 +1,11 @@
+test,kind,status,details
+Current layout fixture,Roslyn C# type check,PASS TYPE CHECK ONLY,"CopyUiTests and five other assemblies; no warning; explicit field stubs, no BAML"
+Layout source and mutation checks,Python,PASS,25 checks; original assertions preserved; old premature helper rejected
+Historical retained source guards,Python XML/source/mutation,PASS,235 checks rerun against current exact source scope
+Portable runtime suites,Retained R18 .NET execution,PASS RETAINED,332 assertions; all compiled inputs byte-identical; not rerun
+Reported R17 NetworkUiTests / SystemProcessUiTests,User Windows excerpt,REPORTED PASS,"Historical user evidence, not current candidate execution"
+Reported R17 CopyUiTests,User Windows excerpt,REPORTED FAIL,First multiline measure 210.00x17.29; later stages not executed
+Corrected CopyUiTests,Windows WPF,NOT EXECUTED,Bounded Dispatcher helper and deterministic Background regression supplied
+Full Windows build / PowerShell / BAML / DPI,Windows,NOT EXECUTED,Run build-dashboard.ps1
+Current R18_R1 source and evidence guards,Python source/XML/mutations,PASS,260 checks; no C# execution
+R18 to R18_R1 patch replay,git apply and byte comparison,PASS,19 changed or added files; audit metadata and manifest excluded

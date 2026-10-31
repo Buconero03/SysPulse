@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets/ProcessLens.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>ProcessLens</AssemblyName>
+    <Version>0.19.16</Version>
+    <InformationalVersion>0.19.16-R10-R34-network-clarity-candidate</InformationalVersion>
+    <UseAppHost>true</UseAppHost>
+    <AssemblyTitle>ProcessLens</AssemblyTitle>
+    <Product>ProcessLens</Product>
+    <Description>ProcessLens</Description>
+    <Company>ProcessLens</Company>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets/ProcessLens.ico" LogicalName="ProcessLens.AppIcon" />
+    <EmbeddedResource Include="Assets/ProcessSymbols.json" LogicalName="ProcessLens.ProcessSymbols" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.20" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProcessLens.Core\ProcessLens.Core.csproj" />
+    <ProjectReference Include="..\ProcessLens.Windows\ProcessLens.Windows.csproj" />
+    <ProjectReference Include="..\ProcessLens.Semantics\ProcessLens.Semantics.csproj" />
+  </ItemGroup>
+</Project>

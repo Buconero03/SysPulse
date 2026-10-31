@@ -1,0 +1,8 @@
+check,environment,status,scope
+PowerShell source pipeline,PowerShell 7.4.21 Linux,PASS,30 stages and syntax of 74 scripts
+Installer integrity fixtures,PowerShell 7.4.21 Linux,PASS,19 checks; no install
+Native diagnostic CSharp,Roslyn SDK 8.0.426 Linux,PASS,Type check only; no native call
+Dependency closure,NuGet.Frameworks and package manifests,PASS,64 packages for net8.0 and Windows target
+SDK payload,SHA512 official Microsoft metadata,PASS,Original archive unchanged
+Full Windows restore install build and WPF,Windows,NOT EXECUTED,Performed by installer on destination
+Live WLAN Security permissions and capture,Windows,NOT EXECUTED,Read-only diagnostic supplied

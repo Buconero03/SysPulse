@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "baseline_sha256": "f01f5434192e34e7ce30d5496d3b777863ffa53ba49310c71cb6e26bbc318598",
+  "all_existing_src_and_tests_byte_identical": true,
+  "full_build_pipeline_byte_identical": true,
+  "app_version": "R19",
+  "bundle_version": "R20",
+  "Windows_install_build_WPF_live_network": "NOT EXECUTED"
+}

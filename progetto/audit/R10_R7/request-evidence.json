@@ -1,0 +1,11 @@
+{
+  "source": "User request 18 October 2026: intermittent restore, CPU correctness and comparison with Task Manager, GUI RAM measurement and reduction",
+  "baseline": "Delivered R10 R6, retained by exact SHA256",
+  "restarted_prior_semantic_review": false,
+  "Windows_execution": "NON ESEGUITO",
+  "RAM_measurement": "NON MISURATO",
+  "reason_for_new_native_CPU_path": "15/45 s full-scan CPU cadence and shared denominator do not give responsive per-PID GUI readings",
+  "existing_native_change": "Only file metadata cache declaration replaced with bounded cache; independent churn tests supplied",
+  "protected_components": "Existing Core, Semantics, Guardian, MemoryAgent, profiler, event contracts unchanged; new additive files explicitly listed",
+  "automatic_target_process_or_service_actions": 0
+}

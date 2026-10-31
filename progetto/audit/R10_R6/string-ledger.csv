@@ -1,0 +1,8 @@
+﻿before,after,scope,reason_limit
+One dense Consolas 11.5 log block,Timestamp/stage/message cards,Actual RAM audit panel,Body Segoe UI 13.5 DIP; per-card padding 14 and gap 14
+Repeated VERIFICA RAM prefix inline,Timestamp and phase separated from body,Display only,Original prefix and complete raw text remain available
+No audit overview,PANORAMICA DEL REGISTRO,Audit overview,Counts entries and latest source stage/time; no inferred PASS state
+No direct log-copy button,Copia registro completo,Audit action,Copies current original text including hidden/raw entries
+Raw source always expanded,Testo originale del registro,Nested expander,Initially collapsed; raw source remains selectable and is not rewritten
+Profiler mixed into generic raw block,Existing profiler stages and continuations retained,Same audit adapter,No profiler operation or contract changed
+No current project-priority report,VALUTAZIONE_PROGETTO_R10_R6.md,Assessment,"Existing RAM issues plus asynchronous-routing risk, no unexecuted native result claimed"

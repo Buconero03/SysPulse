@@ -1,0 +1,550 @@
+diff --git a/CORREZIONE_CONTESTO_TEST_WPF_R14_R3.md b/CORREZIONE_CONTESTO_TEST_WPF_R14_R3.md
+new file mode 100644
+index 0000000..1ae1e1f
+--- /dev/null
++++ b/CORREZIONE_CONTESTO_TEST_WPF_R14_R3.md
+@@ -0,0 +1,19 @@
++# R14 R3 — contesto asincrono dei test WPF
++
++Il log Windows della R2 conferma il superamento dei test registro dispositivi e Wireshark, e della selezione iniziale della scheda rete. Il test UI fallisce poi in `UpdateButtons`, dopo il primo aggiornamento asincrono: accesso a un controllo da un thread diverso da quello che lo ha creato.
++
++## Causa e modifica
++
++`[STAThread]` non installa da solo un `DispatcherSynchronizationContext`. Nei test console il metodo `RefreshAsync()` viene avviato prima che `Complete` pompi il Dispatcher. Senza contesto, il seguito dell'await può eseguire sul pool di thread e accedere ai controlli WPF.
++
++I test rete e sistema ora installano il contesto sul thread principale, prima di qualsiasi chiamata asincrona. Un task inizialmente incompleto viene atteso prima di accodare il worker: tre verifiche controllano l'installazione del contesto, il completamento da un thread diverso e la ripresa sul Dispatcher proprietario. Il contesto precedente viene ripristinato in finally. Restano tutti i controlli funzionali e le eccezioni originali.
++
++Le viste e tutto il codice operativo restano identici alla R2. Cambia solo l'identificativo della candidata nel progetto App. Nessuna nuova acquisizione, processo o timer operativo.
++
++## Verifica su Windows
++
++Estrarre la candidata completa in una cartella nuova ed eseguire `./build-dashboard.ps1` da PowerShell. Il test rete deve superare il primo aggiornamento, il salvataggio e il cambio scheda; il test sistema deve completare aggiornamento e rifiuto dei risultati tardivi. I nuovi controlli R14 R3 devono comparire in entrambe le suite.
++
++La pipeline deve terminare tutte le fasi. Questo archivio è una candidata sorgente: WPF, PowerShell, pubblicazione Windows e DPI non sono stati eseguiti su questo host Linux. I controlli Python verificano sorgenti, conservazione delle asserzioni, XML e patch; non sostituiscono il test WPF. Nessuna misura di RAM o CPU nuova.
++
++Audit corrente: `audit/R10_R14_R3`. Gli audit precedenti restano storici. Manifest dell'intero archivio: `SHA256SUMS_R10.txt`.
+diff --git a/README.md b/README.md
+index ac92c3a..5c4f17d 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,5 @@
++> **Candidata R14 R3:** corretto il contesto asincrono dei test WPF rete e sistema, con verifica del ritorno sul Dispatcher. Codice operativo invariato rispetto alla R2. Test WPF da confermare su Windows con `./build-dashboard.ps1`. Dettagli in `CORREZIONE_CONTESTO_TEST_WPF_R14_R3.md`.
++
+ > **Candidata R14 R2:** selezione esplicita della prima scheda rete per aggiornare anche prima di Loaded. Test WPF più precisi, nessun controllo rimosso. Il log Windows conferma la correzione del registro e i test Wireshark della R1; il test WPF aggiornato deve essere eseguito su Windows. Dettagli in `CORREZIONE_SCHEDA_RETE_R14_R2.md`.
+ 
+ > **Candidata R14 R1:** corretto il crash del registro dispositivi su file troppo grandi o schema non valido. 81 verifiche rete e 22 verifiche portabili sistema eseguite in .NET 8 su Linux. WPF e build Windows da verificare. Dettagli in `CORREZIONE_REGISTRO_DISPOSITIVI_R14_R1.md`.
+diff --git a/audit/tools/check_device_catalog_r14r1.py b/audit/tools/check_device_catalog_r14r1.py
+index 530593a..9ec1c2b 100644
+--- a/audit/tools/check_device_catalog_r14r1.py
++++ b/audit/tools/check_device_catalog_r14r1.py
+@@ -22,15 +22,15 @@ def main():
+     after='ex is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or ArgumentException'
+     check('production catalog delta is exactly one explicit exception alternative',
+         old[core].count(before.encode())==1 and (root/core).read_bytes()==old[core].replace(before.encode(),after.encode(),1))
+-    check('App project delta changes only candidate identity',(root/app).read_bytes()==old[app].replace(b'R14-system-processes-candidate',b'R14-R1-device-catalog-fix-candidate') or approved_feature(root,app,'R10_R14_R2'))
++    check('App project delta changes only candidate identity',(root/app).read_bytes()==old[app].replace(b'R14-system-processes-candidate',b'R14-R1-device-catalog-fix-candidate') or any(approved_feature(root,app,rev) for rev in ('R10_R14_R2','R10_R14_R3')))
+     changed={n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}
+-    check('catalog fix retained with only exact authorized R14 R2 UI delta',changed - {n for n in changed if approved_feature(root,n,'R10_R14_R2')} == {core,app} - {n for n in (core,app) if approved_feature(root,n,'R10_R14_R2')})
+-    check('R14 sources and prior C# tests retained outside exact authorized R14 R2 delta',all((root/n).read_bytes()==data or approved_feature(root,n,'R10_R14_R2') for n,data in old.items() if (n.startswith('src/') and n not in {core,app}) or (n.startswith('tests/') and n.endswith('.cs') and n!=test)))
++    check('catalog fix retained with only exact authorized R14 R2/R3 UI delta',changed - {n for n in changed if any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3'))} == {core,app} - {n for n in (core,app) if any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3'))})
++    check('R14 sources and prior C# tests retained outside exact authorized R14 R2/R3 delta',all((root/n).read_bytes()==data or any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3')) for n,data in old.items() if (n.startswith('src/') and n not in {core,app}) or (n.startswith('tests/') and n.endswith('.cs') and n!=test)))
+     check('current network guards pass',not network_violations(files))
+     t=files[test]
+     check('real file tests retain oversized schema null duplicate boundary and overwrite checks',all(s in t for s in ['MaximumBytes + 1','null device list','null device entry','duplicate identities','too many devices','empty JSON','exact byte limit','File.ReadAllBytes(path).SequenceEqual(bytes)','store.Save(known) == loaded.Error','it-IT','en-US']))
+     ledger=json.loads((root/'audit/R10_R14_R1/authorized-source-edits.json').read_text())['files']
+-    check('catalog fix hashes exact or exact authorized R14 R2 version update',len(ledger)==2 and all(sha((root/r['file']).read_bytes())==r['sha256_after'] or approved_feature(root,r['file'],'R10_R14_R2') for r in ledger))
++    check('catalog fix hashes exact or exact authorized R14 R2/R3 version update',len(ledger)==2 and all(sha((root/r['file']).read_bytes())==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R2','R10_R14_R3')) for r in ledger))
+     evidence=json.loads((root/'audit/R10_R14_R1/runtime-evidence.json').read_text())
+     check('retained compiled source hashes match current source',all(sha((root/n).read_bytes())==digest for n,digest in evidence['source_hashes'].items()))
+     d=root/'audit/R10_R14_R1'
+diff --git a/audit/tools/check_network_tab_r14r2.py b/audit/tools/check_network_tab_r14r2.py
+index 7327ea9..923e9a8 100644
+--- a/audit/tools/check_network_tab_r14r2.py
++++ b/audit/tools/check_network_tab_r14r2.py
+@@ -4,6 +4,7 @@ from pathlib import Path
+ import xml.etree.ElementTree as ET
+ from network_device_rules import violations as network_violations
+ from check_packet_capture_r13 import violations as packet_violations
++from ux_writing_rules import approved_feature
+ 
+ X='{http://schemas.microsoft.com/winfx/2006/xaml}'
+ W='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}'
+@@ -31,9 +32,9 @@ def main():
+     check('only view markup and candidate version changed in production',
+           {n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}=={view,app})
+     check('all production C# code exact to R14 R1',all((root/n).read_bytes()==data for n,data in old.items() if n.startswith('src/') and n.endswith('.cs')))
+-    check('only network UI C# test changed',
+-          {n for n,data in old.items() if n.startswith('tests/') and n.endswith('.cs') and (root/n).read_bytes()!=data}=={test})
+-    check('candidate version delta exact',(root/app).read_bytes()==old[app].replace(b'R14-R1-device-catalog-fix-candidate',b'R14-R2-network-tab-init-candidate'))
++    check('only network UI and exact authorized R3 fixture changes',
++          {n for n,data in old.items() if n.startswith('tests/') and n.endswith('.cs') and (root/n).read_bytes()!=data and not approved_feature(root,n,'R10_R14_R3')}=={test} - {n for n in (test,) if approved_feature(root,n,'R10_R14_R3')})
++    check('candidate version delta exact',(root/app).read_bytes()==old[app].replace(b'R14-R1-device-catalog-fix-candidate',b'R14-R2-network-tab-init-candidate') or approved_feature(root,app,'R10_R14_R3'))
+     tree=ET.parse(root/view).getroot();check('actual XAML explicitly selects cache before Loaded',valid_initial_tab(tree))
+     check('the same XML guard rejects original R1 initialization',not valid_initial_tab(ET.fromstring(old[view])))
+     for label,value in [('missing selection',None),('no selected tab','-1'),('capture tab selected','1')]:
+@@ -54,7 +55,7 @@ def main():
+     gate=files['tests/check-network-devices-r12.ps1']
+     check('standard Windows source gate requires explicit initial tab',"$tabs.GetAttribute('SelectedIndex') -ne '0'" in gate)
+     approved=json.loads((root/'audit/R10_R14_R2/authorized-source-edits.json').read_text())['files']
+-    check('exact authorized production and test delta hashes',len(approved)==3 and all(sha((root/r['file']).read_bytes())==r['sha256_after'] for r in approved))
++    check('exact authorized production and test delta hashes',len(approved)==3 and all((sha((root/r['file']).read_bytes())==r['sha256_after'] or approved_feature(root,r['file'],'R10_R14_R3')) for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]:ET.parse(f)
+     check('all project and XAML XML parse',True)
+     reported=(root/'audit/R10_R14_R2/reported-windows-build.log').read_text()
+diff --git a/audit/tools/check_packet_capture_r13.py b/audit/tools/check_packet_capture_r13.py
+index 6d66059..b390dc4 100644
+--- a/audit/tools/check_packet_capture_r13.py
++++ b/audit/tools/check_packet_capture_r13.py
+@@ -55,11 +55,11 @@ def main():
+     check('packet integration satisfies all source guards',not violations(files))
+     allowed={'src/ProcessLens.App/NetworkDevicesView.xaml','src/ProcessLens.App/NetworkDevicesView.xaml.cs','src/ProcessLens.App/ProcessLens.App.csproj'}
+     check('R13 changes plus exact authorized R14/R14 R1/R14 R2 source integration since R12',
+-          {rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel] and not any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2'))}==allowed - {rel for rel in allowed if any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2'))})
++          {rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel] and not any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3'))}==allowed - {rel for rel in allowed if any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3'))})
+     check('existing sources exact to R12 outside R13 and exact authorized R14/R14 R1/R14 R2 integration',
+-          all((root/rel).read_bytes()==data or any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2')) for rel,data in old.items() if rel.startswith('src/') and rel not in allowed))
++          all((root/rel).read_bytes()==data or any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3')) for rel,data in old.items() if rel.startswith('src/') and rel not in allowed))
+     approved=json.loads((root/'audit/R10_R13/authorized-source-edits.json').read_text())['files']
+-    check('R13 source hashes retained or superseded by exact authorized R14/R14 R1/R14 R2 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],revision) for revision in ('R10_R14','R10_R14_R1','R10_R14_R2')) for r in approved))
++    check('R13 source hashes retained or superseded by exact authorized R14/R14 R1/R14 R2 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],revision) for revision in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3')) for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]:ET.parse(f)
+     check('all XAML and project XML parse',True)
+     view=ET.parse(root/'src/ProcessLens.App/NetworkCaptureView.xaml').getroot();x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
+diff --git a/audit/tools/check_system_processes_r14.py b/audit/tools/check_system_processes_r14.py
+index 4bbaa58..981cccf 100644
+--- a/audit/tools/check_system_processes_r14.py
++++ b/audit/tools/check_system_processes_r14.py
+@@ -62,12 +62,12 @@ def main():
+     changed={rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel]}
+     allowed={'src/ProcessLens.App/MainWindow.xaml','src/ProcessLens.App/MainWindow.xaml.cs',
+              'src/ProcessLens.App/ProcessLens.App.csproj','src/ProcessLens.App/CopyTestVisibility.cs'}
+-    check('only R14 UI changes and exact recorded R14 R1/R2 fixes since R13',changed - {p for p in changed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2'))} == allowed - {p for p in allowed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2'))})
++    check('only R14 UI changes and exact recorded R14 R1/R2 fixes since R13',changed - {p for p in changed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3'))} == allowed - {p for p in allowed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3'))})
+     check('existing sources exact to R13 outside R14 UI and exact R14 R1/R2 fixes',
+-          all((root/p).read_bytes()==data or any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2')) for p,data in old.items() if p.startswith('src/') and p not in allowed))
++          all((root/p).read_bytes()==data or any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3')) for p,data in old.items() if p.startswith('src/') and p not in allowed))
+     check('no baseline file deleted',all((root/p).is_file() for p in old))
+     approved=json.loads((root/'audit/R10_R14/authorized-source-edits.json').read_text())['files']
+-    check('R14 production hashes retained or replaced by exact R14 R1/R2 fix hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R1','R10_R14_R2')) for r in approved))
++    check('R14 production hashes retained or replaced by exact R14 R1/R2 fix hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3')) for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]: ET.parse(f)
+     check('all project XML and XAML parse',True)
+     view=ET.parse(root/'src/ProcessLens.App/SystemProcessesView.xaml').getroot();x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
+diff --git a/audit/tools/check_wpf_test_context_r14r3.py b/audit/tools/check_wpf_test_context_r14r3.py
+new file mode 100644
+index 0000000..3f89cbf
+--- /dev/null
++++ b/audit/tools/check_wpf_test_context_r14r3.py
+@@ -0,0 +1,66 @@
++"""R14 R3 source/retention checks. Does not execute or compile WPF."""
++import argparse,hashlib,json,re,zipfile
++from pathlib import Path
++import xml.etree.ElementTree as ET
++from test_clipboard_calls_r10r9 import mask_non_code
++
++SETUP='SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(dispatcher));'
++WAIT='Task continuation = VerifyDispatcherContinuationAsync(completion.Task, dispatcher, ownerThread);'
++QUEUE='ThreadPool.QueueUserWorkItem('
++RESTORE='SynchronizationContext.SetSynchronizationContext(previousContext);'
++def valid_context(s):
++    main=s[s.index('public static void Main()'):]
++    return (0 <= main.find(SETUP) < main.find(WAIT) < main.find(QUEUE) < main.find('Complete(continuation);') and
++        RESTORE in main and 'finally' in main and 'var previousContext = SynchronizationContext.Current;' in main and
++        'TaskCreationOptions.RunContinuationsAsynchronously' in main and
++        'int workerThread = await completion;' in s and 'workerThread != ownerThread' in s and
++        'dispatcher.CheckAccess() && Environment.CurrentManagedThreadId == ownerThread' in s and
++        'SynchronizationContext.Current is DispatcherSynchronizationContext' in s)
++def checks(s):
++    masked=mask_non_code(s);result=[]
++    for m in re.finditer(r'\bCheck\(',masked):
++        start=m.end();depth=1;end=start
++        while depth and end<len(masked):
++            if masked[end]=='(':depth+=1
++            elif masked[end]==')':depth-=1
++            end+=1
++        result.append(re.sub(r'\s+','',s[start:end-1]))
++    return result
++
++def main():
++    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args();root=a.candidate.resolve()
++    sha=lambda b:hashlib.sha256(b).hexdigest()
++    assert sha(a.baseline_zip.read_bytes())=='cfc9b8bbea861833efd74defc7efeae76d1c649258b095ce371b8e239a085d30'
++    with zipfile.ZipFile(a.baseline_zip) as z:old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++    results=[]
++    def check(label,ok):
++        results.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML/mutation only; no WPF execution'});print(results[-1]['status'],label)
++    app='src/ProcessLens.App/ProcessLens.App.csproj';tests=['tests/ProcessLens.'+n+'/Program.cs' for n in ['NetworkUiTests','SystemProcessUiTests']]
++    check('no baseline files removed',all((root/n).is_file() for n in old))
++    check('all production C# and XAML exact to R2',all((root/n).read_bytes()==data for n,data in old.items() if n.startswith('src/') and n.endswith(('.cs','.xaml'))))
++    changed={n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}
++    check('only candidate identity changed in production',changed=={app} and (root/app).read_bytes()==old[app].replace(b'R14-R2-network-tab-init-candidate',b'R14-R3-wpf-test-context-candidate'))
++    check('only two WPF C# fixtures changed', {n for n,data in old.items() if n.startswith('tests/') and n.endswith('.cs') and (root/n).read_bytes()!=data}==set(tests))
++    for n in tests:
++        s=(root/n).read_text();before=old[n].decode('utf-8-sig');label=n.split('/')[1]
++        check(label+' installs context before pending await and worker completion',valid_context(s))
++        check(label+' retains every original Check expression',all(c in checks(s) for c in checks(before)))
++        check(label+' retains original dispatcher pump and exception propagation',all(token in s for token in ['Dispatcher.PushFrame(frame)','task.GetAwaiter().GetResult();','TaskScheduler.Default','[STAThread]']))
++        check(label+' does not suppress thread ownership checks or awaiting context',not any(token in s for token in ['ConfigureAwait(false)','DisableProcessing','catch (InvalidOperationException','catch {']))
++        for name,mutant in [
++            ('missing setup',s.replace(SETUP,'')),
++            ('setup after asynchronous start',s.replace(SETUP,'').replace(WAIT,WAIT+'\n'+SETUP)),
++            ('worker scheduled before await',s.replace(WAIT,'').replace('Complete(continuation);',WAIT+'\nComplete(continuation);')),
++            ('missing restoration',s.replace(RESTORE,'')),
++            ('missing owner verification',s.replace('dispatcher.CheckAccess() && Environment.CurrentManagedThreadId == ownerThread','true'))]:
++            check(label+' guard rejects '+name,not valid_context(mutant))
++    ledger=json.loads((root/'audit/R10_R14_R3/authorized-source-edits.json').read_text())
++    check('authorized three file delta matches before and after hashes',len(ledger['files'])==3 and {r['file'] for r in ledger['files']}=={app,*tests} and all(sha(old[r['file']])==r['sha256_before'] and sha((root/r['file']).read_bytes())==r['sha256_after'] for r in ledger['files']))
++    gate=(root/'tests/check-wpf-test-context-r14r3.ps1').read_text();build=(root/'build-dashboard.ps1').read_text(encoding='utf-8-sig')
++    check('standard Windows pipeline includes source gate',"tests\\check-wpf-test-context-r14r3.ps1" in build and all(t in gate for t in ['NetworkUiTests','SystemProcessUiTests','IndexOf($setup)','IndexOf($firstAwait)',RESTORE]))
++    for path in [*root.rglob('*.csproj'),*root.rglob('*.xaml')]:ET.parse(path)
++    check('all XAML and project XML parse',True)
++    log=(root/'audit/R10_R14_R3/reported-windows-build-excerpt.log').read_text()
++    check('reported R2 error retained separately from current source checks',all(t in log for t in ['UpdateButtons','RefreshAsync','InvalidOperationException','PASS network UI: R14 R2','not locally executed']))
++    a.output.parent.mkdir(exist_ok=True,parents=True);a.output.write_text(json.dumps(results,indent=2)+'\n');raise SystemExit(0 if all(r['status']=='PASS' for r in results) else 1)
++if __name__=='__main__':main()
+diff --git a/audit/tools/package_wpf_test_context_r14r3.py b/audit/tools/package_wpf_test_context_r14r3.py
+new file mode 100644
+index 0000000..cb5970b
+--- /dev/null
++++ b/audit/tools/package_wpf_test_context_r14r3.py
+@@ -0,0 +1,87 @@
++"""Package the R14 R3 WPF fixture synchronization context fix with source-only WPF checks. This does not compile or qualify Windows runtime."""
++import argparse, csv, difflib, hashlib, json, shutil, subprocess, tempfile, zipfile
++from pathlib import Path
++
++def sha(data): return hashlib.sha256(data).hexdigest()
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--candidate',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True)
++    p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()
++    root=a.candidate.resolve();audit=root/'audit/R10_R14_R3';output=a.output_directory.resolve()
++    assert sha(a.baseline_zip.read_bytes())=='cfc9b8bbea861833efd74defc7efeae76d1c649258b095ce371b8e239a085d30'
++    for d in sorted(root.rglob('__pycache__'),reverse=True):shutil.rmtree(d)
++    with zipfile.ZipFile(a.baseline_zip) as z:
++        assert z.testzip() is None
++        old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++    assert all((root/n).is_file() for n in old)
++    for row in json.loads((audit/'authorized-source-edits.json').read_text())['files']:
++        assert sha((root/row['file']).read_bytes())==row['sha256_after'],row['file']
++    results=[]
++    for n,count in [('context-source-results.json',26),('tab-retention-results.json',20),('catalog-retention-results.json',15),('system-retention-results.json',33)]:
++        rows=json.loads((audit/n).read_text());assert len(rows)==count and all(row['status']=='PASS' for row in rows)
++        results.extend(rows)
++    # Preserve all added/changed source contexts in the current string ledger.
++    with (audit/'string-ledger.csv').open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerow(['file','line','added_or_modified_source_text','context'])
++        for row in json.loads((audit/'authorized-source-edits.json').read_text())['files']:
++            n=row['file'];before=old.get(n,b'').decode('utf-8-sig').splitlines();after=(root/n).read_text(encoding='utf-8-sig').splitlines()
++            for tag,i,j,k,l in difflib.SequenceMatcher(None,before,after).get_opcodes():
++                if tag not in ('insert','replace'):continue
++                for number,line in enumerate(after[k:l],k+1):
++                    if '"' in line:writer.writerow([n,number,line.strip(),'UI/report or technical source context'])
++    def included(n):return not n.startswith('audit/R10_R14_R3/') and n!='SHA256SUMS_R10.txt'
++    current={f.relative_to(root).as_posix():f.read_bytes() for f in root.rglob('*') if f.is_file()}
++    delta=[n for n,data in sorted(current.items()) if included(n) and old.get(n)!=data]
++    with (audit/'files-changed.csv').open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerow(['file','kind','sha256_before','sha256_after'])
++        for n in delta:writer.writerow([n,'modified' if n in old else 'added',sha(old[n]) if n in old else '',sha(current[n])])
++    staging=root.parent.parent/'test';staging.mkdir(exist_ok=True)
++    with tempfile.TemporaryDirectory(prefix='patch-replay-r14r3-',dir=staging) as temporary:
++        temp=Path(temporary);before=temp/'before';after=temp/'after';before.mkdir();after.mkdir()
++        for base,values in [(before,old),(after,current)]:
++            for n,data in values.items():
++                if not included(n):continue
++                path=base/n;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
++        diff=subprocess.run(['git','diff','--no-index','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=temp,capture_output=True)
++        assert diff.returncode==1,diff.stderr.decode()
++        lines=[]
++        for line in diff.stdout.splitlines(keepends=True):
++            if line.startswith((b'diff --git ', b'--- ', b'+++ ')):
++                for prefix in (b'a/before/',b'a/after/'):line=line.replace(prefix,b'a/')
++                for prefix in (b'b/before/',b'b/after/'):line=line.replace(prefix,b'b/')
++            lines.append(line)
++        patch=b''.join(lines)
++        path=audit/'R14_R2_to_R14_R3.patch';path.write_bytes(patch)
++        subprocess.run(['git','apply','--check',str(path)],cwd=before,check=True,capture_output=True)
++        subprocess.run(['git','apply',str(path)],cwd=before,check=True,capture_output=True)
++        mismatch=[n for n,data in current.items() if included(n) and (before/n).read_bytes()!=data]
++        assert not mismatch,mismatch
++    (audit/'patch-replay-results.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','delta_files':len(delta),'patch_sha256':sha(patch),'excluded':'Current audit metadata and current manifest only; excluded for self-reference.'},indent=2)+'\n')
++    (audit/'retention.json').write_text(json.dumps({'source_trees':1,'patch_replay_temporary_tree_removed':True,'baseline':'R14 R2 retained for byte comparisons','no_bin_obj_pycache_in_release':True,'source_check_count':len(results),'Windows_runtime_and_RAM_measurement':'NOT EXECUTED','inherited_R1_portable_runtime_assertions':103,'R3_WPF_runtime':'NOT EXECUTED'},indent=2)+'\n')
++    matrix=audit/'test-matrix.csv'
++    with matrix.open(newline='') as f:
++        matrix_rows=[row for row in csv.reader(f) if row and row[0] not in
++            {'Current R14 R3 source and evidence guards','R14 R2 to R14 R3 patch replay'}]
++    with matrix.open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerows(matrix_rows)
++        writer.writerow(['Current R14 R3 source and evidence guards','Python source/XML/mutations','PASS',f'{len(results)} checks; no C# execution'])
++        writer.writerow(['R14 R2 to R14 R3 patch replay','git apply and byte comparison','PASS',f'{len(delta)} changed or added files; audit metadata and manifest excluded'])
++    for d in root.rglob('*'):
++        assert not (d.is_dir() and d.name in ('__pycache__','bin','obj')),d
++    files=sorted(f for f in root.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt')
++    (root/'SHA256SUMS_R10.txt').write_text(''.join(sha(f.read_bytes())+'  '+f.relative_to(root).as_posix()+'\n' for f in files))
++    output.mkdir(parents=True,exist_ok=True)
++    target=output/'ProcessLens-v0.19.16-R10-R14-R3-wpf-test-context-candidate.zip'
++    with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
++        for f in sorted(root.rglob('*')):
++            if f.is_file():
++                assert f.stat().st_size < 10*1024*1024, f
++                z.write(f,root.name+'/'+f.relative_to(root).as_posix())
++    with zipfile.ZipFile(target) as z:
++        assert z.testzip() is None
++        for line in z.read(root.name+'/SHA256SUMS_R10.txt').decode().splitlines():
++            expected,n=line.split('  ',1);assert sha(z.read(root.name+'/'+n))==expected,n
++        assert len({n.split('/')[0] for n in z.namelist()})==1
++    result={'zip':str(target),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files),'delta_files':len(delta),'source_checks':len(results),'Windows_runtime':'NOT EXECUTED','inherited_R1_portable_runtime_assertions':103,'R3_WPF_runtime':'NOT EXECUTED'}
++    (output/'verification-r14r3.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
++if __name__=='__main__':main()
+diff --git a/audit/tools/ux_writing_rules.py b/audit/tools/ux_writing_rules.py
+index ea76d01..15df355 100644
+--- a/audit/tools/ux_writing_rules.py
++++ b/audit/tools/ux_writing_rules.py
+@@ -18,7 +18,7 @@ def approved_revision(root, relative):
+     """R11 editorial delta or separately recorded, user-requested R12/R13/R14 feature delta."""
+     if approved_editorial(root, relative):
+         return True
+-    return any(approved_feature(root, relative, revision) for revision in ('R10_R12', 'R10_R13', 'R10_R14', 'R10_R14_R1', 'R10_R14_R2'))
++    return any(approved_feature(root, relative, revision) for revision in ('R10_R12', 'R10_R13', 'R10_R14', 'R10_R14_R1', 'R10_R14_R2','R10_R14_R3'))
+ 
+ 
+ def approved_feature(root, relative, revision):
+diff --git a/build-dashboard.ps1 b/build-dashboard.ps1
+index 686420b..2e27023 100644
+--- a/build-dashboard.ps1
++++ b/build-dashboard.ps1
+@@ -17,6 +17,7 @@ Write-Host 'Controllo sintassi di tutti gli script PowerShell...' -ForegroundCol
+ & (Join-Path $PSScriptRoot 'tests\check-network-devices-r12.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-packet-capture-r13.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-system-processes-r14.ps1')
++& (Join-Path $PSScriptRoot 'tests\check-wpf-test-context-r14r3.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-copy-ui-r10.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-terminology-ui.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-detail-hierarchy-v01910.ps1')
+diff --git a/src/ProcessLens.App/ProcessLens.App.csproj b/src/ProcessLens.App/ProcessLens.App.csproj
+index 63a72aa..17f2cc8 100644
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R14-R2-network-tab-init-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R14-R3-wpf-test-context-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+diff --git a/tests/ProcessLens.NetworkUiTests/Program.cs b/tests/ProcessLens.NetworkUiTests/Program.cs
+index ab666a5..c2b962b 100644
+--- a/tests/ProcessLens.NetworkUiTests/Program.cs
++++ b/tests/ProcessLens.NetworkUiTests/Program.cs
+@@ -2,6 +2,7 @@ using System.IO;
+ using System.Windows;
+ using System.Windows.Controls;
+ using System.Windows.Threading;
++using System.Threading;
+ using ProcessLens.App;
+ using ProcessLens.Core;
+ 
+@@ -24,15 +25,34 @@ internal static class Program
+         if (timedOut) throw new Exception("Network UI fixture timed out.");
+         task.GetAwaiter().GetResult();
+     }
++    private static async Task VerifyDispatcherContinuationAsync(Task<int> completion, Dispatcher dispatcher, int ownerThread)
++    {
++        int workerThread = await completion;
++        Check(workerThread != ownerThread, "R14 R3 fixture completion comes from a worker thread");
++        Check(dispatcher.CheckAccess() && Environment.CurrentManagedThreadId == ownerThread &&
++            SynchronizationContext.Current is DispatcherSynchronizationContext,
++            "R14 R3 awaited continuation returns to the owning WPF dispatcher");
++    }
+     [STAThread]
+     public static void Main()
+     {
+         _ = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
++        var previousContext = SynchronizationContext.Current;
++        var dispatcher = Dispatcher.CurrentDispatcher;
++        int ownerThread = Environment.CurrentManagedThreadId;
++        SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(dispatcher));
+         string root = Path.Combine(Path.GetTempPath(), "ProcessLens-NetworkUi-" + Guid.NewGuid().ToString("N"));
+         string path = Path.Combine(root, "devices.json");
+         using var source = new FixtureSource();
+         try
+         {
++            Check(SynchronizationContext.Current is DispatcherSynchronizationContext,
++                "R14 R3 WPF context installed before starting asynchronous operations");
++            var completion = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
++            Task continuation = VerifyDispatcherContinuationAsync(completion.Task, dispatcher, ownerThread);
++            // Queue only after the incomplete task has been awaited, guaranteeing an actual asynchronous continuation.
++            ThreadPool.QueueUserWorkItem(_ => completion.SetResult(Environment.CurrentManagedThreadId));
++            Complete(continuation);
+             var view = new NetworkDevicesView(source, new DeviceRecognitionStore(path));
+             Check(source.Calls == 0 && !File.Exists(path), "construction is lazy and does not read a real network or write settings");
+             var cacheTabs = (TabControl)view.FindName("NetworkTabs");
+@@ -149,7 +169,11 @@ internal static class Program
+                 "R14 R2 explicit cache refresh works after switching tabs before Loaded");
+             tabView.SetActive(false);
+         }
+-        finally { source.Release.Set(); if (Directory.Exists(root)) Directory.Delete(root, true); }
++        finally
++        {
++            try { source.Release.Set(); if (Directory.Exists(root)) Directory.Delete(root, true); }
++            finally { SynchronizationContext.SetSynchronizationContext(previousContext); }
++        }
+         Console.WriteLine("Network UI fixtures complete; no window shown, live network acquisition or real clipboard write.");
+     }
+     private sealed class PacketFixture : IPacketCaptureClient
+diff --git a/tests/ProcessLens.SystemProcessUiTests/Program.cs b/tests/ProcessLens.SystemProcessUiTests/Program.cs
+index 52227d0..9237643 100644
+--- a/tests/ProcessLens.SystemProcessUiTests/Program.cs
++++ b/tests/ProcessLens.SystemProcessUiTests/Program.cs
+@@ -1,6 +1,7 @@
+ using System.Windows;
+ using System.Windows.Controls;
+ using System.Windows.Threading;
++using System.Threading;
+ using ProcessLens.App;
+ using ProcessLens.Core;
+ 
+@@ -19,51 +20,74 @@ internal static class Program
+         if (timedOut) throw new Exception("UI fixture timed out");
+         task.GetAwaiter().GetResult();
+     }
++    private static async Task VerifyDispatcherContinuationAsync(Task<int> completion, Dispatcher dispatcher, int ownerThread)
++    {
++        int workerThread = await completion;
++        Check(workerThread != ownerThread, "R14 R3 fixture completion comes from a worker thread");
++        Check(dispatcher.CheckAccess() && Environment.CurrentManagedThreadId == ownerThread &&
++            SynchronizationContext.Current is DispatcherSynchronizationContext,
++            "R14 R3 awaited continuation returns to the owning WPF dispatcher");
++    }
+     [STAThread]
+     public static void Main()
+     {
+         _ = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+-        using var source = new Fixture();
+-        var view = new SystemProcessesView(source, @"C:\Windows");
+-        Check(source.Calls == 0, "constructor performs no native inventory");
+-        view.SetActive(true); Check(source.Calls == 0, "activation does not automatically query Windows");
+-        Complete(view.RefreshAsync());
+-        var grid = (DataGrid)view.FindName("SystemProcessesTable");
+-        var analyze = (Button)view.FindName("AnalyzeSystemButton");
+-        Check(grid.IsReadOnly && GridCopySupport.GetEnabled(grid) && grid.EnableRowVirtualization && grid.Items.Count == 2,
+-            "Windows scope retains internal entries and denied details in copied virtualized table");
+-        Check(GridCopySupport.CaptureTable(grid, false).Contains("Memory Compression"), "actual grid copy preserves internal process names");
+-        grid.SelectedItem = grid.Items.Cast<SystemProcessRow>().Single(r => r.Name == "Memory Compression");
+-        Check(!analyze.IsEnabled && ((SelectableText)view.FindName("SystemSelectionText")).Text.Contains("dimensione logica"),
+-            "unknown creation time blocks analysis navigation without hiding compression details");
+-        var scope = (ComboBox)view.FindName("SystemScopeBox"); scope.SelectedIndex = 1;
+-        Check(grid.Items.Count == 3, "all-process scope includes processes with unknown origin");
+-        ((TextBox)view.FindName("SystemSearchBox")).Text = "12";
+-        Check(grid.Items.Count == 1 && ((SystemProcessRow)grid.Items[0]).Pid == 12, "numeric PID search does not match substring 112");
+-        grid.SelectedIndex = 0; SystemProcessEntry? request = null; view.AnalysisRequested += p => request = p;
+-        analyze.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+-        Check(request?.Pid == 12 && request.StartUtc.HasValue, "analysis button forwards selected immutable process identity");
+-        ((TextBox)view.FindName("SystemSearchBox")).Clear();
+-        source.Block = true; Task pending = view.RefreshAsync();
+-        Check(source.Started.Wait(TimeSpan.FromSeconds(5)), "blocked native fixture begins");
+-        Complete(view.RefreshAsync()); Check(source.Calls == 2 && grid.Items.Count == 0, "refresh coalesces and clears old rows while pending");
+-        view.SetActive(false); source.Release.Set(); Complete(pending);
+-        Check(grid.Items.Count == 0 && !analyze.IsEnabled && ((SelectableText)view.FindName("SystemMemoryText")).Text.Contains("N/D"),
+-            "late uncancellable result rejected after section closes and rows released");
+-        view.SetActive(true); source.Block = false; source.Fail = true; Complete(view.RefreshAsync());
+-        Check(grid.Items.Count == 0 && ((SelectableText)view.FindName("SystemSourceText")).Text.Contains("synthetic failure"),
+-            "acquisition error preserves failure instead of a valid empty inventory");
+-        view.SetActive(false);
+-        var window = new MainWindow();
+-        var host = (ContentControl)window.FindName("SystemProcessesHost");
+-        Check(host.Content is null, "main window leaves system pane unconstructed");
+-        ((Button)window.FindName("NavSystemButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+-        Check(host.Content is SystemProcessesView && host.Visibility == Visibility.Visible &&
+-            ((Grid)window.FindName("ProcessWorkspace")).Visibility == Visibility.Collapsed, "System Windows button opens a dedicated lazy workspace");
+-        ((Button)window.FindName("NavNetworkButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+-        Check(host.Visibility == Visibility.Collapsed, "switching to network deactivates system workspace");
+-        window.Close(); Application.Current.Shutdown();
+-        Console.WriteLine("System process WPF tests complete; no real native query, process action or clipboard used.");
++        var previousContext = SynchronizationContext.Current;
++        var dispatcher = Dispatcher.CurrentDispatcher;
++        int ownerThread = Environment.CurrentManagedThreadId;
++        SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(dispatcher));
++        try
++        {
++            Check(SynchronizationContext.Current is DispatcherSynchronizationContext,
++                "R14 R3 WPF context installed before starting asynchronous operations");
++            var completion = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
++            Task continuation = VerifyDispatcherContinuationAsync(completion.Task, dispatcher, ownerThread);
++            // Queue only after the incomplete task has been awaited, guaranteeing an actual asynchronous continuation.
++            ThreadPool.QueueUserWorkItem(_ => completion.SetResult(Environment.CurrentManagedThreadId));
++            Complete(continuation);
++            using var source = new Fixture();
++            var view = new SystemProcessesView(source, @"C:\Windows");
++            Check(source.Calls == 0, "constructor performs no native inventory");
++            view.SetActive(true); Check(source.Calls == 0, "activation does not automatically query Windows");
++            Complete(view.RefreshAsync());
++            var grid = (DataGrid)view.FindName("SystemProcessesTable");
++            var analyze = (Button)view.FindName("AnalyzeSystemButton");
++            Check(grid.IsReadOnly && GridCopySupport.GetEnabled(grid) && grid.EnableRowVirtualization && grid.Items.Count == 2,
++                "Windows scope retains internal entries and denied details in copied virtualized table");
++            Check(GridCopySupport.CaptureTable(grid, false).Contains("Memory Compression"), "actual grid copy preserves internal process names");
++            grid.SelectedItem = grid.Items.Cast<SystemProcessRow>().Single(r => r.Name == "Memory Compression");
++            Check(!analyze.IsEnabled && ((SelectableText)view.FindName("SystemSelectionText")).Text.Contains("dimensione logica"),
++                "unknown creation time blocks analysis navigation without hiding compression details");
++            var scope = (ComboBox)view.FindName("SystemScopeBox"); scope.SelectedIndex = 1;
++            Check(grid.Items.Count == 3, "all-process scope includes processes with unknown origin");
++            ((TextBox)view.FindName("SystemSearchBox")).Text = "12";
++            Check(grid.Items.Count == 1 && ((SystemProcessRow)grid.Items[0]).Pid == 12, "numeric PID search does not match substring 112");
++            grid.SelectedIndex = 0; SystemProcessEntry? request = null; view.AnalysisRequested += p => request = p;
++            analyze.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
++            Check(request?.Pid == 12 && request.StartUtc.HasValue, "analysis button forwards selected immutable process identity");
++            ((TextBox)view.FindName("SystemSearchBox")).Clear();
++            source.Block = true; Task pending = view.RefreshAsync();
++            Check(source.Started.Wait(TimeSpan.FromSeconds(5)), "blocked native fixture begins");
++            Complete(view.RefreshAsync()); Check(source.Calls == 2 && grid.Items.Count == 0, "refresh coalesces and clears old rows while pending");
++            view.SetActive(false); source.Release.Set(); Complete(pending);
++            Check(grid.Items.Count == 0 && !analyze.IsEnabled && ((SelectableText)view.FindName("SystemMemoryText")).Text.Contains("N/D"),
++                "late uncancellable result rejected after section closes and rows released");
++            view.SetActive(true); source.Block = false; source.Fail = true; Complete(view.RefreshAsync());
++            Check(grid.Items.Count == 0 && ((SelectableText)view.FindName("SystemSourceText")).Text.Contains("synthetic failure"),
++                "acquisition error preserves failure instead of a valid empty inventory");
++            view.SetActive(false);
++            var window = new MainWindow();
++            var host = (ContentControl)window.FindName("SystemProcessesHost");
++            Check(host.Content is null, "main window leaves system pane unconstructed");
++            ((Button)window.FindName("NavSystemButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
++            Check(host.Content is SystemProcessesView && host.Visibility == Visibility.Visible &&
++                ((Grid)window.FindName("ProcessWorkspace")).Visibility == Visibility.Collapsed, "System Windows button opens a dedicated lazy workspace");
++            ((Button)window.FindName("NavNetworkButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
++            Check(host.Visibility == Visibility.Collapsed, "switching to network deactivates system workspace");
++            window.Close(); Application.Current.Shutdown();
++            Console.WriteLine("System process WPF tests complete; no real native query, process action or clipboard used.");
++        }
++        finally { SynchronizationContext.SetSynchronizationContext(previousContext); }
+     }
+     sealed class Fixture : ISystemProcessSource, IDisposable
+     {
+diff --git a/tests/check-wpf-test-context-r14r3.ps1 b/tests/check-wpf-test-context-r14r3.ps1
+new file mode 100644
+index 0000000..bad5040
+--- /dev/null
++++ b/tests/check-wpf-test-context-r14r3.ps1
+@@ -0,0 +1,21 @@
++$ErrorActionPreference = 'Stop'
++$root = Split-Path -Parent $PSScriptRoot
++foreach ($suite in @('NetworkUiTests','SystemProcessUiTests')) {
++    $path = Join-Path $root ('tests\ProcessLens.' + $suite + '\Program.cs')
++    $code = Get-Content -LiteralPath $path -Raw -Encoding UTF8
++    $main = $code.Substring($code.IndexOf('public static void Main()'))
++    $setup = 'SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(dispatcher));'
++    $firstAwait = 'Task continuation = VerifyDispatcherContinuationAsync(completion.Task, dispatcher, ownerThread);'
++    if ($main.IndexOf($setup) -lt 0 -or $main.IndexOf($setup) -gt $main.IndexOf($firstAwait)) {
++        throw "FAIL R14 R3: dispatcher context must precede asynchronous operations in $suite"
++    }
++    foreach ($token in @('SynchronizationContext.SetSynchronizationContext(previousContext);',
++        'TaskCreationOptions.RunContinuationsAsynchronously', 'dispatcher.CheckAccess()',
++        'workerThread != ownerThread', 'Complete(continuation);')) {
++        if (-not $code.Contains($token)) { throw "FAIL R14 R3 fixture context: $suite / $token" }
++    }
++    if ($main.IndexOf($firstAwait) -gt $main.IndexOf('ThreadPool.QueueUserWorkItem(')) {
++        throw "FAIL R14 R3: fixture must await a pending task before worker completion in $suite"
++    }
++}
++Write-Host 'PASS R14 R3: headless WPF context setup and asynchronous ownership preflight supplied (source check).'

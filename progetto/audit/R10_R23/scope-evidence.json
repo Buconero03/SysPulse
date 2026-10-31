@@ -1,0 +1,20 @@
+{
+  "baseline_sha256": "34c33e49a591e7a919b6d5466c3e37a6408cddfde86abe30d7670bb6b470669c",
+  "changed_production_and_test_files": [
+    "src/ProcessLens.App/CopyTestVisibility.cs",
+    "src/ProcessLens.App/MainWindow.xaml",
+    "src/ProcessLens.App/MainWindow.xaml.cs",
+    "src/ProcessLens.App/NewTaskWindow.cs",
+    "src/ProcessLens.App/ProcessLens.App.csproj",
+    "src/ProcessLens.Core/NewTaskLaunch.cs",
+    "src/ProcessLens.Windows/WindowsNewTaskLauncher.cs",
+    "tests/ProcessLens.NewTaskTests/ProcessLens.NewTaskTests.csproj",
+    "tests/ProcessLens.NewTaskTests/Program.cs",
+    "tests/ProcessLens.NewTaskUiTests/ProcessLens.NewTaskUiTests.csproj",
+    "tests/ProcessLens.NewTaskUiTests/Program.cs"
+  ],
+  "native_acquisition_Guardian_MemoryAgent_profiler_RAM_monitor": "EXISTING FILES BYTE IDENTICAL TO R22; new explicit task launcher only",
+  "new_dependencies": 0,
+  "new_binary": "NOT INCLUDED; full Windows build required once",
+  "WPF_runtime_DPI_UAC_RAM": "NOT EXECUTED / NOT MEASURED"
+}

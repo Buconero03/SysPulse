@@ -1,0 +1,60 @@
+{
+  "baseline_sha256": "ca36522237f953f5dee8bc51822c8fab2374a76ed366a146a280ed32c780b696",
+  "scope": "R15 user-requested Windows-only component navigation with manual inventory, role details, grouped instances, exact PID navigation and retained subset; native acquisition and existing diagnostic engine unchanged",
+  "files": [
+    {
+      "file": "src/ProcessLens.Core/WindowsComponentCatalog.cs",
+      "sha256_before": null,
+      "sha256_after": "6ca1149fbba47e8b07c93e9501e0c58d901c928ca9e17b9ed1405492c4ef8e97",
+      "scope": "curated component presentation or independent regression coverage; existing acquisition and classification APIs retained"
+    },
+    {
+      "file": "src/ProcessLens.App/SystemProcessesView.xaml",
+      "sha256_before": "205fa779d66417645db2eaa01dbaac133c4d0f0667b7a06a1facf3d97a038ea7",
+      "sha256_after": "273ca5b30932861694efa8fa94f6125b8da71d7abe8551fa3213197f86f48bd9",
+      "scope": "curated component presentation or independent regression coverage; existing acquisition and classification APIs retained"
+    },
+    {
+      "file": "src/ProcessLens.App/SystemProcessesView.xaml.cs",
+      "sha256_before": "aaeb252bc3b28be473f77d6c1fa0812400b32fa4f0cfbcca3a85b97293fd5a19",
+      "sha256_after": "e3cf7d4a5fa1833bf407b28ab416639a686df10e48b5838c07ec7449da0b4e8b",
+      "scope": "curated component presentation or independent regression coverage; existing acquisition and classification APIs retained"
+    },
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml",
+      "sha256_before": "8ebded29b7241ce4a82512b4d84d82a61537cac307ca5a302a82ca44d8144da8",
+      "sha256_after": "8b978fd36f2f2629076005414bd7af0d8f1648fe2830cbb2a9018301b6107faf",
+      "scope": "curated component presentation or independent regression coverage; existing acquisition and classification APIs retained"
+    },
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+      "sha256_before": "bfa624d0fa4c8270594388cf0812d9d5f754f79c96cde331aad0b7ca2fa216ff",
+      "sha256_after": "e925f8d4f16b0e4dc9d6a2629780caccef3aea2ef00fed4ded7e650ee8ccd763",
+      "scope": "curated component presentation or independent regression coverage; existing acquisition and classification APIs retained"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256_before": "2782620b95075cf949a338614014a01ecd94dd43a8f5938c10c04ae502db736d",
+      "sha256_after": "a0d806be6cd3297c047ef7fdd3c281c0c7c14d47876bec01f76205b2eebfcd34",
+      "scope": "curated component presentation or independent regression coverage; existing acquisition and classification APIs retained"
+    },
+    {
+      "file": "tests/ProcessLens.SystemProcessUiTests/Program.cs",
+      "sha256_before": "1328c10b583921400ca90b1792e59226dbcd60245c0456e7fd5289ac14ac5775",
+      "sha256_after": "cb3fe797b78092bb5e0ffe4ba15ee0b3ba86ee0108fd3869fa0a39809be02ad1",
+      "scope": "curated component presentation or independent regression coverage; existing acquisition and classification APIs retained"
+    },
+    {
+      "file": "tests/ProcessLens.WindowsComponentTests/Program.cs",
+      "sha256_before": null,
+      "sha256_after": "6b9d235760be68d6ee9b396f214a67f0b7d2094ad29d986e79c32d50c5d97e54",
+      "scope": "curated component presentation or independent regression coverage; existing acquisition and classification APIs retained"
+    },
+    {
+      "file": "tests/ProcessLens.WindowsComponentTests/ProcessLens.WindowsComponentTests.csproj",
+      "sha256_before": null,
+      "sha256_after": "6502dbf4da1569ca2476be92d534b14d382929713a02b2017ffcdb5dd8eb0253",
+      "scope": "curated component presentation or independent regression coverage; existing acquisition and classification APIs retained"
+    }
+  ]
+}

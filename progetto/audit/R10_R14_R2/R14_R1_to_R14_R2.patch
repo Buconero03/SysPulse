@@ -1,0 +1,396 @@
+diff --git a/CORREZIONE_SCHEDA_RETE_R14_R2.md b/CORREZIONE_SCHEDA_RETE_R14_R2.md
+new file mode 100644
+index 0000000..fa31115
+--- /dev/null
++++ b/CORREZIONE_SCHEDA_RETE_R14_R2.md
+@@ -0,0 +1,31 @@
++# ProcessLens R14 R2 — inizializzazione della scheda rete
++
++Il nuovo log conferma il completamento dei test del registro dispositivi e dell'integrazione Wireshark della R14 R1. Il build si ferma al primo aggiornamento di NetworkUiTests, un test WPF che crea la vista senza mostrarla.
++
++La vista rete richiede la scheda cache selezionata per acquisire i dati. Nel markup non era dichiarata una selezione iniziale: l'aggiornamento prima del caricamento visivo dipendeva dal ciclo di selezione di WPF. La R2 imposta esplicitamente `SelectedIndex="0"` sul TabControl reale.
++
++Non vengono avviate letture quando si apre o si cambia scheda: l'aggiornamento resta manuale. La scheda Wireshark non può richiedere l'aggiornamento della cache. Il test conserva i tre requisiti originali (una chiamata, una riga, nessun falso avviso) e li rende separati, con valori effettivi nel messaggio di errore. Verifica anche selezione e pulsante prima di Loaded e cambio scheda senza acquisizione automatica. Il cast al controllo rete gestisce esplicitamente il caso null, correggendo i due avvisi segnalati.
++
++Il delta di produzione è un attributo XAML e l'identificativo della candidata. Il codice C# di produzione è identico alla R14 R1; la correzione del registro rimane inclusa.
++
++## Verifica su Windows
++
++Estrarre lo ZIP in una nuova cartella e, dalla radice del progetto, eseguire:
++
++```powershell
++.\build-dashboard.ps1
++```
++
++Non serve cancellare file o configurazioni locali. La sequenza ripete i controlli e prosegue oltre NetworkUiTests solo se il test aggiornato passa.
++
++## Stato delle verifiche
++
++Il controllo di sorgenti e XML verifica la selezione iniziale reale, le guardie di aggiornamento e le asserzioni, e rifiuta markup con selezione assente o errata. È stato controllato che gli altri sorgenti di produzione non cambino.
++
++**Non eseguiti qui:** avvio o test WPF, test Windows reali, DPI e build completo PowerShell. L'host Linux impedisce anche l'avvio del build incrociato MSBuild per le informazioni del processo: non è stata ottenuta una compilazione WPF. Questa candidata corregge l'inizializzazione individuata nei sorgenti; la conferma del comportamento spetta all'esecuzione Windows del test aggiornato.
++
++Il log fornito, la patch completa, il registro della modifica e i risultati dei controlli effettivi sono in `audit/R10_R14_R2`. I risultati R1 e precedenti sono conservati come storici.
++
++## Riferimento tecnico
++
++Nel [sorgente WPF Microsoft, TabControl.OnGeneratorStatusChanged](https://github.com/dotnet/wpf/blob/v8.0.0/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/Controls/TabControl.cs), la selezione automatica del primo elemento dipende dallo stato ContainersGenerated del generatore. Il test non mostra la vista né applica il template visivo. La selezione esplicita elimina questa dipendenza; questa revisione del sorgente non sostituisce il test WPF Windows.
+diff --git a/README.md b/README.md
+index 4e25f0c..ac92c3a 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,5 @@
++> **Candidata R14 R2:** selezione esplicita della prima scheda rete per aggiornare anche prima di Loaded. Test WPF più precisi, nessun controllo rimosso. Il log Windows conferma la correzione del registro e i test Wireshark della R1; il test WPF aggiornato deve essere eseguito su Windows. Dettagli in `CORREZIONE_SCHEDA_RETE_R14_R2.md`.
++
+ > **Candidata R14 R1:** corretto il crash del registro dispositivi su file troppo grandi o schema non valido. 81 verifiche rete e 22 verifiche portabili sistema eseguite in .NET 8 su Linux. WPF e build Windows da verificare. Dettagli in `CORREZIONE_REGISTRO_DISPOSITIVI_R14_R1.md`.
+ 
+ > **Candidata R14:** nuova sezione **Sistema Windows** con inventario manuale, voci interne quando esposte dal sistema, dettagli N/D conservati e memoria del kernel. Istruzioni e limiti in `SISTEMA_WINDOWS_R14.md`. Test .NET/WPF e letture Windows non eseguiti qui.
+diff --git a/audit/tools/check_device_catalog_r14r1.py b/audit/tools/check_device_catalog_r14r1.py
+index a5dcc72..530593a 100644
+--- a/audit/tools/check_device_catalog_r14r1.py
++++ b/audit/tools/check_device_catalog_r14r1.py
+@@ -3,6 +3,7 @@ import argparse,hashlib,json,zipfile
+ from pathlib import Path
+ import xml.etree.ElementTree as ET
+ from network_device_rules import violations as network_violations
++from ux_writing_rules import approved_feature
+ 
+ def main():
+     p=argparse.ArgumentParser(description=__doc__)
+@@ -21,15 +22,15 @@ def main():
+     after='ex is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or ArgumentException'
+     check('production catalog delta is exactly one explicit exception alternative',
+         old[core].count(before.encode())==1 and (root/core).read_bytes()==old[core].replace(before.encode(),after.encode(),1))
+-    check('App project delta changes only candidate identity',(root/app).read_bytes()==old[app].replace(b'R14-system-processes-candidate',b'R14-R1-device-catalog-fix-candidate'))
++    check('App project delta changes only candidate identity',(root/app).read_bytes()==old[app].replace(b'R14-system-processes-candidate',b'R14-R1-device-catalog-fix-candidate') or approved_feature(root,app,'R10_R14_R2'))
+     changed={n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}
+-    check('only catalog handler and candidate version change in production',changed=={core,app})
+-    check('all other production sources and prior C# tests exact to R14',all((root/n).read_bytes()==data for n,data in old.items() if (n.startswith('src/') and n not in {core,app}) or (n.startswith('tests/') and n.endswith('.cs') and n!=test)))
++    check('catalog fix retained with only exact authorized R14 R2 UI delta',changed - {n for n in changed if approved_feature(root,n,'R10_R14_R2')} == {core,app} - {n for n in (core,app) if approved_feature(root,n,'R10_R14_R2')})
++    check('R14 sources and prior C# tests retained outside exact authorized R14 R2 delta',all((root/n).read_bytes()==data or approved_feature(root,n,'R10_R14_R2') for n,data in old.items() if (n.startswith('src/') and n not in {core,app}) or (n.startswith('tests/') and n.endswith('.cs') and n!=test)))
+     check('current network guards pass',not network_violations(files))
+     t=files[test]
+     check('real file tests retain oversized schema null duplicate boundary and overwrite checks',all(s in t for s in ['MaximumBytes + 1','null device list','null device entry','duplicate identities','too many devices','empty JSON','exact byte limit','File.ReadAllBytes(path).SequenceEqual(bytes)','store.Save(known) == loaded.Error','it-IT','en-US']))
+     ledger=json.loads((root/'audit/R10_R14_R1/authorized-source-edits.json').read_text())['files']
+-    check('authorized fix hashes exact',len(ledger)==2 and all(sha((root/r['file']).read_bytes())==r['sha256_after'] for r in ledger))
++    check('catalog fix hashes exact or exact authorized R14 R2 version update',len(ledger)==2 and all(sha((root/r['file']).read_bytes())==r['sha256_after'] or approved_feature(root,r['file'],'R10_R14_R2') for r in ledger))
+     evidence=json.loads((root/'audit/R10_R14_R1/runtime-evidence.json').read_text())
+     check('retained compiled source hashes match current source',all(sha((root/n).read_bytes())==digest for n,digest in evidence['source_hashes'].items()))
+     d=root/'audit/R10_R14_R1'
+diff --git a/audit/tools/check_network_tab_r14r2.py b/audit/tools/check_network_tab_r14r2.py
+new file mode 100644
+index 0000000..7327ea9
+--- /dev/null
++++ b/audit/tools/check_network_tab_r14r2.py
+@@ -0,0 +1,64 @@
++"""R14 R2 source/XML and actual XML-guard mutation checks. Does not execute WPF."""
++import argparse,copy,hashlib,json,zipfile
++from pathlib import Path
++import xml.etree.ElementTree as ET
++from network_device_rules import violations as network_violations
++from check_packet_capture_r13 import violations as packet_violations
++
++X='{http://schemas.microsoft.com/winfx/2006/xaml}'
++W='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}'
++def valid_initial_tab(tree):
++    tabs=next((e for e in tree.iter(W+'TabControl') if e.get(X+'Name')=='NetworkTabs'),None)
++    if tabs is None or tabs.get('SelectedIndex')!='0':return False
++    items=list(tabs.findall(W+'TabItem'))
++    return len(items)==2 and items[0].get('Header')=='Dispositivi nella cache' and not any(e.get('IsSelected')=='True' for e in items[1:])
++
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--candidate',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True)
++    p.add_argument('--output',type=Path,required=True);a=p.parse_args();root=a.candidate.resolve()
++    sha=lambda b:hashlib.sha256(b).hexdigest()
++    assert sha(a.baseline_zip.read_bytes())=='e0fbe1501c5014eb11bc9295a34acfd8e771b40007f7ab5ab41653a337195792'
++    with zipfile.ZipFile(a.baseline_zip) as z:old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++    results=[]
++    def check(label,ok):
++        results.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML only; no WPF execution'})
++        print(results[-1]['status'],label)
++    view='src/ProcessLens.App/NetworkDevicesView.xaml';app='src/ProcessLens.App/ProcessLens.App.csproj';test='tests/ProcessLens.NetworkUiTests/Program.cs'
++    before=b'<TabControl x:Name="NetworkTabs" SelectionChanged="NetworkTabs_Changed">'
++    after=b'<TabControl x:Name="NetworkTabs" SelectedIndex="0" SelectionChanged="NetworkTabs_Changed">'
++    check('view delta is exactly the explicit initial tab attribute',old[view].count(before)==1 and (root/view).read_bytes()==old[view].replace(before,after,1))
++    check('only view markup and candidate version changed in production',
++          {n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}=={view,app})
++    check('all production C# code exact to R14 R1',all((root/n).read_bytes()==data for n,data in old.items() if n.startswith('src/') and n.endswith('.cs')))
++    check('only network UI C# test changed',
++          {n for n,data in old.items() if n.startswith('tests/') and n.endswith('.cs') and (root/n).read_bytes()!=data}=={test})
++    check('candidate version delta exact',(root/app).read_bytes()==old[app].replace(b'R14-R1-device-catalog-fix-candidate',b'R14-R2-network-tab-init-candidate'))
++    tree=ET.parse(root/view).getroot();check('actual XAML explicitly selects cache before Loaded',valid_initial_tab(tree))
++    check('the same XML guard rejects original R1 initialization',not valid_initial_tab(ET.fromstring(old[view])))
++    for label,value in [('missing selection',None),('no selected tab','-1'),('capture tab selected','1')]:
++        probe=copy.deepcopy(tree);tabs=next(e for e in probe.iter(W+'TabControl') if e.get(X+'Name')=='NetworkTabs')
++        if value is None:tabs.attrib.pop('SelectedIndex')
++        else:tabs.set('SelectedIndex',value)
++        check('reject '+label,not valid_initial_tab(probe))
++    probe=copy.deepcopy(tree);tabs=next(e for e in probe.iter(W+'TabControl') if e.get(X+'Name')=='NetworkTabs')
++    list(tabs.findall(W+'TabItem'))[1].set('IsSelected','True')
++    check('reject conflicting second tab selection',not valid_initial_tab(probe))
++    files={f.relative_to(root).as_posix():f.read_text(encoding='utf-8-sig') for f in root.rglob('*') if f.suffix in {'.cs','.ps1','.xaml'}}
++    check('cache acquisition and recognition guards retained',not network_violations(files))
++    check('packet capability capture and cancellation guards retained',not packet_violations(files))
++    ui=files[test]
++    check('original three conditions retained as strict independent assertions',all(s in ui for s in ['Check(source.Calls == 1,','Check(grid.Items.Count == 1,','Check(notice.Text == "",','calls={source.Calls}','rows={grid.Items.Count}','notice={notice.Text}']))
++    check('headless initial state and tab switch regressions supplied',all(s in ui for s in ['cacheTabs.SelectedIndex == 0','manual refresh enabled before the control is shown','tabs.SelectedIndex = 1','Wireshark tab cannot refresh the cache source','returning to cache tab does not automatically refresh','explicit cache refresh works after switching tabs before Loaded']))
++    check('nullable cast checks expected view explicitly','host.Content as NetworkDevicesView' in ui and '?? throw new Exception' in ui and '(NetworkDevicesView)host.Content' not in ui)
++    gate=files['tests/check-network-devices-r12.ps1']
++    check('standard Windows source gate requires explicit initial tab',"$tabs.GetAttribute('SelectedIndex') -ne '0'" in gate)
++    approved=json.loads((root/'audit/R10_R14_R2/authorized-source-edits.json').read_text())['files']
++    check('exact authorized production and test delta hashes',len(approved)==3 and all(sha((root/r['file']).read_bytes())==r['sha256_after'] for r in approved))
++    for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]:ET.parse(f)
++    check('all project and XAML XML parse',True)
++    reported=(root/'audit/R10_R14_R2/reported-windows-build.log').read_text()
++    check('reported evidence distinguishes completed data suites from failed UI suite',all(s in reported for s in ['Network device regressions complete','Packet capture tests complete','FAIL network UI: first explicit refresh']))
++    a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(results,indent=2)+'\n')
++    raise SystemExit(0 if all(r['status']=='PASS' for r in results) else 1)
++if __name__=='__main__':main()
+diff --git a/audit/tools/check_packet_capture_r13.py b/audit/tools/check_packet_capture_r13.py
+index 01971f8..6d66059 100644
+--- a/audit/tools/check_packet_capture_r13.py
++++ b/audit/tools/check_packet_capture_r13.py
+@@ -54,12 +54,12 @@ def main():
+     def check(label,ok):rows.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML or source mutation only'});print(rows[-1]['status'],label)
+     check('packet integration satisfies all source guards',not violations(files))
+     allowed={'src/ProcessLens.App/NetworkDevicesView.xaml','src/ProcessLens.App/NetworkDevicesView.xaml.cs','src/ProcessLens.App/ProcessLens.App.csproj'}
+-    check('R13 changes plus exact authorized R14/R14 R1 source integration since R12',
+-          {rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel] and not any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1'))}==allowed - {rel for rel in allowed if any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1'))})
+-    check('existing sources exact to R12 outside R13 and exact authorized R14/R14 R1 integration',
+-          all((root/rel).read_bytes()==data or any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1')) for rel,data in old.items() if rel.startswith('src/') and rel not in allowed))
++    check('R13 changes plus exact authorized R14/R14 R1/R14 R2 source integration since R12',
++          {rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel] and not any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2'))}==allowed - {rel for rel in allowed if any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2'))})
++    check('existing sources exact to R12 outside R13 and exact authorized R14/R14 R1/R14 R2 integration',
++          all((root/rel).read_bytes()==data or any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2')) for rel,data in old.items() if rel.startswith('src/') and rel not in allowed))
+     approved=json.loads((root/'audit/R10_R13/authorized-source-edits.json').read_text())['files']
+-    check('R13 source hashes retained or superseded by exact authorized R14/R14 R1 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],revision) for revision in ('R10_R14','R10_R14_R1')) for r in approved))
++    check('R13 source hashes retained or superseded by exact authorized R14/R14 R1/R14 R2 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],revision) for revision in ('R10_R14','R10_R14_R1','R10_R14_R2')) for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]:ET.parse(f)
+     check('all XAML and project XML parse',True)
+     view=ET.parse(root/'src/ProcessLens.App/NetworkCaptureView.xaml').getroot();x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
+diff --git a/audit/tools/check_system_processes_r14.py b/audit/tools/check_system_processes_r14.py
+index cdb1fff..4bbaa58 100644
+--- a/audit/tools/check_system_processes_r14.py
++++ b/audit/tools/check_system_processes_r14.py
+@@ -62,12 +62,12 @@ def main():
+     changed={rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel]}
+     allowed={'src/ProcessLens.App/MainWindow.xaml','src/ProcessLens.App/MainWindow.xaml.cs',
+              'src/ProcessLens.App/ProcessLens.App.csproj','src/ProcessLens.App/CopyTestVisibility.cs'}
+-    check('only R14 UI changes and exact recorded R14 R1 catalog fix since R13',changed - {p for p in changed if approved_feature(root,p,'R10_R14_R1')} == allowed - {p for p in allowed if approved_feature(root,p,'R10_R14_R1')})
+-    check('existing sources exact to R13 outside R14 UI and exact R14 R1 catalog fix',
+-          all((root/p).read_bytes()==data or approved_feature(root,p,'R10_R14_R1') for p,data in old.items() if p.startswith('src/') and p not in allowed))
++    check('only R14 UI changes and exact recorded R14 R1/R2 fixes since R13',changed - {p for p in changed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2'))} == allowed - {p for p in allowed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2'))})
++    check('existing sources exact to R13 outside R14 UI and exact R14 R1/R2 fixes',
++          all((root/p).read_bytes()==data or any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2')) for p,data in old.items() if p.startswith('src/') and p not in allowed))
+     check('no baseline file deleted',all((root/p).is_file() for p in old))
+     approved=json.loads((root/'audit/R10_R14/authorized-source-edits.json').read_text())['files']
+-    check('R14 production hashes retained or replaced by exact R14 R1 fix hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or approved_feature(root,r['file'],'R10_R14_R1') for r in approved))
++    check('R14 production hashes retained or replaced by exact R14 R1/R2 fix hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R1','R10_R14_R2')) for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]: ET.parse(f)
+     check('all project XML and XAML parse',True)
+     view=ET.parse(root/'src/ProcessLens.App/SystemProcessesView.xaml').getroot();x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
+diff --git a/audit/tools/package_network_tab_r14r2.py b/audit/tools/package_network_tab_r14r2.py
+new file mode 100644
+index 0000000..1354a67
+--- /dev/null
++++ b/audit/tools/package_network_tab_r14r2.py
+@@ -0,0 +1,85 @@
++"""Package the R14 R2 initial network tab fix with source-only WPF checks. This does not compile or qualify Windows runtime."""
++import argparse, csv, difflib, hashlib, json, shutil, subprocess, tempfile, zipfile
++from pathlib import Path
++
++def sha(data): return hashlib.sha256(data).hexdigest()
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--candidate',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True)
++    p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()
++    root=a.candidate.resolve();audit=root/'audit/R10_R14_R2';output=a.output_directory.resolve()
++    assert sha(a.baseline_zip.read_bytes())=='e0fbe1501c5014eb11bc9295a34acfd8e771b40007f7ab5ab41653a337195792'
++    for d in sorted(root.rglob('__pycache__'),reverse=True):shutil.rmtree(d)
++    with zipfile.ZipFile(a.baseline_zip) as z:
++        assert z.testzip() is None
++        old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++    assert all((root/n).is_file() for n in old)
++    for row in json.loads((audit/'authorized-source-edits.json').read_text())['files']:
++        assert sha((root/row['file']).read_bytes())==row['sha256_after'],row['file']
++    results=[]
++    for n,count in [('tab-source-results.json',20),('catalog-retention-results.json',15),('system-retention-results.json',33)]:
++        rows=json.loads((audit/n).read_text());assert len(rows)==count and all(row['status']=='PASS' for row in rows)
++        results.extend(rows)
++    # Preserve all added/changed source contexts in the current string ledger.
++    with (audit/'string-ledger.csv').open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerow(['file','line','added_or_modified_source_text','context'])
++        for row in json.loads((audit/'authorized-source-edits.json').read_text())['files']:
++            n=row['file'];before=old.get(n,b'').decode('utf-8-sig').splitlines();after=(root/n).read_text(encoding='utf-8-sig').splitlines()
++            for tag,i,j,k,l in difflib.SequenceMatcher(None,before,after).get_opcodes():
++                if tag not in ('insert','replace'):continue
++                for number,line in enumerate(after[k:l],k+1):
++                    if '"' in line:writer.writerow([n,number,line.strip(),'UI/report or technical source context'])
++    def included(n):return not n.startswith('audit/R10_R14_R2/') and n!='SHA256SUMS_R10.txt'
++    current={f.relative_to(root).as_posix():f.read_bytes() for f in root.rglob('*') if f.is_file()}
++    delta=[n for n,data in sorted(current.items()) if included(n) and old.get(n)!=data]
++    with (audit/'files-changed.csv').open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerow(['file','kind','sha256_before','sha256_after'])
++        for n in delta:writer.writerow([n,'modified' if n in old else 'added',sha(old[n]) if n in old else '',sha(current[n])])
++    staging=root.parent.parent/'test';staging.mkdir(exist_ok=True)
++    with tempfile.TemporaryDirectory(prefix='patch-replay-r14r2-',dir=staging) as temporary:
++        temp=Path(temporary);before=temp/'before';after=temp/'after';before.mkdir();after.mkdir()
++        for base,values in [(before,old),(after,current)]:
++            for n,data in values.items():
++                if not included(n):continue
++                path=base/n;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
++        diff=subprocess.run(['git','diff','--no-index','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=temp,capture_output=True)
++        assert diff.returncode==1,diff.stderr.decode()
++        lines=[]
++        for line in diff.stdout.splitlines(keepends=True):
++            if line.startswith((b'diff --git ', b'--- ', b'+++ ')):
++                for prefix in (b'a/before/',b'a/after/'):line=line.replace(prefix,b'a/')
++                for prefix in (b'b/before/',b'b/after/'):line=line.replace(prefix,b'b/')
++            lines.append(line)
++        patch=b''.join(lines)
++        path=audit/'R14_R1_to_R14_R2.patch';path.write_bytes(patch)
++        subprocess.run(['git','apply','--check',str(path)],cwd=before,check=True,capture_output=True)
++        subprocess.run(['git','apply',str(path)],cwd=before,check=True,capture_output=True)
++        mismatch=[n for n,data in current.items() if included(n) and (before/n).read_bytes()!=data]
++        assert not mismatch,mismatch
++    (audit/'patch-replay-results.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','delta_files':len(delta),'patch_sha256':sha(patch),'excluded':'Current audit metadata and current manifest only; excluded for self-reference.'},indent=2)+'\n')
++    (audit/'retention.json').write_text(json.dumps({'source_trees':1,'patch_replay_temporary_tree_removed':True,'baseline':'R14 R1 retained for byte comparisons','no_bin_obj_pycache_in_release':True,'source_check_count':len(results),'Windows_runtime_and_RAM_measurement':'NOT EXECUTED','inherited_R1_portable_runtime_assertions':103,'R2_WPF_runtime':'NOT EXECUTED'},indent=2)+'\n')
++    matrix=audit/'test-matrix.csv'
++    with matrix.open(newline='') as f:
++        matrix_rows=[row for row in csv.reader(f) if row and row[0] not in
++            {'Current R14 R2 source and evidence guards','R14 R1 to R14 R2 patch replay'}]
++    with matrix.open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerows(matrix_rows)
++        writer.writerow(['Current R14 R2 source and evidence guards','Python source/XML/mutations','PASS',f'{len(results)} checks; no C# execution'])
++        writer.writerow(['R14 R1 to R14 R2 patch replay','git apply and byte comparison','PASS',f'{len(delta)} changed or added files; audit metadata and manifest excluded'])
++    for d in root.rglob('*'):
++        assert not (d.is_dir() and d.name in ('__pycache__','bin','obj')),d
++    files=sorted(f for f in root.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt')
++    (root/'SHA256SUMS_R10.txt').write_text(''.join(sha(f.read_bytes())+'  '+f.relative_to(root).as_posix()+'\n' for f in files))
++    output.mkdir(parents=True,exist_ok=True)
++    target=output/'ProcessLens-v0.19.16-R10-R14-R2-network-tab-init-candidate.zip'
++    with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
++        for f in sorted(root.rglob('*')):
++            if f.is_file():z.write(f,root.name+'/'+f.relative_to(root).as_posix())
++    with zipfile.ZipFile(target) as z:
++        assert z.testzip() is None
++        for line in z.read(root.name+'/SHA256SUMS_R10.txt').decode().splitlines():
++            expected,n=line.split('  ',1);assert sha(z.read(root.name+'/'+n))==expected,n
++        assert len({n.split('/')[0] for n in z.namelist()})==1
++    result={'zip':str(target),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files),'delta_files':len(delta),'source_checks':len(results),'Windows_runtime':'NOT EXECUTED','inherited_R1_portable_runtime_assertions':103,'R2_WPF_runtime':'NOT EXECUTED'}
++    (output/'verification-r14r2.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
++if __name__=='__main__':main()
+diff --git a/audit/tools/ux_writing_rules.py b/audit/tools/ux_writing_rules.py
+index d27d0b3..ea76d01 100644
+--- a/audit/tools/ux_writing_rules.py
++++ b/audit/tools/ux_writing_rules.py
+@@ -18,7 +18,7 @@ def approved_revision(root, relative):
+     """R11 editorial delta or separately recorded, user-requested R12/R13/R14 feature delta."""
+     if approved_editorial(root, relative):
+         return True
+-    return any(approved_feature(root, relative, revision) for revision in ('R10_R12', 'R10_R13', 'R10_R14', 'R10_R14_R1'))
++    return any(approved_feature(root, relative, revision) for revision in ('R10_R12', 'R10_R13', 'R10_R14', 'R10_R14_R1', 'R10_R14_R2'))
+ 
+ 
+ def approved_feature(root, relative, revision):
+diff --git a/src/ProcessLens.App/NetworkDevicesView.xaml b/src/ProcessLens.App/NetworkDevicesView.xaml
+index 0a9f935..0b10bec 100644
+--- a/src/ProcessLens.App/NetworkDevicesView.xaml
++++ b/src/ProcessLens.App/NetworkDevicesView.xaml
+@@ -16,7 +16,7 @@
+   </Style>
+  </UserControl.Resources>
+  <Border Background="White" BorderBrush="#E2E5E9" BorderThickness="1" CornerRadius="12" Padding="16">
+-  <TabControl x:Name="NetworkTabs" SelectionChanged="NetworkTabs_Changed">
++  <TabControl x:Name="NetworkTabs" SelectedIndex="0" SelectionChanged="NetworkTabs_Changed">
+    <TabItem Header="Dispositivi nella cache">
+   <Grid>
+    <Grid.RowDefinitions>
+diff --git a/src/ProcessLens.App/ProcessLens.App.csproj b/src/ProcessLens.App/ProcessLens.App.csproj
+index 466ee8d..63a72aa 100644
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R14-R1-device-catalog-fix-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R14-R2-network-tab-init-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+diff --git a/tests/ProcessLens.NetworkUiTests/Program.cs b/tests/ProcessLens.NetworkUiTests/Program.cs
+index 6db8946..ab666a5 100644
+--- a/tests/ProcessLens.NetworkUiTests/Program.cs
++++ b/tests/ProcessLens.NetworkUiTests/Program.cs
+@@ -35,6 +35,8 @@ internal static class Program
+         {
+             var view = new NetworkDevicesView(source, new DeviceRecognitionStore(path));
+             Check(source.Calls == 0 && !File.Exists(path), "construction is lazy and does not read a real network or write settings");
++            var cacheTabs = (TabControl)view.FindName("NetworkTabs");
++            Check(cacheTabs.SelectedIndex == 0, "R14 R2 cache tab explicitly selected before Loaded or visual layout");
+             view.SetActive(true);
+             Check(source.Calls == 0, "activation does not automatically acquire network data");
+             var grid = (DataGrid)view.FindName("NetworkDevicesTable");
+@@ -43,8 +45,12 @@ internal static class Program
+             var recognize = (Button)view.FindName("RecognizeNetworkButton");
+             Check(GridCopySupport.GetEnabled(grid) && grid.IsReadOnly && grid.EnableRowVirtualization,
+                 "real table is read-only virtualized and supports copy");
++            Check(((Button)view.FindName("RefreshNetworkButton")).IsEnabled,
++                "R14 R2 manual refresh enabled before the control is shown");
+             Complete(view.RefreshAsync());
+-            Check(source.Calls == 1 && grid.Items.Count == 1 && notice.Text == "", "first explicit refresh establishes baseline without a false new-device notice");
++            Check(source.Calls == 1, $"first explicit refresh calls fixture once; calls={source.Calls}, tab={cacheTabs.SelectedIndex}");
++            Check(grid.Items.Count == 1, $"first explicit refresh binds one row; rows={grid.Items.Count}, status={indicator.Text}, notice={notice.Text}");
++            Check(notice.Text == "", $"first explicit refresh establishes baseline without a false new-device notice; notice={notice.Text}");
+             grid.SelectedIndex = 0;
+             ((TextBox)view.FindName("NetworkNameBox")).Text = "Telefono 🧪";
+             Check(recognize.IsEnabled, "explicit recognition enabled for a scoped MAC");
+@@ -113,7 +119,8 @@ internal static class Program
+             Check(host.Content is NetworkDevicesView && host.Visibility == Visibility.Visible &&
+                 ((Grid)window.FindName("ProcessWorkspace")).Visibility == Visibility.Collapsed,
+                 "Rete button opens its own lazy workspace");
+-            var actualNetwork = (NetworkDevicesView)host.Content;
++            var actualNetwork = host.Content as NetworkDevicesView
++                ?? throw new Exception("FAIL network UI: expected NetworkDevicesView in network host");
+             var packetHost = (ContentControl)actualNetwork.FindName("NetworkCaptureHost");
+             Check(packetHost.Content is null, "packet capture pane is lazy inside the network workspace");
+             ((TabControl)actualNetwork.FindName("NetworkTabs")).SelectedIndex = 1;
+@@ -124,6 +131,23 @@ internal static class Program
+             Check(host.Visibility == Visibility.Collapsed && ((Grid)window.FindName("ProcessWorkspace")).Visibility == Visibility.Visible,
+                 "Processi restores the existing workspace");
+             window.Close();
++
++            using var tabSource = new FixtureSource();
++            var tabView = new NetworkDevicesView(tabSource, new DeviceRecognitionStore(Path.Combine(root, "tabs.json")));
++            var tabs = (TabControl)tabView.FindName("NetworkTabs");
++            var captureHost = (ContentControl)tabView.FindName("NetworkCaptureHost");
++            tabView.SetActive(true);
++            Check(tabSource.Calls == 0 && captureHost.Content is null,
++                "R14 R2 selecting the initial cache tab does not query data or eagerly create packet capture");
++            tabs.SelectedIndex = 1;
++            Complete(tabView.RefreshAsync());
++            Check(tabSource.Calls == 0, "R14 R2 Wireshark tab cannot refresh the cache source");
++            tabs.SelectedIndex = 0;
++            Check(tabSource.Calls == 0, "R14 R2 returning to cache tab does not automatically refresh");
++            Complete(tabView.RefreshAsync());
++            Check(tabSource.Calls == 1 && ((DataGrid)tabView.FindName("NetworkDevicesTable")).Items.Count == 1,
++                "R14 R2 explicit cache refresh works after switching tabs before Loaded");
++            tabView.SetActive(false);
+         }
+         finally { source.Release.Set(); if (Directory.Exists(root)) Directory.Delete(root, true); }
+         Console.WriteLine("Network UI fixtures complete; no window shown, live network acquisition or real clipboard write.");
+diff --git a/tests/check-network-devices-r12.ps1 b/tests/check-network-devices-r12.ps1
+index 2431f90..2dc53c6 100644
+--- a/tests/check-network-devices-r12.ps1
++++ b/tests/check-network-devices-r12.ps1
+@@ -36,4 +36,8 @@ foreach ($token in @('capture.Partial ||', '"#64748B"', 'MaximumDevices = 512',
+ if (-not $core.Contains('ex is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or ArgumentException')) {
+     throw 'FAIL R14 R1: invalid catalog format or oversized file must return an unavailable catalog.'
+ }
++$tabs = $view.SelectSingleNode("//*[@*[local-name()='Name']='NetworkTabs']")
++if ($null -eq $tabs -or $tabs.GetAttribute('SelectedIndex') -ne '0') {
++    throw 'FAIL R14 R2: cache tab must be selected explicitly before Loaded.'
++}
+ Write-Host 'PASS R12: passive network view, manual refresh, scoped labels, incomplete-data states and copy. Source checks only.'

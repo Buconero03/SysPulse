@@ -1,0 +1,14 @@
+  Determining projects to restore...
+  Restored /workspace/scratch/3c80859a1061/ProcessLens/r31r1-test/isolated-missing-ref/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj (in 87 ms).
+  Restored /workspace/scratch/3c80859a1061/ProcessLens/r31r1-test/isolated-missing-ref/src/ProcessLens.Core/ProcessLens.Core.csproj (in 3 ms).
+  ProcessLens.Core -> /workspace/scratch/3c80859a1061/ProcessLens/r31r1-test/isolated-missing-ref-artifacts/bin/ProcessLens.Core/release/ProcessLens.Core.dll
+/workspace/scratch/3c80859a1061/ProcessLens/r31r1-test/isolated-missing-ref/tests/ProcessLens.ProcessGroupsTests/Program.cs(361,32): error CS0234: The type or namespace name 'Semantics' does not exist in the namespace 'ProcessLens' (are you missing an assembly reference?) [/workspace/scratch/3c80859a1061/ProcessLens/r31r1-test/isolated-missing-ref/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj]
+
+Build FAILED.
+
+/workspace/scratch/3c80859a1061/ProcessLens/r31r1-test/isolated-missing-ref/tests/ProcessLens.ProcessGroupsTests/Program.cs(361,32): error CS0234: The type or namespace name 'Semantics' does not exist in the namespace 'ProcessLens' (are you missing an assembly reference?) [/workspace/scratch/3c80859a1061/ProcessLens/r31r1-test/isolated-missing-ref/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj]
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:04.44
+

@@ -1,0 +1,928 @@
+--- /dev/null
++++ b/CHANGELOG_R9.md
+@@ -0,0 +1,11 @@
++# v0.19.16 R9 candidata — numeri e testo nell’interfaccia
++
++- Tempo CPU in unità leggibili, arrotondato al millisecondo; lettura originale conservata nel tooltip.
++- Percentuali e intervalli CPU con spazio fra valore e unità, rispettando it-IT/en-US.
++- Contatori rete su righe separate, con PID, gruppo, ruolo suggerito ed errori di acquisizione distinti.
++- Pulsanti con etichette a capo e altezza minima; menu di analisi con testo adattabile.
++- Valori CPU/RAM e legenda contenuti nelle proprie celle; filtri adattabili e arrotondamento DPI.
++- Nuovi test di presentazione e controllo del markup collegati alla build; verificatore completo R9.
++- Modifiche dell’utente, ottimizzazioni R8 e componenti protetti conservati.
++
++Verifiche eseguite e mancanti: `CORREZIONI_VISUALI_R9.md` e `audit/R9/test-matrix.csv`. Build, test .NET/PowerShell e verifica visuale WPF: **NON ESEGUITO** in questo ambiente. Il consumo RAM non è stato misurato. Questa è una candidata.
+--- /dev/null
++++ b/CORREZIONI_VISUALI_R9.md
+@@ -0,0 +1,67 @@
++# ProcessLens v0.19.16 R9 — formattazione e leggibilità
++
++Candidata completa derivata dalla R8 consegnata, con le modifiche dell’utente e le ottimizzazioni RAM conservate. La revisione terminologica precedente non viene riaperta. Questa correzione riguarda i problemi mostrati nello screenshot del 15 ottobre 2026: tempo CPU in formato grezzo, unità attaccate alle cifre e testo denso nel pannello inferiore. Nessuna promozione stabile.
++
++| Elemento | Prima | R9 |
++| --- | --- | --- |
++| Tempo CPU dello screenshot | `00:10:36.0625000` | `10 min 36,063 s` in it-IT; `10 min 36.063 s` in en-US |
++| Dieci millisecondi | Formato TimeSpan con ore e zeri iniziali | `10 ms` |
++| Lettura positiva inferiore a un millisecondo | Molte cifre frazionarie | `< 1 ms`; non viene mostrata come zero |
++| Campione CPU | `16,5s` | `16,5 s` |
++| Percentuale CPU | `2,8%` | `2,8 %` |
++| Stato rete | Un unico paragrafo con punti e virgola | Un contatore per riga; blocchi distinti per PID, gruppo, ruolo e limiti |
++| Pulsanti di azione | Etichetta su una sola riga senza altezza minima comune | Testo a capo, interlinea 20 DIP, altezza minima 36 DIP |
++| Menu Analisi approfondita | Etichetta senza template di ritorno a capo | Etichetta con wrapping, padding e altezza minima |
++| Celle CPU e RAM | Alcuni valori senza wrapping | Valori e legenda del grafico vanno a capo nella propria cella |
++
++Le unità CPU usano uno spazio non separabile fra numero e simbolo, così il simbolo non finisce da solo sulla riga successiva. Le cifre decimali rispettano la cultura corrente. Il tempo CPU della sintesi è arrotondato al millisecondo, con riporto corretto a secondi, minuti, ore e giorni. Il valore originale del contatore è disponibile nel tooltip, con rappresentazione G17 in secondi. Le letture mancanti restano non disponibili. Il contatore non viene modificato.
++
++Il tempo CPU è la somma del tempo CPU dei thread. Non è il tempo trascorso dall’avvio: data di avvio e durata trascorsa restano nelle loro sezioni con le fonti precedenti.
++
++La rete mantiene i conteggi del PID distinti da quelli del gruppo e il ruolo suggerito dai parametri distinto dalle osservazioni. Lo stato LISTEN non dimostra richieste accettate; ESTABLISHED non dimostra trasferimento di byte. Gli eventuali errori di acquisizione sono ora visibili anche nella sintesi. La selezione del processo correlato usa gli stessi criteri della R8. Nessuna nuova scansione o acquisizione.
++
++Gli stili conservano il template nativo dei pulsanti di azione e i gestori esistenti. I filtri possono andare a capo con margine fra righe; il layout usa arrotondamento alle coordinate dei pixel. Non sono state cambiate impostazioni DPI di Windows.
++
++## Verifiche eseguite e limiti
++
++- Controlli strutturali portabili: vedere `audit/R9/structural-results.json`.
++- Confronto byte per byte dei componenti protetti e delle regole con la R8: incluso nel controllo strutturale.
++- Diff completo R8 → R9, registro file/riga/motivazione e replay esatto della patch: `audit/R9/`.
++- Manifest corrente: `SHA256SUMS_R9.txt`. I manifesti R7/R8 e i loro rapporti sono storici, non attestano la R9.
++- **NON ESEGUITO**: compilazione e test .NET, PowerShell, avvio e verifica visuale WPF. L’ambiente disponibile è Linux senza SDK .NET né PowerShell. Il parsing XML e i controlli sui sorgenti non sostituiscono queste prove.
++- **NON MISURATO**: consumo RAM della R9 e risparmio rispetto ai 116,9 MB precedentemente segnalati. Le ottimizzazioni R8 restano presenti; questa revisione non promette un ulteriore risparmio.
++
++La nuova suite `ProcessLens.PresentationTests` usa direttamente gli stessi formatter dell’app, con dati sintetici it-IT/en-US: durata dello screenshot, precisione, riporto fra unità, zero reale, valori invalidi, contatori rete diretti e correlati, acquisizioni parziali e note di errore. È collegata a `build-dashboard.ps1`. Anche il nuovo controllo strutturale PowerShell `check-ui-format-r9.ps1` è collegato alla build. Le suite precedenti restano incluse.
++
++## Verifica riproducibile su Windows
++
++Estrarre lo ZIP in una cartella nuova; eseguire dalla radice che contiene `src` e `tests`:
++
++```powershell
++.\build-dashboard.ps1
++```
++
++Se la build termina con successo, avviare la candidata con:
++
++```powershell
++.\run-release.ps1
++```
++
++Per la verifica estesa senza avvio della GUI, installazioni o acquisizioni, usare invece `verify-candidate-r9.ps1`, che esegue tutti i progetti di test e le build. La fixture del profiler viene soltanto compilata. Non avviare profilazioni per controllare l’interfaccia.
++
++Controllo visuale manuale da registrare nella matrice:
++
++1. Ripetere a 100%, 125%, 150% e 200% di ridimensionamento, con finestra 1180×800 e 950×680 DIP dove lo schermo lo permette; verificare anche la massimizzazione. Per le configurazioni non disponibili registrare NON ESEGUITO.
++2. In Processi, selezionare un PID e scorrere fino al pannello CPU e allo stato rete. Controllare tempi leggibili, virgola/punto secondo cultura e unità con spazio. Un valore e la sua unità non devono separarsi. Confermare che il tooltip conservi il valore in secondi e distingua tempo CPU e durata trascorsa.
++3. Ridurre la larghezza: Media, Picco, RAM e legenda non devono disegnare sopra la cella vicina. Controllare pulsanti, filtri, righe a capo e margini verticali; nessun testo tagliato o sovrapposto.
++4. Aprire Analisi approfondita con mouse e tastiera; verificare menu, voci e focus. Non scegliere la voce di profilazione per questa prova. Controllare Chiedi e Mostra servizi Windows ospitati dal PID.
++5. In Servizi, controllare la leggibilità dei pulsanti Mostra processo ospitante, Aggiorna eventi e Arresta servizio senza eseguire arresti. Controllare anche gli stati disabilitati.
++6. Passare a Guardian e Memoria RAM, poi tornare a Processi; aprire e chiudere i dettagli e selezionare più PID. Controllare che la visualizzazione differita R8 e l’aggiornamento dei campi restino funzionanti.
++
++Per ripetere il controllo portabile, usando lo ZIP R8 originale come baseline:
++
++```powershell
++python .\audit\tools\check_r9.py --baseline-zip C:\percorso\ProcessLens-v0.19.16-R8-memory-candidate.zip --candidate . --output .\verification-r9\structural-results.json
++```
++
++Il confronto richiede esattamente la candidata R8 consegnata. Sorgenti Core/Semantics, collector Windows, Guardian, MemoryAgent, profiler, regole JSON, contratti e diagnostica strutturata rimangono invariati rispetto a tale base.
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,12 @@
+-﻿# R8 candidata — ottimizzazioni memoria
++﻿# R9 candidata — formattazione e leggibilità
++
++Leggere prima `CORREZIONI_VISUALI_R9.md`: corregge durata CPU, spazio fra numeri e unità, contatori rete e testo nei pulsanti. Conserva le modifiche dell’utente e le ottimizzazioni RAM R8. Manifest corrente: `SHA256SUMS_R9.txt`; rapporti e manifesti R7/R8 sotto sono storici. Build/test .NET e PowerShell e verifica visuale WPF: **NON ESEGUITO**. Non è una release stabile.
++
++Su Windows: `build-dashboard.ps1`, poi, se termina con successo, `run-release.ps1`. Il verificatore completo senza avvio della GUI è `verify-candidate-r9.ps1`.
++
++---
++
++# R8 candidata — ottimizzazioni memoria
+ 
+ Leggere prima `OTTIMIZZAZIONE_RAM_R8.md`. Questa copia parte dallo ZIP con le modifiche dell’utente. I controlli strutturali sono eseguiti; test .NET/PowerShell/WPF e riduzione effettiva della RAM su Windows restano NON ESEGUITI. Nessuna promozione stabile. Il manifest corrente è `SHA256SUMS_R8.txt`; gli audit e i manifesti R7 sono storici.
+ 
+--- /dev/null
++++ b/audit/tools/check_r9.py
+@@ -0,0 +1,72 @@
++"""Portable source/markup checks. Does not compile or run .NET, PowerShell or WPF."""
++from pathlib import Path
++import argparse, hashlib, json, re, zipfile
++import xml.etree.ElementTree as ET
++
++p = argparse.ArgumentParser(description=__doc__)
++p.add_argument('--baseline-zip', type=Path, required=True)
++p.add_argument('--candidate', type=Path, default=Path('.'))
++p.add_argument('--output', type=Path)
++a = p.parse_args(); root = a.candidate.resolve(); results = []
++def check(name, condition, details):
++    results.append(dict(test=name, status='PASS' if condition else 'FAIL', detail=details))
++    print(results[-1]['status'], name)
++with zipfile.ZipFile(a.baseline_zip) as archive:
++    prefix = 'ProcessLens-v0.19.16-R8/'
++    old = {n[len(prefix):]:archive.read(n) for n in archive.namelist() if n.startswith(prefix) and not n.endswith('/')}
++check('baseline identity', len(old) == 322, 'Delivered R8 source archive, not the earlier R7')
++allowed = {'src/ProcessLens.App/MainWindow.xaml','src/ProcessLens.App/MainWindow.xaml.cs',
++    'src/ProcessLens.App/ProcessRow.cs','src/ProcessLens.App/ProcessLens.App.csproj','build-dashboard.ps1','README.md','start-processlens-all.ps1'}
++changed_old = {rel for rel,data in old.items() if not (root/rel).exists() or (root/rel).read_bytes() != data}
++check('bounded existing-file changes', changed_old <= allowed, ', '.join(sorted(changed_old)))
++protected = [rel for rel in old if rel.startswith(('src/ProcessLens.Core/', 'src/ProcessLens.Semantics/',
++    'src/ProcessLens.Windows/', 'src/ProcessLens.Guardian.', 'src/ProcessLens.MemoryAgent/', 'src/ProcessLens.Profiler/', 'knowledge/'))
++    or rel in {'src/ProcessLens.App/ProfilerClient.cs','src/ProcessLens.App/AppDiagnostics.cs','src/ProcessLens.App/MemoryAnalysisAudit.cs'}
++    or ('src/ProcessLens.App/' in rel and ('Guardian' in rel or 'MemoryDashboard' in rel))]
++check('protected source and rules identical', all((root/r).read_bytes()==old[r] for r in protected), str(len(protected))+' unchanged files')
++ram = ['src/ProcessLens.App/BoundedCache.cs','src/ProcessLens.App/MemoryObservationBuffer.cs',
++    'src/ProcessLens.App/ProcessIconResolver.cs','tests/ProcessLens.MemoryEfficiencyTests/Program.cs','tests/check-memory-efficiency-r8.ps1']
++check('R8 RAM implementation retained', all((root/r).read_bytes()==old[r] for r in ram), 'Cache, history buffer, icons and R8 regressions unchanged')
++xmlpaths = sorted(list(root.rglob('*.xaml'))+list(root.rglob('*.csproj'))+list(root.rglob('*.manifest')))
++for path in xmlpaths: ET.parse(path)
++check('XML well-formed', True, str(len(xmlpaths))+' markup/project files; not a WPF compile')
++ns = '{http://schemas.microsoft.com/winfx/2006/xaml}'; local=lambda e:e.tag.split('}')[-1]
++view = ET.parse(root/'src/ProcessLens.App/MainWindow.xaml'); named={e.get(ns+'Name'):e for e in view.iter() if e.get(ns+'Name')}
++for path in root.rglob('*.xaml'):
++    names=[e.get(ns+'Name') for e in ET.parse(path).iter() if e.get(ns+'Name')]
++    check('unique names '+path.name, len(names)==len(set(names)), 'No duplicated generated control names')
++styles={e.get(ns+'Key'):e for e in view.iter() if local(e)=='Style'}
++style=styles['ActionButtonStyle']; setters={e.get('Property'):e for e in style if local(e)=='Setter'}
++check('action label wrapping and spacing', any(local(e)=='TextBlock' and e.get('TextWrapping')=='Wrap' and e.get('LineHeight')=='20' for e in style.iter())
++    and setters['MinHeight'].get('Value')=='36' and setters['Padding'].get('Value')=='12,8', 'Native button template, wrapped content, no fixed height')
++buttons=[e for e in view.iter() if local(e)=='Button']
++check('all main-window buttons styled', all(e.get('Style') in ['{StaticResource FilterButtonStyle}','{StaticResource ActionButtonStyle}'] and e.get('Height') is None for e in buttons), str(len(buttons))+' buttons')
++check('quick analysis header wrapping', any(local(e)=='MenuItem.HeaderTemplate' for e in named['QuickQuestionRoot']) and
++    any(local(e)=='TextBlock' and e.get('TextWrapping')=='Wrap' for e in named['QuickQuestionRoot'].iter()), 'Header text is templated; existing hover/click events retained')
++metrics=['DetailCpuAverageText','DetailCpuPeakText','DetailCpuText','DetailMemoryText','DetailPrivateWorkingSetText','DetailWorkingSetText','DetailPrivateCommitText','CpuGraphScaleText']
++check('metric cells wrap', all(named[n].get('TextWrapping')=='Wrap' for n in metrics), 'No text can draw into an adjacent metric cell')
++check('network line spacing', named['DetailNetworkStateText'].get('TextWrapping')=='Wrap' and named['DetailNetworkStateText'].get('LineHeight')=='21', 'Multiline text has explicit line pitch')
++check('filter groups wrap', all(local(named[n])=='WrapPanel' for n in ['ProcessFilters','ServiceFilters']), 'Wrapping filter groups at reduced width')
++check('DPI rounding', view.getroot().get('UseLayoutRounding')=='True' and view.getroot().get('SnapsToDevicePixels')=='True', 'Layout rounding, no Windows DPI setting changed')
++ui=(root/'src/ProcessLens.App/MainWindow.xaml.cs').read_text(encoding='utf-8-sig')
++fmt=(root/'src/ProcessLens.App/ProcessDisplayFormatter.cs').read_text()
++network=(root/'src/ProcessLens.App/ProcessNetworkPresentation.cs').read_text()
++check('CPU formatting connected and guarded', 'TimeSpan.FromSeconds(p.CpuCumulativeSeconds):c' not in ui and
++    'p.CpuCumulativeAvailable\n            ? $"Tempo CPU accumulato: {ProcessDisplayFormatter.CpuDuration(p.CpuCumulativeSeconds)}.' in ui and
++    'p.CpuSampleAvailable ? ProcessDisplayFormatter.Percent(p.CpuPercent)' in ui, 'Availability still required; no default zero substituted')
++check('raw CPU counter preserved', 'p.CpuCumulativeSeconds:G17' in ui and 'distinta dal tempo trascorso' in ui and 'DetailCpuTotalTimeText.ToolTip = null;' in ui, 'Exact round-trip numeric representation in tooltip; stale tooltip cleared')
++check('culture and bounded duration precision', 'CultureInfo.CurrentCulture' in fmt and '"0.###"' in fmt and '"\\u00a0"' in fmt and 'MidpointRounding.AwayFromZero' in fmt, 'Culture-aware formatting, millisecond rounding, nonbreaking space before unit')
++check('unknown invalid duration remains unknown', 'double.IsFinite(seconds)' in fmt and 'seconds < 0' in fmt and 'seconds < 0.001' in fmt, 'Invalid readings N/D; positive sub-millisecond is not zero')
++check('network formatting connected', 'ProcessNetworkPresentation.Describe(p)' in ui and 'private static string BuildNetworkSummary' not in ui, 'One formatter used by UI and linked regression suite')
++check('network multiline and acquisition limits', 'string.Join("\\n\\n", sections)' in network and 'if (!p.IsDeepInspected)' in network and 'p.DeepInspectionNote' in network and 'non sono misurati' in network, 'Direct PID, group, role and acquisition note remain distinct')
++check('all XAML handlers remain declared', all(re.search(r'\b'+re.escape(value)+r'\s*\(',ui) for e in view.iter() for attr,value in e.attrib.items()
++    if attr in {'Click','Expanded','Collapsed','MouseEnter','SelectionChanged','KeyDown','SizeChanged','TextChanged','ContextMenuOpening'}), 'Method declaration/name existence only; not a compiler check')
++check('R8 lazy lifecycle and recycling retained', all(t in ui for t in ['guardian && GuardianDashboard is null','memory && MemoryDashboard is null','if (DetailTechnicalSectionsExpander.IsExpanded)', 'state.Samples.Add(now, bytes);']) and
++    all(named[n].get('VirtualizingPanel.VirtualizationMode')=='Recycling' for n in ['ProcessList','ServiceList']), 'R8 memory changes preserved in modified UI file')
++row=(root/'src/ProcessLens.App/ProcessRow.cs').read_bytes()
++check('user process-row customizations retained', row==old['src/ProcessLens.App/ProcessRow.cs'].replace(b'Process.CpuSampleAvailable ? $"{Process.CpuPercent:F1}%" : "N/D"',b'Process.CpuSampleAvailable ? ProcessDisplayFormatter.Percent(Process.CpuPercent) : "N/D"'), 'Only percentage display expression changed in ProcessRow')
++build=(root/'build-dashboard.ps1').read_text(encoding='utf-8-sig');test=(root/'tests/ProcessLens.PresentationTests/Program.cs').read_text()
++check('new and prior tests wired', 'Tests.ProcessLens.PresentationTests' in build and 'check-ui-format-r9.ps1' in build and 'Tests.ProcessLens.MemoryEfficiencyTests' in build and all(t in test for t in ['it-IT','en-US','636.0625','59.9996','86399.9996','AccessDenied']), 'Regression source supplied; .NET/PowerShell execution NOT performed')
++output=a.output or root/'audit/R9/structural-results.json';output.parent.mkdir(parents=True,exist_ok=True)
++output.write_text(json.dumps(results,ensure_ascii=False,indent=2)+'\n')
++raise SystemExit(0 if all(r['status']=='PASS' for r in results) else 1)
+--- a/build-dashboard.ps1
++++ b/build-dashboard.ps1
+@@ -11,6 +11,7 @@
+ & (Join-Path $PSScriptRoot 'tests\check-wpf-contextmenu.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-ui-readability.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-memory-efficiency-r8.ps1')
++& (Join-Path $PSScriptRoot 'tests\check-ui-format-r9.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-terminology-ui.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-detail-hierarchy-v01910.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-classification-language-v01911.ps1')
+@@ -36,6 +37,9 @@
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.BehaviorTests' -Project '.\tests\ProcessLens.BehaviorTests\ProcessLens.BehaviorTests.csproj' -Arguments @('run', '--project', '.\tests\ProcessLens.BehaviorTests\ProcessLens.BehaviorTests.csproj', '-c', 'Release')
+ Write-Host 'Test terminologia e confini tra regole e osservazioni...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.TerminologyTests' -Project '.\tests\ProcessLens.TerminologyTests\ProcessLens.TerminologyTests.csproj' -Arguments @('run', '--project', '.\tests\ProcessLens.TerminologyTests\ProcessLens.TerminologyTests.csproj', '-c', 'Release')
++
++Write-Host 'Test formattazione numerica, durate e rete (it-IT/en-US)...' -ForegroundColor Cyan
++Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.PresentationTests' -Project '.\tests\ProcessLens.PresentationTests\ProcessLens.PresentationTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.PresentationTests\ProcessLens.PresentationTests.csproj','-c','Release')
+ 
+ Write-Host 'Test cache limitate e allocazioni dello storico (dati sintetici)...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.MemoryEfficiencyTests' -Project '.\tests\ProcessLens.MemoryEfficiencyTests\ProcessLens.MemoryEfficiencyTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.MemoryEfficiencyTests\ProcessLens.MemoryEfficiencyTests.csproj','-c','Release')
+--- a/src/ProcessLens.App/MainWindow.xaml
++++ b/src/ProcessLens.App/MainWindow.xaml
+@@ -9,6 +9,8 @@
+         MinHeight="680"
+         WindowStartupLocation="CenterScreen"
+         Background="#F5F6F8"
++        UseLayoutRounding="True"
++        SnapsToDevicePixels="True"
+         FontFamily="Segoe UI"
+         Foreground="#202124">
+ 
+@@ -37,13 +39,30 @@
+             <Setter Property="Margin" Value="0,0,0,10"/>
+         </Style>
+ 
++        <!-- Text content wraps inside the native WPF button without a fixed height. -->
++        <Style x:Key="ActionButtonStyle" TargetType="Button">
++            <Setter Property="FontSize" Value="13"/>
++            <Setter Property="MinHeight" Value="36"/>
++            <Setter Property="Padding" Value="12,8"/>
++            <Setter Property="VerticalContentAlignment" Value="Center"/>
++            <Setter Property="ContentTemplate">
++                <Setter.Value>
++                    <DataTemplate>
++                        <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="20"/>
++                    </DataTemplate>
++                </Setter.Value>
++            </Setter>
++        </Style>
++
+         <Style x:Key="FilterButtonStyle" TargetType="Button">
++            <Setter Property="FontSize" Value="13"/>
++            <Setter Property="MinHeight" Value="36"/>
+             <Setter Property="Background" Value="White"/>
+             <Setter Property="Foreground" Value="#374151"/>
+             <Setter Property="BorderBrush" Value="#D9DDE3"/>
+             <Setter Property="BorderThickness" Value="1"/>
+             <Setter Property="Padding" Value="13,7"/>
+-            <Setter Property="Margin" Value="0,0,8,0"/>
++            <Setter Property="Margin" Value="0,0,8,6"/>
+             <Setter Property="FontWeight" Value="SemiBold"/>
+             <Setter Property="Cursor" Value="Hand"/>
+             <Setter Property="Template">
+@@ -188,19 +207,19 @@
+                     <Button x:Name="NavGuardianButton" Content="Guardian" Style="{StaticResource FilterButtonStyle}" Click="NavGuardianButton_Click"/>
+                     <Button x:Name="NavMemoryButton" Content="Memoria RAM" Style="{StaticResource FilterButtonStyle}" Click="NavMemoryButton_Click"/>
+                     <Border Width="1" Background="#D9DDE3" Margin="2,4,10,4"/>
+-                    <StackPanel x:Name="ProcessFilters" Orientation="Horizontal">
++                    <WrapPanel x:Name="ProcessFilters" Orientation="Horizontal">
+                     <Button x:Name="FilterAllButton" Content="Tutti" Style="{StaticResource FilterButtonStyle}" Click="FilterAllButton_Click"/>
+                     <Button x:Name="FilterAppsButton" Content="App" Style="{StaticResource FilterButtonStyle}" Click="FilterAppsButton_Click"/>
+                     <Button x:Name="FilterDevButton" Content="Sviluppo" Style="{StaticResource FilterButtonStyle}" Click="FilterDevButton_Click"/>
+                     <Button x:Name="FilterWindowsButton" Content="Windows" Style="{StaticResource FilterButtonStyle}" Click="FilterWindowsButton_Click"/>
+                     <Button x:Name="FilterBackgroundButton" Content="Secondari" ToolTip="Filtro basato su regole e relazioni fra processi; non misura se sono inattivi." Style="{StaticResource FilterButtonStyle}" Click="FilterBackgroundButton_Click"/>
+                     <Button x:Name="FilterWslButton" Content="WSL" Style="{StaticResource FilterButtonStyle}" Click="FilterWslButton_Click"/>
+-                    </StackPanel>
+-                    <StackPanel x:Name="ServiceFilters" Orientation="Horizontal" Visibility="Collapsed">
++                    </WrapPanel>
++                    <WrapPanel x:Name="ServiceFilters" Orientation="Horizontal" Visibility="Collapsed">
+                         <Button x:Name="ServiceFilterAllButton" Content="Tutti" Style="{StaticResource FilterButtonStyle}" Click="ServiceFilterAll_Click"/>
+                         <Button x:Name="ServiceFilterRunningButton" Content="Attivi" Style="{StaticResource FilterButtonStyle}" Click="ServiceFilterRunning_Click"/>
+                         <Button x:Name="ServiceFilterStoppedButton" Content="Arrestati" Style="{StaticResource FilterButtonStyle}" Click="ServiceFilterStopped_Click"/>
+-                    </StackPanel>
++                    </WrapPanel>
+                 </WrapPanel>
+                 <!-- Gli indicatori non possono piu' sovrapporsi ai filtri. -->
+                 <WrapPanel Margin="0,11,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+@@ -217,7 +236,7 @@
+                         <TextBlock x:Name="SystemCpuText" Text="In attesa…" FontWeight="Bold" Foreground="#124E87"/>
+                     </StackPanel>
+                     <StackPanel Orientation="Horizontal" Margin="0,0,17,5">
+-                        <TextBlock Text="Media 30s: " Foreground="#667085"/>
++                        <TextBlock Text="Media fino a 30 s: " Foreground="#667085"/>
+                         <TextBlock x:Name="SystemCpuAverageText" Text="-" FontWeight="SemiBold"/>
+                     </StackPanel>
+                     <StackPanel Orientation="Horizontal" Margin="0,0,17,5">
+@@ -370,7 +389,7 @@
+                                    Foreground="#667085"
+                                    FontSize="12"
+                                    Margin="0,3,0,5"/>
+-                        <Button Content="Mostra servizi Windows ospitati dal PID" Margin="0,0,0,14"
++                        <Button Style="{StaticResource ActionButtonStyle}" Content="Mostra servizi Windows ospitati dal PID" Margin="0,0,0,14"
+                                 HorizontalAlignment="Left" Padding="9,6" Click="ProcessShowServices_Click"/>
+ 
+                         <Border Background="#EEF4FF" BorderBrush="#C9DBF6" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,12">
+@@ -473,7 +492,7 @@
+                                         <ColumnDefinition Width="Auto"/>
+                                     </Grid.ColumnDefinitions>
+                                     <TextBox x:Name="ProcessQuestionBox"
+-                                             Height="36"
++                                             MinHeight="36"
+                                              Padding="10,7"
+                                              VerticalContentAlignment="Center"
+                                              BorderBrush="#C7D2E2"
+@@ -481,7 +500,7 @@
+                                              Background="White"
+                                              KeyDown="ProcessQuestionBox_KeyDown"
+                                              ToolTip="Esempio: Cosa sta facendo? Ha porte aperte? Ha connessioni di rete? Quando finirà?"/>
+-                                    <Button x:Name="AskProcessButton"
++                                    <Button Style="{StaticResource ActionButtonStyle}" x:Name="AskProcessButton"
+                                             Grid.Column="1"
+                                             Content="Chiedi"
+                                             Margin="8,0,0,0"
+@@ -494,14 +513,19 @@
+ 
+                                 <!-- Menu nativo WPF: apre al passaggio del mouse, funziona anche con clic/tastiera. -->
+                                 <StackPanel Margin="0,10,0,9">
+-                                    <Menu x:Name="QuickQuestionMenu" HorizontalAlignment="Left"
++                                    <Menu x:Name="QuickQuestionMenu" HorizontalAlignment="Stretch"
+                                           Background="Transparent" BorderThickness="0" FontSize="13">
+-                                        <MenuItem x:Name="QuickQuestionRoot" Header="Analisi approfondita  ▾"
+-                                                  Padding="14,8" FontWeight="SemiBold"
++                                        <MenuItem x:Name="QuickQuestionRoot" Header="Analisi approfondita ▾"
++                                                  Padding="14,8" MinHeight="36" FontWeight="SemiBold"
+                                                   Background="#E5EEFF" Foreground="#244E84"
+                                                   BorderBrush="#BFD2EA" BorderThickness="1"
+                                                   MouseEnter="QuickQuestionRoot_MouseEnter"
+                                                   ToolTip="Passa il mouse, clicca o usa la tastiera per scegliere un'analisi">
++                                            <MenuItem.HeaderTemplate>
++                                                <DataTemplate>
++                                                    <TextBlock Text="{Binding}" TextWrapping="Wrap" LineHeight="20"/>
++                                                </DataTemplate>
++                                            </MenuItem.HeaderTemplate>
+                                             <MenuItem Header="INFORMAZIONI GENERALI" IsEnabled="False" FontWeight="SemiBold"/>
+                                             <MenuItem Header="Che cosa sta facendo?" Tag="Cosa sta facendo?"
+                                                       Click="QuickQuestionMenuItem_Click"/>
+@@ -544,7 +568,7 @@
+                                         Padding="11"
+                                         Margin="0,5,0,0">
+                                     <StackPanel>
+-                                        <Button x:Name="CancelProfilerButton" Content="Annulla profilazione" Visibility="Collapsed"
++                                        <Button Style="{StaticResource ActionButtonStyle}" x:Name="CancelProfilerButton" Content="Annulla profilazione" Visibility="Collapsed"
+                                                 HorizontalAlignment="Right" Margin="0,0,0,8" Padding="12,6"
+                                                 Background="#FCEBEB" BorderBrush="#D79B9B"
+                                                 Click="CancelProfiler_Click"/>
+@@ -662,13 +686,13 @@
+                                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                     <TextBlock Text="CPU" Style="{StaticResource SectionLabel}" TextWrapping="Wrap"
+                                                MinHeight="27" ToolTip="Quota della CPU complessiva attribuita al PID."/>
+-                                    <TextBlock x:Name="DetailCpuText" Text="-" FontSize="18" FontWeight="SemiBold"/>
++                                    <TextBlock TextWrapping="Wrap" x:Name="DetailCpuText" Text="-" FontSize="18" FontWeight="SemiBold"/>
+                                 </StackPanel>
+                                 <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                     <TextBlock x:Name="DetailMemoryLabel" Text="RAM PRIVATA" Style="{StaticResource SectionLabel}"
+                                                TextWrapping="Wrap" MinHeight="27"
+                                                ToolTip="RAM privata residente: pagine private fisicamente residenti (Private Working Set)."/>
+-                                    <TextBlock x:Name="DetailMemoryText" Text="-" FontSize="18" FontWeight="SemiBold"/>
++                                    <TextBlock TextWrapping="Wrap" x:Name="DetailMemoryText" Text="-" FontSize="18" FontWeight="SemiBold"/>
+                                 </StackPanel>
+                                 <StackPanel Grid.Column="2">
+                                     <TextBlock Text="PROGETTO" Style="{StaticResource SectionLabel}" TextWrapping="Wrap"
+@@ -689,15 +713,15 @@
+                                     </Grid.ColumnDefinitions>
+                                     <StackPanel Grid.Column="0" Margin="0,0,7,0">
+                                         <TextBlock Text="RAM PRIVATA RESIDENTE" FontSize="10" Foreground="#667085" TextWrapping="Wrap" MinHeight="40"/>
+-                                        <TextBlock x:Name="DetailPrivateWorkingSetText" FontSize="15" FontWeight="SemiBold" Text="N/D"/>
++                                        <TextBlock TextWrapping="Wrap" x:Name="DetailPrivateWorkingSetText" FontSize="15" FontWeight="SemiBold" Text="N/D"/>
+                                     </StackPanel>
+                                     <StackPanel Grid.Column="1" Margin="0,0,7,0">
+                                         <TextBlock Text="RAM RESIDENTE TOTALE" FontSize="10" Foreground="#667085" TextWrapping="Wrap" MinHeight="40"/>
+-                                        <TextBlock x:Name="DetailWorkingSetText" FontSize="15" FontWeight="SemiBold" Text="N/D"/>
++                                        <TextBlock TextWrapping="Wrap" x:Name="DetailWorkingSetText" FontSize="15" FontWeight="SemiBold" Text="N/D"/>
+                                     </StackPanel>
+                                     <StackPanel Grid.Column="2">
+                                         <TextBlock Text="MEMORIA PRIVATA IMPEGNATA" FontSize="10" Foreground="#667085" TextWrapping="Wrap" MinHeight="40"/>
+-                                        <TextBlock x:Name="DetailPrivateCommitText" FontSize="15" FontWeight="SemiBold" Text="N/D"/>
++                                        <TextBlock TextWrapping="Wrap" x:Name="DetailPrivateCommitText" FontSize="15" FontWeight="SemiBold" Text="N/D"/>
+                                     </StackPanel>
+                                 </Grid>
+                                 <TextBlock x:Name="DetailMemoryExplanationText" FontSize="11" Foreground="#667085" TextWrapping="Wrap"/>
+@@ -748,14 +772,14 @@
+                                         <ColumnDefinition Width="*"/>
+                                         <ColumnDefinition Width="*"/>
+                                     </Grid.ColumnDefinitions>
+-                                    <TextBlock x:Name="DetailCpuAverageText" Text="Media: -" FontSize="14" FontWeight="SemiBold"/>
+-                                    <TextBlock x:Name="DetailCpuPeakText" Text="Picco: -" Grid.Column="1" FontSize="14" FontWeight="SemiBold"/>
++                                    <TextBlock TextWrapping="Wrap" x:Name="DetailCpuAverageText" Text="Media: -" FontSize="14" FontWeight="SemiBold"/>
++                                    <TextBlock TextWrapping="Wrap" x:Name="DetailCpuPeakText" Text="Picco: -" Grid.Column="1" FontSize="14" FontWeight="SemiBold"/>
+                                 </Grid>
+-                                <TextBlock x:Name="DetailCpuCoreText" Text="-" FontSize="12" TextWrapping="Wrap"/>
+-                                <TextBlock x:Name="DetailCpuGroupText" Text="-" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
+-                                <TextBlock x:Name="DetailCpuTotalTimeText" Text="-" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
++                                <TextBlock LineHeight="20" x:Name="DetailCpuCoreText" Text="-" FontSize="12" TextWrapping="Wrap"/>
++                                <TextBlock LineHeight="20" x:Name="DetailCpuGroupText" Text="-" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
++                                <TextBlock LineHeight="20" x:Name="DetailCpuTotalTimeText" Text="-" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                 <TextBlock Text="CPU: percentuale della capacità complessiva del computer (tutti i processori logici), non di un solo core." FontSize="11" Foreground="#667085" TextWrapping="Wrap" Margin="0,6,0,0"/>
+-                                <TextBlock x:Name="CpuGraphScaleText" Text="-" FontSize="11" Foreground="#667085" Margin="0,8,0,3"/>
++                                <TextBlock TextWrapping="Wrap" x:Name="CpuGraphScaleText" Text="-" FontSize="11" Foreground="#667085" Margin="0,8,0,3"/>
+                                 <Border BorderBrush="#CBDBED" BorderThickness="1" Background="White" CornerRadius="4" Padding="3">
+                                     <Canvas x:Name="CpuGraphCanvas" Height="68" ClipToBounds="True" SizeChanged="CpuGraphCanvas_SizeChanged">
+                                         <Polyline x:Name="CpuGraphLine" Stroke="#2376C3" StrokeThickness="2" StrokeLineJoin="Round"/>
+@@ -768,8 +792,8 @@
+                             <StackPanel>
+                                 <TextBlock Text="STATO ATTUALE (CPU, RETE E FINESTRE)" Style="{StaticResource SectionLabel}"/>
+                                 <TextBlock x:Name="DetailRuntimeStateText" Text="-" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"/>
+-                                <TextBlock x:Name="DetailNetworkStateText" Text="-" FontSize="13" Margin="0,6,0,0" TextWrapping="Wrap"/>
+-                                <TextBlock x:Name="DetailWindowStateText" Text="-" FontSize="13" Margin="0,4,0,0" TextWrapping="Wrap"/>
++                                <TextBlock LineHeight="21" x:Name="DetailNetworkStateText" Text="-" FontSize="13" Margin="0,6,0,0" TextWrapping="Wrap"/>
++                                <TextBlock LineHeight="21" x:Name="DetailWindowStateText" Text="-" FontSize="13" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                 <TextBlock Text="CPU, finestre e rete sono osservazioni Windows. L'analisi approfondita parte solo sul processo selezionato per mantenere ProcessLens leggero." Foreground="#667085" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                             </StackPanel>
+                         </Border>
+@@ -896,7 +920,7 @@
+                                 <ComboBoxItem Content="Tipo di avvio"/>
+                                 <ComboBoxItem Content="PID"/>
+                             </ComboBox>
+-                            <Button Content="Aggiorna" Margin="9,0,0,0" Padding="10,6" Click="RefreshServices_Click"/>
++                            <Button Style="{StaticResource ActionButtonStyle}" Content="Aggiorna" Margin="9,0,0,0" Padding="10,6" Click="RefreshServices_Click"/>
+                         </StackPanel>
+                     </Grid>
+                     <ListView x:Name="ServiceList" Grid.Row="1" BorderThickness="0" Background="Transparent"
+@@ -961,7 +985,7 @@
+                                 <DockPanel LastChildFill="False">
+                                     <TextBlock Text="CRONOLOGIA AVVIO / ARRESTO" Style="{StaticResource SectionLabel}"
+                                                DockPanel.Dock="Left" VerticalAlignment="Center"/>
+-                                    <Button x:Name="ServiceHistoryRefreshButton" Content="Aggiorna eventi"
++                                    <Button Style="{StaticResource ActionButtonStyle}" x:Name="ServiceHistoryRefreshButton" Content="Aggiorna eventi"
+                                             DockPanel.Dock="Right" Margin="10,0,0,0" Padding="8,5"
+                                             Click="RefreshServiceHistory_Click" IsEnabled="False"/>
+                                 </DockPanel>
+@@ -993,9 +1017,9 @@
+                             <StackPanel>
+                                 <TextBlock Text="PROCESSO CHE LO OSPITA" Style="{StaticResource SectionLabel}"/>
+                                 <TextBlock x:Name="ServiceDetailHost" Text="" TextWrapping="Wrap"/>
+-                                <Button x:Name="ServiceShowProcessButton" Content="Mostra processo ospitante" Padding="8,6"
++                                <Button Style="{StaticResource ActionButtonStyle}" x:Name="ServiceShowProcessButton" Content="Mostra processo ospitante" Padding="8,6"
+                                         HorizontalAlignment="Left" Margin="0,10,0,0" Click="ServiceShowProcess_Click" IsEnabled="False"/>
+-                                <Button x:Name="ServiceStopButton" Content="Arresta servizio…" Padding="10,7"
++                                <Button Style="{StaticResource ActionButtonStyle}" x:Name="ServiceStopButton" Content="Arresta servizio…" Padding="10,7"
+                                         HorizontalAlignment="Left" Margin="0,10,0,0" Click="ServiceStopButton_Click" IsEnabled="False"/>
+                                 <TextBlock Text="Usa l'arresto ordinato SCM: non termina forzatamente il processo ospitante."
+                                            Foreground="#667085" FontSize="11" TextWrapping="Wrap" Margin="0,5,0,0"/>
+--- a/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -182,9 +182,9 @@
+                     $"durata {elapsed.ElapsedMilliseconds} ms; intervallo successivo {_timer.Interval.TotalSeconds:F0} s.");
+                 _lastSlowRefreshLoggedUtc = DateTime.UtcNow;
+             }
+-            SystemCpuText.Text = sysCpu.HasSample ? $"{sysCpu.BusyPercent:F1}%" : "N/D";
+-            SystemCpuAverageText.Text = sysCpu.HasSample ? $"{sysCpu.Average30Seconds:F1}%" : "N/D";
+-            SystemCpuText.ToolTip = $"Misura GetSystemTimes di Windows; intervallo ~{sysCpu.SampleIntervalSeconds:F1}s. " +
++            SystemCpuText.Text = sysCpu.HasSample ? ProcessDisplayFormatter.Percent(sysCpu.BusyPercent) : "N/D";
++            SystemCpuAverageText.Text = sysCpu.HasSample ? ProcessDisplayFormatter.Percent(sysCpu.Average30Seconds) : "N/D";
++            SystemCpuText.ToolTip = $"Misura GetSystemTimes di Windows; intervallo ~{ProcessDisplayFormatter.Seconds(sysCpu.SampleIntervalSeconds)}. " +
+                 $"PID campionati {sysCpu.ProcessesWithCpuSamples}; senza dato {sysCpu.ProcessesWithoutCpuAccess}. " +
+                 "Potrebbe differire da Gestione attività per intervallo e contatori.";
+ 
+@@ -638,15 +638,18 @@
+         DetailRiskText.Text = ProcessDetailPresentation.ClosingRiskLabel(i.CloseRisk);
+         ApplyRiskBadge(i.CloseRisk);
+ 
+-        DetailCpuText.Text = p.CpuSampleAvailable ? $"{p.CpuPercent:F1}%" : "N/D";
+-        DetailCpuAverageText.Text = p.CpuSampleAvailable ? $"Media: {p.CpuAverage30Seconds:F1}%" : "Media: N/D";
+-        DetailCpuPeakText.Text = p.CpuSampleAvailable ? $"Picco: {p.CpuPeak30Seconds:F1}%" : "Picco: N/D";
++        DetailCpuText.Text = p.CpuSampleAvailable ? ProcessDisplayFormatter.Percent(p.CpuPercent) : "N/D";
++        DetailCpuAverageText.Text = p.CpuSampleAvailable ? $"Media: {ProcessDisplayFormatter.Percent(p.CpuAverage30Seconds)}" : "Media: N/D";
++        DetailCpuPeakText.Text = p.CpuSampleAvailable ? $"Picco: {ProcessDisplayFormatter.Percent(p.CpuPeak30Seconds)}" : "Picco: N/D";
+         DetailCpuCoreText.Text = p.CpuSampleAvailable
+-            ? $"Equivalente a {p.CpuLogicalCoreEquivalent:F2} core logici interamente occupati; campione {p.CpuSampleIntervalSeconds:F1}s."
++            ? $"Equivalente a {p.CpuLogicalCoreEquivalent:F2} core logici interamente occupati; campione {ProcessDisplayFormatter.Seconds(p.CpuSampleIntervalSeconds)}."
+             : "Campione CPU non disponibile: dati iniziali oppure accesso negato.";
+         DetailCpuTotalTimeText.Text = p.CpuCumulativeAvailable
+-            ? $"Tempo CPU accumulato dall'avvio: {TimeSpan.FromSeconds(p.CpuCumulativeSeconds):c}."
+-            : "Tempo CPU cumulativo: non accessibile.";
++            ? $"Tempo CPU accumulato: {ProcessDisplayFormatter.CpuDuration(p.CpuCumulativeSeconds)}."
++            : "Tempo CPU accumulato: non disponibile.";
++        DetailCpuTotalTimeText.ToolTip = p.CpuCumulativeAvailable
++            ? $"Valore del contatore: {p.CpuCumulativeSeconds:G17} s. Somma del tempo CPU dei thread, distinta dal tempo trascorso dall’avvio. La sintesi è arrotondata al millisecondo."
++            : "Contatore del tempo CPU non accessibile; non equivale a zero.";
+         DetailCpuGroupText.Text = DescribeRelatedProcessCpu(p);
+         UpdateCpuGraph(p.Pid);
+         DetailMemoryLabel.Text = ProcessRow.CompactMemoryLabel(p);
+@@ -665,15 +668,13 @@
+         DetailProjectShortText.Text = i.ProjectRoot is null ? "Non identificato" : ShortenPath(i.ProjectRoot, 34);
+         DetailRuntimeStateText.Text = !p.CpuSampleAvailable ? "CPU: dato non disponibile in questo intervallo." : p.CpuPercent switch
+         {
+-            >= 10 => $"Utilizzo CPU elevato ({p.CpuPercent:F1}% in questo intervallo).",
+-            >= 2 => $"Utilizzo CPU moderato ({p.CpuPercent:F1}% in questo intervallo).",
+-            >= 0.2 => $"Utilizzo CPU contenuto ({p.CpuPercent:F1}% in questo intervallo).",
+-            _ => $"Utilizzo CPU minimo ({p.CpuPercent:F1}% in questo intervallo)."
++            >= 10 => $"Utilizzo CPU elevato ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
++            >= 2 => $"Utilizzo CPU moderato ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
++            >= 0.2 => $"Utilizzo CPU contenuto ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
++            _ => $"Utilizzo CPU minimo ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo)."
+         };
+ 
+-        DetailNetworkStateText.Text = p.IsDeepInspected
+-            ? BuildNetworkSummary(p)
+-            : "Porte / connessioni: verranno controllate nell'analisi approfondita del processo selezionato.";
++        DetailNetworkStateText.Text = ProcessNetworkPresentation.Describe(p);
+ 
+         DetailWindowStateText.Text = p.IsDeepInspected
+             ? (p.HasVisibleWindow
+@@ -699,8 +700,8 @@
+             $"Parent: {p.ParentName ?? "N/D"} (PID {p.ParentPid})\n" +
+             $"Thread: {p.ThreadCount}\n" +
+             $"CPU campione valido: {(p.CpuSampleAvailable ? "Sì" : "No")}\n" +
+-            $"CPU media/picco fino a 30s: {(p.CpuSampleAvailable ? $"{p.CpuAverage30Seconds:F2}% / {p.CpuPeak30Seconds:F2}%" : "N/D")}\n" +
+-            $"Tempo CPU accumulato: {(p.CpuCumulativeAvailable ? $"{p.CpuCumulativeSeconds:F1}s" : "N/D")}\n" +
++            $"CPU media/picco fino a 30 s: {(p.CpuSampleAvailable ? $"{p.CpuAverage30Seconds:F2} % / {p.CpuPeak30Seconds:F2} %" : "N/D")}\n" +
++            $"Tempo CPU accumulato: {(p.CpuCumulativeAvailable ? $"{p.CpuCumulativeSeconds:F1} s" : "N/D")}\n" +
+             $"Handle: {p.HandleCount} (zero può indicare lettura non accessibile)\n" +
+             $"RAM privata residente: {(p.PrivateWorkingSetAvailable ? $"{p.PrivateWorkingSetMb:F1} MiB" : "N/D")}\n" +
+             $"RAM residente totale: {(p.WorkingSetAvailable ? $"{p.WorkingSetMb:F1} MiB" : "N/D")}\n" +
+@@ -1068,7 +1069,7 @@
+         if (related.Length <= 1) return "Nessun altro discendente osservato per questo ramo.";
+         double aggregate = related.Where(x => x.Process.CpuSampleAvailable).Sum(x => x.CpuPercent);
+         int coverage = related.Count(x => x.Process.CpuSampleAvailable);
+-        return $"Albero di origine: {related.Length} processi, CPU totale {aggregate:F1}% " +
++        return $"Albero di origine: {related.Length} processi, CPU totale {aggregate:F1} % " +
+                $"del PC ({coverage}/{related.Length} campionati; somma approssimata).";
+     }
+ 
+@@ -1098,7 +1099,7 @@
+             double y = height * (1 - Math.Min(samples[j], max) / max);
+             CpuGraphLine.Points.Add(new Point(x, y));
+         }
+-        CpuGraphScaleText.Text = $"Andamento CPU del PID · scala verticale 0–{max:F0}% · {samples.Length} campioni";
++        CpuGraphScaleText.Text = $"Andamento CPU del PID · scala verticale 0–{max:F0} % · {samples.Length} campioni";
+     }
+ 
+     private IReadOnlyList<double> RecentCpuSamples(int pid)
+@@ -1551,48 +1552,6 @@
+         }
+     }
+ 
+-    private static string BuildNetworkSummary(ProcessSnapshot p)
+-    {
+-        var directParts = new List<string>
+-        {
+-            $"PID: LISTEN {p.TcpListeningCount}",
+-            $"TCP stabilite {p.TcpEstablishedCount}",
+-            $"UDP {p.UdpEndpointCount}",
+-            $"TCP verso IP pubblici {p.PublicRemoteConnectionCount}"
+-        };
+-
+-        if (p.ListeningTcpPorts.Count > 0)
+-            directParts.Add($"porte {string.Join(", ", p.ListeningTcpPorts)}");
+-
+-        string result = "Porte / connessioni — " + string.Join("; ", directParts) + ".";
+-
+-        if (p.NetworkFamilyProcessCount > 1)
+-        {
+-            result += $" Famiglia: {p.NetworkFamilyProcessesWithSockets}/{p.NetworkFamilyProcessCount} processi possiedono socket; " +
+-                      $"TCP pubbliche totali {p.NetworkFamilyPublicRemoteConnectionCount}.";
+-
+-            var networkOwner = p.RelatedNetworkProcesses
+-                .FirstOrDefault(x => x.RoleHint.Contains("Servizio di rete", StringComparison.OrdinalIgnoreCase));
+-            if (networkOwner is not null)
+-            {
+-                result += $" Ruolo di rete suggerito dai parametri: PID {networkOwner.Pid} ({networkOwner.RoleHint}) " +
+-                          $"ha {networkOwner.TcpEstablishedCount} TCP stabilite e {networkOwner.UdpEndpointCount} UDP.";
+-            }
+-            else
+-            {
+-                var busiest = p.RelatedNetworkProcesses
+-                    .Where(x => x.Pid != p.Pid)
+-                    .OrderByDescending(x => x.PublicRemoteConnectionCount)
+-                    .ThenByDescending(x => x.TcpEstablishedCount)
+-                    .FirstOrDefault();
+-                if (busiest is not null)
+-                    result += $" Processo correlato con più connessioni TCP pubbliche/stabilite rilevate: PID {busiest.Pid} ({busiest.RoleHint}).";
+-            }
+-        }
+-
+-        return result + " Conteggi nelle letture disponibili, non byte trasferiti; consultare i limiti di acquisizione.";
+-    }
+-
+     private static string ShortenPath(string path, int maxLength)
+     {
+         if (path.Length <= maxLength)
+@@ -1645,6 +1604,7 @@
+         DetailCpuCoreText.Text = "-";
+         DetailCpuGroupText.Text = "-";
+         DetailCpuTotalTimeText.Text = "-";
++        DetailCpuTotalTimeText.ToolTip = null;
+         CpuGraphLine.Points.Clear();
+         CpuGraphScaleText.Text = "-";
+         DetailMemoryLabel.Text = "RAM PRIVATA";
+--- /dev/null
++++ b/src/ProcessLens.App/ProcessDisplayFormatter.cs
+@@ -0,0 +1,40 @@
++using System.Globalization;
++
++namespace ProcessLens.App;
++
++// Presentation only: the original counters and their availability flags are unchanged.
++internal static class ProcessDisplayFormatter
++{
++    private const string UnitSpace = "\u00a0";
++
++    public static string Percent(double value) => double.IsFinite(value) && value >= 0
++        ? value.ToString("F1", CultureInfo.CurrentCulture) + UnitSpace + "%"
++        : "N/D";
++
++    public static string Seconds(double value) => double.IsFinite(value) && value >= 0
++        ? value.ToString("F1", CultureInfo.CurrentCulture) + UnitSpace + "s"
++        : "N/D";
++
++    // Round the display to a millisecond and carry into minutes/hours/days.
++    // A positive sub-millisecond reading must not appear as a measured zero.
++    public static string CpuDuration(double seconds)
++    {
++        if (!double.IsFinite(seconds) || seconds < 0 ||
++            seconds >= TimeSpan.MaxValue.Ticks / TimeSpan.TicksPerSecond - 1)
++            return "N/D";
++        if (seconds == 0) return "0" + UnitSpace + "ms";
++        if (seconds < 0.001) return "< 1" + UnitSpace + "ms";
++
++        var duration = TimeSpan.FromMilliseconds(Math.Round(seconds * 1000, MidpointRounding.AwayFromZero));
++        if (duration.TotalSeconds < 1)
++            return duration.Milliseconds.ToString(CultureInfo.CurrentCulture) + UnitSpace + "ms";
++
++        var parts = new List<string>();
++        if (duration.Days > 0) parts.Add(duration.Days + UnitSpace + "g");
++        if (duration.Hours > 0) parts.Add(duration.Hours + UnitSpace + "h");
++        if (duration.Minutes > 0) parts.Add(duration.Minutes + UnitSpace + "min");
++        parts.Add((duration.Seconds + duration.Milliseconds / 1000d)
++            .ToString("0.###", CultureInfo.CurrentCulture) + UnitSpace + "s");
++        return string.Join(" ", parts);
++    }
++}
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R8-memory-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R9-ui-format-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+--- /dev/null
++++ b/src/ProcessLens.App/ProcessNetworkPresentation.cs
+@@ -0,0 +1,58 @@
++using ProcessLens.Core;
++
++namespace ProcessLens.App;
++
++internal static class ProcessNetworkPresentation
++{
++    public static string Describe(ProcessSnapshot p)
++    {
++        if (!p.IsDeepInspected)
++            return "Porte e connessioni: in attesa dell’analisi approfondita del processo selezionato.";
++
++        var direct = new List<string>
++        {
++            $"Porte e connessioni del PID {p.Pid}",
++            $"TCP in ascolto (LISTEN): {p.TcpListeningCount}",
++            $"Connessioni TCP stabilite (ESTABLISHED): {p.TcpEstablishedCount}",
++            $"Endpoint UDP: {p.UdpEndpointCount}",
++            $"Connessioni TCP verso IP pubblici: {p.PublicRemoteConnectionCount}"
++        };
++        if (p.ListeningTcpPorts.Count > 0)
++            direct.Add($"Porte TCP in ascolto: {string.Join(", ", p.ListeningTcpPorts)}");
++
++        var sections = new List<string> { string.Join("\n", direct) };
++        if (p.NetworkFamilyProcessCount > 1)
++        {
++            sections.Add("Processi correlati per nome e albero\n" +
++                $"Processi con socket: {p.NetworkFamilyProcessesWithSockets} su {p.NetworkFamilyProcessCount}\n" +
++                $"Connessioni TCP verso IP pubblici, totale del gruppo: {p.NetworkFamilyPublicRemoteConnectionCount}");
++
++            var networkOwner = p.RelatedNetworkProcesses
++                .FirstOrDefault(x => x.RoleHint.Contains("Servizio di rete", StringComparison.OrdinalIgnoreCase));
++            if (networkOwner is not null)
++            {
++                sections.Add($"Ruolo di rete suggerito dai parametri: PID {networkOwner.Pid}\n" +
++                    $"{networkOwner.RoleHint}\n" +
++                    $"Connessioni TCP stabilite: {networkOwner.TcpEstablishedCount}\n" +
++                    $"Endpoint UDP: {networkOwner.UdpEndpointCount}");
++            }
++            else
++            {
++                var busiest = p.RelatedNetworkProcesses
++                    .Where(x => x.Pid != p.Pid)
++                    .OrderByDescending(x => x.PublicRemoteConnectionCount)
++                    .ThenByDescending(x => x.TcpEstablishedCount)
++                    .FirstOrDefault();
++                if (busiest is not null)
++                    sections.Add("Processo correlato con più connessioni TCP pubbliche/stabilite rilevate\n" +
++                        $"PID {busiest.Pid} ({busiest.RoleHint})");
++            }
++        }
++
++        sections.Add("Conteggi nelle letture disponibili: zero non garantisce l’assenza di socket. " +
++            "Richieste accettate e byte trasferiti non sono misurati.");
++        if (!string.IsNullOrWhiteSpace(p.DeepInspectionNote))
++            sections.Add("Esito e limiti di acquisizione\n" + p.DeepInspectionNote);
++        return string.Join("\n\n", sections);
++    }
++}
+--- a/src/ProcessLens.App/ProcessRow.cs
++++ b/src/ProcessLens.App/ProcessRow.cs
+@@ -13,7 +13,7 @@
+     public string OwnerApp => Insight.OwnerApp;
+     public int Pid => Process.Pid;
+     public double CpuPercent => Process.CpuPercent;
+-    public string CpuDisplay => Process.CpuSampleAvailable ? $"{Process.CpuPercent:F1}%" : "N/D";
++    public string CpuDisplay => Process.CpuSampleAvailable ? ProcessDisplayFormatter.Percent(Process.CpuPercent) : "N/D";
+     public double WorkingSetMb => Process.WorkingSetMb;
+     public double MemoryDisplayMb => Process.MemoryDisplayMb;
+     public string MemoryDisplayText => Process.MemoryDisplayText;
+--- a/start-processlens-all.ps1
++++ b/start-processlens-all.ps1
+@@ -27,7 +27,7 @@
+ }
+ 
+ try {
+-    Write-Host 'ProcessLens v0.19.16 R8 candidata - Avvio guidato in sequenza' -ForegroundColor Green
++    Write-Host 'ProcessLens v0.19.16 R9 candidata - Avvio guidato in sequenza' -ForegroundColor Green
+     Write-Host ('Modalita: ' + $Mode)
+     Write-Host ('Cartella: ' + $PSScriptRoot)
+     $isAdmin = Test-IsAdministrator
+--- /dev/null
++++ b/tests/ProcessLens.PresentationTests/ProcessLens.PresentationTests.csproj
+@@ -0,0 +1,13 @@
++<Project Sdk="Microsoft.NET.Sdk">
++  <PropertyGroup>
++    <OutputType>Exe</OutputType>
++    <TargetFramework>net8.0</TargetFramework>
++    <ImplicitUsings>enable</ImplicitUsings>
++    <Nullable>enable</Nullable>
++  </PropertyGroup>
++  <ItemGroup>
++    <ProjectReference Include="../../src/ProcessLens.Core/ProcessLens.Core.csproj" />
++    <Compile Include="../../src/ProcessLens.App/ProcessDisplayFormatter.cs" Link="ProcessDisplayFormatter.cs" />
++    <Compile Include="../../src/ProcessLens.App/ProcessNetworkPresentation.cs" Link="ProcessNetworkPresentation.cs" />
++  </ItemGroup>
++</Project>
+--- /dev/null
++++ b/tests/ProcessLens.PresentationTests/Program.cs
+@@ -0,0 +1,89 @@
++using System.Globalization;
++using ProcessLens.App;
++using ProcessLens.Core;
++
++static void Check(bool condition, string label)
++{
++    if (!condition) throw new Exception("FAIL presentation: " + label);
++    Console.WriteLine("PASS presentation: " + label);
++}
++
++var originalCulture = CultureInfo.CurrentCulture;
++var originalUiCulture = CultureInfo.CurrentUICulture;
++try
++{
++    foreach (string cultureName in new[] { "it-IT", "en-US" })
++    {
++        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(cultureName);
++        CultureInfo.CurrentUICulture = CultureInfo.CurrentCulture;
++        string decimalMark = cultureName == "it-IT" ? "," : ".";
++        const string space = "\u00a0";
++        void Equal(string actual, string expected, string label) =>
++            Check(actual == expected, label + " [" + cultureName + "]: " + actual);
++
++        Equal(ProcessDisplayFormatter.Percent(26), "26" + decimalMark + "0" + space + "%", "percent with separated unit");
++        Equal(ProcessDisplayFormatter.Seconds(16.5), "16" + decimalMark + "5" + space + "s", "sample interval with culture and unit");
++        Equal(ProcessDisplayFormatter.CpuDuration(636.0625), "10" + space + "min 36" + decimalMark + "063" + space + "s", "screenshot CPU time, rounded display");
++        Equal(ProcessDisplayFormatter.CpuDuration(0), "0" + space + "ms", "genuinely measured zero");
++        Equal(ProcessDisplayFormatter.CpuDuration(0.0001), "< 1" + space + "ms", "positive sub-millisecond is not zero");
++        Equal(ProcessDisplayFormatter.CpuDuration(0.001), "1" + space + "ms", "one millisecond");
++        Equal(ProcessDisplayFormatter.CpuDuration(0.01), "10" + space + "ms", "ten milliseconds, no leading zero");
++        Equal(ProcessDisplayFormatter.CpuDuration(0.0625), "63" + space + "ms", "sub-second rounding");
++        Equal(ProcessDisplayFormatter.CpuDuration(1), "1" + space + "s", "one second, no tick suffix");
++        Equal(ProcessDisplayFormatter.CpuDuration(16.5), "16" + decimalMark + "5" + space + "s", "fractional seconds");
++        Equal(ProcessDisplayFormatter.CpuDuration(0.9996), "1" + space + "s", "carry into a second");
++        Equal(ProcessDisplayFormatter.CpuDuration(59.9996), "1" + space + "min 0" + space + "s", "carry into a minute");
++        Equal(ProcessDisplayFormatter.CpuDuration(3599.9996), "1" + space + "h 0" + space + "s", "carry into an hour");
++        Equal(ProcessDisplayFormatter.CpuDuration(86399.9996), "1" + space + "g 0" + space + "s", "carry into a day");
++        Equal(ProcessDisplayFormatter.CpuDuration(90061.125), "1" + space + "g 1" + space + "h 1" + space + "min 1" + decimalMark + "125" + space + "s", "multi-day CPU time");
++        foreach (double invalid in new[] { -1d, double.NaN, double.PositiveInfinity, double.NegativeInfinity, double.MaxValue })
++            Equal(ProcessDisplayFormatter.CpuDuration(invalid), "N/D", "invalid duration is not zero");
++        foreach (double invalid in new[] { -1d, double.NaN, double.PositiveInfinity })
++        {
++            Equal(ProcessDisplayFormatter.Seconds(invalid), "N/D", "invalid interval is unavailable");
++            Equal(ProcessDisplayFormatter.Percent(invalid), "N/D", "invalid CPU percentage is unavailable");
++        }
++
++        var process = new ProcessSnapshot { Pid = 9608, ParentPid = 100, Name = "example.exe" };
++        var pending = ProcessNetworkPresentation.Describe(process);
++        Check(pending.Contains("in attesa") && !pending.Contains("LISTEN): 0"), "pending inspection has no invented zero [" + cultureName + "]");
++        var partial = process with { IsDeepInspected = true, DeepInspectionNote = "TCP non enumerabile: AccessDenied" };
++        var partialText = ProcessNetworkPresentation.Describe(partial);
++        Check(partialText.Contains("AccessDenied") && partialText.Contains("zero non garantisce") &&
++            partialText.Contains("byte trasferiti non sono misurati"), "partial acquisition retains error and limits [" + cultureName + "]");
++        var listener = partial with
++        {
++            TcpListeningCount = 1, TcpEstablishedCount = 2, UdpEndpointCount = 3,
++            PublicRemoteConnectionCount = 2, ListeningTcpPorts = new[] { 8080, 8443 },
++            NetworkFamilyProcessCount = 7, NetworkFamilyProcessesWithSockets = 1,
++            NetworkFamilyPublicRemoteConnectionCount = 5,
++            RelatedNetworkProcesses = new[] { new RelatedNetworkProcessSnapshot(12576, "helper.exe",
++                "Servizio di rete Chromium/Electron (dichiarato)", 0, 5, 1, 5, Array.Empty<NetworkEndpointSnapshot>()) }
++        };
++        var network = ProcessNetworkPresentation.Describe(listener);
++        Check(network.Contains("PID 9608\nTCP in ascolto (LISTEN): 1\nConnessioni TCP stabilite (ESTABLISHED): 2\nEndpoint UDP: 3\n") &&
++            network.Contains("Porte TCP in ascolto: 8080, 8443"), "direct counters and ports have separate lines [" + cultureName + "]");
++        Check(network.Contains("\n\nProcessi correlati per nome e albero\nProcessi con socket: 1 su 7\n") &&
++            network.Contains("totale del gruppo: 5"), "group counters separated from selected PID [" + cultureName + "]");
++        Check(network.Contains("\n\nRuolo di rete suggerito dai parametri: PID 12576\n") &&
++            network.Contains("Connessioni TCP stabilite: 5\nEndpoint UDP: 1"), "role and related socket owner preserved [" + cultureName + "]");
++        Check(!network.Contains("rete delegata") && !network.Contains("nessuna connessione"), "layout does not invent delegation or absence [" + cultureName + "]");
++        var fallback = listener with
++        {
++            DeepInspectionNote = null,
++            RelatedNetworkProcesses = new[] { new RelatedNetworkProcessSnapshot(12577, "other.exe", "Ruolo non determinato",
++                0, 6, 0, 4, Array.Empty<NetworkEndpointSnapshot>()) }
++        };
++        var fallbackText = ProcessNetworkPresentation.Describe(fallback);
++        Check(fallbackText.Contains("\nPID 12577 (Ruolo non determinato)") && !fallbackText.Contains("Esito e limiti di acquisizione"),
++            "related-process fallback and missing note [" + cultureName + "]");
++        Check(listener.TcpListeningCount == 1 && listener.NetworkFamilyPublicRemoteConnectionCount == 5 &&
++            listener.DeepInspectionNote == "TCP non enumerabile: AccessDenied", "presentation preserves source counters and errors [" + cultureName + "]");
++    }
++}
++finally
++{
++    CultureInfo.CurrentCulture = originalCulture;
++    CultureInfo.CurrentUICulture = originalUiCulture;
++}
++Console.WriteLine("Presentation regressions complete (it-IT + en-US).");
+--- /dev/null
++++ b/tests/check-ui-format-r9.ps1
+@@ -0,0 +1,36 @@
++$ErrorActionPreference = 'Stop'
++$root = Split-Path -Parent $PSScriptRoot
++[xml]$view = Get-Content -LiteralPath (Join-Path $root 'src\ProcessLens.App\MainWindow.xaml') -Raw -Encoding UTF8
++$code = Get-Content -LiteralPath (Join-Path $root 'src\ProcessLens.App\MainWindow.xaml.cs') -Raw -Encoding UTF8
++$x = 'http://schemas.microsoft.com/winfx/2006/xaml'
++$style = $view.SelectSingleNode("//*[local-name()='Style' and @*[local-name()='Key']='ActionButtonStyle']")
++if (-not $style.SelectSingleNode(".//*[local-name()='TextBlock' and @TextWrapping='Wrap' and @LineHeight='20']")) {
++    throw 'FAIL R9: native action buttons need wrapped text and line spacing.'
++}
++if (-not $style.SelectSingleNode("./*[local-name()='Setter' and @Property='MinHeight' and @Value='36']")) {
++    throw 'FAIL R9: action buttons need a minimum height.'
++}
++foreach ($button in $view.SelectNodes("//*[local-name()='Button']")) {
++    if ($button.GetAttribute('Style') -notin @('{StaticResource FilterButtonStyle}', '{StaticResource ActionButtonStyle}') -or
++        $button.HasAttribute('Height')) { throw 'FAIL R9: unstyled or fixed-height button.' }
++}
++foreach ($name in @('DetailCpuAverageText','DetailCpuPeakText','DetailCpuText','DetailMemoryText',
++    'DetailPrivateWorkingSetText','DetailWorkingSetText','DetailPrivateCommitText','CpuGraphScaleText')) {
++    $node = $view.SelectSingleNode("//*[@*[local-name()='Name']='$name']")
++    if ($node.GetAttribute('TextWrapping') -ne 'Wrap') { throw ('FAIL R9: metric cannot wrap: ' + $name) }
++}
++$network = $view.SelectSingleNode("//*[@*[local-name()='Name']='DetailNetworkStateText']")
++if ($network.GetAttribute('LineHeight') -ne '21' -or $network.GetAttribute('TextWrapping') -ne 'Wrap') {
++    throw 'FAIL R9: network text lacks line spacing or wrapping.'
++}
++$quick = $view.SelectSingleNode("//*[@*[local-name()='Name']='QuickQuestionRoot']")
++if (-not $quick.SelectSingleNode("./*[local-name()='MenuItem.HeaderTemplate']//*[local-name()='TextBlock' and @TextWrapping='Wrap']")) {
++    throw 'FAIL R9: quick-analysis label cannot wrap.'
++}
++if ($code.Contains('TimeSpan.FromSeconds(p.CpuCumulativeSeconds):c') -or
++    -not $code.Contains('p.CpuCumulativeAvailable') -or
++    -not $code.Contains('ProcessDisplayFormatter.CpuDuration(p.CpuCumulativeSeconds)') -or
++    -not $code.Contains('ProcessNetworkPresentation.Describe(p)')) {
++    throw 'FAIL R9: formatted time/network are not connected to the actual details UI.'
++}
++Write-Host 'PASS R9: time and network presentation wired; button labels and metric cells can wrap. Structural checks only; visual Windows verification is separate.'
+--- /dev/null
++++ b/verify-candidate-r9.ps1
+@@ -0,0 +1,67 @@
++﻿# Verification only: no GUI launch, service installation, capture or process termination.
++[CmdletBinding()]
++param()
++$ErrorActionPreference = 'Stop'
++if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) {
++    throw 'NON ESEGUITO: questa procedura richiede Windows.'
++}
++if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
++    throw 'NON ESEGUITO: SDK .NET non trovato. Nessuna installazione automatica.'
++}
++$root = $PSScriptRoot
++$results = Join-Path $root 'verification-r9'
++New-Item -ItemType Directory -Path $results -Force | Out-Null
++$records = New-Object System.Collections.Generic.List[object]
++$failures = 0
++Push-Location $root
++try {
++    & dotnet --info | Out-File (Join-Path $results 'dotnet-info.txt') -Encoding utf8
++    if ($LASTEXITCODE -ne 0) { throw 'dotnet --info non riuscito.' }
++    foreach ($script in Get-ChildItem (Join-Path $root 'tests') -Filter 'check-*.ps1' | Sort-Object Name) {
++        $status = 'PASS'
++        try { & $script.FullName *> (Join-Path $results ($script.BaseName + '.log')) }
++        catch { $status = 'FAIL'; $failures++; $_ | Out-File (Join-Path $results ($script.BaseName + '.log')) -Append -Encoding utf8 }
++        $records.Add([PSCustomObject]@{ Kind='PowerShell'; Name=$script.Name; Status=$status; ExitCode=$null })
++    }
++    foreach ($project in Get-ChildItem (Join-Path $root 'tests') -Filter '*.csproj' -Recurse | Sort-Object FullName) {
++        # Fixture is compiled only. Running it would create a target process for profiling.
++        $verb = if ($project.BaseName -eq 'ProcessLens.ProfilerFixture') { 'build' } else { 'run' }
++        $arguments = if ($verb -eq 'run') { @('run','--project',$project.FullName,'-c','Release') }
++            else { @('build',$project.FullName,'-c','Release','--nologo') }
++        & dotnet @arguments *> (Join-Path $results ($project.BaseName + '.log'))
++        $exitCode = $LASTEXITCODE
++        $status = if ($exitCode -eq 0) { 'PASS' } else { $failures++; 'FAIL' }
++        $records.Add([PSCustomObject]@{ Kind='dotnet'; Name=$project.BaseName; Status=$status; ExitCode=$exitCode })
++    }
++    foreach ($project in Get-ChildItem (Join-Path $root 'src') -Filter '*.csproj' -Recurse | Sort-Object FullName) {
++        & dotnet build $project.FullName -c Release --nologo *> (Join-Path $results ('build-' + $project.BaseName + '.log'))
++        $exitCode = $LASTEXITCODE
++        $status = if ($exitCode -eq 0) { 'PASS' } else { $failures++; 'FAIL' }
++        $records.Add([PSCustomObject]@{ Kind='build'; Name=$project.BaseName; Status=$status; ExitCode=$exitCode })
++    }
++    # Run the same semantic regression suite with copied knowledge omitted, to check C# fallbacks.
++    $semanticTests = Join-Path $root 'tests\ProcessLens.TerminologyTests\bin\Release\net8.0'
++    $knowledge = Join-Path $semanticTests 'knowledge'
++    $disabled = Join-Path $semanticTests 'knowledge.disabled-r9'
++    if (Test-Path $disabled) { throw 'Backup knowledge gia presente; risolvere prima di rieseguire.' }
++    if (Test-Path $knowledge) {
++        Move-Item -LiteralPath $knowledge -Destination $disabled
++        try {
++            & dotnet (Join-Path $semanticTests 'ProcessLens.TerminologyTests.dll') *> (Join-Path $results 'terminology-without-knowledge.log')
++            $exitCode = $LASTEXITCODE
++            $status = if ($exitCode -eq 0) { 'PASS' } else { $failures++; 'FAIL' }
++            $records.Add([PSCustomObject]@{ Kind='fallback'; Name='TerminologyWithoutKnowledge'; Status=$status; ExitCode=$exitCode })
++        }
++        finally { Move-Item -LiteralPath $disabled -Destination $knowledge }
++    }
++    else {
++        $records.Add([PSCustomObject]@{ Kind='fallback'; Name='TerminologyWithoutKnowledge'; Status='NON ESEGUITO'; ExitCode=$null })
++        $failures++
++    }
++}
++finally {
++    $records | Export-Csv (Join-Path $results 'test-results.csv') -NoTypeInformation -Encoding UTF8
++    Pop-Location
++}
++if ($failures -gt 0) { throw ($failures.ToString() + ' verifiche fallite o non eseguite. Consultare verification-r9. Candidata non promossa.') }
++Write-Host 'Suite e build superate. Verifica visuale WPF e scenari Windows ancora da completare; candidata non promossa.'

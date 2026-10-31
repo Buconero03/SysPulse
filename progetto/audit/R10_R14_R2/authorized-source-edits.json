@@ -1,0 +1,24 @@
+{
+  "baseline_sha256": "e0fbe1501c5014eb11bc9295a34acfd8e771b40007f7ab5ab41653a337195792",
+  "scope": "Fix initial network tab selection for first headless WPF refresh; no weakening of observation or safety checks",
+  "files": [
+    {
+      "file": "src/ProcessLens.App/NetworkDevicesView.xaml",
+      "sha256_before": "da329abf2b56db4156b269bfd497cb481fbd5b5332eae582e58fbe8cbfe58c8c",
+      "sha256_after": "8757ae28e5c6df0bab4f5dbe1eb6d85b58a5cd360485b0bd3075545f0f1a4861",
+      "scope": "R14 R2: explicit initial cache tab; candidate version; strict headless UI regressions and nullable warning correction"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256_before": "9ed62e00070f7732ffd0a69f7ae9cf056c708d73f19620a6f77845f08101818d",
+      "sha256_after": "4172fcdb350c170ff652343394c72c040413e932090c9ba0977e88ba4bc430dd",
+      "scope": "R14 R2: explicit initial cache tab; candidate version; strict headless UI regressions and nullable warning correction"
+    },
+    {
+      "file": "tests/ProcessLens.NetworkUiTests/Program.cs",
+      "sha256_before": "fddb7e00f0521e656222a2a97e95105c738f2107e58b8a882b1f2fa3792a8102",
+      "sha256_after": "f6f7ee5f99c23f707e3d83620e7a731454499d4a740095bd352927cd617c6ae8",
+      "scope": "R14 R2: explicit initial cache tab; candidate version; strict headless UI regressions and nullable warning correction"
+    }
+  ]
+}

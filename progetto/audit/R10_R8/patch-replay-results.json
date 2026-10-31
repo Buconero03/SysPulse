@@ -1,0 +1,23 @@
+{
+  "git_apply_check": "PASS",
+  "actual_git_apply": "PASS",
+  "exact_changed_files": 27,
+  "existing_source_files_retained_exact": 104,
+  "existing_source_files_changed": [
+    "src/ProcessLens.App/MainWindow.xaml",
+    "src/ProcessLens.App/MainWindow.xaml.cs",
+    "src/ProcessLens.App/MemoryDashboardView.xaml",
+    "src/ProcessLens.App/MemoryDashboardView.xaml.cs",
+    "src/ProcessLens.App/ProcessLens.App.csproj"
+  ],
+  "new_source_files": [
+    "src/ProcessLens.App/ServiceDetailsWindow.cs",
+    "src/ProcessLens.App/ServiceNavigation.cs",
+    "src/ProcessLens.RamMonitor/LogSession.cs",
+    "src/ProcessLens.RamMonitor/Measurement.cs",
+    "src/ProcessLens.RamMonitor/NativeSampler.cs",
+    "src/ProcessLens.RamMonitor/ProcessLens.RamMonitor.csproj",
+    "src/ProcessLens.RamMonitor/Program.cs"
+  ],
+  "scope": "Separate RAM console meter, log launchers and category/service navigation with identity guards; historical/current audit and manifest excluded for self-reference."
+}

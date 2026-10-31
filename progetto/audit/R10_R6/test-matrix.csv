@@ -1,0 +1,12 @@
+test,kind,status
+structural checks (64),Python portable,PASS
+button regressions (6),Python portable,PASS
+R5 to R6 patch replay,git apply + SHA256,PASS
+CopyTests original report and RAM-profiler audit parser regressions,.NET runtime,NON ESEGUITO
+CopyUiTests audit cards append-selection-reset and actual XAML handlers,WPF runtime,NON ESEGUITO
+other .NET build and tests,dotnet,NON ESEGUITO
+PowerShell scripts,PowerShell,NON ESEGUITO
+WPF visual 100/125/150/200 percent DPI,Windows,NON ESEGUITO
+Actual audit spacing and selection at narrow panel,manual Windows,NON ESEGUITO
+Asynchronous query response isolation,Windows delayed-task scenario,NON ESEGUITO
+RAM difference,measurement,NON MISURATO

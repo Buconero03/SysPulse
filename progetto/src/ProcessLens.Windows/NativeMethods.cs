@@ -1,0 +1,247 @@
+﻿using System.Runtime.InteropServices;
+using System.Text;
+
+namespace ProcessLens.Windows;
+
+internal static class NativeMethods
+{
+    internal const uint TH32CS_SNAPPROCESS = 0x00000002;
+    internal const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+    internal const uint PROCESS_QUERY_INFORMATION = 0x0400;
+    internal const uint PROCESS_VM_READ = 0x0010;
+    internal const int ProcessCommandLineInformation = 60;
+    internal const int APPMODEL_ERROR_NO_PACKAGE = 15700;
+    internal const int ERROR_INSUFFICIENT_BUFFER = 122;
+
+    internal const uint SC_MANAGER_ENUMERATE_SERVICE = 0x0004;
+    internal const uint SERVICE_WIN32 = 0x00000030;
+    internal const uint SERVICE_STATE_ALL = 0x00000003;
+    internal const int SC_ENUM_PROCESS_INFO = 0;
+    internal const int ERROR_MORE_DATA = 234;
+
+    internal const int AF_INET = 2;
+    internal const int AF_INET6 = 23;
+    internal const uint MIB_TCP_STATE_LISTEN = 2;
+    internal const uint MIB_TCP_STATE_ESTAB = 5;
+    internal const int TCP_TABLE_OWNER_PID_ALL = 5;
+    internal const int UDP_TABLE_OWNER_PID = 1;
+
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct MIB_TCPROW_OWNER_PID
+    {
+        internal uint dwState;
+        internal uint dwLocalAddr;
+        internal uint dwLocalPort;
+        internal uint dwRemoteAddr;
+        internal uint dwRemotePort;
+        internal uint dwOwningPid;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct MIB_UDPROW_OWNER_PID
+    {
+        internal uint dwLocalAddr;
+        internal uint dwLocalPort;
+        internal uint dwOwningPid;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct MIB_TCP6ROW_OWNER_PID
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        internal byte[]? ucLocalAddr;
+        internal uint dwLocalScopeId;
+        internal uint dwLocalPort;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        internal byte[]? ucRemoteAddr;
+        internal uint dwRemoteScopeId;
+        internal uint dwRemotePort;
+        internal uint dwState;
+        internal uint dwOwningPid;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct MIB_UDP6ROW_OWNER_PID
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        internal byte[]? ucLocalAddr;
+        internal uint dwLocalScopeId;
+        internal uint dwLocalPort;
+        internal uint dwOwningPid;
+    }
+
+    internal delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+    internal static readonly IntPtr INVALID_HANDLE_VALUE = new(-1);
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct PROCESSENTRY32
+    {
+        internal uint dwSize;
+        internal uint cntUsage;
+        internal uint th32ProcessID;
+        internal IntPtr th32DefaultHeapID;
+        internal uint th32ModuleID;
+        internal uint cntThreads;
+        internal uint th32ParentProcessID;
+        internal int pcPriClassBase;
+        internal uint dwFlags;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+        internal string szExeFile;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct UNICODE_STRING
+    {
+        internal ushort Length;
+        internal ushort MaximumLength;
+        internal IntPtr Buffer;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct SERVICE_STATUS_PROCESS
+    {
+        internal uint dwServiceType;
+        internal uint dwCurrentState;
+        internal uint dwControlsAccepted;
+        internal uint dwWin32ExitCode;
+        internal uint dwServiceSpecificExitCode;
+        internal uint dwCheckPoint;
+        internal uint dwWaitHint;
+        internal uint dwProcessId;
+        internal uint dwServiceFlags;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct ENUM_SERVICE_STATUS_PROCESS
+    {
+        internal IntPtr lpServiceName;
+        internal IntPtr lpDisplayName;
+        internal SERVICE_STATUS_PROCESS ServiceStatusProcess;
+    }
+
+    // FILETIME is a 64-bit count of 100-nanosecond intervals.
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct CpuFileTime
+    {
+        internal uint Low;
+        internal uint High;
+        internal readonly ulong AsUInt64 => ((ulong)High << 32) | Low;
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool GetSystemTimes(
+        out CpuFileTime idleTime,
+        out CpuFileTime kernelTime,
+        out CpuFileTime userTime);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    internal static extern IntPtr CreateToolhelp32Snapshot(uint dwFlags, uint th32ProcessID);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool Process32FirstW(IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool Process32NextW(IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    internal static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, uint dwProcessId);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool CloseHandle(IntPtr hObject);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool QueryFullProcessImageNameW(IntPtr hProcess, uint dwFlags, StringBuilder lpExeName, ref uint lpdwSize);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool IsProcessCritical(IntPtr hProcess, out bool critical);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+    internal static extern int GetPackageFullName(
+        IntPtr hProcess,
+        ref uint packageFullNameLength,
+        StringBuilder? packageFullName);
+
+    [DllImport("ntdll.dll")]
+    internal static extern int NtQueryInformationProcess(
+        IntPtr processHandle,
+        int processInformationClass,
+        IntPtr processInformation,
+        int processInformationLength,
+        out int returnLength);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+    internal static extern int GetApplicationUserModelId(
+        IntPtr hProcess,
+        ref uint applicationUserModelIdLength,
+        StringBuilder? applicationUserModelId);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+    [DllImport("user32.dll")]
+    internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool IsWindowVisible(IntPtr hWnd);
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    internal static extern int GetWindowTextLengthW(IntPtr hWnd);
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    internal static extern int GetWindowTextW(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    internal static extern int GetClassNameW(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+    [DllImport("iphlpapi.dll", SetLastError = true)]
+    internal static extern uint GetExtendedTcpTable(
+        IntPtr pTcpTable,
+        ref int pdwSize,
+        [MarshalAs(UnmanagedType.Bool)] bool bOrder,
+        int ulAf,
+        int tableClass,
+        uint reserved);
+
+    [DllImport("iphlpapi.dll", SetLastError = true)]
+    internal static extern uint GetExtendedUdpTable(
+        IntPtr pUdpTable,
+        ref int pdwSize,
+        [MarshalAs(UnmanagedType.Bool)] bool bOrder,
+        int ulAf,
+        int tableClass,
+        uint reserved);
+
+    [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    internal static extern IntPtr OpenSCManagerW(
+        string? lpMachineName,
+        string? lpDatabaseName,
+        uint dwDesiredAccess);
+
+    [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool EnumServicesStatusExW(
+        IntPtr hSCManager,
+        int InfoLevel,
+        uint dwServiceType,
+        uint dwServiceState,
+        IntPtr lpServices,
+        uint cbBufSize,
+        out uint pcbBytesNeeded,
+        out uint lpServicesReturned,
+        ref uint lpResumeHandle,
+        string? pszGroupName);
+
+    [DllImport("advapi32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool CloseServiceHandle(IntPtr hSCObject);
+}

@@ -1,0 +1,34 @@
+{
+  "source": "ProcessLens-v0.19.16-R5",
+  "total_entries": 3406,
+  "files_with_strings": 105,
+  "by_area": {
+    "GUI_CODE": 411,
+    "GUARDIAN": 367,
+    "PROFILER": 167,
+    "CORE": 321,
+    "MEMORY_AGENT": 43,
+    "SEMANTICS": 1132,
+    "WINDOWS_ACQUISITION": 118,
+    "GUI_WPF": 242,
+    "REGOLE_JSON": 68,
+    "POWERSHELL": 288,
+    "TEST": 249
+  },
+  "by_screening": {
+    "NESSUN_SEGNALE_LESSICALE": 2955,
+    "ESAME_CONTESTO": 388,
+    "ESAME_PRIORITARIO": 63
+  },
+  "tag_occurrences": {
+    "PARENTELA_ORIGINE": 78,
+    "ATTIVITA_NON_MISURATA": 71,
+    "AZIONE_EFFETTO": 40,
+    "RETE": 120,
+    "CERTEZZA_NON_CALIBRATA": 25,
+    "ETICHETTA_INTERNA": 24,
+    "PROCESSO_INATTIVO": 15,
+    "MEMORIA": 93,
+    "ATTRIBUZIONE_CAUSA": 25
+  }
+}

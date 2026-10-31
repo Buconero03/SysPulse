@@ -1,0 +1,10 @@
+test,kind,status
+structural checks (49),Python portable,PASS
+button regressions (6),Python portable,PASS
+R2 to R3 patch replay,git apply + SHA256,PASS
+CopyTests report hierarchy regressions,.NET runtime,NON ESEGUITO
+CopyUiTests native header layout and lifecycle,WPF runtime,NON ESEGUITO
+other .NET build and tests,dotnet,NON ESEGUITO
+PowerShell scripts,PowerShell,NON ESEGUITO
+WPF visual 100/125/150/200 percent DPI,Windows,NON ESEGUITO
+RAM difference,measurement,NON MISURATO

@@ -1,0 +1,6 @@
+PASS C# syntax: src/ProcessLens.Core/WindowsComponentCatalog.cs
+PASS C# syntax: src/ProcessLens.App/SystemProcessesView.xaml.cs
+PASS C# syntax: src/ProcessLens.App/MainWindow.xaml.cs
+PASS C# syntax: tests/ProcessLens.SystemProcessUiTests/Program.cs
+PASS C# syntax: tests/ProcessLens.WindowsComponentTests/Program.cs
+Syntax parsing only; no WPF type checking or markup compilation.

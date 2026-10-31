@@ -1,0 +1,320 @@
+file,line,before_or_after,changed_text
+src/ProcessLens.App/App.xaml.cs,see patch,before,"            _windowController = new TrayWindowController(window, () => Shutdown(), window.SetDashboardWindowVisibility);"
+src/ProcessLens.App/App.xaml.cs,see patch,after,"            _windowController = new TrayWindowController(window, () => Shutdown(), window.SetDashboardWindowVisibility, window.ReportWindowActionFailure);"
+src/ProcessLens.App/AppDiagnostics.cs,see patch,after,    private static readonly DeferredDiagnosticWriter WindowActions = new(
+src/ProcessLens.App/AppDiagnostics.cs,see patch,after,"        action => ThreadPool.QueueUserWorkItem(_ => action()), text => Record(text));"
+src/ProcessLens.App/AppDiagnostics.cs,see patch,after,    internal static void RecordWindowAction(string step) => WindowActions.Enqueue(step);
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,namespace ProcessLens.App;
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,// One worker and a bounded queue. UI window commands never write files or wait for this sink.
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,"internal sealed class DeferredDiagnosticWriter(Action<Action> post, Action<string> write, int capacity = 8)"
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,{
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,    private readonly object _gate = new();
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,    private readonly Queue<string> _queue = new();
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,    private bool _scheduled;
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,    internal bool Enqueue(string text)
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,    {
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,        lock (_gate)
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,        {
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,            if (_queue.Count >= capacity) return false;
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,            _queue.Enqueue(text);
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,            if (_scheduled) return true;
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,            _scheduled = true;
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,        }
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,        try { post(Drain); return true; }
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,        catch
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,        {
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,            lock (_gate) { _scheduled = false; _queue.Clear(); }
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,            return false;
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,        }
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,    }
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,    private void Drain()
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,    {
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,        while (true)
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,        {
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,            string text;
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,            lock (_gate)
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,            {
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,                if (_queue.Count == 0) { _scheduled = false; return; }
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,                text = _queue.Dequeue();
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,            }
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,            try { write(text); } catch { /* Diagnostics never interrupt window actions. */ }
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,        }
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,    }
+src/ProcessLens.App/DeferredDiagnosticWriter.cs,see patch,after,}
+src/ProcessLens.App/IconPreferencePolicy.cs,see patch,after,namespace ProcessLens.App;
+src/ProcessLens.App/IconPreferencePolicy.cs,see patch,after,
+src/ProcessLens.App/IconPreferencePolicy.cs,see patch,after,internal static class IconPreferencePolicy
+src/ProcessLens.App/IconPreferencePolicy.cs,see patch,after,{
+src/ProcessLens.App/IconPreferencePolicy.cs,see patch,after,    internal const int MaximumPixelBytes = 256 * 256 * 4;
+src/ProcessLens.App/IconPreferencePolicy.cs,see patch,after,"    internal static T? Select<T>(T? original, bool generic, bool windowsComponent, T windowsFallback) where T : class =>"
+src/ProcessLens.App/IconPreferencePolicy.cs,see patch,after,        windowsComponent && (original is null || generic) ? windowsFallback : original;
+src/ProcessLens.App/IconPreferencePolicy.cs,see patch,after,"    internal static bool SamePixels(ReadOnlySpan<byte> actual, ReadOnlySpan<byte> generic) =>"
+src/ProcessLens.App/IconPreferencePolicy.cs,see patch,after,        actual.Length > 0 && actual.Length <= MaximumPixelBytes && actual.SequenceEqual(generic);
+src/ProcessLens.App/IconPreferencePolicy.cs,see patch,after,}
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,    private readonly bool _monitoringEnabled;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        _monitoringEnabled = startMonitoring;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            _cpuTimer.Start();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,            _ = RefreshCpuAsync();
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,            if (_monitoringEnabled) { _cpuTimer.Start(); _ = RefreshCpuAsync(); }
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"    internal void ReportWindowActionFailure(string message) => ShowProcessNotice(""Finestra ProcessLens"", message);"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,"        AppDiagnostics.Record(""Clic Riduci a icona dalla finestra principale"");"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,"        AppDiagnostics.RecordWindowAction(""Clic Riduci a icona R28 dalla finestra principale"");"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,before,        else Dispatcher.BeginInvoke(new Action(() => { if (!_windowClosed) WindowState = WindowState.Minimized; }));
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        else if (!_windowClosed) WindowState = WindowState.Minimized;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,"    private static readonly BoundedCache<string, ImageSource> Cache ="
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"    private sealed record ResolvedIcon(ImageSource? Image, bool Generic);"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"    private static readonly BoundedCache<string, ResolvedIcon> Cache ="
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,    internal static ImageSource? GetIcon(ProcessSnapshot process) =>
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,"        WindowsProcessIconPolicy.UseWindowsIcon(process, WindowsDirectory)"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,"            ? WindowsComponentIcon : GetIcon(process.ExecutablePath, process.Name);"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"    private static readonly Lazy<BitmapSource?> GenericIcon = new(() => TryGetShellIcon(""application.exe"", useFileAttributes: true));"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,    internal static ImageSource? GetIcon(ProcessSnapshot process)
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,    {
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        var original = GetResolution(process.ExecutablePath, process.Name);"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        return IconPreferencePolicy.Select(original.Image, original.Generic,"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"            WindowsProcessIconPolicy.UseWindowsIcon(process, WindowsDirectory), WindowsComponentIcon);"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,    }
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,"        WindowsProcessIconPolicy.UseWindowsIcon(process, WindowsDirectory)"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,            ? WindowsProcessIconPolicy.WindowsDescription : WindowsProcessIconPolicy.ExecutableDescription;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        ReferenceEquals(GetIcon(process), WindowsComponentIcon)"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"            ? ""Icona Windows di ripiego · componente classificato dai dati del campione. Firma digitale non verificata."""
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,            : WindowsProcessIconPolicy.ExecutableDescription;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"    internal static bool IsGenericIcon(BitmapSource actual, BitmapSource? generic)"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,    {
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,        if (generic is null || actual.PixelWidth != generic.PixelWidth || actual.PixelHeight != generic.PixelHeight ||
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,            actual.PixelWidth is <= 0 or > 256 || actual.PixelHeight is <= 0 or > 256) return false;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,        try
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,        {
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,            static byte[] Pixels(BitmapSource image)
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,            {
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,                BitmapSource normalized = image.Format == PixelFormats.Bgra32 ? image :
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"                    new FormatConvertedBitmap(image, PixelFormats.Bgra32, null, 0);"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,                int stride = image.PixelWidth * 4;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,                var bytes = new byte[stride * image.PixelHeight];
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"                normalized.CopyPixels(bytes, stride, 0); return bytes;"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,            }
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"            return IconPreferencePolicy.SamePixels(Pixels(actual), Pixels(generic));"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,        }
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        catch (Exception) { return false; } // If comparison is unavailable, preserve the executable's icon."
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,    }
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,"    public static ImageSource? GetIcon(string? executablePath, string processName)"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"    public static ImageSource? GetIcon(string? executablePath, string processName) =>"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        GetResolution(executablePath, processName).Image;"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"    private static ResolvedIcon GetResolution(string? executablePath, string processName)"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,        string key = !string.IsNullOrWhiteSpace(executablePath)
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,            ? executablePath
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,"            : $""generic:{processName}"";"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,"        if (Cache.TryGetValue(key, out var cached))"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,            return cached;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        string key = !string.IsNullOrWhiteSpace(executablePath) ? executablePath : $""generic:{processName}"";"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        if (Cache.TryGetValue(key, out var cached)) return cached;"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,        if (icon is not null)
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,            Cache[key] = icon;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,        return icon;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        bool generic = icon is BitmapSource bitmap && IsGenericIcon(bitmap, GenericIcon.Value);"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        var result = new ResolvedIcon(generic ? GenericIcon.Value : icon, generic);"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,        if (icon is not null) Cache[key] = result;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,        return result;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,before,"    private static ImageSource? TryGetShellIcon(string path, bool useFileAttributes)"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"    private static BitmapSource? TryGetShellIcon(string path, bool useFileAttributes)"
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,before,    <InformationalVersion>0.19.16-R10-R27-windows-icons-candidate</InformationalVersion>
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,after,    <InformationalVersion>0.19.16-R10-R28-native-icons-window-controls-candidate</InformationalVersion>
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"    public TrayWindowController(Window window, Action shutdown, Action<bool> activity)"
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,    {
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        _window = window; _shutdown = shutdown; _activity = activity;
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"        _actions = new(action => window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, action), Minimize, Restore);"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"    private bool _closing, _activityQueued;"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    private int _nativeCallbackDepth;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    private readonly Action<string>? _failure;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"    public TrayWindowController(Window window, Action shutdown, Action<bool> activity, Action<string>? failure = null)"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    {
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        _window = window; _shutdown = shutdown; _activity = activity; _failure = failure;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        _actions = new(action => window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, action), Minimize, Restore);"
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        RequestMinimize();
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        _closing = true;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        try { RequestMinimize(); } finally { _closing = false; }
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        // Explorer registration must not delay minimizing the owned window.
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        _actions.Minimize();
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        if (!_window.Dispatcher.CheckAccess())
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        {
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"            _window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(RequestMinimize));"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,            return;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        }
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        // Only Closing/native callbacks defer. A normal header click acts in the current dispatcher turn.
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        if (WindowLifetimePolicy.DeferMinimize(_closing, _nativeCallbackDepth > 0)) _actions.Minimize();"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        else _actions.MinimizeImmediately();
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        // Always retain the taskbar route if Explorer hides or loses the tray entry.
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"        ShowWindow(_hwnd, 6); // SW_MINIMIZE, owned HWND only; no duplicate queued system command."
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        if (!IsIconic(_hwnd)) _window.WindowState = WindowState.Minimized;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        _window.WindowState = WindowState.Minimized;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        // Read the CURRENT handle, rather than assuming the tray registration handle is still current."
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        var hwnd = new WindowInteropHelper(_window).Handle;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        int nativeError = 0;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        if (hwnd != IntPtr.Zero && !IsIconic(hwnd) && !CloseWindow(hwnd)) nativeError = Marshal.GetLastWin32Error();
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        QueueActivityUpdate();
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,            bool iconic = IsIconic(_hwnd);
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"            AppDiagnostics.Record($""Riduzione verificata R26: HWND ridotto={iconic}, WPF={_window.WindowState}."");"
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"            if (!iconic) AppDiagnostics.Record(""Riduzione non confermata da Windows; usare Esci per chiudere ProcessLens."");"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,            var current = new WindowInteropHelper(_window).Handle;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,            bool iconic = current != IntPtr.Zero && IsIconic(current);
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"            AppDiagnostics.RecordWindowAction($""Riduzione R28: confermata={iconic}; WPF={_window.WindowState}; handle corrente={current.ToInt64():X}; errore Win32={nativeError}."");"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"            if (!iconic) _failure?.Invoke(""Windows non ha confermato la riduzione. Dettagli salvati nel registro diagnostico."");"
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"        AppDiagnostics.Record(""Finestra ridotta; riapri dalla barra applicazioni o dall’icona ProcessLens."");"
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        UpdateActivity();
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        if (_window.WindowState != WindowState.Minimized) _restoreState = _window.WindowState;
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        UpdateActivity();
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,    }
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"    private void VisibilityChanged(object sender, DependencyPropertyChangedEventArgs e) => UpdateActivity();"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        if (_window.WindowState != WindowState.Minimized) { _restoreState = _window.WindowState; ++_transitionGeneration; }
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        QueueActivityUpdate();
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    }
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"    private void VisibilityChanged(object sender, DependencyPropertyChangedEventArgs e) => QueueActivityUpdate();"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    private void QueueActivityUpdate()
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    {
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        if (_disposed || _activityQueued) return;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        _activityQueued = true;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        _window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() =>"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        {
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,            _activityQueued = false;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,            if (!_disposed) UpdateActivity();
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        }));
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    }
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"        if (IsIconic(_hwnd)) ShowWindow(_hwnd, 9); // SW_RESTORE before restoring the saved WPF state."
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        var hwnd = new WindowInteropHelper(_window).Handle;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        if (IsIconic(hwnd)) ShowWindow(hwnd, 9); // SW_RESTORE before restoring the saved WPF state."
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"        AppDiagnostics.Record($""Ripristino finestra: visibile={_window.IsVisible}, stato={_window.WindowState}, primo piano={activated}."");"
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        UpdateActivity();
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        AppDiagnostics.RecordWindowAction($""Ripristino finestra: visibile={_window.IsVisible}, stato={_window.WindowState}, primo piano={activated}."");"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        QueueActivityUpdate();
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,"        if (WindowLifetimePolicy.IsMinimizeMessage(message, wParam.ToInt64(), _exitRequested))"
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        {
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,            RequestMinimize(); handled = true; return IntPtr.Zero;
+src/ProcessLens.App/TrayWindowController.cs,see patch,before,        }
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        ++_nativeCallbackDepth;
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"        try { return ProcessWindowMessage(hwnd, message, wParam, lParam, ref handled); }"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        finally { --_nativeCallbackDepth; }
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    }
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"    private IntPtr ProcessWindowMessage(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    {
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,        // WM_SYSCOMMAND and WM_CLOSE deliberately pass through to WPF/Windows.
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,"    [DllImport(""user32.dll"", SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)]"
+src/ProcessLens.App/TrayWindowController.cs,see patch,after,    private static extern bool CloseWindow(IntPtr hwnd);
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,before,"    public static bool IsMinimizeMessage(int message, long parameter, bool exiting) =>"
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,before,        !exiting && (message == 0x0010 || (message == 0x0112 && (parameter & 0xFFF0) == 0xF020));
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,"    public static bool DeferMinimize(bool closing, bool nativeCallback) => closing || nativeCallback;"
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,    public void MinimizeImmediately()
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,    {
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,        if (_disposed) return;
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,        _pending = null; // A queued restore must not undo this explicit click.
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,        minimize();
+src/ProcessLens.App/WindowLifetimePolicy.cs,see patch,after,    }
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,before,"<Compile Include=""../../src/ProcessLens.App/WindowLifetimePolicy.cs"" Link=""WindowLifetimePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/ReadingPositionPolicy.cs"" Link=""ReadingPositionPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/WindowsProcessIconPolicy.cs"" Link=""WindowsProcessIconPolicy.cs""/></ItemGroup></Project>"
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,after,"<Compile Include=""../../src/ProcessLens.App/WindowLifetimePolicy.cs"" Link=""WindowLifetimePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/ReadingPositionPolicy.cs"" Link=""ReadingPositionPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/WindowsProcessIconPolicy.cs"" Link=""WindowsProcessIconPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/IconPreferencePolicy.cs"" Link=""IconPreferencePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/DeferredDiagnosticWriter.cs"" Link=""DeferredDiagnosticWriter.cs""/></ItemGroup></Project>"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,before,"Check(WindowLifetimePolicy.IsMinimizeMessage(0x112,0xF022,false) && WindowLifetimePolicy.IsMinimizeMessage(0x10,0,false), ""R26 native minimize and close route to the owned window action"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,before,"Check(!WindowLifetimePolicy.IsMinimizeMessage(0x112,0xF120,false) && !WindowLifetimePolicy.IsMinimizeMessage(0x10,0,true), ""R26 restore and explicit exit are not intercepted"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(WindowLifetimePolicy.DeferMinimize(true,false) && WindowLifetimePolicy.DeferMinimize(false,true), ""R28 Closing and native callbacks defer window changes"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!WindowLifetimePolicy.DeferMinimize(false,false), ""R28 ordinary header click does not defer minimize"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,// R28 native icons take priority over a Windows classification.
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,var native28=new object();var generic28=new object();var windows28=new object();
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ReferenceEquals(IconPreferencePolicy.Select(native28,false,true,windows28),native28),""R28 Explorer or another Windows component keeps its distinct executable icon"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ReferenceEquals(IconPreferencePolicy.Select(native28,false,false,windows28),native28),""R28 ordinary application keeps its original icon"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ReferenceEquals(IconPreferencePolicy.Select(generic28,true,true,windows28),windows28),""R28 generic Windows host gets shared Windows fallback"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ReferenceEquals(IconPreferencePolicy.Select(generic28,true,false,windows28),generic28),""R28 generic third-party service is not promoted to Windows"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(ReferenceEquals(IconPreferencePolicy.Select<object>(null,false,true,windows28),windows28),""R28 missing icon for classified OS component uses Windows fallback"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(IconPreferencePolicy.Select<object>(null,false,false,windows28) is null,""R28 unavailable unclassified icon stays unavailable"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(IconPreferencePolicy.SamePixels(new byte[]{1,2,3,255},new byte[]{1,2,3,255}),""R28 independently created identical pixel content matches the generic icon"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!IconPreferencePolicy.SamePixels(new byte[]{1,2,4,255},new byte[]{1,2,3,255}),""R28 one different color channel retains a distinct icon"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!IconPreferencePolicy.SamePixels(new byte[]{1,2,3,0},new byte[]{1,2,3,255}),""R28 alpha differences retain a distinct icon"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!IconPreferencePolicy.SamePixels(Array.Empty<byte>(),Array.Empty<byte>()),""R28 empty data cannot establish a generic icon match"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!IconPreferencePolicy.SamePixels(new byte[IconPreferencePolicy.MaximumPixelBytes+1],new byte[IconPreferencePolicy.MaximumPixelBytes+1]),""R28 pixel comparison has a fixed byte budget"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var queued28=new Queue<Action>();int min28=0,restore28=0;"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"using(var controls28=new DeferredWindowActions(a=>queued28.Enqueue(a),()=>min28++,()=>restore28++))"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,{
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,    controls28.Restore();controls28.MinimizeImmediately();
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Check(min28==1 && restore28==0,""R28 explicit minimize acts before the queued dispatcher turn"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    queued28.Dequeue()();Check(min28==1 && restore28==0,""R28 old queued restore cannot undo an immediate minimize"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,    controls28.MinimizeImmediately();controls28.Restore();queued28.Dequeue()();
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Check(min28==2 && restore28==1,""R28 later explicit restore remains available"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,    controls28.Dispose();controls28.MinimizeImmediately();
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Check(min28==2,""R28 explicit exit prevents later immediate window changes"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,}
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,var jobs28=new Queue<Action>();var messages28=new List<string>();
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var writer28=new DeferredDiagnosticWriter(a=>jobs28.Enqueue(a),x=>messages28.Add(x),2);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(writer28.Enqueue(""click"") && writer28.Enqueue(""native-state"") && messages28.Count==0,""R28 window logging never writes from the caller thread"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!writer28.Enqueue(""overflow"") && jobs28.Count==1,""R28 diagnostics retain at most the configured queue with one worker"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"jobs28.Dequeue()();Check(messages28.SequenceEqual(new[]{""click"",""native-state""}),""R28 accepted window diagnostic events retain their order"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(writer28.Enqueue(""restore"") && jobs28.Count==1,""R28 worker can be scheduled after a completed drain"");jobs28.Dequeue()();"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,var errors28=new Queue<Action>();int writes28=0;
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var failingWriter28=new DeferredDiagnosticWriter(a=>errors28.Enqueue(a),_=>{writes28++;throw new IOException(""fixture"");});"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"failingWriter28.Enqueue(""one"");failingWriter28.Enqueue(""two"");errors28.Dequeue()();"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(writes28==2,""R28 a failing diagnostic sink cannot stop later window events"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var unavailableWriter28=new DeferredDiagnosticWriter(_=>throw new InvalidOperationException(""fixture""),_=>throw new Exception());"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(!unavailableWriter28.Enqueue(""click""),""R28 failed worker scheduling cannot throw through a window command"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Console.WriteLine(""R28 icon preference and window dispatch regressions complete."");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,using System.Windows.Media.Imaging;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,before,"    { var frame=new DispatcherFrame();Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ContextIdle,new Action(()=>frame.Continue=false));Dispatcher.PushFrame(frame); }"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    {
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        var frame=new DispatcherFrame();bool expired=false;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        var deadline=new DispatcherTimer(DispatcherPriority.Send){Interval=TimeSpan.FromSeconds(5)};
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        EventHandler onDeadline=(_,_)=>{expired=true;frame.Continue=false;};deadline.Tick+=onDeadline;"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var sentinel=Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ContextIdle,new Action(()=>frame.Continue=false));"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        try {deadline.Start();Dispatcher.PushFrame(frame);}
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        finally {deadline.Stop();deadline.Tick-=onDeadline;sentinel.Abort();}
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        if(expired)throw new TimeoutException(""R28 fixture layout exceeded five seconds."");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    }
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        if(args.Contains(""--window-smoke"")) { MainWindowSmoke();Application.Current.Shutdown();return; }"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var genericPixels=new byte[]{0,120,212,255};"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var customPixels=new byte[]{120,212,0,255};"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        BitmapSource Pixel(byte[] bytes)=>BitmapSource.Create(1,1,96,96,PixelFormats.Bgra32,null,bytes,4);"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(ProcessIconResolver.IsGenericIcon(Pixel(genericPixels),Pixel(genericPixels)),""R28 generic icon comparison uses pixels rather than HICON identity"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(!ProcessIconResolver.IsGenericIcon(Pixel(customPixels),Pixel(genericPixels)),""R28 a distinct original bitmap is retained"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    }
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    static void MainWindowSmoke()
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,    {
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        // Real controls/activity callback, 100 synthetic rows. No process or network acquisition."
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var main=new MainWindow(false){Title=""ProcessLens — prova finestra R28""};"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var p=new ProcessSnapshot{Pid=2147400000,ParentPid=0,Name=""fixture.exe"",StartTime=DateTime.UtcNow.AddMinutes(-1),"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            PrivateWorkingSetAvailable=true,PrivateWorkingSetBytes=1048576,WorkingSetAvailable=true,WorkingSetBytes=2097152};"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        var analyzer=new ProcessIntelligenceAnalyzer();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var rows=Enumerable.Range(0,100).Select(i=>"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        {
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            var sample=p with {Pid=p.Pid+i,StartTime=p.StartTime!.Value.AddMilliseconds(i)};"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            return new ProcessRow(sample,analyzer.Analyze(sample));"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        }).ToList();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Set(main,""_allRows"",rows);Filter(main);var row=rows[0];"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        var activity=new List<bool>();var failures=new List<string>();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        using var controller=new TrayWindowController(main,()=>main.Close(),active=>{activity.Add(active);main.SetDashboardWindowVisibility(active);},x=>failures.Add(x));"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        main.MinimizeRequested+=controller.RequestMinimize;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        main.ExitRequested+=()=>{controller.AllowExit();main.Close();};
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        main.Show();Drain();Set(main,""_currentDetailRow"",row);Set(main,""_selectedPid"",p.Pid);"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        IntPtr Handle()=>new System.Windows.Interop.WindowInteropHelper(main).Handle;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        for(int pass=0;pass<3;pass++)
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        {
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            ((Button)main.FindName(""MinimizeWindowButton"")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            Check(IsIconic(Handle()),""R28 real header click minimizes immediately before another dispatcher turn"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            Drain();Check(activity.Last()==false,""R28 actual MainWindow polling pause completes after native transition"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,            controller.RequestRestore();Until(()=>!IsIconic(Handle())&&main.IsVisible);Drain();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            Check(activity.Last()==true,""R28 real activity callback resumes after explicit restore"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        }
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        SendMessageW(Handle(),0x112,new IntPtr(0xF020),IntPtr.Zero);Until(()=>IsIconic(Handle()));Drain();"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(main.WindowState==WindowState.Minimized,""R28 unhandled native caption command reaches Windows and WPF"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        controller.RequestRestore();Until(()=>!IsIconic(Handle()));Drain();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        main.WindowState=WindowState.Maximized;
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        ((Button)main.FindName(""MinimizeWindowButton"")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));Until(()=>IsIconic(Handle()));Drain();"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        controller.RequestRestore();Until(()=>!IsIconic(Handle())&&main.WindowState==WindowState.Maximized);Drain();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        main.Close();Until(()=>IsIconic(Handle()));Drain();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(main.IsVisible&&main.ShowInTaskbar,""R28 X still preserves a taskbar route"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        controller.RequestRestore();Until(()=>!IsIconic(Handle()));Drain();
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(failures.Count==0,""R28 Windows confirms every owned fixture minimize"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        ((Button)main.FindName(""ExitApplicationButton"")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(!main.IsVisible,""R28 real Exit button closes the fixture window"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Console.WriteLine(""PASS R28 MainWindow shell gate complete; real owned window only, no process or network collection."");"

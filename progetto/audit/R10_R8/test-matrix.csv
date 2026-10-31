@@ -1,0 +1,15 @@
+test,kind,status
+66 structural checks,Python source/XML,PASS
+6 button regressions,Python source guards,PASS
+14 R7 resource guard tests,Python source guards,PASS
+13 R8 monitor and navigation guard tests,Python source guards,PASS
+R7 to R8 exact patch,git apply and SHA256,PASS
+RAM monitor numerical identity CSV and summary tests,.NET runtime,NON ESEGUITO
+Service navigation pure regressions,.NET runtime,NON ESEGUITO
+Native monitor and independent self-creation check,Windows .NET runtime,NON ESEGUITO
+WPF category and service window controls,WPF runtime,NON ESEGUITO
+All other .NET builds and tests,dotnet,NON ESEGUITO
+PowerShell and double-click launchers,Windows,NON ESEGUITO
+Manual category navigation and service detail flows,Windows,NON ESEGUITO
+DPI and cultures,Windows,NON ESEGUITO
+Actual RAM total or monitor overhead,measurement,NON MISURATO

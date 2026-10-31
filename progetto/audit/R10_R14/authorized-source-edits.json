@@ -1,0 +1,54 @@
+{
+  "baseline_sha256": "c11ff4eb1b4809776d58171f4df62af5eebc21f8f07e918b3e5e780545f9b824",
+  "scope": "R14 system-process view explicitly requested by user",
+  "files": [
+    {
+      "file": "src/ProcessLens.App/CopyTestVisibility.cs",
+      "sha256_before": "74a0eb7e2a6ac82a8eab55c57a9aea0d806ebcda147ce0fc5db4f9ce7885e2b1",
+      "sha256_after": "771cd5e85bd0a4f346654c65579f2e0fe43c690e1e334d41ca747363d29c1c32",
+      "scope": "User-requested read-only system-process inventory; existing files only navigation, lifecycle, test visibility, version"
+    },
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml",
+      "sha256_before": "7991cef9b21e3fd0733c3ea4ec74933185b2fd8857ca57b4c43f6b72af461978",
+      "sha256_after": "8ebded29b7241ce4a82512b4d84d82a61537cac307ca5a302a82ca44d8144da8",
+      "scope": "User-requested read-only system-process inventory; existing files only navigation, lifecycle, test visibility, version"
+    },
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+      "sha256_before": "01060b40e4800bbf771e02e158f9b612f79afde7c81df5cd74d906ab7e47ad37",
+      "sha256_after": "bfa624d0fa4c8270594388cf0812d9d5f754f79c96cde331aad0b7ca2fa216ff",
+      "scope": "User-requested read-only system-process inventory; existing files only navigation, lifecycle, test visibility, version"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256_before": "e48a20de4057014e9df7dc2dbe66aaeed375abafdcfd1510fbd1a649f4843471",
+      "sha256_after": "ad183bf72f3d67c872fea22e5a5d73f7386ece25e596d89892184426af60909b",
+      "scope": "User-requested read-only system-process inventory; existing files only navigation, lifecycle, test visibility, version"
+    },
+    {
+      "file": "src/ProcessLens.App/SystemProcessesView.xaml",
+      "sha256_before": null,
+      "sha256_after": "205fa779d66417645db2eaa01dbaac133c4d0f0667b7a06a1facf3d97a038ea7",
+      "scope": "User-requested read-only system-process inventory; existing files only navigation, lifecycle, test visibility, version"
+    },
+    {
+      "file": "src/ProcessLens.App/SystemProcessesView.xaml.cs",
+      "sha256_before": null,
+      "sha256_after": "aaeb252bc3b28be473f77d6c1fa0812400b32fa4f0cfbcca3a85b97293fd5a19",
+      "scope": "User-requested read-only system-process inventory; existing files only navigation, lifecycle, test visibility, version"
+    },
+    {
+      "file": "src/ProcessLens.Core/SystemProcessCatalog.cs",
+      "sha256_before": null,
+      "sha256_after": "930c2a8390708e3d07335021c46310c73be3b29b8a8d02c4db8b0e168b52181f",
+      "scope": "User-requested read-only system-process inventory; existing files only navigation, lifecycle, test visibility, version"
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsSystemProcessSource.cs",
+      "sha256_before": null,
+      "sha256_after": "75d501ff017e33280e784cb7fe6cd5f7adb22b55dc4426e5868fe8ca2be9af01",
+      "scope": "User-requested read-only system-process inventory; existing files only navigation, lifecycle, test visibility, version"
+    }
+  ]
+}

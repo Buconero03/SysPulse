@@ -1,0 +1,12 @@
+{
+  "kind": "Roslyn syntax only; no WPF type checking or markup compilation",
+  "status": "PASS",
+  "source_hashes": {
+    "src/ProcessLens.Core/NativeNetworkEvidence.cs": "341bb0db3ff38e3297a5141192d8bca4ab94e22ebf2fbf9ada3a58b4ca3f1504",
+    "src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs": "1c91fed1bd87507d2d0438a00115615280008792fc36f1f0f8162ceae98231d7",
+    "src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs": "9ec3dfa1b8bbad6284192163d0570a90d227c6812455f6587b82cfa782fb826d",
+    "src/ProcessLens.App/NetworkDevicesView.xaml.cs": "fd0579af2475d3e4bdfc412ed2568af7fa37fc4f7302f9891c1251b18b6b4354",
+    "tests/ProcessLens.NativeNetworkTests/Program.cs": "2ff225055bbd7f7db17297eb87c8718f07d40765a31c9414c1aad7a9b643c07d",
+    "tests/ProcessLens.NetworkUiTests/Program.cs": "a32ea267de7e804b281febd0ee485004823744329ef350ddec879bb4ad2437e6"
+  }
+}

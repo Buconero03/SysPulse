@@ -1,0 +1,29 @@
+PASS single-core-of-twelve: 8.33%
+PASS two-cores-of-twelve: 16.67%
+PASS system-57-percent: 57.00%
+PASS system-idle: 0.00%
+PASS counter-unavailable: 0.00%
+PASS clamp-counter: 100.00%
+CPU math tests completed.
+PASS R10 R7 CPU: first counter is a baseline, not zero CPU
+PASS R7 one busy core of twelve over two seconds: 8.33%
+PASS R10 R7 CPU: actual per-PID interval retained
+PASS R10 R7 CPU: two unchanged valid counters establish actual zero
+PASS R7 duration weighted mean: 4.17%
+PASS R10 R7 CPU: PID reuse with nondecreasing CPU still resets baseline
+PASS R10 R7 CPU: pause beyond six seconds does not become a fresh sample
+PASS R10 R7 CPU: zero elapsed interval is not zero CPU
+PASS R10 R7 CPU: backwards monotonic input resets baseline
+PASS R10 R7 CPU: counter rollback resets baseline
+PASS R10 R7 CPU: processor-count changes reset normalization
+PASS R10 R7 CPU: access recovery requires a new baseline
+PASS R10 R7 CPU: unknown logical count cannot be presented as zero CPU
+PASS R10 R7 CPU: invalid clock does not produce NaN output
+PASS R7 partially overlapping window interval clipped: 6.67%
+PASS R7 overlapping peak retained: 100.00%
+PASS R7 expired peak removed: 0.00%
+PASS R10 R7 CPU: publication requires exact known creation time
+PASS R10 R7 CPU: CPU overlay preserves memory and original snapshot
+PASS R10 R7 CPU: invalidated overlay cannot retain an old counter
+PASS R10 R7 CPU: direct overlay API refuses a different process creation timestamp
+

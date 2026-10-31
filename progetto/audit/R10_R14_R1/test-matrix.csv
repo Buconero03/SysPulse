@@ -1,0 +1,9 @@
+test,kind,status,details
+NetworkDeviceTests,Roslyn + .NET runtime Linux,PASS,"81 assertions; real temporary files, it-IT/en-US"
+Original R14 reproduction,Same updated test executable with original Core,PASS,Expected original InvalidDataException reproduced
+SystemProcessTests,Roslyn + .NET runtime Linux,PASS,22 portable assertions; Windows live branch skipped
+PacketCaptureTests and WiresharkTools,Roslyn compile,PASS,No execution of owned child fixtures
+MSBuild / build-dashboard.ps1 / PowerShell,standard build,NON ESEGUITO,SDK CLI host process-information restriction; no PowerShell
+WPF + live Windows reads + Npcap,Windows runtime,NON ESEGUITO,Linux host; no UI or Windows API execution
+Current R14 R1 source and evidence guards,Python source/XML/mutations,PASS,75 checks; no C# execution
+R14 to R14 R1 patch replay,git apply and byte comparison,PASS,12 changed or added files; audit metadata and manifest excluded

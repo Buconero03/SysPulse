@@ -1,0 +1,526 @@
+--- a/CHANGELOG_R10.md
++++ b/CHANGELOG_R10.md
+@@ -1,3 +1,9 @@
++# R10 R6 — registro verifiche RAM leggibile e priorità del progetto
++
++Leggere `REGISTRO_LEGGIBILE_R10_R6.md` e `VALUTAZIONE_PROGETTO_R10_R6.md`. Il registro visto nella schermata ha ora voci separate: orario, fase, messaggio, carattere più grande, margini e spazi fra eventi. Copia registro completo usa il testo originale; file e codici diagnostici invariati. Aggiornamento incrementale e rilascio delle schede a registro chiuso. R5 e funzionalità precedenti incluse. Build/test .NET/PowerShell e WPF/DPI **NON ESEGUITI** qui. Manifest corrente `SHA256SUMS_R10.txt`.
++
++---
++
+ # R10 R5 — riapertura della finestra e icona vicino all’orologio
+ 
+ Leggere `RIPRISTINO_FINESTRA_R10_R5.md`. – minimizza nella barra; X nasconde nella tray; clic sull’icona o Apri ProcessLens ripristina; Esci da ProcessLens chiude davvero. Un secondo avvio richiede il ripristino dell’istanza esistente. Dashboard GUI sospese da nascosto/minimizzato; componenti esterni invariati. Build/test .NET/PowerShell e WPF/tray reali **NON ESEGUITI** qui. Manifest corrente `SHA256SUMS_R10.txt`. Le revisioni precedenti restano incluse.
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,10 @@
+-﻿# R10 R5 — riapertura della finestra e icona vicino all’orologio
++﻿# R10 R6 — registro verifiche RAM leggibile e priorità del progetto
++
++Leggere `REGISTRO_LEGGIBILE_R10_R6.md` e `VALUTAZIONE_PROGETTO_R10_R6.md`. Il registro visto nella schermata ha ora voci separate: orario, fase, messaggio, carattere più grande, margini e spazi fra eventi. Copia registro completo usa il testo originale; file e codici diagnostici invariati. Aggiornamento incrementale e rilascio delle schede a registro chiuso. R5 e funzionalità precedenti incluse. Build/test .NET/PowerShell e WPF/DPI **NON ESEGUITI** qui. Manifest corrente `SHA256SUMS_R10.txt`.
++
++---
++
++# R10 R5 — riapertura della finestra e icona vicino all’orologio
+ 
+ Leggere `RIPRISTINO_FINESTRA_R10_R5.md`. – minimizza nella barra; X nasconde nella tray; clic sull’icona o Apri ProcessLens ripristina; Esci da ProcessLens chiude davvero. Un secondo avvio richiede il ripristino dell’istanza esistente. Dashboard GUI sospese da nascosto/minimizzato; componenti esterni invariati. Build/test .NET/PowerShell e WPF/tray reali **NON ESEGUITI** qui. Manifest corrente `SHA256SUMS_R10.txt`. Le revisioni precedenti restano incluse.
+ 
+--- /dev/null
++++ b/REGISTRO_LEGGIBILE_R10_R6.md
+@@ -0,0 +1,57 @@
++# R10 R6 — registro delle verifiche più leggibile
++
++La schermata del 17 ottobre mostra il pannello specifico **Registro verifiche RAM — cosa è stato misurato**. Le modifiche R3 avevano organizzato il rapporto e le evidenze di identificazione, lasciando questo registro come un unico SelectableText in Consolas 11,5 DIP. Questa omissione spiega la densità ancora visibile nella schermata; non si deduce la versione esatta in esecuzione dall'immagine.
++
++La R6 parte dalla candidata R10 R5 e conserva le funzionalità precedenti, inclusi copia, avviso di uscita e tray. Nessuna revisione semantica già completata viene ricominciata.
++
++## Prima e dopo
++
++| Prima | Dopo |
++|---|---|
++| Un solo blocco tecnico molto denso | Una scheda per ogni voce del registro |
++| Orario, VERIFICA RAM, fase e messaggio ripetuti sulla stessa riga | Orario e fase nella testata, messaggio sotto |
++| Messaggi in Consolas 11,5 | Messaggi in Segoe UI 13,5 DIP; timestamp separati in Consolas 11,5 |
++| Quasi nessuna distanza fra eventi | 14 DIP di padding per scheda e 14 DIP fra schede; 9 DIP fra testata e messaggio |
++| Registro senza panoramica | Conteggio delle voci e ultima fase/orario, senza inventare un esito positivo |
++| Copia attraverso il testo o il rapporto completo | Pulsante aggiuntivo Copia registro completo, testo originale ancora selezionabile |
++| Testo sorgente sempre disteso | Testo originale in un espansore separato, inizialmente chiuso |
++
++Il registro principale resta aperto inizialmente. La modifica non si limita quindi a nascondere il testo: ne cambia la struttura visuale. I controlli non hanno altezze fisse; orario, fase e messaggio restano selezionabili. Le proprietà usate sono supportate da TextBox/SelectableText; non viene introdotto LineHeight, che in passato aveva causato errori XAML.
++
++## Dati conservati
++
++`MemoryAnalysisAudit.cs`, `memory-analysis.log`, codici evento JSON e valori dei contatori restano invariati. Il testo originale del registro continua a essere la fonte di Copia rapporto completo e di Copia registro completo. Il nuovo adattatore legge soltanto il testo già esposto dalla GUI. Non legge nuovi file, non avvia acquisizioni e non aggiunge dati al log.
++
++Il parser riconosce i formati RAM e profiler già generati dal codice: timestamp validato in formato invariante, fase e messaggio. Le righe di continuazione, i limiti e i messaggi non riconosciuti restano visualizzati. Non si ricavano percentuali di affidabilità o stato PASS dalle parole del messaggio. Il percorso del registro locale viene mostrato separatamente e resta anche nel sorgente originale. Le stringhe numeriche it-IT/en-US non vengono convertite o riformattate.
++
++Il modello visuale è un adattatore transitorio: la valutazione del progetto propone come passo successivo l'uso diretto di eventi tipizzati nella GUI, riutilizzando le informazioni strutturate già disponibili, con test dedicati e senza rompere i contratti esistenti.
++
++## Aggiornamento e risorse
++
++Se il registro cresce mantenendo il prefisso precedente, si aggiungono solo le nuove schede: le schede precedenti e la loro selezione non vengono sostituite. Quando inizia un'altra analisi o cambia il testo già presente, la vista viene ricostruita per non mescolare registri diversi. Chiudendo l'espansore del registro si rilasciano le schede generate; riaprendolo si ricrea la vista dai dati correnti.
++
++Il costo in memoria della nuova vista e l'effetto reale sulla leggibilità non sono stati misurati qui. I controlli aggiuntivi servono alla separazione del testo e vengono limitati alle voci del registro corrente. Non viene promessa una riduzione RAM.
++
++## Verifica
++
++Le regressioni pure fornite coprono orario/fase/messaggio, continuazioni Unicode, localizzazione del file, overview neutra, profiler, testo sconosciuto, timestamp malformati, numeri con virgola/punto e copia CRLF originale. Le regressioni WPF fornite controllano padding e dimensione dei caratteri, append senza perdita di selezione, sostituzione del registro e collegamento reale dei controlli XAML ai nuovi handler TextChanged/Expanded/Collapsed.
++
++Eseguiti qui: controlli strutturali Python/XML, regressioni portabili preesistenti, confronto byte dei componenti conservati, replay reale delle patch, integrità ZIP e manifest SHA-256.
++
++**NON ESEGUITO:** build e test .NET, PowerShell, test WPF appena aggiunti, selezione reale nella GUI, verifica visiva/DPI. Ambiente Linux senza dotnet/pwsh. Un controllo sul sorgente non dimostra il risultato di una compilazione né quello del rendering Windows.
++
++Prima della nuova build uscire dalla GUI attiva: nella R5 scegliere Esci da ProcessLens dal menu dell'icona vicino all'orologio. Poi estrarre in una cartella nuova e dalla radice con `src` e `tests`:
++
++```powershell
++.\build-dashboard.ps1
++```
++
++Solo se riesce:
++
++```powershell
++.\run-release.ps1
++```
++
++Verificare il registro RAM mostrato nella schermata, non soltanto il rapporto: schede, spaziatura, testo originale e pulsante di copia; ripetere a pannello stretto e DPI 100/125/150/200%. La verifica non richiede terminazioni, profilazioni, installazioni o riavvii di servizi.
++
++Audit corrente `audit/R10_R6/`, manifest corrente `SHA256SUMS_R10.txt`. Sorgenti, test e rapporti restano sotto un'unica radice. Le criticità tecniche già documentate restano aperte e sono riprese in `VALUTAZIONE_PROGETTO_R10_R6.md`.
+--- /dev/null
++++ b/VALUTAZIONE_PROGETTO_R10_R6.md
+@@ -0,0 +1,61 @@
++# ProcessLens — valutazione tecnica e priorità al 17 ottobre 2026
++
++La direzione che consiglio è consolidare l'affidabilità delle conclusioni, rendere uniforme la lettura e qualificare il comportamento Windows. Il progetto dispone già di enumerazione processi, contatori CPU/RAM, analisi dei ruoli, rete, viste servizi/Guardian, mappa virtuale, campionamento delle pagine e profiler separato su richiesta. La quantità di funzionalità rende particolarmente utile una base di dati e di verifica coerente fra tutte queste viste.
++
++Questa valutazione riprende le criticità già registrate in `audit/R10/review-findings.csv`, le confronta con i punti del codice coinvolti e aggiunge l'osservazione della schermata del registro. Non è una nuova revisione integrale o una misura delle prestazioni. Le candidate qui preparate non sono state eseguite su Windows: build, test .NET/WPF, tray e DPI restano da qualificare. I log Windows dell'utente già archiviati sono evidenze delle revisioni cui si riferiscono, non attestazioni della candidata attuale.
++
++## Priorità e criteri di chiusura
++
++| Priorità | Intervento | Perché serve | Criterio verificabile |
++|---|---|---|---|
++| P0 | Qualificazione Windows della candidata corrente | Hotfix di sorgente, selezione, lifecycle WPF e Shell non sono equivalenti a comportamento verificato | Build e suite complete, manifest della build verificata, prove riproducibili di copia, pannelli stretti, tray, riapertura e uscita |
++| P0 | Correzione della contabilità RAM e dichiarazione della copertura | Alcuni totali e residui sono presentati con significato più forte delle misure disponibili | Fixture con PID leggibili/non leggibili, copertura esplicita, nessuna somma parziale etichettata completa |
++| P0 | Isolamento delle risposte asincrone per istanza e interrogazione | I passaggi audit aggiornano la GUI dopo await e il controllo della selezione non copre tutti i punti di pubblicazione | Test con ritardi controllati e cambio PID: nessun audit o risultato dell'analisi A nel pannello del processo B |
++| P1 | Separazione sistematica fra osservazione e attribuzione | Protezione di una regione, nome eseguibile e andamento WS non dimostrano da soli scopo interno, causa di avvio o GC | Ogni conclusione indica fonte e limite; test indipendenti da etichette e regole che producono la stessa conclusione |
++| P1 | Modello di presentazione tipizzato e riduzione di MainWindow | La finestra concentra oltre 2.200 righe e combina acquisizione, orchestrazione e rendering; alcuni log devono essere interpretati come stringhe | Presenter dedicati con test puri; eventi e misure passati come dati, senza ricostruire la semantica dal testo |
++| P1 | Misure di costo e durata reali | L'aggiunta di cache e controlli differiti non quantifica da sola il risparmio o il costo | Confronto riproducibile fra candidate con privato residente, working set, commit, allocazioni GC, handle e durate |
++| P2 | Vocabolario e gerarchia visuale condivisi | Le correzioni locali hanno lasciato differenze fra rapporto, evidenze e registro | Una stessa struttura sintesi → misure → evidenze → registro, stili condivisi e prove visive a DPI diversi |
++
++## 1. Le criticità RAM più importanti
++
++In `WindowsPhysicalMemoryReader.cs` il gruppo usa `items.Any(x => x.PrivateWorkingSetAvailable)` insieme alla somma dei soli membri disponibili. Un gruppo con un PID letto e uno non letto può quindi essere presentato come disponibile senza esplicitare il contributo mancante. Il prossimo intervento dovrebbe distinguere misurati, attesi e non disponibili e qualificare il totale come parziale quando occorre. Questo riguarda R10-01 e il raggruppamento delle applicazioni R10-05.
++
++Nello stesso file la differenza `usedPhysical - totalPrivWs` alimenta `KernelAndSharedPhysicalBytes`. Dalla formula applicata nel codice non segue una misura diretta della memoria kernel e condivisa: il residuo risente anche di copertura, contatori diversi e campionamenti non simultanei. Lo presenterei come residuo non attribuito con il relativo limite, affiancando eventuali contatori specifici raccolti e verificati separatamente. È la criticità R10-02, ancora aperta.
++
++In `WindowsAllocationInspector.cs` le etichette includono Codice compilato JIT / Runtime a partire da RX/RWX. Le protezioni sono osservabili, lo scopo interno non viene stabilito da quelle sole protezioni. VirtualQueryEx descrive stato, protezione e tipo di regioni virtuali; non è un profiler degli oggetti o delle cause di allocazione. Le etichette dovrebbero quindi riportare le protezioni effettive e distinguere qualsiasi ipotesi di scopo. Questo riguarda R10-03/R10-04. Non lo considero risolto dalla sola nuova formattazione del registro.
++
++Anche il calo del working set non dimostra di per sé rilascio delle allocazioni o garbage collection; la pressione di sistema e la crescita di un singolo processo devono essere valutate separatamente. Per la top list va inoltre chiarito il limite applicato prima dei filtri. Questi casi hanno già riferimenti R10-06/R10-07 e fixture richieste nel registro delle criticità.
++
++I significati dei contatori restano distinti: PrivateWorkingSetSize è working set privato; PrivateUsage è commit privato; VirtualQueryEx riguarda regioni virtuali. Non proporrei somme o confronti fra questi valori senza dichiararne il significato e la copertura.
++
++Fonti primarie di riferimento:
++
++- https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex2
++- https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualqueryex
++- https://learn.microsoft.com/en-us/windows/win32/memory/working-set
++
++## 2. Separare i dati dalla loro formulazione
++
++Il progetto contiene già flag di disponibilità nei ProcessSnapshot e DiagnosticEvent con OperationId, PID, API, Stage e altri metadati. Riutilizzerei e renderei coerenti queste informazioni nella GUI. Non occorre creare un secondo sistema diagnostico parallelo.
++
++Per ogni misura la presentazione dovrebbe avere valore/unità, API, istante o intervallo, identità dell'istanza, disponibilità e motivo del limite. Per ogni valutazione dovrebbe essere esplicito se deriva da una misura o da una regola. Il testo italiano rimarrebbe una vista di questi dati. In questo modo cambiare una parola o un separatore nel log non cambierebbe il comportamento del programma.
++
++La R6 risolve la leggibilità con un adattatore per i formati già esistenti, mantenendo il generatore byte per byte invariato. È una soluzione circoscritta e compatibile con i vincoli della revisione. Il passaggio successivo a eventi tipizzati richiede un intervento dedicato, preservando contratti, identificativi e file JSON e verificando le equivalenze con il testo originale.
++
++Un altro punto da qualificare riguarda il routing asincrono: in MainWindow il callback locale AuditStep pubblica sul pannello senza verificare la selezione corrente. Esiste un controllo `_selectedPid != row.Pid` prima di un successivo Task.Run sul motore query, ma la pubblicazione ShowQueryResult dopo quell'await non ripete il controllo. Dal codice emerge quindi un rischio concreto di risposta o audit tardivo sotto una selezione diversa; non è stato riprodotto qui con una GUI Windows. Userei una chiave di pubblicazione composta da id interrogazione e identità PID/timestamp, verificata al momento di ogni aggiornamento della GUI. La cancellazione può ridurre lavoro inutile, ma non sostituisce il controllo prima della pubblicazione. Questo non viene corretto implicitamente da un renderer che separa soltanto le righe del log.
++
++Sposterei progressivamente i presenter del registro, del rapporto memoria, dell'identificazione e dello stato finestra fuori da MainWindow, seguendo la separazione già avviata con ReportLayout/ReportView e i nuovi componenti del registro. L'orchestrazione resterebbe distinta dai collector. Eviterei una riscrittura simultanea dei motori e dell'interfaccia: piccoli passaggi con equivalenze verificabili rendono più facile individuare una regressione.
++
++## 3. Qualificazione e prestazioni
++
++La verifica più utile adesso è una procedura Windows ripetibile sulla stessa candidata: suite .NET, controllo XAML, build di tutti i componenti pertinenti e smoke test WPF. Le prove dovrebbero includere dati mancanti, processi usciti, riuso PID, rete parzialmente accessibile e fallback dei contatori. La GUI richiede anche selezione/copia, ridimensionamento, ripristino e uscita. I test di sorgente rimangono utili come guardie, ma non coprono questi comportamenti.
++
++Per le prestazioni riutilizzerei la strumentazione già presente e il percorso `measure-processlens-memory.ps1`, verificandone gli scenari supportati prima di estenderlo. Confronterei avvio a freddo, finestra visibile, processo selezionato con analisi, schede RAM/Guardian e finestra nascosta. Annoterei numero di processi e durata del campionamento. Le durate dovrebbero essere riportate come distribuzioni o almeno mediana e percentile alto su più campioni, non da una singola osservazione.
++
++La misura deve distinguere RAM privata residente, working set totale e commit. Un calo apparente ottenuto spostando pagine fuori dal working set non dimostra la rimozione di allocazioni né un beneficio complessivo. Non sono disponibili qui numeri che certifichino risparmi in MiB delle revisioni dalla R8 alla R10 R6.
++
++## 4. Sequenza pratica consigliata
++
++Prima qualificare su Windows la candidata corrente e correggere eventuali regressioni effettive. Poi intervenire in modo dedicato su R10-01/R10-02, con test di copertura e contabilità, e su R10-03/R10-04 per eliminare attribuzioni non dimostrate. Quindi uniformare i modelli di misura/presentazione e consolidare stili e presenter. Ogni passaggio dovrebbe terminare con una sola candidata completa, manifest coerente e distinzione esplicita fra eseguito e non eseguito.
++
++In questo intervento sono state implementate soltanto la nuova presentazione del registro e le relative verifiche. I cambiamenti ai collector, alla semantica e ai componenti protetti descritti come priorità non sono stati introdotti. Non sono stati terminati o profilati processi e non sono stati modificati servizi.
+--- a/VERSION.txt
++++ b/VERSION.txt
+@@ -1 +1 @@
+-0.19.16-R10-R5-tray-restore-candidate
++0.19.16-R10-R6-audit-layout-candidate
+--- a/audit/tools/check_r10.py
++++ b/audit/tools/check_r10.py
+@@ -140,5 +140,27 @@
+     'window.SetDashboardWindowVisibility' in app and 'WindowLifetimePolicy.PollingActive' in tray and
+     'GuardianDashboard?.SetActive(active && _guardianMode);' in ui and 'MemoryDashboard?.SetActive(active && _memoryMode);' in ui,
+     'Only GUI polling; Guardian service, MemoryAgent and notification policy not changed')
++audit_view=(b/'src/ProcessLens.App/AuditLogView.cs').read_text()
++audit_model=(b/'src/ProcessLens.App/AuditLogPresentation.cs').read_text()
++check('actual audit panel wired to structured cards',all(t in ui for t in ['ProcessQueryAuditText_TextChanged',
++    'AuditLogPresentation.Parse(ProcessQueryAuditText.Text)', '_auditLogView.Render(_auditDocument)', 'ProcessQueryAuditPanel_Collapsed']) and
++    all(n in main_names for n in ['ProcessQueryAuditEntriesPanel','ProcessQueryAuditOverviewText','ProcessQueryAuditLocationText']),
++    'The specific RAM verification panel from the screenshot now uses structured entries')
++check('audit text spacing uses supported native properties',all(t in audit_view for t in [
++    'FontSize = 13.5', 'new FontFamily("Segoe UI")', 'Padding = new Thickness(14)', 'Margin = new Thickness(0, 0, 0, 14)']) and
++    'LineHeight' not in audit_view,
++    'Larger body, distinct timestamp/stage, padded cards and gaps; no unsupported TextBox LineHeight')
++check('audit originals copied rather than reconstructed','string snapshot = ProcessQueryAuditText.Text;' in ui and
++    'ProcessQueryAuditPanel.Visibility == Visibility.Visible ? ProcessQueryAuditText.Text' in ui and
++    (b/'src/ProcessLens.App/MemoryAnalysisAudit.cs').read_bytes()==user['src/ProcessLens.App/MemoryAnalysisAudit.cs'],
++    'UI adapter only; original text/file generator and diagnostic event IDs unchanged')
++check('audit append and collapse preserve lifecycle',all(t in audit_view for t in [
++    '_rendered.SequenceEqual(document.Entries.Take(_rendered.Count))', 'document.Entries.Skip(_rendered.Count)',
++    '_host.Children.Clear()']) and '_auditLogView?.Clear();' in ui,
++    'Unchanged prefix keeps text selection; new source replaces rows; collapse releases cards')
++check('audit parser retains limits and unknown content',all(t in audit_model for t in [
++    'TimeSpan.TryParseExact', 'Message = previous.Message + "\\n" + line', 'new Entry("", "Registro", line, line)',
++    'location = line;']) and 'audit complete copy retains original CRLF' in (b/'tests/ProcessLens.CopyTests/Program.cs').read_text(),
++    'RAM/profiler entries, continuation lines, source location, cultures and original-copy regressions supplied; .NET NOT EXECUTED')
+ output=a.output or b/'audit/R10/structural-results.json';output.parent.mkdir(parents=True,exist_ok=True);output.write_text(json.dumps(results,ensure_ascii=False,indent=2)+'\n')
+ raise SystemExit(0 if all(r['status']=='PASS' for r in results) else 1)
+--- /dev/null
++++ b/src/ProcessLens.App/AuditLogPresentation.cs
+@@ -0,0 +1,62 @@
++using System.Globalization;
++using System.Text.RegularExpressions;
++
++namespace ProcessLens.App;
++
++// Display adapter only. Original log text, files and diagnostic event IDs are untouched.
++internal static class AuditLogPresentation
++{
++    internal sealed record Entry(string Time, string Stage, string Message, string Source);
++    internal sealed record Document(IReadOnlyList<Entry> Entries, string Location);
++    private static readonly Regex Ram = new(
++        @"^\[(?<time>[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3})\] \[VERIFICA RAM\] (?<stage>.+?) — (?<message>.*)$",
++        RegexOptions.CultureInvariant);
++    private static readonly Regex ProfilerStart = new(
++        @"^\[(?<stage>AVVIO|SICUREZZA|ATTESA)\] (?<message>.*)$", RegexOptions.CultureInvariant);
++    private static readonly Regex ProfilerEnd = new(
++        @"^\[(?<time>[0-9]{2}:[0-9]{2}:[0-9]{2})\] (?<stage>ESITO): (?<message>.*)$", RegexOptions.CultureInvariant);
++
++    public static Document Parse(string source)
++    {
++        var entries = new List<Entry>();
++        string location = "";
++        string[] lines = source.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n');
++        int last = Array.FindLastIndex(lines, s => s.Length > 0);
++        for (int index = 0; index < lines.Length; index++)
++        {
++            string line = lines[index];
++            if (index == last && line.StartsWith("Registro locale: ", StringComparison.Ordinal))
++            { location = line; continue; }
++            var match = Ram.Match(line);
++            if (match.Success && TimeSpan.TryParseExact(match.Groups["time"].Value, @"hh\:mm\:ss\.fff", CultureInfo.InvariantCulture, out _))
++            {
++                entries.Add(new Entry(match.Groups["time"].Value, match.Groups["stage"].Value, match.Groups["message"].Value, line));
++                continue;
++            }
++            match = ProfilerStart.Match(line);
++            if (!match.Success)
++            {
++                match = ProfilerEnd.Match(line);
++                if (match.Success && !TimeSpan.TryParseExact(match.Groups["time"].Value, @"hh\:mm\:ss", CultureInfo.InvariantCulture, out _))
++                    match = Match.Empty;
++            }
++            if (match.Success)
++                entries.Add(new Entry(match.Groups["time"].Value, match.Groups["stage"].Value, match.Groups["message"].Value, line));
++            else if (entries.Count > 0)
++            {
++                var previous = entries[^1];
++                entries[^1] = previous with { Message = previous.Message + "\n" + line, Source = previous.Source + "\n" + line };
++            }
++            else if (line.Length > 0) entries.Add(new Entry("", "Registro", line, line));
++        }
++        return new Document(entries.ToArray(), location);
++    }
++
++    public static string Overview(Document document)
++    {
++        if (document.Entries.Count == 0) return "Nessuna voce nel registro corrente.";
++        var latest = document.Entries[^1];
++        string time = latest.Time.Length > 0 ? " · " + latest.Time : "";
++        return $"{document.Entries.Count} voci nel registro. Ultima voce: {latest.Stage}{time}.";
++    }
++}
+--- /dev/null
++++ b/src/ProcessLens.App/AuditLogView.cs
+@@ -0,0 +1,55 @@
++using System.Windows;
++using System.Windows.Controls;
++using System.Windows.Media;
++
++namespace ProcessLens.App;
++
++internal sealed class AuditLogView
++{
++    private readonly StackPanel _host;
++    private IReadOnlyList<AuditLogPresentation.Entry> _rendered = Array.Empty<AuditLogPresentation.Entry>();
++    public AuditLogView(StackPanel host) { _host = host; }
++
++    public void Clear() { _host.Children.Clear(); _rendered = Array.Empty<AuditLogPresentation.Entry>(); }
++
++    public void Render(AuditLogPresentation.Document document)
++    {
++        // Append new events without replacing unchanged controls/selection during acquisition.
++        bool prefix = _rendered.Count <= document.Entries.Count &&
++            _rendered.SequenceEqual(document.Entries.Take(_rendered.Count));
++        if (!prefix) Clear();
++        foreach (var entry in document.Entries.Skip(_rendered.Count)) _host.Children.Add(Card(entry));
++        _rendered = document.Entries;
++    }
++
++    private static Border Card(AuditLogPresentation.Entry entry)
++    {
++        var content = new StackPanel();
++        var header = new Grid();
++        header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
++        header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
++        if (entry.Time.Length > 0)
++            header.Children.Add(new SelectableText {
++                Text = entry.Time, FontFamily = new FontFamily("Consolas"), FontSize = 11.5,
++                Foreground = new SolidColorBrush(Color.FromRgb(100, 116, 139)),
++                Margin = new Thickness(0, 2, 12, 0), VerticalAlignment = VerticalAlignment.Top
++            });
++        var stage = new SelectableText {
++            Text = entry.Stage, FontFamily = new FontFamily("Segoe UI"), FontSize = 13.5,
++            FontWeight = FontWeights.SemiBold, Foreground = new SolidColorBrush(Color.FromRgb(39, 64, 94))
++        };
++        Grid.SetColumn(stage, 1);
++        header.Children.Add(stage);
++        content.Children.Add(header);
++        content.Children.Add(new SelectableText {
++            Text = entry.Message, FontFamily = new FontFamily("Segoe UI"), FontSize = 13.5,
++            FontWeight = FontWeights.Normal, Foreground = new SolidColorBrush(Color.FromRgb(30, 41, 59)),
++            Margin = new Thickness(0, 9, 0, 0)
++        });
++        return new Border {
++            Background = Brushes.White, BorderBrush = new SolidColorBrush(Color.FromRgb(216, 226, 239)),
++            BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(7),
++            Padding = new Thickness(14), Margin = new Thickness(0, 0, 0, 14), Child = content
++        };
++    }
++}
+--- a/src/ProcessLens.App/MainWindow.xaml
++++ b/src/ProcessLens.App/MainWindow.xaml
+@@ -597,11 +597,29 @@
+                                         <local:SelectableText x:Name="ProcessQueryEvidenceText" FontSize="10.5" Foreground="#667085" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                                         <Expander x:Name="ProcessQueryAuditPanel" Visibility="Collapsed"
+                                                   Header="Registro verifiche RAM — cosa e' stato misurato"
+-                                                  IsExpanded="True" Margin="0,10,0,0" Padding="8,6"
++                                                  IsExpanded="True" Margin="0,16,0,0" Padding="10,9"
++                                                  Expanded="ProcessQueryAuditPanel_Expanded" Collapsed="ProcessQueryAuditPanel_Collapsed"
+                                                   Background="#F5F9FE" BorderBrush="#CCDAED" BorderThickness="1">
+-                                            <local:SelectableText x:Name="ProcessQueryAuditText" FontSize="11.5"
+-                                                       FontFamily="Consolas" TextWrapping="Wrap"
+-                                                       Foreground="#294562"/>
++                                            <StackPanel Margin="0,12,0,0">
++                                                <Border Background="#EAF1FA" Padding="12" CornerRadius="6" Margin="0,0,0,16">
++                                                    <StackPanel>
++                                                        <local:SelectableText Text="PANORAMICA DEL REGISTRO" FontSize="11.5" FontWeight="SemiBold"
++                                                                              Foreground="#315B8A" Margin="0,0,0,7"/>
++                                                        <local:SelectableText x:Name="ProcessQueryAuditOverviewText" FontSize="12.5" Foreground="#334155"/>
++                                                        <Button x:Name="CopyQueryAuditButton" Content="Copia registro completo" IsEnabled="False"
++                                                                Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Left" Margin="0,12,0,0"
++                                                                Click="CopyQueryAudit_Click" ToolTip="Copia il testo originale del registro corrente, comprese le voci non visibili"/>
++                                                    </StackPanel>
++                                                </Border>
++                                                <StackPanel x:Name="ProcessQueryAuditEntriesPanel"/>
++                                                <local:SelectableText x:Name="ProcessQueryAuditLocationText" FontSize="11.5" Foreground="#667085"
++                                                                      Margin="0,4,0,12"/>
++                                                <Expander Header="Testo originale del registro" IsExpanded="False" Margin="0,4,0,4" Padding="0,6">
++                                                    <local:SelectableText x:Name="ProcessQueryAuditText" FontSize="12" FontFamily="Consolas"
++                                                                          TextWrapping="Wrap" Foreground="#294562" Margin="0,12,0,0"
++                                                                          TextChanged="ProcessQueryAuditText_TextChanged"/>
++                                                </Expander>
++                                            </StackPanel>
+                                         </Expander>
+                                     </StackPanel>
+                                 </Border>
+--- a/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -22,6 +22,8 @@
+     private int? _renderedEvidenceGroupsPid;
+     private DateTime? _renderedEvidenceGroupsStartTime;
+     private string? _renderedEvidenceText;
++    private AuditLogView? _auditLogView;
++    private AuditLogPresentation.Document _auditDocument = AuditLogPresentation.Parse("");
+     private readonly WindowsProcessCollector _collector = new();
+     private readonly IProcessAnalyzer _analyzer = new ProcessIntelligenceAnalyzer();
+     private readonly IDeepProcessInspector _deepInspector = new WindowsDeepProcessInspector();
+@@ -1563,6 +1565,38 @@
+             ProcessQueryConfidenceText.Text, ProcessQueryEvidenceText.Text,
+             ProcessQueryAuditPanel.Visibility == Visibility.Visible ? ProcessQueryAuditText.Text : string.Empty);
+         ClipboardText.Copy(this, snapshot);
++    }
++
++    private void ProcessQueryAuditText_TextChanged(object sender, TextChangedEventArgs e)
++    {
++        if (ProcessQueryAuditEntriesPanel is null || ProcessQueryAuditOverviewText is null ||
++            ProcessQueryAuditLocationText is null || ProcessQueryAuditPanel is null) return;
++        if (CopyQueryAuditButton is not null) CopyQueryAuditButton.IsEnabled = ProcessQueryAuditText.Text.Length > 0;
++        _auditDocument = AuditLogPresentation.Parse(ProcessQueryAuditText.Text);
++        ProcessQueryAuditOverviewText.Text = AuditLogPresentation.Overview(_auditDocument);
++        ProcessQueryAuditLocationText.Text = _auditDocument.Location;
++        _auditLogView ??= new AuditLogView(ProcessQueryAuditEntriesPanel);
++        if (ProcessQueryAuditPanel.IsExpanded && ProcessQueryAuditPanel.Visibility == Visibility.Visible)
++            _auditLogView.Render(_auditDocument);
++        else _auditLogView.Clear();
++    }
++
++    private void ProcessQueryAuditPanel_Expanded(object sender, RoutedEventArgs e)
++    {
++        if (!ReferenceEquals(sender, e.OriginalSource) || ProcessQueryAuditEntriesPanel is null) return;
++        _auditLogView ??= new AuditLogView(ProcessQueryAuditEntriesPanel);
++        _auditLogView.Render(_auditDocument);
++    }
++
++    private void ProcessQueryAuditPanel_Collapsed(object sender, RoutedEventArgs e)
++    {
++        if (ReferenceEquals(sender, e.OriginalSource)) _auditLogView?.Clear();
++    }
++
++    private void CopyQueryAudit_Click(object sender, RoutedEventArgs e)
++    {
++        string snapshot = ProcessQueryAuditText.Text;
++        if (snapshot.Length > 0) ClipboardText.Copy(this, snapshot);
+     }
+ 
+     private void RenderQueryAnswer(ProcessQueryResult result)
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R5-tray-restore-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R6-audit-layout-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+--- a/start-processlens-all.ps1
++++ b/start-processlens-all.ps1
+@@ -27,7 +27,7 @@
+ }
+ 
+ try {
+-    Write-Host 'ProcessLens v0.19.16 R10 R5 candidata - Avvio guidato in sequenza' -ForegroundColor Green
++    Write-Host 'ProcessLens v0.19.16 R10 R6 candidata - Avvio guidato in sequenza' -ForegroundColor Green
+     Write-Host ('Modalita: ' + $Mode)
+     Write-Host ('Cartella: ' + $PSScriptRoot)
+     $isAdmin = Test-IsAdministrator
+--- a/tests/ProcessLens.CopyTests/ProcessLens.CopyTests.csproj
++++ b/tests/ProcessLens.CopyTests/ProcessLens.CopyTests.csproj
+@@ -8,5 +8,6 @@
+     <Compile Include="../../src/ProcessLens.App/ReportLayout.cs" Link="ReportLayout.cs" />
+     <Compile Include="../../src/ProcessLens.App/ProcessExitNotice.cs" Link="ProcessExitNotice.cs" />
+     <Compile Include="../../src/ProcessLens.App/WindowLifetimePolicy.cs" Link="WindowLifetimePolicy.cs" />
++    <Compile Include="../../src/ProcessLens.App/AuditLogPresentation.cs" Link="AuditLogPresentation.cs" />
+   </ItemGroup>
+ </Project>
+--- a/tests/ProcessLens.CopyTests/Program.cs
++++ b/tests/ProcessLens.CopyTests/Program.cs
+@@ -82,3 +82,29 @@
+ Check(WindowLifetimePolicy.PollingActive(true, false) && !WindowLifetimePolicy.PollingActive(true, true) &&
+     !WindowLifetimePolicy.PollingActive(false, false) && !WindowLifetimePolicy.PollingActive(false, true),
+     "UI polling resumes only for a visible non-minimized window");
++
++string auditSource = "[23:31:34.149] [VERIFICA RAM] INIZIO — Richiesta esplicita.\r\n" +
++    "[23:31:34.506] [VERIFICA RAM] PSAPI — RAM privata residente 44,0 MiB.\r\n" +
++    "[23:31:34.611] [VERIFICA RAM] ESITO — CAUSE INTERNE NON IDENTIFICATE.\r\n" +
++    "Limite aggiuntivo: perché 🧪, nessuna causa inventata.\r\nRegistro locale: C:\\Users\\esempio\\memory-analysis.log";
++var audit = AuditLogPresentation.Parse(auditSource);
++Check(audit.Entries.Count == 3 && audit.Entries[1].Time == "23:31:34.506" && audit.Entries[1].Stage == "PSAPI" &&
++    audit.Entries[1].Message == "RAM privata residente 44,0 MiB.", "audit layout separates real timestamp, stage and message");
++Check(audit.Entries[2].Message.Contains("Limite aggiuntivo: perché 🧪", StringComparison.Ordinal) &&
++    audit.Location == "Registro locale: C:\\Users\\esempio\\memory-analysis.log", "audit continuation and actual local-log location retained");
++Check(AuditLogPresentation.Overview(audit) == "3 voci nel registro. Ultima voce: ESITO · 23:31:34.611.",
++    "audit overview counts source entries without declaring them successful");
++Check(CopyTextFormat.Report("RAM", "Rapporto", "", "", auditSource).EndsWith(auditSource, StringComparison.Ordinal),
++    "audit complete copy retains original CRLF and repeated raw prefixes exactly");
++var profilerAudit = AuditLogPresentation.Parse("[AVVIO] Richiesto.\n[SICUREZZA] Limiti attivi.\n[ATTESA] Nessun risultato.");
++Check(profilerAudit.Entries.Count == 3 && profilerAudit.Entries[1].Stage == "SICUREZZA" && profilerAudit.Entries[0].Time == "",
++    "profiler stages remain distinct without invented timestamps");
++var profilerEnd = AuditLogPresentation.Parse("[23:31:34] ESITO: non disponibile\nAdapter: N/D\nLimite esplicito.");
++Check(profilerEnd.Entries.Count == 1 && profilerEnd.Entries[0].Message.Contains("Adapter: N/D\nLimite esplicito.", StringComparison.Ordinal),
++    "profiler result keeps all continuation lines");
++var unknownAudit = AuditLogPresentation.Parse("Messaggio non strutturato\n[99:99:99.999] [VERIFICA RAM] FASE — invalido");
++Check(unknownAudit.Entries.Count == 1 && unknownAudit.Entries[0].Message.Contains("[99:99:99.999]", StringComparison.Ordinal) &&
++    AuditLogPresentation.Parse("").Entries.Count == 0, "unknown and malformed audit text is retained without false events");
++foreach (string sampleValue in new[] { "44,0", "44.0" })
++    Check(AuditLogPresentation.Parse("[23:31:34.506] [VERIFICA RAM] PSAPI — " + sampleValue + " MiB").Entries[0].Message == sampleValue + " MiB",
++        "audit layout never reparses or reformats measured decimal text " + sampleValue);
+--- a/tests/ProcessLens.CopyUiTests/Program.cs
++++ b/tests/ProcessLens.CopyUiTests/Program.cs
+@@ -111,6 +111,25 @@
+         chapter.IsExpanded = true;
+         Check(built == 2, "reopened chapter recreates its current content");
+ 
++        var auditHost = new StackPanel();
++        var auditView = new AuditLogView(auditHost);
++        const string firstEvent = "[23:31:34.149] [VERIFICA RAM] INIZIO — Richiesta esplicita.";
++        auditView.Render(AuditLogPresentation.Parse(firstEvent));
++        var firstCard = (Border)auditHost.Children[0];
++        var firstContent = (StackPanel)firstCard.Child;
++        var messageText = (SelectableText)firstContent.Children[1];
++        Check(firstCard.Margin.Bottom >= 14 && firstCard.Padding.Left >= 14 && messageText.FontSize >= 13.5 &&
++            messageText.TextWrapping == TextWrapping.Wrap, "actual audit card has generous spacing and larger wrapped text");
++        messageText.Select(0, 9);
++        auditView.Render(AuditLogPresentation.Parse(firstEvent + "\n[23:31:34.506] [VERIFICA RAM] PSAPI — 44,0 MiB"));
++        Check(auditHost.Children.Count == 2 && ReferenceEquals(auditHost.Children[0], firstCard) && messageText.SelectionLength == 9,
++            "appended audit event preserves existing controls and text selection");
++        auditView.Render(AuditLogPresentation.Parse("[23:32:00.000] [VERIFICA RAM] INIZIO — Nuova analisi."));
++        Check(auditHost.Children.Count == 1 && !ReferenceEquals(auditHost.Children[0], firstCard),
++            "new audit replaces old entries without mixing analyses");
++        auditView.Clear();
++        Check(auditHost.Children.Count == 0, "collapsing audit releases generated cards");
++
+         var saved = CultureInfo.CurrentCulture;
+         try
+         {
+@@ -143,6 +162,24 @@
+         Check(window.FindName("ProcessQueryOverviewLabel") is SelectableText &&
+             window.FindName("DetailEvidenceOverviewText") is SelectableText,
+             "actual query and evidence panels contain initial overview controls");
++        Check(window.FindName("ProcessQueryAuditEntriesPanel") is StackPanel &&
++            window.FindName("ProcessQueryAuditText") is SelectableText,
++            "actual audit markup retains structured entries and original selectable source");
++        var actualAuditPanel = (Expander)window.FindName("ProcessQueryAuditPanel");
++        var actualAuditRaw = (SelectableText)window.FindName("ProcessQueryAuditText");
++        var actualAuditEntries = (StackPanel)window.FindName("ProcessQueryAuditEntriesPanel");
++        actualAuditPanel.Visibility = Visibility.Visible;
++        actualAuditRaw.Text = firstEvent;
++        Check(actualAuditEntries.Children.Count == 1 && ((Button)window.FindName("CopyQueryAuditButton")).IsEnabled,
++            "real audit TextChanged event renders cards and enables original-log copy");
++        actualAuditPanel.IsExpanded = false;
++        Check(actualAuditEntries.Children.Count == 0, "real audit collapse handler releases cards");
++        actualAuditPanel.IsExpanded = true;
++        Check(actualAuditEntries.Children.Count == 1, "real audit expansion restores current entries");
++        actualAuditRaw.Text = "";
++        Check(actualAuditEntries.Children.Count == 0 && !((Button)window.FindName("CopyQueryAuditButton")).IsEnabled,
++            "real audit reset clears old entries and disables stale-log copy");
++        actualAuditPanel.Visibility = Visibility.Collapsed;
+         var noticeCard = (Border)window.FindName("ProcessNoticeCard");
+         Check(noticeCard.Visibility == Visibility.Collapsed && noticeCard.MaxWidth == 420 &&
+             window.FindName("ProcessNoticeText") is SelectableText,
+--- a/tests/check-copy-ui-r10.ps1
++++ b/tests/check-copy-ui-r10.ps1
+@@ -61,3 +61,13 @@
+     throw 'FAIL tray lifecycle: startup or existing-instance restore not wired.'
+ }
+ Write-Host 'PASS R10 R5 lifecycle: hide, restore, explicit exit and shell recovery wired. Source checks only.'
++$audit = Get-Content (Join-Path $root 'src\ProcessLens.App\AuditLogView.cs') -Raw -Encoding UTF8
++foreach ($token in @('ProcessQueryAuditText_TextChanged', 'AuditLogPresentation.Parse(ProcessQueryAuditText.Text)',
++    'ProcessQueryAuditPanel_Expanded', 'ProcessQueryAuditPanel_Collapsed', 'CopyQueryAudit_Click')) {
++    if (-not $code.Contains($token)) { throw ('FAIL audit layout: missing actual audit integration: ' + $token) }
++}
++foreach ($token in @('FontSize = 13.5', 'Padding = new Thickness(14)', 'Margin = new Thickness(0, 0, 0, 14)',
++    '_rendered.SequenceEqual(document.Entries.Take(_rendered.Count))')) {
++    if (-not $audit.Contains($token)) { throw ('FAIL audit layout: missing spacing or append lifecycle: ' + $token) }
++}
++Write-Host 'PASS R10 R6 audit layout: timestamp/stage/message cards, spacing, append and original copy wired. Source checks only.'

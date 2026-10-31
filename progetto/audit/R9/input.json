@@ -1,0 +1,8 @@
+{
+  "baseline": "ProcessLens-v0.19.16-R8-memory-candidate.zip",
+  "baseline_sha256": "45db9949f77ba8a919370951ad867f0b746457bea67f7407e4fc421d6cdcb36a",
+  "screenshot": "image(20261015-104908).png",
+  "screenshot_sha256": "fee997de380e8f5e9977271dd4d6c94ec8fd6b0f12a74b374a459b6882b12249",
+  "screenshot_observed": "Tempo CPU 00:10:36.0625000; campione 16,5s; sintesi rete densa. Screenshot non incluso perche contiene altre applicazioni.",
+  "scope": "R8 -> R9 presentation only. Prior semantic audit and user changes retained."
+}

@@ -1,0 +1,18 @@
+{
+  "baseline_sha256": "4ea232b848acc675ab3c39a907460e0ab147b90fa42537c6c448a1bc12525955",
+  "scope": "Fix the user-reported unhandled InvalidDataException without changing validation or limits",
+  "files": [
+    {
+      "file": "src/ProcessLens.Core/NetworkDevices.cs",
+      "sha256_before": "97a377d94542494dc1a9b0e603733ca60794ba60f2be32f91ab2728b567f7ebb",
+      "sha256_after": "cc0dcd2290dc16060768cdd46ac13230ffcd9b9e76556a2dbb118a75ab56ec0e",
+      "scope": "R14 R1: explicit handling of InvalidDataException; candidate version only in App"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256_before": "ad183bf72f3d67c872fea22e5a5d73f7386ece25e596d89892184426af60909b",
+      "sha256_after": "9ed62e00070f7732ffd0a69f7ae9cf056c708d73f19620a6f77845f08101818d",
+      "scope": "R14 R1: explicit handling of InvalidDataException; candidate version only in App"
+    }
+  ]
+}

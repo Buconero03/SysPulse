@@ -1,0 +1,13 @@
+check,environment,status,scope
+Old gate reproduction,PowerShell 7.4.21 Linux,PASS,Expected old failure reproduced on unchanged fixture
+Current source gate and eight end-to-end variants,PowerShell 7.4.21 Linux,PASS,Reject forbidden changes and accept diagnostics
+Thirteen internal guard regressions,PowerShell 7.4.21 Linux,PASS,Run by unchanged build entrypoint
+Thirty static preflight scripts,PowerShell 7.4.21 Linux,PASS,Includes syntax of all 69 PowerShell scripts
+Source and mutation retention guards,Python Linux,PASS,260 checks; no WPF execution
+Portable runtime assertions,Prior R18 evidence,RETAINED,332 assertions; exact input hashes verified; not rerun
+CSharp type checks,Prior R18 R1 evidence,RETAINED,Six assemblies; exact input hashes verified; not rerun
+Windows PowerShell 5.1,Windows,NOT EXECUTED,Compatibility must be confirmed on Windows
+Full build and WPF runtime,Windows,NOT EXECUTED,Run build-dashboard.ps1
+Live network and RAM measurement,Windows,NOT EXECUTED,No performance claim from this correction
+Current R18 R2 source and evidence guards,Python source/XML/mutations,PASS,260 checks; no C# execution
+R18 R1 to R18 R2 patch replay,git apply and byte comparison,PASS,17 changed or added files; audit metadata and manifest excluded

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/ProcessLens.RamMonitor/Measurement.cs" Link="Measurement.cs"/>
+    <Compile Include="../../src/ProcessLens.RamMonitor/NativeSampler.cs" Link="NativeSampler.cs"/>
+    <Compile Include="../../src/ProcessLens.RamMonitor/LogSession.cs" Link="LogSession.cs"/>
+  </ItemGroup>
+</Project>

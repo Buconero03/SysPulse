@@ -1,0 +1,179 @@
+es the explicit monitor choice to its client
+PASS network UI: actual packet grid binds observed fields and supports copying without the OS clipboard
+PASS network UI: packet deactivation releases rows and rejects late results even if a client ignores cancellation
+PASS network UI: R17 native capture constructor performs no API call
+PASS network UI: R17 activation performs no discovery or capture
+PASS network UI: R17 discovery does not implicitly choose a capture source
+PASS network UI: R17 explicit capture binds copyable virtualized endpoint metadata
+PASS network UI: R17 Wi-Fi cache has a separate copyable table and releases previous capture rows
+PASS network UI: R17 Wi-Fi fixture is pending on a worker
+PASS network UI: R17 pending native operation coalesces repeated requests
+PASS network UI: R17 close and reopen rejects late Wi-Fi results and releases native discovery
+PASS network UI: R17 unavailable Wi-Fi retains the reason and never becomes zero observed clients
+PASS network UI: main window does not eagerly construct network view
+PASS network UI: Rete button opens its own lazy workspace
+PASS network UI: packet capture pane is lazy inside the network workspace
+PASS network UI: packet tab builds the real view without enumerating adapters or starting tools
+PASS network UI: Processi restores the existing workspace
+PASS network UI: R16 native evidence pane stays lazy while packet tab is used
+PASS network UI: R16 native tab constructs without reading Security or audit policy
+PASS network UI: R14 R2 selecting the initial cache tab does not query data or eagerly create packet capture
+PASS network UI: R14 R2 Wireshark tab cannot refresh the cache source
+PASS network UI: R14 R2 returning to cache tab does not automatically refresh
+PASS network UI: R14 R2 explicit cache refresh works after switching tabs before Loaded
+PASS network UI: R16 native view constructor does not invoke Windows APIs
+PASS network UI: R16 native activation does not automatically read logs
+PASS network UI: R16 manual native acquisition binds copied virtualized event data
+PASS network UI: R16 event selection and table copy retain reported historical source and PID limits
+PASS network UI: R16 blocked native fixture starts on worker
+PASS network UI: R16 concurrent native refreshes coalesce
+PASS network UI: R16 hidden pane rejects late native results and releases event rows
+PASS network UI: R16 unavailable log clears old rows and preserves error without invented zero
+Network UI fixtures complete; no window shown, live network acquisition or real clipboard write.
+Test inventario sistema: ABI, fixture e lettura Windows in sola lettura...
+PASS system: published process header size
+PASS system: published Unicode PID and Working Set offsets
+PASS system: PSAPI performance ABI size
+PASS system: PSAPI page-size offset
+PASS system: idle retained and placeholder RAM does not become measured zero
+PASS system: independent raw fixture retains internal process name PID counters and physical total Working Set
+PASS system: reject header overlap
+PASS system: reject out-of-range next offset
+PASS system: reject name outside record
+PASS system: reject odd Unicode byte length
+PASS system: reject duplicate PID
+PASS system: reject truncated header
+PASS system: cancellation stops inventory parsing
+PASS system: page units preserve zero and reject overflow or unknown page size
+PASS system: internal names exact and suffix lookalike not classified as compression
+PASS system: Windows directory boundaries and traversal rejected
+PASS system: familiar name in user directory never certifies Windows ownership
+PASS system: analysis navigation requires exact PID executable and known creation time across UTC and local time
+PASS system: culture and unavailable memory it-IT
+PASS system: global kernel counters retain source errors and cannot become process totals it-IT
+PASS system: culture and unavailable memory en-US
+PASS system: global kernel counters retain source errors and cannot become process totals en-US
+PASS system: live Windows inventory agrees with independent self PID name and creation time
+PASS system: live Windows idle and System entries remain visible
+PASS system: live PSAPI memory counters available
+System process tests complete.
+Test catalogo componenti Windows: filtri, gruppi e memoria...
+PASS Windows components: finite catalog has 17 distinct component families
+PASS Windows components: expected component path or internal name: System Idle Process
+PASS Windows components: expected component path or internal name: System
+PASS Windows components: expected component path or internal name: Memory Compression
+PASS Windows components: expected component path or internal name: Registry
+PASS Windows components: expected component path or internal name: Secure System
+PASS Windows components: expected component path or internal name: smss.exe
+PASS Windows components: same name outside expected Windows location excluded: smss.exe
+PASS Windows components: expected component path or internal name: csrss.exe
+PASS Windows components: same name outside expected Windows location excluded: csrss.exe
+PASS Windows components: expected component path or internal name: wininit.exe
+PASS Windows components: same name outside expected Windows location excluded: wininit.exe
+PASS Windows components: expected component path or internal name: winlogon.exe
+PASS Windows components: same name outside expected Windows location excluded: winlogon.exe
+PASS Windows components: expected component path or internal name: LogonUI.exe
+PASS Windows components: same name outside expected Windows location excluded: LogonUI.exe
+PASS Windows components: expected component path or internal name: services.exe
+PASS Windows components: same name outside expected Windows location excluded: services.exe
+PASS Windows components: expected component path or internal name: svchost.exe
+PASS Windows components: same name outside expected Windows location excluded: svchost.exe
+PASS Windows components: expected component path or internal name: lsass.exe
+PASS Windows components: same name outside expected Windows location excluded: lsass.exe
+PASS Windows components: expected component path or internal name: LsaIso.exe
+PASS Windows components: same name outside expected Windows location excluded: LsaIso.exe
+PASS Windows components: expected component path or internal name: dwm.exe
+PASS Windows components: same name outside expected Windows location excluded: dwm.exe
+PASS Windows components: expected component path or internal name: explorer.exe
+PASS Windows components: same name outside expected Windows location excluded: explorer.exe
+PASS Windows components: expected component path or internal name: conhost.exe
+PASS Windows components: same name outside expected Windows location excluded: conhost.exe
+PASS Windows components: Windows folder alone cannot include an ordinary program: chrome.exe
+PASS Windows components: Windows folder alone cannot include an ordinary program: notepad.exe
+PASS Windows components: Windows folder alone cannot include an ordinary program: powershell.exe
+PASS Windows components: Windows folder alone cannot include an ordinary program: ProcessLens.exe
+PASS Windows components: Windows folder alone cannot include an ordinary program: service-vendor.exe
+PASS Windows components: wrong path or lookalike excluded: D:\Windows-old\System32\svchost.exe
+PASS Windows components: wrong path or lookalike excluded: D:\Windows\Temp\svchost.exe
+PASS Windows components: wrong path or lookalike excluded: D:\Windows\System32\..\System32\svchost.exe
+PASS Windows components: wrong path or lookalike excluded: D:\Windows\System32\fake.exe
+PASS Windows components: wrong path or lookalike excluded: E:\Windows\System32\svchost.exe
+PASS Windows components: case and separator normalization keep the same expected path
+PASS Windows components: Explorer requires Windows root instead of a generic System32 match
+PASS Windows components: suffixes and unknown names never enter the system component catalog
+PASS Windows components: native reserved entries retained without executable metadata
+PASS Windows components: retain discards application rows and preserves source counters errors and original snapshot
+PASS Windows components: many instances grouped once without losing PID identities
+PASS Windows components: maximum available resident value is not the sum and unavailable identity remains explicit
+PASS Windows components: numeric search matches exact PID rather than 112 or 512
+PASS Windows components: name and role search both remain within the curated component set
+PASS Windows components: categories filter by component function without an all-applications escape
+PASS Windows components: rendered maximum uses current decimal culture it-IT
+PASS Windows components: missing or invalid memory cannot become measured zero it-IT
+PASS Windows components: detail separates catalog role from observed identity memory and events it-IT
+PASS Windows components: rendered maximum uses current decimal culture en-US
+PASS Windows components: missing or invalid memory cannot become measured zero en-US
+PASS Windows components: detail separates catalog role from observed identity memory and events en-US
+PASS Windows components: large application inventory is not retained and 200 service hosts yield one UI row
+PASS Windows components: empty or failed samples cannot fabricate observed components
+Windows component tests complete; synthetic data only, no Windows query or live RAM measurement.
+Test WPF sistema: sorgente simulata, selezione e annullamento...
+PASS system UI: R14 R3 WPF context installed before starting asynchronous operations
+PASS system UI: R14 R3 fixture completion comes from a worker thread
+PASS system UI: R14 R3 awaited continuation returns to the owning WPF dispatcher
+PASS system UI: constructor performs no native inventory
+PASS system UI: activation does not automatically query Windows
+PASS system UI: R15 component table retains internal entries and groups service hosts without applications
+PASS system UI: actual grid copy preserves internal process names
+PASS system UI: unknown creation time blocks analysis navigation without hiding compression details
+PASS system UI: R15 only component categories; ordinary applications absent even under Windows
+PASS system UI: R15 kernel scope retains internal component groups
+PASS system UI: R15 service scope groups two hosts in one row
+PASS system UI: numeric PID search does not match substring 112
+PASS system UI: analysis button forwards selected immutable process identity
+PASS system UI: R15 grouped component exposes each actual PID for deeper analysis
+PASS system UI: R15 instance selector forwards the chosen PID rather than the first in its group
+PASS system UI: blocked native fixture begins
+PASS system UI: refresh coalesces and clears old rows while pending
+PASS system UI: late uncancellable result rejected after section closes and rows released
+PASS system UI: acquisition error preserves failure instead of a valid empty inventory
+PASS system UI: main window leaves system pane unconstructed
+PASS system UI: System Windows button opens a dedicated lazy workspace
+PASS system UI: R15 ordinary process counters hidden in system workspace
+PASS system UI: switching to network deactivates system workspace
+System process WPF tests complete; no real native query, process action or clipboard used.
+Test WPF copia e caricamento markup, senza avvio monitor o clipboard reale...
+PASS copy UI: read-only Windows exit watch binds to this test process
+PASS copy UI: native handle rejects a different creation timestamp for the same PID
+PASS copy UI: disposing a live-process watch is idempotent and does not report an exit
+PASS copy UI: native CPU first sample verifies process creation and remains unavailable as a rate
+PASS copy UI: native cumulative CPU is bracketed by independent .NET counter reads
+PASS copy UI: nonexistent PID is unavailable, not sampled zero CPU
+PASS copy UI: native CPU second read yields bounded rate over actual interval
+PASS copy UI: native CPU reset after minimize requires a new pair of counters
+PASS copy UI: GUI memory counters distinguish private resident, total resident and commit
+PASS copy UI: CPU row update notifies existing bindings without replacing the row
+PASS copy UI: reused PID cannot acquire CPU from a different process instance
+PASS copy UI: output stays read-only and has no undo history
+PASS copy UI: copy selection disabled when nothing selected
+PASS copy UI: native Copy command enabled for selection
+PASS copy UI: Copy command returns exactly selected Unicode text
+PASS copy UI: Copy all returns whole block without changing selection
+PASS copy UI: copy does not rewrite selection
+PASS copy UI: native text template is initialized; initialized=True, template=True, desired=210.00x17.29
+Unhandled exception. System.Exception: FAIL copy UI: multiline output measures at finite height; initialized=True, template=True, desired=210.00x17.29
+   at Program.Check(Boolean ok, String label) in D:\.A2\ProcessLens-v0.19.16-R10-R17-pktmon-wifi-native-candidate\ProcessLens-v0.19.16-R10\tests\ProcessLens.CopyUiTests\Program.cs:line 14
+   at Program.LayoutOutput(SelectableText text, Double width) in D:\.A2\ProcessLens-v0.19.16-R10-R17-pktmon-wifi-native-candidate\ProcessLens-v0.19.16-R10\tests\ProcessLens.CopyUiTests\Program.cs:line 27
+   at Program.Main() in D:\.A2\ProcessLens-v0.19.16-R10-R17-pktmon-wifi-native-candidate\ProcessLens-v0.19.16-R10\tests\ProcessLens.CopyUiTests\Program.cs:line 115
+
+[ERRORE COMPILAZIONE] PL-BUILD-5002 | Fase: Tests.ProcessLens.CopyUiTests
+Progetto: .\tests\ProcessLens.CopyUiTests\ProcessLens.CopyUiTests.csproj | Exit code: -532462766
+Fasi successive: NON ESEGUITE. Vedere il messaggio compiler completo sopra e build.jsonl.
+
+[ERRORE] Operazione interrotta: PL-BUILD-5002: fase Tests.ProcessLens.CopyUiTests non riuscita, codice compilatore non disponibile, exit code -532462766
+[DETTAGLIO] Tipo eccezione: RuntimeException
+[DETTAGLIO] HRESULT: 0x80131501
+[DETTAGLIO] Sorgente: build-diagnostics.ps1
+Log eventi strutturati: %LOCALAPPDATA%\ProcessLens\logs\build.jsonl
+Sequenza interrotta. Controlla l errore prima di riprovare; Guardian non e stato modificato.
+PS D:\.A2\ProcessLens-v0.19.16-R10-R17-pktmon-wifi-native-candidate\ProcessLens-v0.19.16-R10>

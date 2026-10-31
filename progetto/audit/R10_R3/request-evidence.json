@@ -1,0 +1,22 @@
+{
+  "source": "User screenshots and request 2026-10-17",
+  "screenshots": [
+    {
+      "file": "image(20261017-113605).png",
+      "sha256": "47e0d952e19668daa216dc8b66f49212f6e6d705c5fc83eb8ada52f2f5ee35ff"
+    },
+    {
+      "file": "image(20261017-114023).png",
+      "sha256": "f96e6c2c5ce61e238377ff52ecba28f5ab251ce594d6f2c0c7ca62827a66d5b5"
+    }
+  ],
+  "screenshots_not_in_deliverable": true,
+  "version_shown": "Not established by screenshots",
+  "observations": [
+    "Long allocation chapter title clipped",
+    "API counters and allocation groups shown as dense text",
+    "DLL lists mixed with other observations"
+  ],
+  "Windows_R3_execution": "NON ESEGUITO",
+  "process_enumeration": "Source reviewed, native file retained exact; no runtime completeness claim"
+}

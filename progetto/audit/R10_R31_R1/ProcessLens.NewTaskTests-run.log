@@ -1,0 +1,50 @@
+PASS new task: short executable names remain usable without an extension
+PASS new task: quoted executable paths normalize without rewriting argument bytes
+PASS new task: executable and arguments stay separate without injected shell redirect or elevation verb
+PASS new task: invalid program rejected before launch: 
+PASS new task: invalid program rejected before launch:   
+PASS new task: invalid program rejected before launch: bad<LF>.exe
+PASS new task: invalid program rejected before launch: bad<NUL>.exe
+PASS new task: invalid program rejected before launch: a"b.exe
+PASS new task: invalid program rejected before launch: thing.ps1
+PASS new task: invalid program rejected before launch: script.cmd
+PASS new task: invalid program rejected before launch: https://example.invalid/a
+PASS new task: invalid program rejected before launch: C:\
+PASS new task: line breaks cannot split program argument or directory fields
+PASS new task: COM executables and actual argument tabs are supported
+PASS new task: R23 R1 synthetic Win32 null-terminated expansion reproduces the dangerous truncation
+PASS new task: R23 R1 raw input rejected before native expansion: program NUL before suffix
+PASS new task: R23 R1 direct launcher revalidation rejects controls without expansion: program NUL before suffix
+PASS new task: R23 R1 raw input rejected before native expansion: program NUL after executable
+PASS new task: R23 R1 direct launcher revalidation rejects controls without expansion: program NUL after executable
+PASS new task: R23 R1 raw input rejected before native expansion: program initial NUL
+PASS new task: R23 R1 direct launcher revalidation rejects controls without expansion: program initial NUL
+PASS new task: R23 R1 raw input rejected before native expansion: directory embedded NUL
+PASS new task: R23 R1 direct launcher revalidation rejects controls without expansion: directory embedded NUL
+PASS new task: R23 R1 raw input rejected before native expansion: argument embedded NUL
+PASS new task: R23 R1 direct launcher revalidation rejects controls without expansion: argument embedded NUL
+PASS new task: R23 R1 raw input rejected before native expansion: program trailing LF before trimming
+PASS new task: R23 R1 direct launcher revalidation rejects controls without expansion: program trailing LF before trimming
+PASS new task: R23 R1 raw input rejected before native expansion: directory trailing CR before trimming
+PASS new task: R23 R1 direct launcher revalidation rejects controls without expansion: directory trailing CR before trimming
+PASS new task: R23 R1 valid inputs still expand once per path and preserve exact arguments
+PASS new task: R23 R1 controls introduced by an expansion result remain rejected
+PASS new task: combined Windows command-line length has an exact upper boundary
+PASS new task: environment variables expand in executable field only, not in arguments
+PASS new task: Windows error retained without command secrets: 2
+PASS new task: Windows error retained without command secrets: 3
+PASS new task: Windows error retained without command secrets: 5
+PASS new task: Windows error retained without command secrets: 193
+PASS new task: Windows error retained without command secrets: 216
+PASS new task: Windows error retained without command secrets: 740
+PASS new task: Windows error retained without command secrets: 1223
+PASS new task: Windows error retained without command secrets: 999
+PASS new task: unexpected launcher exceptions cannot expose argument text
+PASS new task: missing initial folder cannot launch or invent a PID
+PASS new task: public launcher revalidates requests independently of the UI
+PASS new task: owned fixture request can be represented without a shell
+PASS new task: successful launch returns actual PID before the owned child is released
+PASS new task: real owned child survives parent handle disposal and receives exact quoted Unicode and metacharacter arguments
+PASS new task: failed process creation has no false success or secret argument log
+New task portable tests complete; owned fixture child only, no user program launched.
+

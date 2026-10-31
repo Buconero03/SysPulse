@@ -1,0 +1,622 @@
+file,side,changed_text
+LEGGIMI.txt,before,ProcessLens R31 R1 - Correzione compilazione CS0234
+LEGGIMI.txt,after,"ProcessLens R32 — area di notifica, icone e testi"
+LEGGIMI.txt,before,"Chiudi la versione precedente con Esci, estrai questo ZIP in una cartella nuova"
+LEGGIMI.txt,before,e apri AVVIA_PROCESSLENS.cmd. La ricevuta R31 R1 forza la compilazione corretta.
+LEGGIMI.txt,after,Chiudi la precedente con Esci. Estrai tutto in una cartella nuova.
+LEGGIMI.txt,after,Avvia soltanto AVVIA_PROCESSLENS.cmd.
+LEGGIMI.txt,after,"Al primo avvio esegue test e compilazione con il .NET 8 già disponibile; nessun SDK, runtime o driver incluso nel pacchetto."
+LEGGIMI.txt,before,CORREZIONE
+LEGGIMI.txt,before,Il test ProcessLens.ProcessGroupsTests usava ProcessLens.Semantics senza un
+LEGGIMI.txt,before,ProjectReference nel suo .csproj. Il riferimento ora e dichiarato nel progetto.
+LEGGIMI.txt,before,Il controllo precedente forniva direttamente l'assembly al compilatore e non
+LEGGIMI.txt,before,aveva rilevato questa omissione. Aggiunta una verifica preventiva del riferimento.
+LEGGIMI.txt,before,Rimosso anche l'avviso CS8602 nel controllo del percorso per le icone Windows.
+LEGGIMI.txt,after,FINESTRA
+LEGGIMI.txt,after,"Nascondi accanto all’orologio: nasconde ProcessLens e il log, mantenendo l’icona blu."
+LEGGIMI.txt,after,Per riaprire: clic sull’icona blu oppure tasto destro > Mostra ProcessLens.
+LEGGIMI.txt,after,"Se non la vedi, apri ^ accanto all’orologio. Puoi trascinare l’icona da lì nella zona visibile."
+LEGGIMI.txt,after,Il trattino e la X riducono nella barra delle applicazioni. Esci chiude il programma.
+LEGGIMI.txt,after,"Se l’icona non viene registrata, la finestra resta accessibile; il log distingue HIDE_REQUEST, HIDE_RESULT e HIDDEN_TO_TRAY."
+LEGGIMI.txt,before,VERIFICA ESEGUITA
+LEGGIMI.txt,before,13 progetti portabili compilati con dotnet build/MSBuild ed eseguiti: 822 controlli PASS.
+LEGGIMI.txt,before,"Compilazione dai .csproj e dalle loro dipendenze, senza aggiungere assembly a mano."
+LEGGIMI.txt,before,Una copia isolata senza il riferimento riproduce CS0234 esattamente alla riga 361;
+LEGGIMI.txt,before,la candidata corretta compila ed esegue tutti i 214 controlli di quel progetto.
+LEGGIMI.txt,before,39 controlli PowerShell e 17 fixture launcher superati.
+LEGGIMI.txt,before,C# di 9 assembly WindowsDesktop verificato con reference assemblies e stub XAML:
+LEGGIMI.txt,before,questo controllo separato non e esecuzione WPF o compilazione XAML/BAML.
+LEGGIMI.txt,before,"GUI, DPI, shell e clic fisico sull'icona rimangono da provare su Windows."
+LEGGIMI.txt,before,Risultati e limiti: progetto\audit\R10_R31_R1. I rapporti precedenti sono storici.
+LEGGIMI.txt,after,ICONE E TESTI
+LEGGIMI.txt,after,"Prima le icone originali del file. Se non disponibili: iniziali e colori distinti, senza inventare loghi."
+LEGGIMI.txt,after,Il simbolo Windows comune resta limitato a pochi componenti di base.
+LEGGIMI.txt,after,Analisi con titoli più brevi; ruolo stimato e attività misurata restano distinti.
+LEGGIMI.txt,before,FUNZIONI R31
+LEGGIMI.txt,before,"Restano ricerca con Ctrl+F, titoli/servizi SCM ricercabili, schede Microsoft per"
+LEGGIMI.txt,before,"gli host, menu destro indipendente dal primo piano del proprietario e gestione"
+LEGGIMI.txt,before,del log insieme alla finestra principale. Questa revisione corregge la build.
+LEGGIMI.txt,before,
+LEGGIMI.txt,before,PACCHETTO LEGGERO
+LEGGIMI.txt,before,"Un solo launcher nella radice. Nessun SDK, runtime, driver o dipendenza scaricata"
+LEGGIMI.txt,before,aggiunta allo ZIP. Usa SDK .NET 8/cache gia presenti; NuGet puo richiedere rete
+LEGGIMI.txt,before,se la cache manca. Nessuna installazione automatica di SDK o driver.
+LEGGIMI.txt,before,Per ricompilare elimina solo supporto/build-r31-r1.ok.
+LEGGIMI.txt,after,VERIFICHE
+LEGGIMI.txt,after,13 progetti MSBuild e 834 asserzioni PASS; 40 controlli PowerShell e 17 prove launcher PASS.
+LEGGIMI.txt,after,Controllo C# WindowsDesktop con campi XAML simulati: 9 assembly PASS.
+LEGGIMI.txt,after,"Build completa WPF, clic fisico, DPI e RAM: da verificare su Windows."
+LEGGIMI.txt,after,Dettagli e prove: progetto/audit/R10_R32/REVIEW.md.
+progetto/audit/tools/check_notification_area_r32.ps1,after,$ErrorActionPreference='Stop'
+progetto/audit/tools/check_notification_area_r32.ps1,after,$root=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+progetto/audit/tools/check_notification_area_r32.ps1,after,$tray=Get-Content (Join-Path $root 'src/ProcessLens.App/TrayWindowController.cs') -Raw -Encoding UTF8
+progetto/audit/tools/check_notification_area_r32.ps1,after,$app=Get-Content (Join-Path $root 'src/ProcessLens.App/App.xaml.cs') -Raw -Encoding UTF8
+progetto/audit/tools/check_notification_area_r32.ps1,after,$icons=Get-Content (Join-Path $root 'src/ProcessLens.App/ProcessIconResolver.cs') -Raw -Encoding UTF8
+progetto/audit/tools/check_notification_area_r32.ps1,after,"foreach($v in @('internal void RequestHideToTray()','if (!EnsureTray())','_window.Hide()','HIDDEN_TO_TRAY','_hiddenChildren.Clear()','TaskbarCreated','!_window.IsVisible','DestroyIcon(_trayIcon)')) { if(-not $tray.Contains($v)){throw ('FAIL R32 tray: '+$v)} }"
+progetto/audit/tools/check_notification_area_r32.ps1,after,if(-not $app.Contains('window.MinimizeRequested += _windowController.RequestHideToTray')){throw 'FAIL R32 header must use notification area hide.'}
+progetto/audit/tools/check_notification_area_r32.ps1,after,"foreach($v in @('NativeIconPreference.ResolveExecutable','Placeholder(processName)','UseSharedWindowsSymbol','Segnaposto con iniziali','image.Freeze()')) { if(-not $icons.Contains($v)){throw ('FAIL R32 icons: '+$v)} }"
+progetto/audit/tools/check_notification_area_r32.ps1,after,[xml]$view=Get-Content (Join-Path $root 'src/ProcessLens.App/MainWindow.xaml') -Raw -Encoding UTF8
+progetto/audit/tools/check_notification_area_r32.ps1,after,"$button=$view.SelectSingleNode(""//*[@*[local-name()='Name']='MinimizeWindowButton']"")"
+progetto/audit/tools/check_notification_area_r32.ps1,after,if($button.GetAttribute('Content') -ne ('Nascondi accanto all'+[char]0x2019+'orologio')){throw 'FAIL R32 explicit action label.'}
+progetto/audit/tools/check_notification_area_r32.ps1,after,if(-not (Test-Path (Join-Path $root 'src/ProcessLens.App/Assets/ProcessLens.ico'))){throw 'FAIL R32 notification icon asset missing.'}
+progetto/audit/tools/check_notification_area_r32.ps1,after,"Write-Host 'PASS R32 source: explicit notification-area hide, registered icon prerequisite, owned windows and restore, resource-first icons and distinct placeholders. Physical Windows verification remains separate.'"
+progetto/audit/tools/check_powershell_r32.py,after,"""""""Run PowerShell source preflight and isolated launcher fixtures, never a build or installation."""""""
+progetto/audit/tools/check_powershell_r32.py,after,"import argparse,json,hashlib,subprocess"
+progetto/audit/tools/check_powershell_r32.py,after,from pathlib import Path
+progetto/audit/tools/check_powershell_r32.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--shell',type=Path,required=True);p.add_argument('--pwsh',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/check_powershell_r32.py,after,r=a.project.resolve();shell=a.shell.resolve();audit=r/'audit/R10_R32';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/check_powershell_r32.py,after,"# Same 30 authorized baseline source stages, plus the R24 wiring gate."
+progetto/audit/tools/check_powershell_r32.py,after,"stages=[x['file'] for x in json.loads((r/'audit/R10_R23_R1/powershell-evidence.json').read_text())['stages']]+['audit/tools/check_live_metrics_r24.ps1','audit/tools/check_process_groups_r25.ps1','audit/tools/check_scroll_minimize_r26.ps1','audit/tools/check_windows_icons_r27.ps1','audit/tools/check_window_controls_r28.ps1','audit/tools/check_window_diagnostics_r29.ps1','audit/tools/check_tray_callbacks_r30.ps1','audit/tools/check_search_hosts_r31.ps1','audit/tools/check_build_reference_r31r1.ps1','audit/tools/check_notification_area_r32.ps1'];results=[];logs=[]"
+progetto/audit/tools/check_powershell_r32.py,after,for n in stages:
+progetto/audit/tools/check_powershell_r32.py,after," x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(r/n)],cwd=r,capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;logs.append(n+'\n'+log)"
+progetto/audit/tools/check_powershell_r32.py,after, if x.returncode:(audit/'preflight.log').write_text('\n'.join(logs));raise SystemExit(log)
+progetto/audit/tools/check_powershell_r32.py,after," results.append({'file':n,'sha256':sha((r/n).read_bytes()),'status':'PASS'})"
+progetto/audit/tools/check_powershell_r32.py,after,(audit/'preflight.log').write_text('\n'.join(logs))
+progetto/audit/tools/check_powershell_r32.py,after,fixture=r/'audit/tools/test_launcher_r32.ps1';launcher=shell/'supporto/avvia.ps1'
+progetto/audit/tools/check_powershell_r32.py,after,"x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(fixture),'-Launcher',str(launcher)],capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;(audit/'launcher-fixture.log').write_text(log)"
+progetto/audit/tools/check_powershell_r32.py,after,if x.returncode:raise SystemExit(log)
+progetto/audit/tools/check_powershell_r32.py,after,"count=sum(line.startswith('PASS R32 launcher:') for line in log.splitlines());assert count==17,count"
+progetto/audit/tools/check_powershell_r32.py,after,"(audit/'powershell-evidence.json').write_text(json.dumps({'PowerShell':'7.4.21 Linux; no Windows runtime execution','stages':results,'launcher_fixture_checks':count,'launcher_sha256':sha(launcher.read_bytes()),'fixture_sha256':sha(fixture.read_bytes())},indent=2)+'\n');print('PASS',len(results),'source stages;',count,'launcher checks')"
+progetto/audit/tools/check_scroll_minimize_r26.ps1,before,"$request=[regex]::Match($tray,'(?s)public void RequestMinimize\(.*?(?=private void Minimize)').Value"
+progetto/audit/tools/check_scroll_minimize_r26.ps1,after,"$request=[regex]::Match($tray,'(?s)public void RequestMinimize\(.*?(?=internal void RequestHideToTray|private void Minimize)').Value"
+progetto/audit/tools/check_search_hosts_r31.ps1,before,"foreach($v in @('SetForegroundWindow(popup.Handle)','_menuOpenQueued || _menu.IsOpen','_minimizeMenuItem.IsEnabled = !reduced','_diagnostics?.SetOwnerMinimized(true)','_diagnostics?.SetOwnerMinimized(false)')) { if(-not $tray.Contains($v)){throw ('FAIL R31 tray/owner: '+$v)} }"
+progetto/audit/tools/check_search_hosts_r31.ps1,after,"foreach($v in @('SetForegroundWindow(popup.Handle)','_menuOpenQueued || _menu.IsOpen','_minimizeMenuItem.IsEnabled = _window.IsVisible','_diagnostics?.SetOwnerMinimized(true)','_diagnostics?.SetOwnerMinimized(false)')) { if(-not $tray.Contains($v)){throw ('FAIL R31 tray/owner: '+$v)} }"
+progetto/audit/tools/check_search_hosts_r31.ps1,before,"foreach($v in @('R31 shown search field receives keyboard focus','R31 minimizing also hides','R31 right-click menu preserves minimized','R31 Show from tray restores','R31 search finds the visible dictionary title')) { if(-not $ui.Contains($v)){throw ('FAIL R31 owned UI fixture: '+$v)} }"
+progetto/audit/tools/check_search_hosts_r31.ps1,after,"foreach($v in @('R31 shown search field receives keyboard focus','R31 minimizing also hides','R32 right-click menu preserves taskbar minimize','R31 Show from tray restores','R31 search finds the visible dictionary title')) { if(-not $ui.Contains($v)){throw ('FAIL R31 owned UI fixture: '+$v)} }"
+progetto/audit/tools/check_window_diagnostics_r29.ps1,before,"foreach($value in @('NativeIconPreference.Resolve','TryGetResourceIcon','ExtractIconExW(path, 0, out icon, IntPtr.Zero, 1)','count is 0 or uint.MaxValue','if (icon != 0) DestroyIcon(icon)','IsLocalExecutable','Cache[key] = result')) {"
+progetto/audit/tools/check_window_diagnostics_r29.ps1,after,"foreach($value in @('NativeIconPreference.ResolveExecutable','TryGetResourceIcon','ExtractIconExW(path, 0, out icon, IntPtr.Zero, 1)','count is 0 or uint.MaxValue','if (icon != 0) DestroyIcon(icon)','IsLocalExecutable','Cache[key] = result')) {"
+progetto/audit/tools/check_windows_icons_r27.ps1,before,"foreach($token in @('WindowsProcessIconPolicy.UseWindowsIcon','WindowsComponentIcon { get; }','image.Freeze()','GetResolution(process.ExecutablePath, process.Name)')) {"
+progetto/audit/tools/check_windows_icons_r27.ps1,after,"foreach($token in @('WindowsProcessIconPolicy.UseSharedWindowsSymbol','WindowsComponentIcon { get; }','image.Freeze()','GetResolution(process.ExecutablePath, process.Name)')) {"
+progetto/audit/tools/package_notification_area_r32.py,after,"""""""Package R32 with an exact R31 R1 delta, replayable patch and current verification evidence."""""""
+progetto/audit/tools/package_notification_area_r32.py,after,"import argparse,csv,difflib,hashlib,json,shutil,subprocess,tempfile,zipfile"
+progetto/audit/tools/package_notification_area_r32.py,after,from pathlib import Path
+progetto/audit/tools/package_notification_area_r32.py,after,import xml.etree.ElementTree as ET
+progetto/audit/tools/package_notification_area_r32.py,after,"p=argparse.ArgumentParser();p.add_argument('--shell',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True);p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/package_notification_area_r32.py,after,shell=a.shell.resolve();r=shell/'progetto';audit=r/'audit/R10_R32';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/package_notification_area_r32.py,after,assert sha(a.baseline_zip.read_bytes())=='79a6b2db701b48a80a168bf26fdbee83c86c82c32494cf25dd4701c6a8adc642'
+progetto/audit/tools/package_notification_area_r32.py,after,"with zipfile.ZipFile(a.baseline_zip) as z:before={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}"
+progetto/audit/tools/package_notification_area_r32.py,after,"for d in sorted(shell.rglob('__pycache__'),reverse=True):shutil.rmtree(d)"
+progetto/audit/tools/package_notification_area_r32.py,after,after={p.relative_to(shell).as_posix():p.read_bytes() for p in shell.rglob('*') if p.is_file()}
+progetto/audit/tools/package_notification_area_r32.py,after,modified=set('''LEGGIMI.txt
+progetto/audit/tools/package_notification_area_r32.py,after,supporto/avvia.ps1
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/audit/tools/check_scroll_minimize_r26.ps1
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/audit/tools/check_search_hosts_r31.ps1
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/audit/tools/check_window_diagnostics_r29.ps1
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/audit/tools/check_windows_icons_r27.ps1
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/build-dashboard.ps1
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/src/ProcessLens.App/App.xaml.cs
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/src/ProcessLens.App/MainWindow.xaml
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/src/ProcessLens.App/NativeIconPreference.cs
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/src/ProcessLens.App/ProcessIconResolver.cs
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/src/ProcessLens.App/ProcessLens.App.csproj
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/src/ProcessLens.App/TrayWindowController.cs
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/src/ProcessLens.App/WindowActionDiagnostics.cs
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/src/ProcessLens.App/WindowLifetimePolicy.cs
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/src/ProcessLens.App/WindowsProcessIconPolicy.cs
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/tests/ProcessLens.LiveMetricsUiTests/Program.cs
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/tests/ProcessLens.TerminologyTests/Program.cs
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/tests/check-classification-language-v01911.ps1
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/tests/check-terminology-ui.ps1'''.splitlines())
+progetto/audit/tools/package_notification_area_r32.py,after,added=set('''progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/src/ProcessLens.App/Assets/ProcessLens.ico
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/audit/tools/test_launcher_r32.ps1
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/audit/tools/check_notification_area_r32.ps1
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/audit/tools/check_powershell_r32.py
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/audit/tools/typecheck_wpf_sources_r32.py
+progetto/audit/tools/package_notification_area_r32.py,after,progetto/audit/tools/package_notification_area_r32.py'''.splitlines())
+progetto/audit/tools/package_notification_area_r32.py,after,"manifests={'SHA256SUMS.txt','progetto/SHA256SUMS_R10.txt'}"
+progetto/audit/tools/package_notification_area_r32.py,after,"assert set(before)<=set(after),'Deleted baseline file'"
+progetto/audit/tools/package_notification_area_r32.py,after,"assert {n for n,b in before.items() if n not in manifests and after[n]!=b}==modified,'Unexpected source modifications'"
+progetto/audit/tools/package_notification_area_r32.py,after,"assert {n for n in after if n not in before and not n.startswith('progetto/audit/R10_R32/')}==added,'Unexpected additions'"
+progetto/audit/tools/package_notification_area_r32.py,after,"for n,b in after.items():"
+progetto/audit/tools/package_notification_area_r32.py,after," if n.endswith(('.csproj','.xaml')):ET.fromstring(b)"
+progetto/audit/tools/package_notification_area_r32.py,after,"for f,k in [('runtime-evidence.json','source_hashes'),('wpf-typecheck-evidence.json','inputs')]:"
+progetto/audit/tools/package_notification_area_r32.py,after, d=json.loads((audit/f).read_text())
+progetto/audit/tools/package_notification_area_r32.py,after," for n,h in d[k].items():assert sha((r/n).read_bytes())==h,(f,n,'stale evidence')"
+progetto/audit/tools/package_notification_area_r32.py,after,runtime=json.loads((audit/'runtime-evidence.json').read_text());assert runtime['assertions']==834 and len(runtime['outcomes'])==13
+progetto/audit/tools/package_notification_area_r32.py,after,ps=json.loads((audit/'powershell-evidence.json').read_text());assert len(ps['stages'])==40 and ps['launcher_fixture_checks']==17
+progetto/audit/tools/package_notification_area_r32.py,after,for x in ps['stages']:assert sha((r/x['file']).read_bytes())==x['sha256']
+progetto/audit/tools/package_notification_area_r32.py,after,assert sha((shell/'supporto/avvia.ps1').read_bytes())==ps['launcher_sha256']
+progetto/audit/tools/package_notification_area_r32.py,after,wpf=json.loads((audit/'wpf-typecheck-evidence.json').read_text());assert len(wpf['assemblies'])==9 and all(x['status']=='PASS' for x in wpf['assemblies'])
+progetto/audit/tools/package_notification_area_r32.py,after,"for area in ['ProcessLens.Windows','ProcessLens.Semantics','ProcessLens.Guardian','ProcessLens.MemoryAgent','ProcessLens.RamMonitor']:"
+progetto/audit/tools/package_notification_area_r32.py,after," assert all(after[n]==b for n,b in before.items() if n.startswith('progetto/src/'+area+'/'))"
+progetto/audit/tools/package_notification_area_r32.py,after,"for name in ['AutomaticViewport.cs','ReadingPositionPolicy.cs','ProcessNetworkPresentation.cs','TrayCallbackRouter.cs']:"
+progetto/audit/tools/package_notification_area_r32.py,after, n='progetto/src/ProcessLens.App/'+name;assert after[n]==before[n]
+progetto/audit/tools/package_notification_area_r32.py,after,"(audit/'scope-evidence.json').write_text(json.dumps({'baseline_sha256':sha(a.baseline_zip.read_bytes()),'modified':sorted(modified),'added':sorted(added),'protected':'native acquisition, Semantics, Guardian, MemoryAgent, RAM monitor, network, scroll policies byte identical','new_external_dependencies':0,'Windows_WPF_runtime':'NOT EXECUTED','RAM':'NOT MEASURED'},indent=2)+'\n')"
+progetto/audit/tools/package_notification_area_r32.py,after,"with (audit/'files-changed.csv').open('w',newline='') as f:"
+progetto/audit/tools/package_notification_area_r32.py,after," w=csv.writer(f);w.writerow(['file','kind','sha256_before','sha256_after'])"
+progetto/audit/tools/package_notification_area_r32.py,after," for n in sorted(modified|added):w.writerow([n,'modified' if n in before else 'added',sha(before[n]) if n in before else '',sha(after[n])])"
+progetto/audit/tools/package_notification_area_r32.py,after,"with (audit/'string-ledger.csv').open('w',newline='') as f:"
+progetto/audit/tools/package_notification_area_r32.py,after," w=csv.writer(f);w.writerow(['file','side','changed_text'])"
+progetto/audit/tools/package_notification_area_r32.py,after, for n in sorted(modified|added):
+progetto/audit/tools/package_notification_area_r32.py,after,  if n.endswith('.ico'):continue
+progetto/audit/tools/package_notification_area_r32.py,after,"  for line in difflib.unified_diff(before.get(n,b'').decode('utf-8-sig').splitlines(),after[n].decode('utf-8-sig').splitlines(),n,n,n=0):"
+progetto/audit/tools/package_notification_area_r32.py,after,"   if line.startswith(('+','-')) and not line.startswith(('+++','---')):w.writerow([n,'after' if line[0]=='+' else 'before',line[1:]])"
+progetto/audit/tools/package_notification_area_r32.py,after,include=lambda n:n not in manifests and not n.startswith('progetto/audit/R10_R32/')
+progetto/audit/tools/package_notification_area_r32.py,after,with tempfile.TemporaryDirectory(prefix='processlens-r32-') as tmp:
+progetto/audit/tools/package_notification_area_r32.py,after, t=Path(tmp);bdir=t/'before';adir=t/'after';bdir.mkdir();adir.mkdir()
+progetto/audit/tools/package_notification_area_r32.py,after," for base,data in [(bdir,before),(adir,after)]:"
+progetto/audit/tools/package_notification_area_r32.py,after,"  for n,b in data.items():"
+progetto/audit/tools/package_notification_area_r32.py,after,"   if include(n):p=base/n;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b)"
+progetto/audit/tools/package_notification_area_r32.py,after," x=subprocess.run(['git','diff','--no-index','--no-renames','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=t,capture_output=True);assert x.returncode==1"
+progetto/audit/tools/package_notification_area_r32.py,after, lines=[]
+progetto/audit/tools/package_notification_area_r32.py,after, for line in x.stdout.splitlines(keepends=True):
+progetto/audit/tools/package_notification_area_r32.py,after,"  if line.startswith((b'diff --git ',b'--- ',b'+++ ')):"
+progetto/audit/tools/package_notification_area_r32.py,after,"   for prefix in [b'a/before/',b'a/after/']:line=line.replace(prefix,b'a/')"
+progetto/audit/tools/package_notification_area_r32.py,after,"   for prefix in [b'b/before/',b'b/after/']:line=line.replace(prefix,b'b/')"
+progetto/audit/tools/package_notification_area_r32.py,after,  lines.append(line)
+progetto/audit/tools/package_notification_area_r32.py,after, patch=b''.join(lines);path=audit/'R31_R1_to_R32.patch';path.write_bytes(patch)
+progetto/audit/tools/package_notification_area_r32.py,after," x=subprocess.run(['git','apply','--check',str(path)],cwd=bdir,capture_output=True);assert x.returncode==0,x.stderr"
+progetto/audit/tools/package_notification_area_r32.py,after," subprocess.run(['git','apply',str(path)],cwd=bdir,check=True)"
+progetto/audit/tools/package_notification_area_r32.py,after," assert {p.relative_to(bdir).as_posix():p.read_bytes() for p in bdir.rglob('*') if p.is_file()}=={n:b for n,b in after.items() if include(n)}"
+progetto/audit/tools/package_notification_area_r32.py,after,"(audit/'patch-evidence.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','patch_sha256':sha(patch)},indent=2)+'\n')"
+progetto/audit/tools/package_notification_area_r32.py,after,current={p.relative_to(r).as_posix():p.read_bytes() for p in r.rglob('*') if p.is_file() and p.name!='SHA256SUMS_R10.txt'}
+progetto/audit/tools/package_notification_area_r32.py,after,"(r/'SHA256SUMS_R10.txt').write_text(''.join(sha(b)+'  '+n+'\n' for n,b in sorted(current.items())))"
+progetto/audit/tools/package_notification_area_r32.py,after,files={p.relative_to(shell).as_posix():p.read_bytes() for p in shell.rglob('*') if p.is_file() and p.name!='SHA256SUMS.txt'}
+progetto/audit/tools/package_notification_area_r32.py,after,"assert not any(n.endswith(('.dll','.exe','.pdb','.nupkg','.deb','.pyc','.ok')) for n in files)"
+progetto/audit/tools/package_notification_area_r32.py,after,assert all(len(b)<10*1024*1024 for b in files.values())
+progetto/audit/tools/package_notification_area_r32.py,after,"manifest=''.join(sha(b)+'  '+n+'\n' for n,b in sorted(files.items()));files['SHA256SUMS.txt']=manifest.encode();(shell/'SHA256SUMS.txt').write_text(manifest)"
+progetto/audit/tools/package_notification_area_r32.py,after,"a.output_directory.mkdir(parents=True,exist_ok=True);target=a.output_directory/'ProcessLens-R32-area-notifica-icone-testi.zip'"
+progetto/audit/tools/package_notification_area_r32.py,after,"with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:"
+progetto/audit/tools/package_notification_area_r32.py,after," for n,b in sorted(files.items()):z.writestr('ProcessLens-Leggero/'+n,b)"
+progetto/audit/tools/package_notification_area_r32.py,after,with zipfile.ZipFile(target) as z:
+progetto/audit/tools/package_notification_area_r32.py,after, assert z.testzip() is None
+progetto/audit/tools/package_notification_area_r32.py,after," for line in manifest.splitlines():h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/'+n))==h"
+progetto/audit/tools/package_notification_area_r32.py,after," for line in (r/'SHA256SUMS_R10.txt').read_text().splitlines():h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/progetto/'+n))==h"
+progetto/audit/tools/package_notification_area_r32.py,after," assert {n.split('/')[1] for n in z.namelist()}=={'AVVIA_PROCESSLENS.cmd','LEGGIMI.txt','supporto','progetto','SHA256SUMS.txt'}"
+progetto/audit/tools/package_notification_area_r32.py,after,"result={'zip':str(target),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files)-1,'actual_MSBuild_projects':13,'assertions':834,'PS_stages':40,'launcher_checks':17,'CSharp_WindowsDesktop_stubs_only':9,'Windows_WPF_runtime':'NOT EXECUTED','RAM':'NOT MEASURED'}"
+progetto/audit/tools/package_notification_area_r32.py,after,"(a.output_directory/'verification-r32.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))"
+progetto/audit/tools/test_launcher_r32.ps1,after,param([string] $Launcher)
+progetto/audit/tools/test_launcher_r32.ps1,after,$ErrorActionPreference = 'Stop'
+progetto/audit/tools/test_launcher_r32.ps1,after,. $Launcher -FunctionsOnly
+progetto/audit/tools/test_launcher_r32.ps1,after,$count = 0
+progetto/audit/tools/test_launcher_r32.ps1,after,"function Check([bool] $Ok, [string] $Label) {"
+progetto/audit/tools/test_launcher_r32.ps1,after,    if (-not $Ok) { throw ('FAIL R32 launcher: ' + $Label) }
+progetto/audit/tools/test_launcher_r32.ps1,after,    Write-Host ('PASS R32 launcher: ' + $Label); $script:count++
+progetto/audit/tools/test_launcher_r32.ps1,after,}
+progetto/audit/tools/test_launcher_r32.ps1,after,function Touch([string] $Path) {
+progetto/audit/tools/test_launcher_r32.ps1,after,    New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
+progetto/audit/tools/test_launcher_r32.ps1,after,    Set-Content -LiteralPath $Path -Value 'fixture only' -Encoding ASCII
+progetto/audit/tools/test_launcher_r32.ps1,after,}
+progetto/audit/tools/test_launcher_r32.ps1,after,"function Make-Runtime([string] $Path, [string] $Version='8.0.32') {"
+progetto/audit/tools/test_launcher_r32.ps1,after,    Touch (Join-Path $Path 'dotnet.exe')
+progetto/audit/tools/test_launcher_r32.ps1,after,    New-Item -ItemType Directory -Path (Join-Path $Path 'shared/Microsoft.NETCore.App/8.0.32') -Force | Out-Null
+progetto/audit/tools/test_launcher_r32.ps1,after,    New-Item -ItemType Directory -Path (Join-Path $Path ('shared/Microsoft.WindowsDesktop.App/' + $Version)) -Force | Out-Null
+progetto/audit/tools/test_launcher_r32.ps1,after,}
+progetto/audit/tools/test_launcher_r32.ps1,after,$temporary = Join-Path ([IO.Path]::GetTempPath()) ('processlens-r23-' + [Guid]::NewGuid().ToString('N'))
+progetto/audit/tools/test_launcher_r32.ps1,after,$saved = @{}
+progetto/audit/tools/test_launcher_r32.ps1,after,"foreach ($name in @('PATH','DOTNET_ROOT','DOTNET_ROOT_X64','NUGET_PACKAGES')) { $saved[$name] = [Environment]::GetEnvironmentVariable($name) }"
+progetto/audit/tools/test_launcher_r32.ps1,after,try {
+progetto/audit/tools/test_launcher_r32.ps1,after,    $root = Join-Path $temporary 'bundle with space'; $profile = Join-Path $temporary 'profile with space'
+progetto/audit/tools/test_launcher_r32.ps1,after,"    New-Item -ItemType Directory -Path $root,$profile,(Join-Path $root 'supporto') -Force | Out-Null"
+progetto/audit/tools/test_launcher_r32.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'empty package has no runnable GUI'
+progetto/audit/tools/test_launcher_r32.ps1,after,    $installed = Join-Path $profile 'Programs/ProcessLens/R20'
+progetto/audit/tools/test_launcher_r32.ps1,after,    Touch (Join-Path $installed 'app/win-x64/ProcessLens.exe'); Touch (Join-Path $installed 'start-installed.ps1')
+progetto/audit/tools/test_launcher_r32.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'completed old installation cannot silently substitute its old GUI'
+progetto/audit/tools/test_launcher_r32.ps1,after,    $exe = Join-Path $root 'progetto/publish/win-x64/ProcessLens.exe'; Touch $exe
+progetto/audit/tools/test_launcher_r32.ps1,after,    $receipt = Join-Path $root 'supporto/build-r32.ok'
+progetto/audit/tools/test_launcher_r32.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'publication without successful R31 receipt is not accepted'
+progetto/audit/tools/test_launcher_r32.ps1,after,    Set-Content -LiteralPath $receipt -Value 'older version'
+progetto/audit/tools/test_launcher_r32.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'receipt for another revision is rejected'
+progetto/audit/tools/test_launcher_r32.ps1,after,    Remove-Item -LiteralPath $receipt
+progetto/audit/tools/test_launcher_r32.ps1,after,    $sdk = Join-Path $installed 'dotnet'; Make-Runtime $sdk
+progetto/audit/tools/test_launcher_r32.ps1,after,"    New-Item -ItemType Directory -Path (Join-Path $sdk 'sdk/8.0.426'),(Join-Path $installed 'packages') -Force | Out-Null"
+progetto/audit/tools/test_launcher_r32.ps1,after,"    # Stub only the compiler entry point and project build script; no dotnet, app or service is launched."
+progetto/audit/tools/test_launcher_r32.ps1,after,    function global:dotnet { throw 'fixture must not launch a real compiler' }
+progetto/audit/tools/test_launcher_r32.ps1,after,    $build = Join-Path $root 'progetto/build-dashboard.ps1'
+progetto/audit/tools/test_launcher_r32.ps1,after,"    Set-Content -LiteralPath $build -Value 'throw ""synthetic failed tests""'"
+progetto/audit/tools/test_launcher_r32.ps1,after,    $failed = $false
+progetto/audit/tools/test_launcher_r32.ps1,after,    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('synthetic failed tests') }
+progetto/audit/tools/test_launcher_r32.ps1,after,    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'failed tests cannot issue a build receipt or launch a stale publication'
+progetto/audit/tools/test_launcher_r32.ps1,after,    Check ($env:NUGET_PACKAGES -eq (Join-Path $installed 'packages')) 'completed R20 cache reused without copying packages into ZIP'
+progetto/audit/tools/test_launcher_r32.ps1,after,    [xml]$config = Get-Content -LiteralPath (Join-Path $root 'progetto/NuGet.Config') -Raw
+progetto/audit/tools/test_launcher_r32.ps1,after,    Check ($config.configuration.packageSources.clear -ne $null -and -not $config.configuration.packageSources.add) 'R20 cache build has no configured network feed'
+progetto/audit/tools/test_launcher_r32.ps1,after,    Remove-Item -LiteralPath $exe
+progetto/audit/tools/test_launcher_r32.ps1,after,    Set-Content -LiteralPath $build -Value '# fixture successful script but no executable'
+progetto/audit/tools/test_launcher_r32.ps1,after,    $failed = $false
+progetto/audit/tools/test_launcher_r32.ps1,after,    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('senza eseguibile') }
+progetto/audit/tools/test_launcher_r32.ps1,after,    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'missing executable after build remains an error'
+progetto/audit/tools/test_launcher_r32.ps1,after,"    Set-Content -LiteralPath $build -Value 'New-Item -ItemType Directory -Path ""publish/win-x64"" -Force | Out-Null; Set-Content -LiteralPath ""publish/win-x64/ProcessLens.exe"" -Value ""fixture""'"
+progetto/audit/tools/test_launcher_r32.ps1,after,    Invoke-ProcessLensBuild $root $profile
+progetto/audit/tools/test_launcher_r32.ps1,after,    $target = Resolve-ProcessLensLaunch $root $profile
+progetto/audit/tools/test_launcher_r32.ps1,after,    Check ($target.Kind -eq 'Exe' -and $target.Entry -eq $exe -and $target.Runtime -eq $sdk) 'successful owned build resolves new publication with existing private runtime'
+progetto/audit/tools/test_launcher_r32.ps1,after,"    Set-Content -LiteralPath $build -Value 'throw ""fast path must not rebuild""'"
+progetto/audit/tools/test_launcher_r32.ps1,after,    Check ((Resolve-ProcessLensLaunch $root $profile).Entry -eq $exe) 'subsequent resolution needs no build or SDK command'
+progetto/audit/tools/test_launcher_r32.ps1,after,    $incomplete = Join-Path $temporary 'incomplete'; Touch (Join-Path $incomplete 'dotnet.exe')
+progetto/audit/tools/test_launcher_r32.ps1,after,    Check (-not (Test-DesktopRuntime8 $incomplete)) 'missing desktop runtime is not accepted'
+progetto/audit/tools/test_launcher_r32.ps1,after,    Make-Runtime $incomplete '9.0.1'
+progetto/audit/tools/test_launcher_r32.ps1,after,    Check (-not (Test-DesktopRuntime8 $incomplete)) 'wrong desktop runtime major is not accepted'
+progetto/audit/tools/test_launcher_r32.ps1,after,"    Check ((Quote-LaunchArgument 'C:\Program Files\ProcessLens\ProcessLens.exe') -eq '""C:\Program Files\ProcessLens\ProcessLens.exe""') 'paths with spaces remain one UAC argument'"
+progetto/audit/tools/test_launcher_r32.ps1,after,"    foreach ($bad in @('C:\bad""path', ""C:\bad`npath"")) {"
+progetto/audit/tools/test_launcher_r32.ps1,after,        $failed = $false; try { Quote-LaunchArgument $bad | Out-Null } catch { $failed = $true }
+progetto/audit/tools/test_launcher_r32.ps1,after,        Check $failed 'quotes and newlines cannot create extra launch arguments'
+progetto/audit/tools/test_launcher_r32.ps1,after,    }
+progetto/audit/tools/test_launcher_r32.ps1,after,    $tokens = $null; $errors = $null
+progetto/audit/tools/test_launcher_r32.ps1,after,"    $ast = [System.Management.Automation.Language.Parser]::ParseFile($Launcher,[ref]$tokens,[ref]$errors)"
+progetto/audit/tools/test_launcher_r32.ps1,after,    Check ($errors.Count -eq 0) 'real PowerShell parser accepts complete launcher'
+progetto/audit/tools/test_launcher_r32.ps1,after,"    $commands = @($ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] },$true) | ForEach-Object { $_.GetCommandName() })"
+progetto/audit/tools/test_launcher_r32.ps1,after,"    Check (@($commands | Where-Object { $_ -in @('Expand-Archive','Invoke-WebRequest','Install-Package','Install-Module','Set-Service','Start-Service','Stop-Service','Stop-Process') }).Count -eq 0) 'launcher installs no dependencies and changes no services or running processes'"
+progetto/audit/tools/test_launcher_r32.ps1,after,"    Write-Host ('R32 launcher fixture complete: ' + $count + ' checks; synthetic files only, no Windows app or UAC.')"
+progetto/audit/tools/test_launcher_r32.ps1,after,} finally {
+progetto/audit/tools/test_launcher_r32.ps1,after,    Remove-Item function:global:dotnet -ErrorAction SilentlyContinue
+progetto/audit/tools/test_launcher_r32.ps1,after,"    foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name,$saved[$name]) }"
+progetto/audit/tools/test_launcher_r32.ps1,after,    if (Test-Path -LiteralPath $temporary) { Remove-Item -LiteralPath $temporary -Recurse -Force }
+progetto/audit/tools/test_launcher_r32.ps1,after,}
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,"""""""Type-check real C# against WindowsDesktop reference assemblies with explicit generated-field stubs."
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,"This is NOT WPF markup compilation, BAML, MSBuild, or runtime validation. Stubs live outside the deliverable."
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,""""""""
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,"import argparse,hashlib,json,subprocess,xml.etree.ElementTree as ET"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,from pathlib import Path
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();out=work/'typecheck';out.mkdir(exist_ok=True);audit=r/'audit/R10_R32';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,base={p.name:p for p in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll')};desktop=list((work/'wpf-ref').glob('*.dll'))
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,assert len(desktop)>20
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,for f in desktop:base[f.name]=f
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,refs=list(base.values());event=sdk/'packs/Microsoft.AspNetCore.App.Ref/8.0.32/ref/net8.0/System.Diagnostics.EventLog.dll';sqlite=work/'Microsoft.Data.Sqlite.dll'
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,"globals=out/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,x='{http://schemas.microsoft.com/winfx/2006/xaml}';stubs=[];inputs={}
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,for path in (r/'src/ProcessLens.App').glob('*.xaml'):
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after, tree=ET.parse(path).getroot();cls=tree.get(x+'Class');assert cls
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after, fields=[]
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after, for e in tree.iter():
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,  name=e.get(x+'Name')
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,  if not name:continue
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,"  tag=e.tag.split('}',1)[1]"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,  if e.tag.startswith('{clr-namespace:ProcessLens.App}'):typ='ProcessLens.App.'+tag
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,  elif tag=='Polyline':typ='System.Windows.Shapes.Polyline'
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,  else:typ='System.Windows.Controls.'+tag
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,  fields.append('internal '+typ+' '+name+' = null!;')
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after," ns,short=cls.rsplit('.',1);stubs.append('namespace '+ns+' { public partial class '+short+' { '+ ' '.join(fields)+' private void InitializeComponent() {} } }')"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after, inputs[path.relative_to(r).as_posix()]=sha(path.read_bytes())
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,stub=out/'MarkupFieldStubs.cs';stub.write_text('\n'.join(stubs));results=[]
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,"def compile(name,sources,extra=(),library=True):"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after, for f in sources:
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,  if f.is_relative_to(r):inputs[f.relative_to(r).as_posix()]=sha(f.read_bytes())
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after," args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(out/(name+'.dll'))]"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after, args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after," args+=['-r:'+str(f) for f in [*refs,event,*extra]]+[str(globals)]+[str(f) for f in sources]"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after," result=subprocess.run(args,capture_output=True,text=True);log=result.stdout+result.stderr;(audit/(name+'-typecheck.log')).write_text(log)"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after," print(name, 'PASS' if result.returncode==0 else 'FAIL');results.append({'assembly':name,'status':'PASS' if result.returncode==0 else 'FAIL','warning_count':log.count('warning CS')})"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after, if result.returncode:raise SystemExit(log)
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,core=work/'runtime/ProcessLens.Core.dll';assert core.is_file()
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,"compile('ProcessLens.Windows',sorted((r/'src/ProcessLens.Windows').glob('*.cs')),[core])"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,"compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),[core])"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,"extra=[core,out/'ProcessLens.Windows.dll',out/'ProcessLens.Semantics.dll',sqlite]"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,"compile('ProcessLens',sorted((r/'src/ProcessLens.App').rglob('*.cs'))+[stub],extra)"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,"for name in ['NetworkUiTests','CopyUiTests','SystemProcessUiTests','NewTaskUiTests','LiveMetricsUiTests','ProcessGroupsUiTests']:"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after," compile('ProcessLens.'+name,[r/'tests'/('ProcessLens.'+name)/'Program.cs'],extra+[out/'ProcessLens.dll'],False)"
+progetto/audit/tools/typecheck_wpf_sources_r32.py,after,"(audit/'wpf-typecheck-evidence.json').write_text(json.dumps({'qualification':'C# type checking with generated-field stubs only; NOT actual WPF markup compilation or runtime','assemblies':results,'inputs':inputs,'stub_sha256':sha(stub.read_bytes()),'reference_hashes':{f.name:sha(f.read_bytes()) for f in [*desktop,event,sqlite]}},indent=2)+'\n')"
+progetto/build-dashboard.ps1,after,& (Join-Path $PSScriptRoot 'audit\tools\check_notification_area_r32.ps1')
+progetto/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv,after,"PLT-R32-001,Finestra,Riduci a icona,Nascondi accanto all’orologio,Nasconde finestra e finestre possedute; icona registrata richiesta,Comando esplicito area notifica,risultato Shell e stato visibile,riduzione nella taskbar uguale a tray,SHELL,https://learn.microsoft.com/en-us/windows/win32/shell/notification-area,azione,alta,R32"
+progetto/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv,after,"PLT-R32-002,Icone,Icona generica,Segnaposto con iniziali del file,Iniziali e colore dal nome rilevato; non logo riconosciuto,Icona originale non disponibile,nome eseguibile del campione,logo originale riconosciuto senza risorsa,UX,,tooltip,alta,R32"
+progetto/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv,after,"PLT-R32-003,Analisi,CHE COSA SIGNIFICA IL TIPO SUGGERITO,RUOLO,Classificazione del processo distinta dal lavoro attuale,Dettaglio analisi,regole e input osservati,ruolo equivale ad attività corrente,UX,,titolo,media,R32"
+progetto/src/ProcessLens.App/App.xaml.cs,before,            window.MinimizeRequested += _windowController.RequestMinimize;
+progetto/src/ProcessLens.App/App.xaml.cs,after,            window.MinimizeRequested += _windowController.RequestHideToTray;
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"        Title=""ProcessLens"""
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"        Title=""ProcessLens"" Icon=""Assets/ProcessLens.ico"""
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"                <Button x:Name=""MinimizeWindowButton"" Content=""Riduci a icona"" Margin=""2"""
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"                        ToolTip=""Riapri dalla barra applicazioni o dall’icona ProcessLens accanto all’orologio."""
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"                <Button x:Name=""MinimizeWindowButton"" Content=""Nascondi accanto all’orologio"" Margin=""2"""
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"                        ToolTip=""Nasconde la finestra e il log. Per riaprire: clic sull’icona ProcessLens accanto all’orologio, anche nel menu ^. Il trattino in alto riduce invece nella barra delle applicazioni."""
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"                        <TextBlock Text=""Prima i dati osservati, poi le interpretazioni e i relativi limiti."""
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"                        <TextBlock Text=""CPU, memoria, rete e dettagli del processo."""
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"                                    <TextBlock Text=""APP COLLEGATA (STIMA)"" Style=""{StaticResource SectionLabel}"" TextWrapping=""Wrap""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"                                    <TextBlock Text=""APP ASSOCIATA · STIMA"" Style=""{StaticResource SectionLabel}"" TextWrapping=""Wrap""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"                                    <TextBlock Text=""TIPO DI PROCESSO SUGGERITO"" Style=""{StaticResource SectionLabel}"" TextWrapping=""Wrap""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"                                    <TextBlock Text=""RUOLO STIMATO"" Style=""{StaticResource SectionLabel}"" TextWrapping=""Wrap""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"                                <TextBlock Text=""COME È STATO IDENTIFICATO?"" Style=""{StaticResource SectionLabel}""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"                                <TextBlock Text=""COSA DICE WINDOWS"" Foreground=""#667085"" FontSize=""11"" Margin=""0,5,0,2""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"                                <TextBlock Text=""IDENTITÀ E CLASSIFICAZIONE"" Style=""{StaticResource SectionLabel}""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"                                <TextBlock Text=""DATI WINDOWS"" Foreground=""#667085"" FontSize=""11"" Margin=""0,5,0,2""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"                                <TextBlock Text=""PERCHÉ È COLLEGATO ALL'APP"" Foreground=""#667085"" FontSize=""11"" Margin=""0,9,0,2""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"                                <TextBlock Text=""ASSOCIAZIONE ALL’APP"" Foreground=""#667085"" FontSize=""11"" Margin=""0,9,0,2""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"                                <TextBlock Text=""CHE COSA SIGNIFICA IL TIPO SUGGERITO"" Foreground=""#667085"" FontSize=""11"" Margin=""0,9,0,2""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"                                <TextBlock Text=""RUOLO"" Foreground=""#667085"" FontSize=""11"" Margin=""0,9,0,2""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"                                <local:SelectableText Text=""Ruolo stimato dalle regole. Attività attuale e criteri nei dettagli."""
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"                                <local:SelectableText Text=""La classificazione descrive il ruolo; CPU e rete mostrano l’attività rilevata."""
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"                                <TextBlock Text=""COMANDO RICONOSCIUTO E LIMITI"" Foreground=""#667085"" FontSize=""11"" Margin=""0,10,0,3""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"                                <TextBlock Text=""COMANDO DI AVVIO"" Foreground=""#667085"" FontSize=""11"" Margin=""0,10,0,3""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"                                <TextBlock Text=""PERCHÉ È IN ESECUZIONE"" Style=""{StaticResource SectionLabel}""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"                                <TextBlock Text=""AVVIO DEL PROCESSO"" Style=""{StaticResource SectionLabel}""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,before,"                                <TextBlock Text=""STATO ATTUALE (CPU, RETE E FINESTRE)"" Style=""{StaticResource SectionLabel}""/>"
+progetto/src/ProcessLens.App/MainWindow.xaml,after,"                                <TextBlock Text=""ATTIVITÀ RILEVATA · CPU, RETE E FINESTRE"" Style=""{StaticResource SectionLabel}""/>"
+progetto/src/ProcessLens.App/NativeIconPreference.cs,after,"    internal static NativeIconChoice<T> ResolveExecutable<T>(Func<T?> embedded, Func<T?> shell, Func<T, bool> generic) where T : class"
+progetto/src/ProcessLens.App/NativeIconPreference.cs,after,    {
+progetto/src/ProcessLens.App/NativeIconPreference.cs,after,        T? resource;
+progetto/src/ProcessLens.App/NativeIconPreference.cs,after,        try { resource = embedded(); } catch { resource = null; }
+progetto/src/ProcessLens.App/NativeIconPreference.cs,after,"        if (resource is not null && !generic(resource)) return new(resource, ""Risorsa eseguibile"");"
+progetto/src/ProcessLens.App/NativeIconPreference.cs,after,        // No duplicate resource read; Shell is queried only if the file has no usable embedded icon.
+progetto/src/ProcessLens.App/NativeIconPreference.cs,after,        T? associated;
+progetto/src/ProcessLens.App/NativeIconPreference.cs,after,        try { associated = shell(); } catch { associated = null; }
+progetto/src/ProcessLens.App/NativeIconPreference.cs,after,"        return Resolve(associated, generic, () => null);"
+progetto/src/ProcessLens.App/NativeIconPreference.cs,after,    }
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,namespace ProcessLens.App;
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,"// A visual placeholder derived from the observed filename, never a claimed product logo."
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,internal static class ProcessIconPlaceholder
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,{
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,"    internal static string Key(string? name) => string.IsNullOrWhiteSpace(name) ? ""?"" : name.Trim().ToUpperInvariant();"
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,    internal static string Initials(string? name)
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,    {
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,        string text = Key(name);
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,"        if (text.EndsWith("".EXE"", StringComparison.Ordinal)) text = text[..^4];"
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,"        var words = text.Split(new[] { ' ', '.', '-', '_' }, StringSplitOptions.RemoveEmptyEntries);"
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,        var first = words.Select(w => w.FirstOrDefault(char.IsAsciiLetterOrDigit)).Where(c => c != '\0').Take(2).ToArray();
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,"        if (first.Length == 0) return ""?"";"
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,        if (first.Length == 1) return new string(words[0].Where(char.IsAsciiLetterOrDigit).Take(2).ToArray());
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,        return new string(first);
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,    }
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,    internal static int ColorIndex(string? name)
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,    {
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,        uint hash = 2166136261;
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,        foreach (char c in Key(name)) hash = unchecked((hash ^ c) * 16777619);
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,        return (int)(hash % 8);
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,    }
+progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs,after,}
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"    private static readonly BoundedCache<string, DrawingImage> Placeholders = new(128, StringComparer.OrdinalIgnoreCase);"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"            WindowsProcessIconPolicy.UseWindowsIcon(process, WindowsDirectory), WindowsComponentIcon);"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"            WindowsProcessIconPolicy.UseSharedWindowsSymbol(process, WindowsDirectory), WindowsComponentIcon);"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"            return ""Icona Windows di ripiego · componente classificato dai dati del campione. Firma digitale non verificata."";"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"            return ""Simbolo Windows · icona originale non disponibile. Firma digitale non verificata."";"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"            _ => ""Icona generica: icona originale non disponibile. Il solo nome non identifica un programma."""
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"            _ => ""Segnaposto con iniziali del file · icona originale non disponibile. Non è il logo del programma."""
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,        BitmapSource? shell = !string.IsNullOrWhiteSpace(executablePath)
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"            ? TryGetShellIcon(executablePath, useFileAttributes: false) : null;"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        var choice = NativeIconPreference.Resolve(shell,"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"            bitmap => IsGenericIcon(bitmap, GenericIcon.Value),"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,            () => IsLocalExecutable(executablePath) ? TryGetResourceIcon(executablePath!) : null);
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,        var choice = NativeIconPreference.ResolveExecutable(
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"            () => IsLocalExecutable(executablePath) ? TryGetResourceIcon(executablePath!) : null,"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"            () => IsLocalExecutable(executablePath) ? TryGetShellIcon(executablePath!, useFileAttributes: false) : null,"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"            bitmap => IsGenericIcon(bitmap, GenericIcon.Value));"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,before,"        var result = new ResolvedIcon(generic ? GenericIcon.Value : icon, generic, choice.Source);"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"        var result = new ResolvedIcon(generic ? Placeholder(processName) : icon, generic, choice.Source);"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,    }
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,    private static DrawingImage Placeholder(string processName)
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,    {
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,        string key = ProcessIconPlaceholder.Key(processName);
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"        if (Placeholders.TryGetValue(key, out var cached)) return cached;"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"        string[] colors = { ""#175CD3"", ""#6941C6"", ""#027A48"", ""#B54708"", ""#B42318"", ""#026AA2"", ""#C11574"", ""#475467"" };"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,        var brush = (SolidColorBrush)new BrushConverter().ConvertFromString(colors[ProcessIconPlaceholder.ColorIndex(key)])!;
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,        var group = new DrawingGroup();
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"        group.Children.Add(new GeometryDrawing(brush, null, new RectangleGeometry(new Rect(0, 0, 32, 32), 7, 7)));"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"        var label = new FormattedText(ProcessIconPlaceholder.Initials(key), System.Globalization.CultureInfo.InvariantCulture,"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"            FlowDirection.LeftToRight, new Typeface(""Segoe UI Semibold""), 14, Brushes.White, 1);"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,"        group.Children.Add(new GeometryDrawing(Brushes.White, null, label.BuildGeometry(new Point((32 - label.Width) / 2, (32 - label.Height) / 2))));"
+progetto/src/ProcessLens.App/ProcessIconResolver.cs,after,        var image = new DrawingImage(group); image.Freeze(); Placeholders[key] = image; return image;
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,after,    <ApplicationIcon>Assets/ProcessLens.ico</ApplicationIcon>
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,before,    <InformationalVersion>0.19.16-R10-R31-R1-project-reference-candidate</InformationalVersion>
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,after,    <InformationalVersion>0.19.16-R10-R32-notification-area-candidate</InformationalVersion>
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,after,"    <Resource Include=""Assets/ProcessLens.ico"" />"
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,after,"    <Content Include=""Assets/ProcessLens.ico"" CopyToOutputDirectory=""PreserveNewest"" CopyToPublishDirectory=""PreserveNewest"" />"
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,after,  </ItemGroup>
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,after,  <ItemGroup>
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,    private nint _trayIcon;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"    private readonly List<(Window Window, WindowState State)> _hiddenChildren = new();"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"        _actions = new(action => window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, action), Minimize, Restore);"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        _actions = new(action => window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, action), Minimize, Restore, HideToTray);"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"        var minimize = new MenuItem { Header = ""Riduci a icona"" };"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        var minimize = new MenuItem { Header = ""Nascondi accanto all’orologio"" };"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"        minimize.Click += (_, _) => { _diagnostics?.BeginTrayAttempt(""menu Riduci a icona""); _diagnostics?.Record(""MINIMIZE_SOURCE"", ""menu tray""); RequestMinimize(); };"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        minimize.Click += (_, _) => { _diagnostics?.BeginTrayAttempt(""menu Nascondi accanto all’orologio""); RequestHideToTray(); };"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,        // Only Closing/native callbacks defer. A normal header click acts in the current dispatcher turn.
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        // Only Closing/native callbacks defer native minimize. Notification-area hide has its own queued route.
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,    }
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,    // Explicit notification-area action. Native caption minimize and X keep their taskbar route.
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,    internal void RequestHideToTray()
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,    {
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        if (_disposed || _exitRequested || _window.Dispatcher.HasShutdownStarted) return;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        if (!_window.Dispatcher.CheckAccess()) {
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            _window.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(RequestHideToTray)); return;"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        }
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        _diagnostics?.Record(""HIDE_REQUEST"", ""destinazione=area di notifica"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        _actions.HideToTray(); // Last command wins over a pending restore/minimize.
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,    }
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,    private void HideToTray()
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,    {
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        if (_disposed || _exitRequested) return;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        if (!_window.IsEnabled) {
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            _diagnostics?.Record(""HIDE_ABORT"", ""finestra modale aperta; chiudere prima il dialogo"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            return;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        }
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        // Never remove the taskbar route unless Shell has accepted our notification icon.
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        if (!EnsureTray()) {
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            _diagnostics?.Record(""HIDE_ABORT"", ""icona non registrata; finestra mantenuta accessibile"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            if (!_window.IsVisible) Restore();
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            _failure?.Invoke(""Icona accanto all’orologio non disponibile. La finestra resta accessibile dalla barra delle applicazioni."");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            return;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        }
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        ++_transitionGeneration;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        _menu.IsOpen = false;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        try {
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            _diagnostics?.SetOwnerMinimized(true);
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            foreach (Window child in _window.OwnedWindows.Cast<Window>().ToArray()) {
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,                if (!child.IsVisible) continue;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"                _hiddenChildren.Add((child, child.WindowState));"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,                child.Hide();
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            }
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            _window.Hide(); // Hide, not WindowState.Minimized: no remaining taskbar button."
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            _diagnostics?.Record(""HIDE_RESULT"", $""tray={_trayPresent}; figlieNascoste={_hiddenChildren.Count}"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            _diagnostics?.Snapshot(""HIDDEN_TO_TRAY"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            QueueActivityUpdate();
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        } catch (InvalidOperationException ex) {
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            _diagnostics?.Record(""HIDE_ERROR"", ex.GetType().Name);"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            Restore();
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            _failure?.Invoke(""Impossibile nascondere ProcessLens. La finestra è stata ripristinata."");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        }
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        foreach (var child in _hiddenChildren.ToArray()) {
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            try {
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,                if (child.Window.Owner != _window) continue;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,                child.Window.ShowActivated = false;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,                child.Window.WindowState = child.State;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,                child.Window.Show();
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            } catch (InvalidOperationException) { _diagnostics?.Record(""CHILD_RESTORE"", ""finestra già chiusa""); }"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        }
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        _hiddenChildren.Clear();
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,                if (action == TrayActivation.Minimize) RequestMinimize();
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,                if (action == TrayActivation.Minimize) RequestHideToTray();
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,            var hwnd = new WindowInteropHelper(_window).Handle;
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,            bool reduced = _window.WindowState == WindowState.Minimized || (hwnd != IntPtr.Zero && IsIconic(hwnd));
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,            _minimizeMenuItem.IsEnabled = !reduced || _diagnostics?.LogVisible == true;
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"            _minimizeMenuItem.ToolTip = _minimizeMenuItem.IsEnabled ? ""Riduce la finestra e il log aperto."" : ""ProcessLens è già ridotto. Usa Mostra ProcessLens per riaprirlo."";"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            _minimizeMenuItem.IsEnabled = _window.IsVisible || _diagnostics?.LogVisible == true;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            _minimizeMenuItem.ToolTip = _minimizeMenuItem.IsEnabled ? ""Nasconde ProcessLens e le sue finestre accanto all’orologio."" : ""ProcessLens è già nascosto. Usa Mostra ProcessLens per riaprirlo."";"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"        Icon = LoadIconW(IntPtr.Zero, new IntPtr(32512)), Tip = ""ProcessLens — clic: riduci/riapri; tasto destro: menu"","
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        Icon = TrayIcon(), Tip = ""ProcessLens — clic: nascondi/mostra; tasto destro: menu"","
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,    private nint TrayIcon()
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,    {
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        if (_trayIcon == 0) _trayIcon = LoadImageW(IntPtr.Zero,"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            Path.Combine(AppContext.BaseDirectory, ""Assets"", ""ProcessLens.ico""), 1, 32, 32, 0x10);"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        return _trayIcon != 0 ? _trayIcon : LoadIconW(IntPtr.Zero, new IntPtr(32512));"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,    }
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        _hiddenChildren.Clear();
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        if (_trayIcon != 0) { DestroyIcon(_trayIcon); _trayIcon = 0; }
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"    [DllImport(""user32.dll"", CharSet = CharSet.Unicode)] private static extern nint LoadImageW(nint instance, string path, uint type, int width, int height, uint flags);"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"    [DllImport(""user32.dll"")] [return: MarshalAs(UnmanagedType.Bool)] private static extern bool DestroyIcon(nint icon);"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,before,"    internal string Report => ""ProcessLens · diagnostica finestra e icona R31"" + Environment.NewLine +"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,"    internal string Report => ""ProcessLens · diagnostica finestra e icona R32"" + Environment.NewLine +"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,before,"        Record(""SESSIONE"", $""PID={Environment.ProcessId}; R31; log locale; nessuna acquisizione processi/rete"");"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,"        Record(""SESSIONE"", $""PID={Environment.ProcessId}; R32; log locale; nessuna acquisizione processi/rete"");"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,before,"        else { Record(""CLICK"", ""pulsante Riduci a icona""); ArmProbe(); }"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,"        else { Record(""CLICK"", ""pulsante Nascondi accanto all’orologio""); ArmProbe(); }"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,before,            if (!_disposed) SetOwnerMinimized(_window.WindowState == WindowState.Minimized);
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,            if (!_disposed) SetOwnerMinimized(!_window.IsVisible || _window.WindowState == WindowState.Minimized);
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,before,"    private void VisibilityChanged(object sender, DependencyPropertyChangedEventArgs e) => Snapshot(""VISIBILITA"");"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,"    private void VisibilityChanged(object sender, DependencyPropertyChangedEventArgs e) { Snapshot(""VISIBILITA""); StateChanged(sender, EventArgs.Empty); }"
+progetto/src/ProcessLens.App/WindowLifetimePolicy.cs,before,"internal sealed class DeferredWindowActions(Action<Action> post, Action minimize, Action restore) : IDisposable"
+progetto/src/ProcessLens.App/WindowLifetimePolicy.cs,after,"internal sealed class DeferredWindowActions(Action<Action> post, Action minimize, Action restore, Action? hideToTray = null) : IDisposable"
+progetto/src/ProcessLens.App/WindowLifetimePolicy.cs,after,    public void HideToTray() => Schedule(hideToTray ?? minimize);
+progetto/src/ProcessLens.App/WindowsProcessIconPolicy.cs,before,"    internal const string ExecutableDescription = ""Icona dell’eseguibile o icona generica di Windows."";"
+progetto/src/ProcessLens.App/WindowsProcessIconPolicy.cs,after,"    internal const string ExecutableDescription = ""Icona dell’eseguibile o segnaposto."";"
+progetto/src/ProcessLens.App/WindowsProcessIconPolicy.cs,after,    private static readonly HashSet<string> SharedSymbolNames = new(StringComparer.OrdinalIgnoreCase) {
+progetto/src/ProcessLens.App/WindowsProcessIconPolicy.cs,after,"        ""svchost.exe"", ""services.exe"", ""smss.exe"", ""csrss.exe"", ""wininit.exe"", ""winlogon.exe"", ""lsass.exe"" };"
+progetto/src/ProcessLens.App/WindowsProcessIconPolicy.cs,after,"    internal static bool UseSharedWindowsSymbol(ProcessSnapshot p, string windowsDirectory) =>"
+progetto/src/ProcessLens.App/WindowsProcessIconPolicy.cs,after,"        (p.Pid is 0 or 4 || SharedSymbolNames.Contains(p.Name.EndsWith("".exe"", StringComparison.OrdinalIgnoreCase) ? p.Name : p.Name + "".exe"")) &&"
+progetto/src/ProcessLens.App/WindowsProcessIconPolicy.cs,after,"        UseWindowsIcon(p, windowsDirectory);"
+progetto/src/ProcessLens.App/WindowsProcessIconPolicy.cs,after,
+progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs,before,"        string identity = $""Windows: {process.Name} · PID {process.Pid}."";"
+progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs,after,"        string identity = $""{process.Name} · PID {process.Pid}."";"
+progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs,before,"            ? $""{insight.OwnerApp}: collegamento stimato dal nome del padre "" +"
+progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs,before,"              $""({process.ParentName}). Proprietà non verificata."""
+progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs,before,"            : $""{insight.OwnerApp}: associazione stimata. "" +"
+progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs,before,"              ""Fonte nei dettagli tecnici."";"
+progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs,after,"            ? $""App possibile: {insight.OwnerApp}. Padre: {process.ParentName}. "" +"
+progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs,after,"              ""Il nome del padre non conferma l’appartenenza."""
+progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs,after,"            : $""App possibile: {insight.OwnerApp}. Criteri nei dettagli tecnici."";"
+progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs,before,"                   ""Istruzione in corso non rilevata."";"
+progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs,after,"                   ""Istruzione in esecuzione non rilevata."";"
+progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs,before,"                   ""Attività attuale non verificata."";"
+progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs,after,"                   ""Non indica il lavoro in corso."";"
+progetto/tests/ProcessLens.LiveMetricsUiTests/Program.cs,before,"        Check(button.Content.ToString() == ""Riduci a icona"" && button.Style is not null, ""explicit styled minimize action exists"");"
+progetto/tests/ProcessLens.LiveMetricsUiTests/Program.cs,after,"        Check(button.Content.ToString() == ""Nascondi accanto all’orologio"" && button.Style is not null, ""explicit styled minimize action exists"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,before,"<Compile Include=""../../src/ProcessLens.App/WindowLifetimePolicy.cs"" Link=""WindowLifetimePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/ReadingPositionPolicy.cs"" Link=""ReadingPositionPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/WindowsProcessIconPolicy.cs"" Link=""WindowsProcessIconPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/IconPreferencePolicy.cs"" Link=""IconPreferencePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/DeferredDiagnosticWriter.cs"" Link=""DeferredDiagnosticWriter.cs""/><Compile Include=""../../src/ProcessLens.App/WindowDiagnosticJournal.cs"" Link=""WindowDiagnosticJournal.cs""/><Compile Include=""../../src/ProcessLens.App/NativeIconPreference.cs"" Link=""NativeIconPreference.cs""/><Compile Include=""../../src/ProcessLens.App/TrayCallbackRouter.cs"" Link=""TrayCallbackRouter.cs""/><Compile Include=""../../src/ProcessLens.App/WindowsComponentContext.cs"" Link=""WindowsComponentContext.cs""/></ItemGroup></Project>"
+progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,after,"<Compile Include=""../../src/ProcessLens.App/WindowLifetimePolicy.cs"" Link=""WindowLifetimePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/ReadingPositionPolicy.cs"" Link=""ReadingPositionPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/WindowsProcessIconPolicy.cs"" Link=""WindowsProcessIconPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/IconPreferencePolicy.cs"" Link=""IconPreferencePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/DeferredDiagnosticWriter.cs"" Link=""DeferredDiagnosticWriter.cs""/><Compile Include=""../../src/ProcessLens.App/WindowDiagnosticJournal.cs"" Link=""WindowDiagnosticJournal.cs""/><Compile Include=""../../src/ProcessLens.App/NativeIconPreference.cs"" Link=""NativeIconPreference.cs""/><Compile Include=""../../src/ProcessLens.App/TrayCallbackRouter.cs"" Link=""TrayCallbackRouter.cs""/><Compile Include=""../../src/ProcessLens.App/WindowsComponentContext.cs"" Link=""WindowsComponentContext.cs""/><Compile Include=""../../src/ProcessLens.App/ProcessIconPlaceholder.cs"" Link=""ProcessIconPlaceholder.cs""/></ItemGroup></Project>"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,// R32: resource-first icon selection and honest per-file placeholders; no Shell calls.
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,int shellReads32=0;
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,var original32=new object(); var generic32=new object();
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"var icon32=NativeIconPreference.ResolveExecutable(()=>original32,()=>{shellReads32++;return generic32;},x=>ReferenceEquals(x,generic32));"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(ReferenceEquals(icon32.Image,original32)&&shellReads32==0&&icon32.Source==""Risorsa eseguibile"",""R32 executable resources precede Shell without extra reads"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"icon32=NativeIconPreference.ResolveExecutable<object>(()=>throw new IOException(""fixture""),()=>{shellReads32++;return original32;},x=>ReferenceEquals(x,generic32));"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(ReferenceEquals(icon32.Image,original32)&&shellReads32==1&&icon32.Source==""Shell"",""R32 unavailable resources retain Shell recovery"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"icon32=NativeIconPreference.ResolveExecutable<object>(()=>generic32,()=>null,x=>ReferenceEquals(x,generic32));"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(icon32.Image is null,""R32 absent originals stay unavailable for placeholder selection"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(ProcessIconPlaceholder.Initials(""runtime_broker.exe"")==""RB""&&ProcessIconPlaceholder.Initials(""chrome.exe"")==""CH"",""R32 initials are derived from executable names"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(ProcessIconPlaceholder.Initials(null)==""?""&&ProcessIconPlaceholder.Initials(""你好.exe"")==""?"",""R32 unreadable initials have a neutral fallback"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(ProcessIconPlaceholder.Key("" CHROME.exe "")==ProcessIconPlaceholder.Key(""chrome.exe"")&&ProcessIconPlaceholder.ColorIndex(""chrome.exe"")==ProcessIconPlaceholder.ColorIndex(""CHROME.EXE""),""R32 placeholder identity and color are case invariant"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(Enumerable.Range(0,1000).All(i=>ProcessIconPlaceholder.ColorIndex(""fixture""+i+"".exe"") is >=0 and <8),""R32 palette index remains bounded"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(!WindowsProcessIconPolicy.UseSharedWindowsSymbol(IconProcess(""explorer.exe"",@""C:\Windows\explorer.exe""),win27),""R32 Explorer never receives the shared Windows fallback"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(WindowsProcessIconPolicy.UseSharedWindowsSymbol(IconProcess(""svchost.exe"",@""C:\Windows\System32\svchost.exe""),win27),""R32 generic Windows symbol limited to core components"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,var queue32=new List<Action>();var events32=new List<string>();
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"using(var actions32=new DeferredWindowActions(a=>queue32.Add(a),()=>events32.Add(""minimize""),()=>events32.Add(""restore""),()=>events32.Add(""hide""))) {"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after, actions32.Restore();actions32.HideToTray();queue32[0]();
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after," Check(events32.SequenceEqual(new[]{""hide""}),""R32 explicit notification-area hide supersedes queued restore"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after, queue32.Clear();actions32.HideToTray();actions32.Restore();queue32[0]();
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after," Check(events32.SequenceEqual(new[]{""hide"",""restore""}),""R32 reopen supersedes queued notification-area hide"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,}
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Console.WriteLine(""R32 notification-area and icon policy regressions complete."");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"icon32=NativeIconPreference.ResolveExecutable<object>(()=>null,()=>throw new IOException(""Shell fixture""),_=>false);"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(icon32.Image is null,""R32 Shell failure permits a placeholder instead of breaking the process list"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        var unknown32=new ProcessSnapshot { Pid=910001, ParentPid=0, Name=""alpha_tool.exe"" };"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        var other32=unknown32 with { Pid=910002, Name=""beta_worker.exe"" };"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        var placeholder32=ProcessIconResolver.GetIcon(unknown32);
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(placeholder32 is DrawingImage { IsFrozen:true } && !ReferenceEquals(placeholder32,ProcessIconResolver.GetIcon(other32)),""R32 missing originals get distinct frozen initials placeholders"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(ReferenceEquals(placeholder32,ProcessIconResolver.GetIcon(unknown32))&&ProcessIconResolver.IconDescription(unknown32).Contains(""Segnaposto""),""R32 placeholders are cached and explicitly described as placeholders"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,        main.MinimizeRequested+=controller.RequestMinimize;
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        main.MinimizeRequested+=controller.RequestHideToTray;
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"            Check(IsIconic(Handle()),""R28 real header click minimizes immediately before another dispatcher turn"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"            Until(()=>!main.IsVisible); Check(!main.IsVisible,""R32 header action hides into notification area after the dispatcher turn"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"                Until(()=>main.WindowDiagnostics.Report.Split(Environment.NewLine).Any(line=>line.Contains("" UI_CHECK:"")&&line.Contains(""iconica=True"")));"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"                Until(()=>main.WindowDiagnostics.Report.Split(Environment.NewLine).Any(line=>line.Contains("" UI_CHECK:"")&&line.Contains(""visibile=False"")));"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,        PauseBetweenClicks30();Tray30(0x202);Tray30(0x400);Until(()=>IsIconic(Handle()));Drain();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"        Check(IsIconic(Handle()),""R30 actual HWND v4 mouse release and select produce one minimize"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,        PauseBetweenClicks30();Tray30(0x400);Tray30(0x202);Until(()=>!IsIconic(Handle()));Drain();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        PauseBetweenClicks30();Tray30(0x202);Tray30(0x400);Until(()=>!main.IsVisible);Drain();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(!main.IsVisible,""R32 actual HWND v4 mouse release and select produce one tray hide"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        PauseBetweenClicks30();Tray30(0x400);Tray30(0x202);Until(()=>main.IsVisible&&!IsIconic(Handle()));Drain();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"        PauseBetweenClicks30();Tray30(0x202,false);Until(()=>IsIconic(Handle()));Drain();"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"        Check(IsIconic(Handle()),""R30 actual HWND legacy-layout callback works after v4 packets"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,        PauseBetweenClicks30();Tray30(0x401);Until(()=>!IsIconic(Handle()));Drain();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        PauseBetweenClicks30();Tray30(0x202,false);Until(()=>!main.IsVisible);Drain();"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(!main.IsVisible,""R32 actual HWND legacy-layout callback hides after v4 packets"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        PauseBetweenClicks30();Tray30(0x401);Until(()=>main.IsVisible&&!IsIconic(Handle()));Drain();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"        Check(IsIconic(Handle())&&!((MenuItem)menu31.Items[1]).IsEnabled,""R31 right-click menu preserves minimized state and disables redundant minimize"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(IsIconic(Handle())&&((MenuItem)menu31.Items[1]).IsEnabled,""R32 right-click menu preserves taskbar minimize and offers notification-area hide"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        var child32=new Window { Owner=main, Title=""R32 owned child"", Width=180, Height=100 };"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        child32.Show();Drain();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        controller.RequestHideToTray();Until(()=>!main.IsVisible&&!log29.IsVisible&&!child32.IsVisible);Drain();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(!main.IsVisible&&!log29.IsVisible&&!child32.IsVisible,""R32 tray hide removes main and all visible owned windows"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(main.WindowDiagnostics.Report.Contains(""HIDDEN_TO_TRAY""),""R32 report distinguishes notification-area hide from taskbar minimize"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        controller.RequestRestore();Until(()=>main.IsVisible&&log29.IsVisible&&child32.IsVisible);Drain();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(main.IsVisible&&child32.IsVisible,""R32 restore reopens exactly the previously visible owned child"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        child32.Close();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"        ((Button)main.FindName(""MinimizeWindowButton"")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));Until(()=>IsIconic(Handle()));Drain();"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,        controller.RequestRestore();Until(()=>!IsIconic(Handle())&&main.WindowState==WindowState.Maximized);Drain();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        ((Button)main.FindName(""MinimizeWindowButton"")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));Until(()=>!main.IsVisible);Drain();"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        controller.RequestRestore();Until(()=>main.IsVisible&&!IsIconic(Handle())&&main.WindowState==WindowState.Maximized);Drain();
+progetto/tests/ProcessLens.TerminologyTests/Program.cs,before,"    && readableIdentification[1].Value.Contains(""Proprietà non verificata""),"
+progetto/tests/ProcessLens.TerminologyTests/Program.cs,after,"    && readableIdentification[1].Value.Contains(""non conferma l’appartenenza""),"
+progetto/tests/ProcessLens.TerminologyTests/Program.cs,before,"    && readableIdentification[2].Value.Contains(""Istruzione in corso non rilevata"")"
+progetto/tests/ProcessLens.TerminologyTests/Program.cs,after,"    && readableIdentification[2].Value.Contains(""Istruzione in esecuzione non rilevata"")"
+progetto/tests/check-classification-language-v01911.ps1,before,if (-not $core.Contains('Funzione sconosciuta') -or -not $core.Contains('Attività attuale non verificata')) {
+progetto/tests/check-classification-language-v01911.ps1,after,if (-not $core.Contains('Funzione sconosciuta') -or -not $core.Contains('Non indica il lavoro in corso')) {
+progetto/tests/check-terminology-ui.ps1,before,"$headings = @('TIPO DI PROCESSO SUGGERITO', 'COME È STATO IDENTIFICATO?', 'ELEMENTI DI IDENTIFICAZIONE', 'SE TERMINI IL PROCESSO')"
+progetto/tests/check-terminology-ui.ps1,after,"$headings = @('RUOLO STIMATO', 'IDENTITÀ E CLASSIFICAZIONE', 'ELEMENTI DI IDENTIFICAZIONE', 'SE TERMINI IL PROCESSO')"
+supporto/avvia.ps1,before,    $receipt = Join-Path $Root 'supporto/build-r31-r1.ok'
+supporto/avvia.ps1,after,    $receipt = Join-Path $Root 'supporto/build-r32.ok'
+supporto/avvia.ps1,before,        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R31-R1-project-reference') {
+supporto/avvia.ps1,after,        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R32-notification-area') {
+supporto/avvia.ps1,before,    Write-Host 'Primo avvio R31 R1: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
+supporto/avvia.ps1,after,    Write-Host 'Primo avvio R32: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
+supporto/avvia.ps1,before,    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r31-r1.ok') -Value 'ProcessLens-R31-R1-project-reference' -Encoding ASCII
+supporto/avvia.ps1,after,    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r32.ok') -Value 'ProcessLens-R32-notification-area' -Encoding ASCII

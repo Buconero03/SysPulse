@@ -1,0 +1,11 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  ProcessLens.Core -> /workspace/scratch/3c80859a1061/ProcessLens/r31r1-test/native-NewTaskTests/bin/ProcessLens.Core/release/ProcessLens.Core.dll
+  ProcessLens.NewTaskTests -> /workspace/scratch/3c80859a1061/ProcessLens/r31r1-test/native-NewTaskTests/bin/ProcessLens.NewTaskTests/release/ProcessLens.NewTaskTests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.92
+

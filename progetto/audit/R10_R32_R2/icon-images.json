@@ -1,0 +1,48 @@
+{
+  "sha256": "4ac5fbe7f90267ac032a0e1f7f7db77e4af01c500815e9edf78037f786bb09e5",
+  "images": [
+    {
+      "size": [
+        16,
+        16
+      ],
+      "decoded": "PASS"
+    },
+    {
+      "size": [
+        24,
+        24
+      ],
+      "decoded": "PASS"
+    },
+    {
+      "size": [
+        32,
+        32
+      ],
+      "decoded": "PASS"
+    },
+    {
+      "size": [
+        48,
+        48
+      ],
+      "decoded": "PASS"
+    },
+    {
+      "size": [
+        64,
+        64
+      ],
+      "decoded": "PASS"
+    },
+    {
+      "size": [
+        256,
+        256
+      ],
+      "decoded": "PASS"
+    }
+  ],
+  "qualification": "Pillow image decoding only; native Windows decoder remains separate"
+}

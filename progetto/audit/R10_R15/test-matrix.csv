@@ -1,0 +1,11 @@
+test,kind,status,details
+WindowsComponentTests,direct Roslyn + .NET 8 Linux,PASS,"58 assertions; synthetic fixtures; expected paths, exclusions, grouping, missing memory, exact PID"
+SystemProcessTests,direct Roslyn + .NET 8 Linux,PASS PORTABLE,22 assertions; native ABI fixtures; live Windows branch SKIPPED
+NetworkDeviceTests,direct Roslyn + .NET 8 Linux,PASS,81 assertions; regression coverage after Core addition
+Changed C# syntax,Roslyn parser,PASS,"Five files; parsing only, no WPF type checking"
+SystemProcessUiTests,Windows WPF runtime,NOT EXECUTED,Updated category grouping and PID selection tests; Dispatcher context retained
+Full Windows pipeline and PowerShell,build-dashboard.ps1,NOT EXECUTED,Linux host; direct compilation does not replace pipeline
+DPI 100/125/150/200 percent,manual Windows,NOT EXECUTED,"Splitter, wrapping, selection and report copy supplied"
+GUI RAM and CPU delta,live Windows measurements,NOT EXECUTED,No performance claims from synthetic fixture
+Current R15 source and evidence guards,Python source/XML/mutations,PASS,118 checks; no C# execution
+R14 R3 to R15 patch replay,git apply and byte comparison,PASS,22 changed or added files; audit metadata and manifest excluded

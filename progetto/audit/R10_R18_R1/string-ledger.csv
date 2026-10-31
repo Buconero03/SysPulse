@@ -1,0 +1,9 @@
+file,line,added_or_modified_source_text,context
+tests/ProcessLens.CopyUiTests/Program.cs,22,"if (remaining <= TimeSpan.Zero) throw new TimeoutException(""Text layout exceeded its five-second test budget."");",UI/report or technical source context
+tests/ProcessLens.CopyUiTests/Program.cs,43,"if (expired) throw new TimeoutException(""Text layout Dispatcher drain exceeded its five-second test budget."");",UI/report or technical source context
+tests/ProcessLens.CopyUiTests/Program.cs,75,"$""initialized={text.IsInitialized}, template={text.Template is not null}, first={first.Width:F2}x{first.Height:F2}, desired={text.DesiredSize.Width:F2}x{text.DesiredSize.Height:F2}, lines={text.LineCount}, passes={passes + 1}"");",UI/report or technical source context
+tests/ProcessLens.CopyUiTests/Program.cs,76,"Check(settled, ""text layout settles within bounded Dispatcher passes; "" + state);",UI/report or technical source context
+tests/ProcessLens.CopyUiTests/Program.cs,180,"deferred.BeginInit(); deferred.Text = ""prima riga""; deferred.FontSize = 13; deferred.EndInit();",UI/report or technical source context
+tests/ProcessLens.CopyUiTests/Program.cs,184,"deferred.Text = ""prima riga\r\nseconda riga\r\nterza riga"";",UI/report or technical source context
+tests/ProcessLens.CopyUiTests/Program.cs,189,"""queued Background text is included before multiline assertions"");",UI/report or technical source context
+tests/check-copy-layout-r18r1.ps1,8,"if (-not $test.Contains($token)) { throw ""FAIL R18 R1 WPF layout test: $token"" }",UI/report or technical source context

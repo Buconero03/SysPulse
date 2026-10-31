@@ -1,0 +1,5 @@
+{
+  "git_apply_check": "PASS",
+  "actual_apply_and_byte_comparison": "PASS",
+  "patch_sha256": "bb2af48376f4531cc6dc49922b05dc90eb4ac5da77a1a743771742b98726df43"
+}

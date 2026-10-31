@@ -1,0 +1,20 @@
+PASS R8 cache comparer and value identity
+PASS R8 least recently used entry evicted
+PASS R8 update replaces value without growing cache
+PASS R8 removal unlinks cache entry
+PASS R8 large churn cannot grow cache past capacity
+PASS R8 concurrent icon-style access remains bounded
+PASS R8 sample count retention matches R7
+PASS R8 five minute retention includes exact cutoff
+PASS R8 export does not mutate retained samples
+PASS R8 all exported timestamp and byte values match original retention
+PASS R8 trend output is unchanged
+SYNTHETIC_ALLOCATIONS original_bytes=1272600 optimized_bytes=1152600 processes=1000 samples=20
+PASS R8 synthetic x64 global polling allocates fewer managed bytes (not a RAM claim)
+R8 memory efficiency tests passed; Windows GUI RAM must be measured separately.
+PASS R8 R7 native metadata cache preserves case-insensitive path and object identity
+PASS R8 R7 metadata path churn has a hard 512-entry bound
+PASS R8 R7 metadata update does not evict or grow the cache
+PASS R8 R7 evicted file metadata can be loaded again
+PASS R8 R7 zero-capacity cache rejected
+

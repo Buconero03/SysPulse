@@ -1,0 +1,8 @@
+{
+  "git_apply_check": "PASS",
+  "actual_git_apply": "PASS",
+  "exact_changed_files": 60,
+  "unchanged_existing_source_files": 89,
+  "deleted_prior_files": 0,
+  "scope": "Complete R10 to R11 delta including requested historical ledger extension; current audit and manifest excluded for self-reference"
+}

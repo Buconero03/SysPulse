@@ -1,0 +1,1388 @@
+diff --git a/README.md b/README.md
+index 3b3f8aa..2307d6e 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,5 @@
++> **Candidata R14:** nuova sezione **Sistema Windows** con inventario manuale, voci interne quando esposte dal sistema, dettagli N/D conservati e memoria del kernel. Istruzioni e limiti in `SISTEMA_WINDOWS_R14.md`. Test .NET/WPF e letture Windows non eseguiti qui.
++
+ > **Candidata R13:** in Rete è aggiunta la scheda Wireshark / Wi-Fi con verifiche, cattura limitata e analisi di file. Installazione e istruzioni in `INTEGRAZIONE_WIRESHARK_R13.md`.
+ 
+ > **Candidata R12:** nuova sezione Rete, aggiornamento manuale, dispositivi riconosciuti e avviso per nuove voci. Include le correzioni R11 R1/R2. Dettagli e verifiche in `RETE_R10_R12.md`.
+diff --git a/SISTEMA_WINDOWS_R14.md b/SISTEMA_WINDOWS_R14.md
+new file mode 100644
+index 0000000..675e1a6
+--- /dev/null
++++ b/SISTEMA_WINDOWS_R14.md
+@@ -0,0 +1,54 @@
++# ProcessLens R14 — Sistema Windows
++
++La R13 è mantenuta, compresa l'integrazione Wireshark/Npcap. La R14 aggiunge **Sistema Windows** nella barra principale. Compilare in PowerShell con `.\build-dashboard.ps1`.
++
++## Cosa trovi
++
++Apri **Sistema Windows → Aggiorna elenco**. La vista è creata solo quando viene aperta; non avvia un nuovo servizio, un processo ausiliario o un timer. Gli aggiornamenti sono manuali.
++
++- **Windows e voci interne**: PID riservati, eseguibili con percorso nella cartella Windows e nomi tipici di componenti Windows. Il criterio di raggruppamento è esposto per ogni riga. Non verifica firma digitale o autenticità.
++- **Tutti i processi rilevati**: inventario senza il filtro di categoria della vista Processi, inclusi nomi sconosciuti e dettagli non accessibili.
++- **Origine non verificabile**: righe senza percorso verificabile, esclusi i PID riservati 0 e 4.
++
++Ogni riga conserva nome, PID, PID padre riportato, thread, handle, sessione, Working Set totale e stato di accesso ai dettagli. Il PID padre è un dato del campione: non prova che l'istanza del padre sia ancora viva. Un diniego o un processo terminato durante la lettura non elimina la riga enumerata.
++
++Il campione ha un orario e non si aggiorna da solo. Ricerca numerica per PID esatto; ricerca testuale per nome. Tasto destro e Ctrl+C permettono di copiare la tabella; **Copia rapporto** include fonte, errori, memoria globale e dettagli selezionati.
++
++## Voci interne e memoria
++
++Le voci **System**, **System Idle Process**, **Registry**, **Secure System** e **Memory Compression** vengono mostrate se restituite da Windows. Non sono aggiunte artificialmente. La voce Idle con PID 0 rappresenta inattività della CPU; non è un'app che consuma la percentuale di CPU mostrata come inattiva da altri strumenti.
++
++Una voce interna può non avere percorso, avvio o contatori accessibili. Il solo nome di Memory Compression non misura la dimensione dei dati prima della compressione. La sua assenza dal campione non dimostra che la compressione sia disattivata. Non è stato aggiunto un contatore della dimensione dello store compresso.
++
++L'espansione **Memoria del sistema e limiti della lettura** mostra RAM fisica totale/disponibile, commit corrente/limite, pool kernel paginabile e non paginabile. I valori provengono da GetPerformanceInfo: pagine moltiplicate per la dimensione della pagina. Il pool paginabile non è tutto residente. Non sommare questi valori ai Working Set dei processi; neppure la somma dei Working Set è un totale fisico senza duplicazioni, perché comprende pagine condivise.
++
++Driver, interrupt, DPC e cache non diventano per questo processi separati. Non è un enumeratore dei moduli kernel, delle routine interne o dei servizi di ogni sottosistema.
++
++## Accesso e analisi
++
++L'inventario usa `NtQuerySystemInformation(SystemProcessInformation)` e legge soltanto i membri pubblicati della struttura. Nessun significato viene ricavato dai campi riservati. Se la chiamata non è disponibile o restituisce un formato non valido, viene tentata l'enumerazione Toolhelp; la fonte alternativa e l'errore originale restano visibili. Le liste possono differire: non si certifica la completezza degli oggetti interni del kernel.
++
++Percorso e avvio richiedono soltanto `PROCESS_QUERY_LIMITED_INFORMATION`. Nessuna modifica di privilegi o tentativo di aggirare processi protetti. L'avvio deve precedere il rilevamento e il nome deve corrispondere al percorso letto dallo stesso handle; in caso contrario quei dettagli restano N/D.
++
++**Apri analisi del processo** richiede un avvio noto e confronta PID, nome e avvio con la vista Processi. Se l'istanza non è verificabile, i dettagli della riga rimangono consultabili in Sistema Windows. Non vengono avviati automaticamente profiler, terminazioni o interventi sulla memoria. Questa vista non campiona una nuova CPU istantanea: usa l'analisi ordinaria per la CPU.
++
++## Consumo e limiti
++
++Buffer nativo temporaneo massimo 16 MiB, fino a 8 tentativi e 16.384 righe; non sono limiti alla RAM totale del programma. Il buffer viene sempre rilasciato. La vista rilascia righe e report e scarta i risultati tardivi quando viene chiusa o la finestra viene ridotta. La riapertura richiede un nuovo aggiornamento. Restano i monitor già presenti nel programma, secondo le loro politiche.
++
++L'aumento reale di CPU/RAM **non è stato misurato**. Confrontare R13/R14 a riposo, apertura, lettura e chiusura della sezione usando gli stessi contatori e almeno tre ripetizioni. Non si dichiarano risparmi o compatibilità verificata sul PC dell'utente.
++
++## Verifica Windows
++
++Eseguire `.\build-dashboard.ps1`: include le due nuove suite `ProcessLens.SystemProcessTests` e `ProcessLens.SystemProcessUiTests`. La prima usa fixture binarie indipendenti dagli offset del parser e, su Windows, un confronto in sola lettura con i dati del proprio processo. La seconda usa una sorgente simulata e verifica markup WPF, filtri, copia, selezione e risultati tardivi; non esegue acquisizioni reali.
++
++Verificare manualmente elenco senza filtro e con filtro Windows, `csrss.exe`/processi protetti con dettagli N/D, eventuale Memory Compression, errori, ricerca PID, copia, passaggio fra Processi/Rete/Sistema, riduzione e riapertura. Confrontare PID e nomi con Gestione attività **Dettagli**, considerando che i due campioni non sono simultanei. Provare 950×680 e 1180×800 DIP a 100%, 125%, 150%, 200% DPI. Le intestazioni hanno scorrimento indipendente e la tabella è virtualizzata.
++
++In questo ambiente: **.NET/C#, PowerShell, WPF, letture Windows reali e controlli DPI NON ESEGUITI**. I risultati effettivamente eseguiti sono registrati in `audit/R10_R14`; i risultati precedenti rimangono storici, non sono dichiarati nuovamente eseguiti.
++
++## Riferimenti primari
++
++- Microsoft: [NtQuerySystemInformation e layout pubblicato](https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntquerysysteminformation). L'API può cambiare; fonte alternativa esplicita. SystemProcessInformation è usato qui per i contatori, non soltanto per i nomi.
++- Microsoft: [Enumerazione dei processi](https://learn.microsoft.com/en-us/windows/win32/procthread/process-enumeration).
++- Microsoft: [Toolhelp e limiti di accesso a Idle/CSRSS](https://learn.microsoft.com/en-us/windows/win32/toolhelp/taking-a-snapshot-and-viewing-processes).
++- Microsoft: [GetPerformanceInfo](https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getperformanceinfo) e [unità dei contatori](https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-performance_information).
+diff --git a/audit/tools/check_network_devices_r12.py b/audit/tools/check_network_devices_r12.py
+index 93e683f..a969aad 100644
+--- a/audit/tools/check_network_devices_r12.py
++++ b/audit/tools/check_network_devices_r12.py
+@@ -27,7 +27,7 @@ changed = {rel for rel in old if rel.startswith('src/') and (root / rel).read_by
+ check('only four authorized existing UI sources differ from R11 R2', changed == allowed_existing)
+ check('all prior collectors Core semantics Guardian profiler and RAM monitor are byte identical',
+       all((root / rel).read_bytes() == data for rel, data in old.items() if rel.startswith('src/') and rel not in allowed_existing))
+-check('every network source matches an exact R12 or authorized R13 feature manifest',
++check('every network source matches exact R12 or authorized R13/R14 feature hashes',
+       all(approved_revision(root, row['file']) for row in approved))
+ w = '{http://schemas.microsoft.com/winfx/2006/xaml/presentation}'
+ x = '{http://schemas.microsoft.com/winfx/2006/xaml}'
+diff --git a/audit/tools/check_packet_capture_r13.py b/audit/tools/check_packet_capture_r13.py
+index e00240a..98974cf 100644
+--- a/audit/tools/check_packet_capture_r13.py
++++ b/audit/tools/check_packet_capture_r13.py
+@@ -3,6 +3,7 @@ import argparse, hashlib, json, re, zipfile
+ from pathlib import Path
+ import xml.etree.ElementTree as ET
+ from test_clipboard_calls_r10r9 import invalid_calls
++from ux_writing_rules import approved_feature
+ 
+ def violations(files):
+     c=files['src/ProcessLens.Windows/WiresharkTools.cs']; p=files['src/ProcessLens.Core/PacketCaptureEvidence.cs']
+@@ -53,12 +54,12 @@ def main():
+     def check(label,ok):rows.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML or source mutation only'});print(rows[-1]['status'],label)
+     check('packet integration satisfies all source guards',not violations(files))
+     allowed={'src/ProcessLens.App/NetworkDevicesView.xaml','src/ProcessLens.App/NetworkDevicesView.xaml.cs','src/ProcessLens.App/ProcessLens.App.csproj'}
+-    check('only three existing production sources changed since R12',
+-          {rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel]}==allowed)
+-    check('all existing collectors Core semantics Guardian profiler and RAM monitor exact to R12',
+-          all((root/rel).read_bytes()==data for rel,data in old.items() if rel.startswith('src/') and rel not in allowed))
++    check('R13 changes plus exact authorized R14 source integration since R12',
++          {rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel] and not approved_feature(root,rel,'R10_R14')}==allowed - {rel for rel in allowed if approved_feature(root,rel,'R10_R14')})
++    check('existing sources exact to R12 outside R13 and exact authorized R14 integration',
++          all((root/rel).read_bytes()==data or approved_feature(root,rel,'R10_R14') for rel,data in old.items() if rel.startswith('src/') and rel not in allowed))
+     approved=json.loads((root/'audit/R10_R13/authorized-source-edits.json').read_text())['files']
+-    check('all added and modified production sources match exact R13 manifest',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] for r in approved))
++    check('R13 source hashes retained or superseded by exact authorized R14 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or approved_feature(root,r['file'],'R10_R14') for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]:ET.parse(f)
+     check('all XAML and project XML parse',True)
+     view=ET.parse(root/'src/ProcessLens.App/NetworkCaptureView.xaml').getroot();x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
+diff --git a/audit/tools/check_system_processes_r14.py b/audit/tools/check_system_processes_r14.py
+new file mode 100644
+index 0000000..9afcfc2
+--- /dev/null
++++ b/audit/tools/check_system_processes_r14.py
+@@ -0,0 +1,105 @@
++"""R14 source/XML and source-mutation checks. Never compiles or executes C#/WPF/Windows."""
++import argparse, hashlib, json, re, zipfile
++from pathlib import Path
++import xml.etree.ElementTree as ET
++from test_clipboard_calls_r10r9 import invalid_calls
++from button_layout_rules import violations as button_violations
++from check_packet_capture_r13 import violations as packet_violations
++from network_device_rules import violations as network_violations
++
++def violations(files):
++    c=files['src/ProcessLens.Windows/WindowsSystemProcessSource.cs']
++    p=files['src/ProcessLens.Core/SystemProcessCatalog.cs']
++    u=files['src/ProcessLens.App/SystemProcessesView.xaml.cs']
++    m=files['src/ProcessLens.App/MainWindow.xaml.cs']; bad=[]
++    def need(ok,label):
++        if not ok: bad.append(label)
++    need(all(x in c for x in ['MaximumBuffer = 16 * 1024 * 1024', 'MaximumRows = 16384', 'attempt < 8',
++         'next > MaximumBuffer', 'finally { Marshal.FreeHGlobal(buffer); }']), 'bounded native allocation retries and release')
++    need(all(x in c for x in ['offset > length - header','next > length - offset - header','next % IntPtr.Size',
++         'nameOffset > end - n.Length','n.Length > 2048','(n.Length & 1)', '!pids.Add((int)pid)']), 'native buffer offset Unicode and duplicate guards')
++    need('token.ThrowIfCancellationRequested()' in c and 'cancellationToken.ThrowIfCancellationRequested()' in c,
++         'cancellation between native calls rows and identity queries')
++    need('NTSTATUS 0x{status:X8}' in c and 'ReadToolhelp(cancellationToken)' in c and 'error != 18' in c,
++         'native failure preserved and Toolhelp abnormal ending not accepted')
++    need('OpenProcess(0x1000, false' in c and 'finally { CloseHandle(handle); }' in c and
++         not any(x in c+u for x in ['.Kill(', 'Process.Start(', 'AdjustTokenPrivileges(', 'PROCESS_VM_READ', 'DispatcherTimer']),
++         'limited read-only handles no process actions privilege changes or timer')
++    need('if (start > began)' in c and 'GetFileName(value).Equals(row.Name' in c and
++         'entry.StartUtc.Value == process.StartTime.Value.ToUniversalTime()' in p and 'entry.Name.Equals(process.Name' in p and
++         '!SystemProcessPresentation.SameInstance(target, current.Process)' in m and 'navigation != _workspaceNavigation' in m,
++         'metadata and detail navigation guarded against instance mismatch')
++    need('PrivatePageCount' in c and 'Reserved1[' not in c and 'Reserved7[' not in c and
++         'pages > (ulong)long.MaxValue / pageSize' in c and 'pageSize == 0' in c,
++         'reserved members not interpreted and page conversion bounded')
++    need('Working Set totale:' in p and 'non sommarli' in p and 'bytes is >= 0' in p and
++         'if (workingSet == 0 &&' in c and 'resident = null' in c, 'physical total residency separated from kernel commit and placeholder zero')
++    need('Names.Contains(p.Name)' in p and 'TrimEnd' in p and 'x is "." or ".."' in p and
++         'prefi' in p and 'non verificata' in p, 'name hints not ownership and Windows directory boundary')
++    need('if (!_active || _busy) return;' in u and 'generation != _generation' in u and
++         '_operation?.Cancel()' in u and '_catalog = null' in u and 'SystemProcessesTable.ItemsSource = null;' in u,
++         'coalesced generation guarded reads and release when hidden')
++    need('ClipboardText.Copy(this,' in u and 'GridCopySupport.CaptureTable' in u and
++         'p.Pid.ToString(CultureInfo.InvariantCulture) == search' in u, 'copy actual rendered report and exact PID search')
++    need('system && SystemProcesses is null' in m and 'SystemProcesses?.SetActive(active && _systemMode)' in m and
++         '!_networkMode && !_systemMode' in m, 'lazy workspace lifecycle and no periodic system scan')
++    return bad
++
++def main():
++    parser=argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--candidate',type=Path,required=True);parser.add_argument('--baseline-zip',type=Path,required=True)
++    parser.add_argument('--output',type=Path,required=True)
++    a=parser.parse_args();root=a.candidate.resolve()
++    assert hashlib.sha256(a.baseline_zip.read_bytes()).hexdigest()=='c11ff4eb1b4809776d58171f4df62af5eebc21f8f07e918b3e5e780545f9b824'
++    with zipfile.ZipFile(a.baseline_zip) as z:old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++    files={f.relative_to(root).as_posix():f.read_text(encoding='utf-8-sig') for f in root.rglob('*') if f.suffix in {'.cs','.xaml','.ps1'}}
++    results=[]
++    def check(label,ok):
++        results.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML or source mutation only'})
++        print(results[-1]['status'],label)
++    check('R14 satisfies native source and lifecycle guards',not violations(files))
++    changed={rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel]}
++    allowed={'src/ProcessLens.App/MainWindow.xaml','src/ProcessLens.App/MainWindow.xaml.cs',
++             'src/ProcessLens.App/ProcessLens.App.csproj','src/ProcessLens.App/CopyTestVisibility.cs'}
++    check('only four existing production files changed since R13',changed==allowed)
++    check('existing native collectors Core semantics Guardian profiler RAM monitor and network exact to R13',
++          all((root/p).read_bytes()==data for p,data in old.items() if p.startswith('src/') and p not in allowed))
++    check('no baseline file deleted',all((root/p).is_file() for p in old))
++    approved=json.loads((root/'audit/R10_R14/authorized-source-edits.json').read_text())['files']
++    check('all R14 production hashes match exact feature ledger',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] for r in approved))
++    for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]: ET.parse(f)
++    check('all project XML and XAML parse',True)
++    view=ET.parse(root/'src/ProcessLens.App/SystemProcessesView.xaml').getroot();x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
++    names=[e.get(x+'Name') for e in view.iter() if e.get(x+'Name')]
++    check('view names unique and declared handlers connected',len(names)==len(set(names)) and all(re.search(r'\b'+re.escape(v)+r'\s*\(',files['src/ProcessLens.App/SystemProcessesView.xaml.cs']) for e in view.iter() for k,v in e.attrib.items() if k in {'Click','SelectionChanged','TextChanged'}))
++    check('system report text selectable and wrapped',all(e.get('TextWrapping')=='Wrap' for e in view.iter(local+'SelectableText')))
++    check('system table virtualized copied read-only',all(e.get('IsReadOnly')=='True' and e.get('VirtualizingPanel.VirtualizationMode')=='Recycling' and e.get(local+'GridCopySupport.Enabled')=='True' for e in view.iter(w+'DataGrid')))
++    check('system buttons wrap without fixed height',all(e.get('Style')=='{StaticResource SystemAction}' and 'Height' not in e.attrib for e in view.iter(w+'Button')) and any(e.get('TextWrapping')=='Wrap' for e in view.iter(w+'TextBlock')))
++    main=ET.parse(root/'src/ProcessLens.App/MainWindow.xaml').getroot()
++    check('main navigation wired with lazy host and original button rules',not button_violations(main) and any(e.get(x+'Name')=='NavSystemButton' for e in main.iter()) and not list(main.iter(local+'SystemProcessesView')))
++    check('all clipboard calls keep required owner and text arguments',not any(invalid_calls(f.read_text()) for f in (root/'src/ProcessLens.App').rglob('*.cs')))
++    check('R13 Wireshark source guards still pass',not packet_violations(files))
++    check('R12 network source guards still pass',not network_violations(files))
++    test=files['tests/ProcessLens.SystemProcessTests/Program.cs'];ui=files['tests/ProcessLens.SystemProcessUiTests/Program.cs']
++    check('native tests include independent binary ABI fixtures boundaries cultures and Windows self comparison',all(s in test for s in ['wide ? 256 : 184','Marshal.WriteIntPtr','Memory Compression','reject name outside record','it-IT','en-US','Process.GetCurrentProcess()','self.StartTime.ToUniversalTime()']))
++    check('WPF fixture exercises actual bindings copy scope navigation and late completion',all(s in ui for s in ['new SystemProcessesView(source','GridCopySupport.CaptureTable','scope.SelectedIndex = 1','source.Release.Set()','view.AnalysisRequested','grid.Items.Count == 0']))
++    build=files['build-dashboard.ps1']
++    check('both C# suites and source gate in standard Windows build',all(s in build for s in ['check-system-processes-r14.ps1','Tests.ProcessLens.SystemProcessTests','Tests.ProcessLens.SystemProcessUiTests']))
++    paths={'native':'src/ProcessLens.Windows/WindowsSystemProcessSource.cs','model':'src/ProcessLens.Core/SystemProcessCatalog.cs','view':'src/ProcessLens.App/SystemProcessesView.xaml.cs','main':'src/ProcessLens.App/MainWindow.xaml.cs'}
++    mutations=[('native buffer bound','native','next > MaximumBuffer','false'),('native buffer release','native','Marshal.FreeHGlobal(buffer);','KeepBuffer();'),
++      ('next-record bounds','native','next > length - offset - header','false'),('Unicode pointer bounds','native','nameOffset > end - n.Length','false'),
++      ('duplicate PID','native','!pids.Add((int)pid)','false'),('handle scope','native','OpenProcess(0x1000, false','OpenProcess(0x1fffff, false'),
++      ('reused PID age check','native','if (start > began)','if (false)'),('native error retained','native','NTSTATUS 0x{status:X8}','empty inventory'),
++      ('fallback termination error','native','error != 18','false'),('page overflow','native','pages > (ulong)long.MaxValue / pageSize','false'),
++      ('unknown creation','model','entry.StartUtc.Value == process.StartTime.Value.ToUniversalTime()','true'),
++      ('name ownership','model','Names.Contains(p.Name)','p.Name.Contains("system")'),
++      ('late result','view','generation != _generation','false'),('hidden cancellation','view','_operation?.Cancel()','KeepQuery()'),
++      ('PID substring search','view','p.Pid.ToString(CultureInfo.InvariantCulture) == search','p.Pid.ToString().Contains(search)'),
++      ('navigation identity','main','!SystemProcessPresentation.SameInstance(target, current.Process)','false')]
++    for label,kind,before,after in mutations:
++        path=paths[kind];assert before in files[path],label
++        altered=dict(files);altered[path]=altered[path].replace(before,after)
++        check('reject '+label,bool(violations(altered)))
++    a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(results,indent=2)+'\n')
++    raise SystemExit(0 if all(r['status']=='PASS' for r in results) else 1)
++if __name__=='__main__': main()
+diff --git a/audit/tools/check_ux_writing_r10r11.py b/audit/tools/check_ux_writing_r10r11.py
+index 540d474..da2cc96 100644
+--- a/audit/tools/check_ux_writing_r10r11.py
++++ b/audit/tools/check_ux_writing_r10r11.py
+@@ -33,7 +33,7 @@ def main():
+     check('native collectors services profiler SQLite readers and meter acquisition unchanged',
+           all((root / rel).read_bytes() == old[rel] for rel in protected))
+     changed = [rel for rel in old if rel.startswith('src/') and (root / rel).read_bytes() != old[rel]]
+-    check('every source edit belongs to the recorded editorial or authorized network feature delta', all(approved_revision(root, rel) for rel in changed))
++    check('every source edit belongs to the recorded editorial or authorized feature delta', all(approved_revision(root, rel) for rel in changed))
+     modules = ['Semantics/RoleClassifier', 'Semantics/ProcessIntelligenceAnalyzer', 'Semantics/ProcessOriginAnalyzer',
+                'Semantics/ProcessBehaviorExplainer', 'Semantics/ProcessQueryEngine', 'Core/WindowsAllocationEvidence',
+                'Core/StructuredDiagnostics', 'Core/ServiceExplanation', 'Core/ServiceHistoryInterpretation']
+diff --git a/audit/tools/package_system_processes_r14.py b/audit/tools/package_system_processes_r14.py
+new file mode 100644
+index 0000000..396c356
+--- /dev/null
++++ b/audit/tools/package_system_processes_r14.py
+@@ -0,0 +1,85 @@
++"""Package an already source-checked R14. This does not compile or qualify Windows runtime."""
++import argparse, csv, difflib, hashlib, json, shutil, subprocess, tempfile, zipfile
++from pathlib import Path
++
++def sha(data): return hashlib.sha256(data).hexdigest()
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--candidate',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True)
++    p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()
++    root=a.candidate.resolve();audit=root/'audit/R10_R14';output=a.output_directory.resolve()
++    assert sha(a.baseline_zip.read_bytes())=='c11ff4eb1b4809776d58171f4df62af5eebc21f8f07e918b3e5e780545f9b824'
++    for d in sorted(root.rglob('__pycache__'),reverse=True):shutil.rmtree(d)
++    with zipfile.ZipFile(a.baseline_zip) as z:
++        assert z.testzip() is None
++        old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++    assert all((root/n).is_file() for n in old)
++    for row in json.loads((audit/'authorized-source-edits.json').read_text())['files']:
++        assert sha((root/row['file']).read_bytes())==row['sha256_after'],row['file']
++    results=[]
++    for n,count in [('source-results.json',33),('resource-source-mutations.json',14),('monitor-navigation-source-mutations.json',13)]:
++        rows=json.loads((audit/n).read_text());assert len(rows)==count and all(row['status']=='PASS' for row in rows)
++        results.extend(rows)
++    # Preserve all added/changed source contexts in the current string ledger.
++    with (audit/'string-ledger.csv').open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerow(['file','line','added_or_modified_source_text','context'])
++        for row in json.loads((audit/'authorized-source-edits.json').read_text())['files']:
++            n=row['file'];before=old.get(n,b'').decode('utf-8-sig').splitlines();after=(root/n).read_text(encoding='utf-8-sig').splitlines()
++            for tag,i,j,k,l in difflib.SequenceMatcher(None,before,after).get_opcodes():
++                if tag not in ('insert','replace'):continue
++                for number,line in enumerate(after[k:l],k+1):
++                    if '"' in line:writer.writerow([n,number,line.strip(),'UI/report or technical source context'])
++    def included(n):return not n.startswith('audit/R10_R14/') and n!='SHA256SUMS_R10.txt'
++    current={f.relative_to(root).as_posix():f.read_bytes() for f in root.rglob('*') if f.is_file()}
++    delta=[n for n,data in sorted(current.items()) if included(n) and old.get(n)!=data]
++    with (audit/'files-changed.csv').open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerow(['file','kind','sha256_before','sha256_after'])
++        for n in delta:writer.writerow([n,'modified' if n in old else 'added',sha(old[n]) if n in old else '',sha(current[n])])
++    staging=root.parent.parent/'test';staging.mkdir(exist_ok=True)
++    with tempfile.TemporaryDirectory(prefix='patch-replay-r14-',dir=staging) as temporary:
++        temp=Path(temporary);before=temp/'before';after=temp/'after';before.mkdir();after.mkdir()
++        for base,values in [(before,old),(after,current)]:
++            for n,data in values.items():
++                if not included(n):continue
++                path=base/n;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
++        diff=subprocess.run(['git','diff','--no-index','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=temp,capture_output=True)
++        assert diff.returncode==1,diff.stderr.decode()
++        lines=[]
++        for line in diff.stdout.splitlines(keepends=True):
++            if line.startswith((b'diff --git ', b'--- ', b'+++ ')):
++                for prefix in (b'a/before/',b'a/after/'):line=line.replace(prefix,b'a/')
++                for prefix in (b'b/before/',b'b/after/'):line=line.replace(prefix,b'b/')
++            lines.append(line)
++        patch=b''.join(lines)
++        path=audit/'R13_to_R14.patch';path.write_bytes(patch)
++        subprocess.run(['git','apply','--check',str(path)],cwd=before,check=True,capture_output=True)
++        subprocess.run(['git','apply',str(path)],cwd=before,check=True,capture_output=True)
++        mismatch=[n for n,data in current.items() if included(n) and (before/n).read_bytes()!=data]
++        assert not mismatch,mismatch
++    (audit/'patch-replay-results.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','delta_files':len(delta),'patch_sha256':sha(patch),'excluded':'Current audit metadata and current manifest only; excluded for self-reference.'},indent=2)+'\n')
++    (audit/'retention.json').write_text(json.dumps({'source_trees':1,'patch_replay_temporary_tree_removed':True,'baseline':'R13 retained for byte comparisons','no_bin_obj_pycache_in_release':True,'source_check_count':len(results),'Windows_runtime_and_RAM_measurement':'NOT EXECUTED'},indent=2)+'\n')
++    matrix=audit/'test-matrix.csv'
++    with matrix.open(newline='') as f:
++        matrix_rows=[row for row in csv.reader(f) if row and row[0] not in
++            {'Current R14 + resource + navigation guards','R13 to R14 patch replay'}]
++    with matrix.open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerows(matrix_rows)
++        writer.writerow(['Current R14 + resource + navigation guards','Python source/XML/mutations','PASS',f'{len(results)} checks; no C# execution'])
++        writer.writerow(['R13 to R14 patch replay','git apply and byte comparison','PASS',f'{len(delta)} changed or added files; audit metadata and manifest excluded'])
++    for d in root.rglob('*'):
++        assert not (d.is_dir() and d.name in ('__pycache__','bin','obj')),d
++    files=sorted(f for f in root.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt')
++    (root/'SHA256SUMS_R10.txt').write_text(''.join(sha(f.read_bytes())+'  '+f.relative_to(root).as_posix()+'\n' for f in files))
++    output.mkdir(parents=True,exist_ok=True)
++    target=output/'ProcessLens-v0.19.16-R10-R14-system-processes-candidate.zip'
++    with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
++        for f in sorted(root.rglob('*')):
++            if f.is_file():z.write(f,root.name+'/'+f.relative_to(root).as_posix())
++    with zipfile.ZipFile(target) as z:
++        assert z.testzip() is None
++        for line in z.read(root.name+'/SHA256SUMS_R10.txt').decode().splitlines():
++            expected,n=line.split('  ',1);assert sha(z.read(root.name+'/'+n))==expected,n
++        assert len({n.split('/')[0] for n in z.namelist()})==1
++    result={'zip':str(target),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files),'delta_files':len(delta),'source_checks':len(results),'Windows_runtime':'NOT EXECUTED'}
++    (output/'verification-r14.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
++if __name__=='__main__':main()
+diff --git a/audit/tools/ux_writing_rules.py b/audit/tools/ux_writing_rules.py
+index 68522e4..2c20b7d 100644
+--- a/audit/tools/ux_writing_rules.py
++++ b/audit/tools/ux_writing_rules.py
+@@ -15,10 +15,10 @@ def approved_editorial(root, relative):
+ 
+ 
+ def approved_revision(root, relative):
+-    """R11 editorial delta or separately recorded, user-requested R12/R13 feature delta."""
++    """R11 editorial delta or separately recorded, user-requested R12/R13/R14 feature delta."""
+     if approved_editorial(root, relative):
+         return True
+-    return approved_feature(root, relative, 'R10_R12') or approved_feature(root, relative, 'R10_R13')
++    return any(approved_feature(root, relative, revision) for revision in ('R10_R12', 'R10_R13', 'R10_R14'))
+ 
+ 
+ def approved_feature(root, relative, revision):
+diff --git a/build-dashboard.ps1 b/build-dashboard.ps1
+index f5a435f..686420b 100644
+--- a/build-dashboard.ps1
++++ b/build-dashboard.ps1
+@@ -16,6 +16,7 @@ Write-Host 'Controllo sintassi di tutti gli script PowerShell...' -ForegroundCol
+ & (Join-Path $PSScriptRoot 'tests\check-ux-writing-r10r11.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-network-devices-r12.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-packet-capture-r13.ps1')
++& (Join-Path $PSScriptRoot 'tests\check-system-processes-r14.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-copy-ui-r10.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-terminology-ui.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-detail-hierarchy-v01910.ps1')
+@@ -57,6 +58,11 @@ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.PacketCaptureTests' -Project '.\t
+ Write-Host 'Test WPF rete: sorgente simulata, nessuna lettura di rete reale...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.NetworkUiTests' -Project '.\tests\ProcessLens.NetworkUiTests\ProcessLens.NetworkUiTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.NetworkUiTests\ProcessLens.NetworkUiTests.csproj','-c','Release')
+ 
++Write-Host 'Test inventario sistema: ABI, fixture e lettura Windows in sola lettura...' -ForegroundColor Cyan
++Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.SystemProcessTests' -Project '.\tests\ProcessLens.SystemProcessTests\ProcessLens.SystemProcessTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.SystemProcessTests\ProcessLens.SystemProcessTests.csproj','-c','Release')
++Write-Host 'Test WPF sistema: sorgente simulata, selezione e annullamento...' -ForegroundColor Cyan
++Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.SystemProcessUiTests' -Project '.\tests\ProcessLens.SystemProcessUiTests\ProcessLens.SystemProcessUiTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.SystemProcessUiTests\ProcessLens.SystemProcessUiTests.csproj','-c','Release')
++
+ Write-Host 'Test WPF copia e caricamento markup, senza avvio monitor o clipboard reale...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.CopyUiTests' -Project '.\tests\ProcessLens.CopyUiTests\ProcessLens.CopyUiTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.CopyUiTests\ProcessLens.CopyUiTests.csproj','-c','Release')
+ 
+diff --git a/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv b/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv
+index af522a3..b920a55 100644
+--- a/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv
++++ b/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv
+@@ -112,3 +112,7 @@ PLT-110,Rete / cattura,Dispositivo collegato,Trasmettitore nel frame,Indirizzo n
+ PLT-111,Rete / cattura,Dispositivo attivo,Destinatario nel frame,Indirizzo wlan.ra; non prova ricezione o risposta,Frame 802.11 decodificato,Fonte nel file e stato dello strumento,Dispositivo attivo,UX-R13,,sintesi,alta,Vocabolario ProcessLens; fonti e limiti in INTEGRAZIONE_WIRESHARK_R13.md
+ PLT-112,Rete / cattura,Monitor sicuramente funzionante,Lo strumento dichiara intestazioni 802.11 in modalità monitor,Capacità dichiarata; ricezione da verificare,dumpcap -I -L riuscito e link type 802.11,Fonte nel file e stato dello strumento,Monitor sicuramente funzionante,UX-R13,,sintesi,alta,Vocabolario ProcessLens; fonti e limiti in INTEGRAZIONE_WIRESHARK_R13.md
+ PLT-113,Rete / cattura,Nessun dispositivo Wi-Fi,Nessun frame 802.11 decodificato nel campione,Non dimostra assenza di client wireless,Analisi riuscita senza frame Wi-Fi,Fonte nel file e stato dello strumento,Nessun dispositivo Wi-Fi,UX-R13,,sintesi,alta,Vocabolario ProcessLens; fonti e limiti in INTEGRAZIONE_WIRESHARK_R13.md
++PLT-114,Sistema Windows,Sistema Windows,Sistema Windows,Inventario manuale con raggruppamento esplicito; non prova autenticità,Vista Sistema Windows,API Windows e fonte esplicita,tutti i processi interni garantiti; nessun rischio,MS,https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntquerysysteminformation,dettagli,alta,R14
++PLT-115,Sistema Windows,Working Set totale,Working Set totale,Pagine private e condivise residenti; distinto da commit e store compresso,Vista Sistema Windows,API Windows e fonte esplicita,tutti i processi interni garantiti; nessun rischio,MS,https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntquerysysteminformation,dettagli,alta,R14
++PLT-116,Sistema Windows,Origine non verificabile,Origine non verificabile,Percorso non disponibile; la riga rilevata resta consultabile,Vista Sistema Windows,API Windows e fonte esplicita,tutti i processi interni garantiti; nessun rischio,MS,https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntquerysysteminformation,dettagli,alta,R14
++PLT-117,Sistema Windows,Pool kernel paginabile,Pool kernel paginabile,Pool che può non essere tutto residente; non sommare ai Working Set,Vista Sistema Windows,API Windows e fonte esplicita,tutti i processi interni garantiti; nessun rischio,MS,https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-performance_information,dettagli,alta,R14
+diff --git a/src/ProcessLens.App/CopyTestVisibility.cs b/src/ProcessLens.App/CopyTestVisibility.cs
+index 389bb8e..1e4373b 100644
+--- a/src/ProcessLens.App/CopyTestVisibility.cs
++++ b/src/ProcessLens.App/CopyTestVisibility.cs
+@@ -2,3 +2,5 @@ using System.Runtime.CompilerServices;
+ 
+ [assembly: InternalsVisibleTo("ProcessLens.CopyUiTests")]
+ [assembly: InternalsVisibleTo("ProcessLens.NetworkUiTests")]
++
++[assembly: InternalsVisibleTo("ProcessLens.SystemProcessUiTests")]
+diff --git a/src/ProcessLens.App/MainWindow.xaml b/src/ProcessLens.App/MainWindow.xaml
+index e7dcb3a..381ede0 100644
+--- a/src/ProcessLens.App/MainWindow.xaml
++++ b/src/ProcessLens.App/MainWindow.xaml
+@@ -212,6 +212,7 @@
+             <StackPanel>
+                 <WrapPanel Orientation="Horizontal">
+                     <Button x:Name="NavProcessesButton" Content="Processi" Style="{StaticResource FilterButtonStyle}" Click="NavProcessesButton_Click"/>
++                    <Button x:Name="NavSystemButton" Content="Sistema Windows" Style="{StaticResource FilterButtonStyle}" Click="NavSystemButton_Click"/>
+                     <Button x:Name="NavServicesButton" Content="Servizi" Style="{StaticResource FilterButtonStyle}" Click="NavServicesButton_Click"/>
+                     <Button x:Name="NavGuardianButton" Content="Guardian" Style="{StaticResource FilterButtonStyle}" Click="NavGuardianButton_Click"/>
+                     <Button x:Name="NavNetworkButton" Content="Rete" Style="{StaticResource FilterButtonStyle}" Click="NavNetworkButton_Click"/>
+@@ -273,6 +274,8 @@
+ 
+         <ContentControl x:Name="NetworkDevicesHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Row="2" Visibility="Collapsed"/>
+ 
++        <ContentControl x:Name="SystemProcessesHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Row="2" Visibility="Collapsed"/>
++
+         <!-- Main area -->
+         <Grid x:Name="ProcessWorkspace" Grid.Row="2">
+             <Grid.ColumnDefinitions>
+diff --git a/src/ProcessLens.App/MainWindow.xaml.cs b/src/ProcessLens.App/MainWindow.xaml.cs
+index f67c4b7..6ae2bc4 100644
+--- a/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -20,6 +20,8 @@ public partial class MainWindow : Window
+     private GuardianDashboardView? GuardianDashboard;
+     private MemoryDashboardView? MemoryDashboard;
+     private NetworkDevicesView? NetworkDevices;
++    private SystemProcessesView? SystemProcesses;
++    private bool _systemMode;
+     private ProcessInsight? _currentClassificationAuditInsight;
+     private ProcessInsight? _renderedClassificationAuditInsight;
+     private int? _renderedEvidenceGroupsPid;
+@@ -124,7 +126,7 @@ public partial class MainWindow : Window
+                 if (!IsVisible || WindowState == WindowState.Minimized)
+                     return;
+                 if (_servicesMode) await RefreshServicesAsync(false);
+-                else if (!_guardianMode && !_memoryMode && !_networkMode) await RefreshAsync();
++                else if (!_guardianMode && !_memoryMode && !_networkMode && !_systemMode) await RefreshAsync();
+             }
+             catch (Exception ex)
+             {
+@@ -168,6 +170,7 @@ public partial class MainWindow : Window
+             GuardianDashboard?.SetActive(false);
+             MemoryDashboard?.SetActive(false);
+             NetworkDevices?.SetActive(false);
++            SystemProcesses?.SetActive(false);
+             _profilerSession?.Cancel();
+             _serviceEventsWatcher?.Dispose();
+             _serviceEventsWatcher = null;
+@@ -233,7 +236,7 @@ public partial class MainWindow : Window
+             }
+             // IMPORTANT: use the selection that exists NOW, after the async capture.
+             // The user may have clicked another process while Capture() was running.
+-            if (!_servicesMode && !_guardianMode && !_memoryMode && !_networkMode)
++            if (!_servicesMode && !_guardianMode && !_memoryMode && !_networkMode && !_systemMode)
+                 ApplyFilter(_selectedPid, preserveScroll: true, allowInitialSelection: !_initialSelectionDone);
+         }
+         finally
+@@ -269,6 +272,7 @@ public partial class MainWindow : Window
+         GuardianDashboard?.SetActive(active && _guardianMode);
+         MemoryDashboard?.SetActive(active && _memoryMode);
+         NetworkDevices?.SetActive(active && _networkMode);
++        SystemProcesses?.SetActive(active && _systemMode);
+     }
+ 
+ 
+@@ -286,7 +290,7 @@ public partial class MainWindow : Window
+         int generation = _cpuGeneration;
+         bool reset = _resetCpu;
+         _resetCpu = false;
+-        int[] pids = (!_servicesMode && !_guardianMode && !_memoryMode && !_networkMode ? _allRows.Select(r => r.Pid) : Enumerable.Empty<int>())
++        int[] pids = (!_servicesMode && !_guardianMode && !_memoryMode && !_networkMode && !_systemMode ? _allRows.Select(r => r.Pid) : Enumerable.Empty<int>())
+             .Append(Environment.ProcessId).Distinct().ToArray();
+         try
+         {
+@@ -304,7 +308,7 @@ public partial class MainWindow : Window
+             _latestCpu = result.Cpu.Processes;
+             foreach (var row in _allRows) row.UpdateCpu(RecentCpu(row.Pid));
+             TrackCpuHistory(_allRows.Select(r => r.Process).ToArray());
+-            if (_sortMode == "CPU" && !_servicesMode && !_guardianMode && !_memoryMode && !_networkMode && ProcessList.ItemsSource is not null)
++            if (_sortMode == "CPU" && !_servicesMode && !_guardianMode && !_memoryMode && !_networkMode && !_systemMode && ProcessList.ItemsSource is not null)
+             {
+                 _suppressSelectionEvents = true;
+                 try { CollectionViewSource.GetDefaultView(ProcessList.ItemsSource).Refresh(); }
+@@ -608,7 +612,7 @@ public partial class MainWindow : Window
+     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+     {
+         if (!IsLoaded || SearchBox is null || ProcessList is null || ServiceList is null) return;
+-        if (_guardianMode || _memoryMode || _networkMode) return;
++        if (_guardianMode || _memoryMode || _networkMode || _systemMode) return;
+         if (_servicesMode) { ApplyServiceFilter(); return; }
+         ApplyFilter(_selectedPid);
+     }
+@@ -1247,7 +1251,7 @@ public partial class MainWindow : Window
+                 _allRows[index] = new ProcessRow(merged, insight);
+             }
+ 
+-            if (_selectedPid == row.Pid)
++            if (_selectedPid == row.Pid && !_servicesMode && !_guardianMode && !_memoryMode && !_networkMode && !_systemMode)
+                 ApplyFilter(_selectedPid, preserveScroll: true);
+         }
+         catch (Exception ex)
+@@ -2052,6 +2056,8 @@ public partial class MainWindow : Window
+         bool guardian = mode == "guardian";
+         bool memory = mode == "memory";
+         bool network = mode == "network";
++        bool system = mode == "system";
++        _systemMode = system;
+         _networkMode = network;
+         _memoryMode = memory;
+         _guardianMode = guardian;
+@@ -2075,24 +2081,33 @@ public partial class MainWindow : Window
+             NetworkDevices = new NetworkDevicesView();
+             NetworkDevicesHost.Content = NetworkDevices;
+         }
++        if (system && SystemProcesses is null)
++        {
++            SystemProcesses = new SystemProcessesView();
++            SystemProcesses.AnalysisRequested += target => _ = OpenSystemProcessAsync(target);
++            SystemProcessesHost.Content = SystemProcesses;
++        }
++        SystemProcessesHost.Visibility = system ? Visibility.Visible : Visibility.Collapsed;
++        SystemProcesses?.SetActive(system && IsVisible && WindowState != WindowState.Minimized);
+         NetworkDevicesHost.Visibility = network ? Visibility.Visible : Visibility.Collapsed;
+         NetworkDevices?.SetActive(network && IsVisible && WindowState != WindowState.Minimized);
+         GuardianDashboardHost.Visibility = guardian ? Visibility.Visible : Visibility.Collapsed;
+         GuardianDashboard?.SetActive(guardian);
+         MemoryDashboardHost.Visibility = memory ? Visibility.Visible : Visibility.Collapsed;
+         MemoryDashboard?.SetActive(memory);
+-        ProcessWorkspace.Visibility = (services || guardian || memory || network) ? Visibility.Collapsed : Visibility.Visible;
++        ProcessWorkspace.Visibility = (services || guardian || memory || network || system) ? Visibility.Collapsed : Visibility.Visible;
+         ServiceWorkspace.Visibility = services ? Visibility.Visible : Visibility.Collapsed;
+-        ProcessFilters.Visibility = (services || guardian || memory || network) ? Visibility.Collapsed : Visibility.Visible;
++        ProcessFilters.Visibility = (services || guardian || memory || network || system) ? Visibility.Collapsed : Visibility.Visible;
+         ServiceFilters.Visibility = services ? Visibility.Visible : Visibility.Collapsed;
+-        if (guardian || memory || network) SearchBox.Clear();
+-        SearchBox.IsEnabled = !(guardian || memory || network);
++        if (guardian || memory || network || system) SearchBox.Clear();
++        SearchBox.IsEnabled = !(guardian || memory || network || system);
+         SearchBox.ToolTip = services ? "Cerca servizi per nome, descrizione, stato, tipo di avvio o PID" :
+             "Cerca processi per nome, PID, tipo suggerito o processo padre";
+         NavServicesButton.Background = services ? new SolidColorBrush(Color.FromRgb(225,236,252)) : Brushes.White;
+-        NavProcessesButton.Background = (!services && !guardian && !memory && !network) ? new SolidColorBrush(Color.FromRgb(225,236,252)) : Brushes.White;
++        NavProcessesButton.Background = (!services && !guardian && !memory && !network && !system) ? new SolidColorBrush(Color.FromRgb(225,236,252)) : Brushes.White;
+         NavGuardianButton.Background = guardian ? new SolidColorBrush(Color.FromRgb(225,236,252)) : Brushes.White;
+         NavMemoryButton.Background = memory ? new SolidColorBrush(Color.FromRgb(225,236,252)) : Brushes.White;
++        NavSystemButton.Background = system ? new SolidColorBrush(Color.FromRgb(225,236,252)) : Brushes.White;
+         NavNetworkButton.Background = network ? new SolidColorBrush(Color.FromRgb(225,236,252)) : Brushes.White;
+         if (services)
+         {
+@@ -2105,7 +2120,36 @@ public partial class MainWindow : Window
+             _profilerSession?.Cancel();
+             _serviceEventsWatcher?.Dispose();
+             _serviceEventsWatcher = null;
+-            if (!guardian && !memory && !network) ApplyFilter(_selectedPid, preserveScroll: true);
++            if (!guardian && !memory && !network && !system) ApplyFilter(_selectedPid, preserveScroll: true);
++        }
++    }
++
++    private void NavSystemButton_Click(object sender, RoutedEventArgs e) => SetWorkspaceMode("system");
++
++    private async Task OpenSystemProcessAsync(SystemProcessEntry target)
++    {
++        if (!_systemMode || !IsVisible || WindowState == WindowState.Minimized) return;
++        int navigation = _workspaceNavigation;
++        try
++        {
++            await RefreshAsync();
++            if (_windowClosed || navigation != _workspaceNavigation || !_systemMode || !IsVisible || WindowState == WindowState.Minimized) return;
++            var current = _allRows.FirstOrDefault(row => row.Pid == target.Pid);
++            if (current is null || !SystemProcessPresentation.SameInstance(target, current.Process))
++            {
++                SystemProcesses?.ShowNavigationProblem("Processo terminato, istanza cambiata o avvio N/D. Aggiorna l'elenco; i dettagli non sono stati aperti.");
++                return;
++            }
++            _activeFilter = "Tutti"; SearchBox.Clear(); SetFilterButtonState();
++            _selectedPid = target.Pid;
++            SetWorkspaceMode("processes"); ApplyFilter(target.Pid);
++            if (ProcessList.SelectedItem is not null) ProcessList.ScrollIntoView(ProcessList.SelectedItem);
++        }
++        catch (Exception ex)
++        {
++            if (!_windowClosed && navigation == _workspaceNavigation && _systemMode)
++                SystemProcesses?.ShowNavigationProblem("Analisi non disponibile: " + ex.Message);
++            AppDiagnostics.Record("Apertura analisi da Sistema Windows non riuscita", ex);
+         }
+     }
+ 
+diff --git a/src/ProcessLens.App/ProcessLens.App.csproj b/src/ProcessLens.App/ProcessLens.App.csproj
+index d6c5ad9..2294717 100644
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R13-wireshark-integration-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R14-system-processes-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+diff --git a/src/ProcessLens.App/SystemProcessesView.xaml b/src/ProcessLens.App/SystemProcessesView.xaml
+new file mode 100644
+index 0000000..834b66c
+--- /dev/null
++++ b/src/ProcessLens.App/SystemProcessesView.xaml
+@@ -0,0 +1,79 @@
++<UserControl x:Class="ProcessLens.App.SystemProcessesView"
++ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
++ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
++ xmlns:local="clr-namespace:ProcessLens.App">
++ <UserControl.Resources>
++  <Style x:Key="SystemAction" TargetType="Button">
++   <Setter Property="MinHeight" Value="36"/><Setter Property="Padding" Value="12,8"/>
++   <Setter Property="Margin" Value="0,0,8,6"/>
++   <Setter Property="ContentTemplate"><Setter.Value><DataTemplate>
++    <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="20"/>
++   </DataTemplate></Setter.Value></Setter>
++  </Style>
++  <Style x:Key="SystemCell" TargetType="TextBlock">
++   <Setter Property="TextWrapping" Value="Wrap"/><Setter Property="Padding" Value="5"/>
++  </Style>
++ </UserControl.Resources>
++ <Grid Background="White" Margin="0,0,0,2">
++  <Grid.RowDefinitions>
++   <RowDefinition Height="Auto"/><RowDefinition Height="*" MinHeight="80"/><RowDefinition Height="Auto"/>
++  </Grid.RowDefinitions>
++  <ScrollViewer Grid.Row="0" MaxHeight="220" VerticalScrollBarVisibility="Auto">
++  <StackPanel>
++  <StackPanel Margin="12,10,12,4">
++   <TextBlock Text="Sistema Windows" FontSize="21" FontWeight="SemiBold"/>
++   <local:SelectableText Text="Processi, voci interne e memoria del kernel. Aggiornamento manuale; nessun nuovo monitor in background."
++       TextWrapping="Wrap" Margin="0,5,0,0"/>
++  </StackPanel>
++  <WrapPanel Margin="12,8,12,2">
++   <Button x:Name="RefreshSystemButton" Content="Aggiorna elenco" Style="{StaticResource SystemAction}" Click="RefreshSystem_Click"/>
++   <Button x:Name="AnalyzeSystemButton" Content="Apri analisi del processo" Style="{StaticResource SystemAction}"
++       IsEnabled="False" Click="AnalyzeSystem_Click"/>
++   <Button x:Name="CopySystemButton" Content="Copia rapporto" Style="{StaticResource SystemAction}" IsEnabled="False" Click="CopySystem_Click"/>
++   <ComboBox x:Name="SystemScopeBox" SelectedIndex="0" Width="240" Margin="0,0,8,6" SelectionChanged="Scope_Changed">
++    <ComboBoxItem Content="Windows e voci interne"/><ComboBoxItem Content="Tutti i processi rilevati"/>
++    <ComboBoxItem Content="Origine non verificabile"/>
++   </ComboBox>
++   <TextBlock Text="Cerca" VerticalAlignment="Center" Margin="0,0,8,6"/>
++   <TextBox x:Name="SystemSearchBox" Width="180" MaxLength="128" Margin="0,0,0,6" VerticalContentAlignment="Center"
++       ToolTip="Cerca nome esatto o parziale; per PID usa solo cifre." TextChanged="Search_Changed"/>
++  </WrapPanel>
++  <StackPanel Margin="12,4,12,8">
++   <local:SelectableText x:Name="SystemStatusText" Text="Premi Aggiorna elenco." TextWrapping="Wrap" FontWeight="SemiBold"/>
++   <local:SelectableText Text="Il gruppo Windows usa percorso e nomi tipici; non verifica l'autenticità. Le voci con dettagli N/D restano nell'elenco."
++       TextWrapping="Wrap" Foreground="#667085" Margin="0,4,0,0"/>
++   <Expander Header="Memoria del sistema e limiti della lettura" Margin="0,7,0,0">
++    <ScrollViewer MaxHeight="160" VerticalScrollBarVisibility="Auto">
++     <StackPanel Margin="0,6,0,0">
++      <local:SelectableText x:Name="SystemMemoryText" Text="Memoria: N/D" TextWrapping="Wrap"/>
++      <local:SelectableText x:Name="SystemSourceText" Text="Nessuna lettura eseguita." TextWrapping="Wrap" Margin="0,7,0,0"/>
++      <local:SelectableText Text="I processi brevi possono sfuggire al campione. Driver, interrupt, DPC e cache non sono tutti processi separati. Una voce Memory Compression può non essere esposta: assenza dall'elenco non significa compressione disattivata."
++          TextWrapping="Wrap" Margin="0,7,0,0"/>
++     </StackPanel>
++    </ScrollViewer>
++   </Expander>
++  </StackPanel>
++  </StackPanel>
++  </ScrollViewer>
++  <DataGrid x:Name="SystemProcessesTable" Grid.Row="1" Margin="12,0" IsReadOnly="True" AutoGenerateColumns="False"
++      CanUserAddRows="False" CanUserDeleteRows="False" EnableRowVirtualization="True" EnableColumnVirtualization="True"
++      VirtualizingPanel.VirtualizationMode="Recycling" SelectionMode="Single" SelectionUnit="FullRow"
++      local:GridCopySupport.Enabled="True" MinRowHeight="34" SelectionChanged="SystemSelection_Changed">
++   <DataGrid.Columns>
++    <DataGridTextColumn Header="Nome rilevato" Binding="{Binding Name, Mode=OneWay}" Width="180" ElementStyle="{StaticResource SystemCell}"/>
++    <DataGridTextColumn Header="PID" Binding="{Binding Pid, Mode=OneWay}" Width="65" ElementStyle="{StaticResource SystemCell}"/>
++    <DataGridTextColumn Header="PID padre riportato" Binding="{Binding Parent, Mode=OneWay}" Width="95" ElementStyle="{StaticResource SystemCell}"/>
++    <DataGridTextColumn Header="Origine / raggruppamento" Binding="{Binding Origin, Mode=OneWay}" Width="230" ElementStyle="{StaticResource SystemCell}"/>
++    <DataGridTextColumn Header="Working Set totale" Binding="{Binding Resident, Mode=OneWay}" Width="130" ElementStyle="{StaticResource SystemCell}"/>
++    <DataGridTextColumn Header="Thread" Binding="{Binding Threads, Mode=OneWay}" Width="70" ElementStyle="{StaticResource SystemCell}"/>
++    <DataGridTextColumn Header="Handle" Binding="{Binding Handles, Mode=OneWay}" Width="70" ElementStyle="{StaticResource SystemCell}"/>
++    <DataGridTextColumn Header="Sessione" Binding="{Binding Session, Mode=OneWay}" Width="75" ElementStyle="{StaticResource SystemCell}"/>
++    <DataGridTextColumn Header="Accesso ai dettagli" Binding="{Binding Access, Mode=OneWay}" Width="230" ElementStyle="{StaticResource SystemCell}"/>
++   </DataGrid.Columns>
++  </DataGrid>
++  <ScrollViewer Grid.Row="2" MaxHeight="140" VerticalScrollBarVisibility="Auto" Margin="12,9,12,12">
++   <local:SelectableText x:Name="SystemSelectionText" Text="Seleziona una riga per leggere i dettagli."
++       TextWrapping="Wrap"/>
++  </ScrollViewer>
++ </Grid>
++</UserControl>
+diff --git a/src/ProcessLens.App/SystemProcessesView.xaml.cs b/src/ProcessLens.App/SystemProcessesView.xaml.cs
+new file mode 100644
+index 0000000..351f3d5
+--- /dev/null
++++ b/src/ProcessLens.App/SystemProcessesView.xaml.cs
+@@ -0,0 +1,132 @@
++using System.Globalization;
++using System.Windows;
++using System.Windows.Controls;
++using ProcessLens.Core;
++using ProcessLens.Windows;
++
++namespace ProcessLens.App;
++
++public sealed record SystemProcessRow(SystemProcessEntry Entry, string WindowsDirectory)
++{
++    public int Pid => Entry.Pid;
++    public string Name => Entry.Name;
++    public int Parent => Entry.ParentPid;
++    public string Origin => SystemProcessPresentation.Origin(Entry, WindowsDirectory);
++    public string Resident => SystemProcessPresentation.MiB(Entry.WorkingSetBytes);
++    public string Threads => Entry.Threads?.ToString(CultureInfo.CurrentCulture) ?? "N/D";
++    public string Handles => Entry.Handles?.ToString(CultureInfo.CurrentCulture) ?? "N/D";
++    public string Session => Entry.Session?.ToString(CultureInfo.CurrentCulture) ?? "N/D";
++    public string Access => Entry.Access;
++}
++
++public partial class SystemProcessesView : UserControl
++{
++    private readonly ISystemProcessSource _source;
++    private readonly string _windowsDirectory;
++    private bool _active, _busy;
++    private int _generation;
++    private CancellationTokenSource? _operation;
++    private SystemProcessCatalog? _catalog;
++    public event Action<SystemProcessEntry>? AnalysisRequested;
++    public SystemProcessesView() : this(new WindowsSystemProcessSource(),
++        Environment.GetFolderPath(Environment.SpecialFolder.Windows)) { }
++    internal SystemProcessesView(ISystemProcessSource source, string windowsDirectory)
++    {
++        _source = source; _windowsDirectory = windowsDirectory;
++        InitializeComponent(); UpdateButtons(); // No native query and no timer here.
++    }
++    public void SetActive(bool active)
++    {
++        if (_active == active) return;
++        _active = active;
++        if (!active)
++        {
++            _generation++; _operation?.Cancel(); _catalog = null;
++            SystemProcessesTable.ItemsSource = null;
++            SystemStatusText.Text = "Elenco da aggiornare.";
++            SystemMemoryText.Text = "Memoria: N/D";
++            SystemSourceText.Text = "Nessuna lettura corrente.";
++            SystemSelectionText.Text = "Seleziona una riga dopo l'aggiornamento.";
++        }
++        UpdateButtons();
++    }
++    internal async Task RefreshAsync()
++    {
++        if (!_active || _busy) return;
++        _busy = true; int generation = _generation;
++        using var operation = new CancellationTokenSource(); _operation = operation;
++        _catalog = null; SystemProcessesTable.ItemsSource = null;
++        SystemStatusText.Text = "Lettura dei processi di sistema…";
++        SystemMemoryText.Text = "Memoria: N/D"; SystemSourceText.Text = "Lettura in corso.";
++        SystemSelectionText.Text = "Seleziona una riga dopo l'aggiornamento.";
++        UpdateButtons();
++        try
++        {
++            var result = await Task.Run(() => _source.Capture(operation.Token), operation.Token);
++            if (!_active || generation != _generation || operation.IsCancellationRequested) return;
++            _catalog = result;
++            SystemMemoryText.Text = SystemProcessPresentation.MemoryReport(result.Memory);
++            SystemSourceText.Text = result.Source + "\n" + result.Note;
++            ApplyFilter();
++        }
++        catch (OperationCanceledException) { }
++        catch (Exception ex)
++        {
++            if (_active && generation == _generation)
++            { SystemStatusText.Text = "Lettura non disponibile."; SystemSourceText.Text = ex.Message; }
++        }
++        finally
++        {
++            if (ReferenceEquals(_operation, operation)) _operation = null;
++            _busy = false; UpdateButtons();
++        }
++    }
++    private void ApplyFilter()
++    {
++        if (SystemProcessesTable is null || _catalog is null) return;
++        var c = _catalog;
++        if (!c.Available)
++        { SystemProcessesTable.ItemsSource = null; SystemStatusText.Text = "Elenco non disponibile. Consulta i dettagli della lettura."; return; }
++        IEnumerable<SystemProcessEntry> rows = c.Processes;
++        if (SystemScopeBox.SelectedIndex == 0) rows = rows.Where(p => SystemProcessPresentation.WindowsGroup(p, _windowsDirectory));
++        if (SystemScopeBox.SelectedIndex == 2) rows = rows.Where(p => p.Path is null && p.Pid is not (0 or 4));
++        string search = SystemSearchBox.Text.Trim();
++        if (search.Length > 0)
++        {
++            if (search.All(char.IsAsciiDigit)) rows = rows.Where(p => p.Pid.ToString(CultureInfo.InvariantCulture) == search);
++            else rows = rows.Where(p => p.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
++        }
++        var visible = rows.OrderBy(p => p.Pid).Select(p => new SystemProcessRow(p, _windowsDirectory)).ToArray();
++        SystemProcessesTable.ItemsSource = visible;
++        SystemStatusText.Text = $"Campione {c.CapturedUtc.ToLocalTime():HH:mm:ss} · {visible.Length} mostrati / {c.Processes.Count} rilevati" +
++            (c.Partial ? " · fonte alternativa / dati parziali" : "") + " · aggiornamento manuale";
++        SystemSelectionText.Text = "Seleziona una riga per leggere i dettagli.";
++        UpdateButtons();
++    }
++    private void UpdateButtons()
++    {
++        RefreshSystemButton.IsEnabled = _active && !_busy;
++        CopySystemButton.IsEnabled = _active && !_busy && _catalog is not null;
++        AnalyzeSystemButton.IsEnabled = _active && !_busy && SystemProcessesTable.SelectedItem is SystemProcessRow { Entry.StartUtc: not null };
++    }
++    private async void RefreshSystem_Click(object sender, RoutedEventArgs e) => await RefreshAsync();
++    private void Scope_Changed(object sender, SelectionChangedEventArgs e) => ApplyFilter();
++    private void Search_Changed(object sender, TextChangedEventArgs e) => ApplyFilter();
++    private void SystemSelection_Changed(object sender, SelectionChangedEventArgs e)
++    {
++        if (AnalyzeSystemButton is null || SystemSelectionText is null) return;
++        SystemSelectionText.Text = SystemProcessesTable.SelectedItem is SystemProcessRow row
++            ? SystemProcessPresentation.Details(row.Entry, _windowsDirectory)
++            : "Seleziona una riga per leggere i dettagli.";
++        UpdateButtons();
++    }
++    private void AnalyzeSystem_Click(object sender, RoutedEventArgs e)
++    {
++        if (_active && !_busy && SystemProcessesTable.SelectedItem is SystemProcessRow { Entry.StartUtc: not null } row)
++            AnalysisRequested?.Invoke(row.Entry);
++    }
++    internal void ShowNavigationProblem(string text) => SystemSelectionText.Text = text;
++    private void CopySystem_Click(object sender, RoutedEventArgs e) => ClipboardText.Copy(this,
++        SystemStatusText.Text + "\n" + SystemSourceText.Text + "\n\n" + SystemMemoryText.Text + "\n\n" +
++        GridCopySupport.CaptureTable(SystemProcessesTable, false) + "\n\n" + SystemSelectionText.Text);
++}
+diff --git a/src/ProcessLens.Core/SystemProcessCatalog.cs b/src/ProcessLens.Core/SystemProcessCatalog.cs
+new file mode 100644
+index 0000000..b45b7d0
+--- /dev/null
++++ b/src/ProcessLens.Core/SystemProcessCatalog.cs
+@@ -0,0 +1,74 @@
++using System.Globalization;
++
++namespace ProcessLens.Core;
++
++public sealed record SystemProcessEntry(int Pid, int ParentPid, string Name, uint? Threads,
++    uint? Handles, uint? Session, long? WorkingSetBytes, string? Path = null,
++    DateTime? StartUtc = null, string Access = "Dettagli non letti");
++public sealed record SystemMemorySnapshot(long? PhysicalTotal, long? PhysicalAvailable,
++    long? Commit, long? CommitLimit, long? KernelPaged, long? KernelNonpaged, string Note);
++public sealed record SystemProcessCatalog(DateTime CapturedUtc, bool Available, bool Partial,
++    string Source, string Note, IReadOnlyList<SystemProcessEntry> Processes, SystemMemorySnapshot Memory);
++public interface ISystemProcessSource
++{
++    SystemProcessCatalog Capture(CancellationToken cancellationToken);
++}
++
++// A navigation group is not an authenticity verdict. Name hints never certify Windows ownership.
++public static class SystemProcessPresentation
++{
++    private static readonly HashSet<string> Names = new(StringComparer.OrdinalIgnoreCase)
++    { "System", "System Idle Process", "Idle", "Memory Compression", "Registry", "Secure System",
++      "smss.exe", "csrss.exe", "wininit.exe", "services.exe", "lsass.exe", "winlogon.exe", "svchost.exe",
++      "dwm.exe", "fontdrvhost.exe", "sihost.exe", "explorer.exe", "MsMpEng.exe", "NisSrv.exe" };
++    public static bool InternalName(string name) => name.ToLowerInvariant() is "system" or "system idle process" or "idle" or
++        "memory compression" or "registry" or "secure system";
++    public static bool SameInstance(SystemProcessEntry entry, ProcessSnapshot process) =>
++        entry.Pid == process.Pid && entry.StartUtc.HasValue && process.StartTime.HasValue &&
++        entry.StartUtc.Value == process.StartTime.Value.ToUniversalTime() &&
++        entry.Name.Equals(process.Name, StringComparison.OrdinalIgnoreCase);
++    public static string Origin(SystemProcessEntry p, string windowsDirectory)
++    {
++        if (p.Pid is 0 or 4) return "Voce di sistema · PID riservato";
++        if (UnderWindows(p.Path, windowsDirectory)) return "Percorso nella cartella Windows";
++        if (Names.Contains(p.Name)) return "Nome tipico di Windows · origine non verificata";
++        return p.Path is null ? "Origine N/D" : "Percorso esterno a Windows";
++    }
++    public static bool WindowsGroup(SystemProcessEntry p, string windowsDirectory) =>
++        p.Pid is 0 or 4 || UnderWindows(p.Path, windowsDirectory) || Names.Contains(p.Name);
++    public static bool UnderWindows(string? path, string directory)
++    {
++        // Lexical grouping only: boundary + rooted paths + no traversal, junction or signature claims.
++        if (string.IsNullOrWhiteSpace(path) || directory.Length < 3 ||
++            !Rooted(path) || !Rooted(directory)) return false;
++        var parts = path.Replace('/', '\\').Split('\\');
++        if (parts.Any(x => x is "." or "..")) return false;
++        string prefix = directory.Replace('/', '\\').TrimEnd('\\') + "\\";
++        return path.Replace('/', '\\').StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
++    }
++    private static bool Rooted(string value) => value.Length > 2 && char.IsAsciiLetter(value[0]) &&
++        value[1] == ':' && value[2] is '\\' or '/';
++    public static string MiB(long? bytes) => bytes is >= 0
++        ? (bytes.Value / 1048576d).ToString("N1", CultureInfo.CurrentCulture) + " MiB" : "N/D";
++    public static string Role(SystemProcessEntry p) => p.Pid == 0
++        ? "Inattività CPU: voce contabile, non un'app in esecuzione."
++        : p.Pid == 4 ? "System: contiene attività in modalità kernel. I suoi contatori non rappresentano tutta la memoria del sistema."
++        : p.Name.Equals("Memory Compression", StringComparison.OrdinalIgnoreCase)
++            ? "Nome associato alla compressione delle pagine di memoria. Il Working Set della voce non misura la dimensione logica dei dati prima della compressione."
++        : p.Name.Equals("Registry", StringComparison.OrdinalIgnoreCase)
++            ? "Nome associato alla gestione del registro. Identità e operazione corrente non verificate dal solo nome."
++        : p.Name.Equals("Secure System", StringComparison.OrdinalIgnoreCase)
++            ? "Nome associato all'ambiente di sicurezza isolato di Windows. Non identifica tutti i servizi di sicurezza."
++        : "Per ruolo, CPU e servizi usa l'analisi della stessa istanza. Il nome e il percorso non verificano la firma digitale.";
++    public static string MemoryReport(SystemMemorySnapshot m) =>
++        $"RAM fisica totale: {MiB(m.PhysicalTotal)}\nRAM disponibile: {MiB(m.PhysicalAvailable)}\n" +
++        $"Memoria impegnata: {MiB(m.Commit)} / limite {MiB(m.CommitLimit)}\n" +
++        $"Pool kernel paginabile: {MiB(m.KernelPaged)}\nPool kernel non paginabile: {MiB(m.KernelNonpaged)}\n" +
++        "Il pool paginabile può trovarsi anche fuori dalla RAM. Questi contatori si sovrappongono ad altre viste: non sommarli ai Working Set.\n" + m.Note;
++    public static string Details(SystemProcessEntry p, string windowsDirectory) =>
++        $"{p.Name} · PID {p.Pid}\n{Role(p)}\n\nOrigine: {Origin(p, windowsDirectory)}\n" +
++        $"Percorso: {p.Path ?? "N/D"}\nAvvio UTC: {(p.StartUtc.HasValue ? p.StartUtc.Value.ToString("O") : "N/D")}\n" +
++        $"Accesso ai dettagli: {p.Access}\nWorking Set totale: {MiB(p.WorkingSetBytes)}\n" +
++        "Working Set totale: pagine residenti private e condivise; non equivale al Working Set privato.\n" +
++        "CPU istantanea e firma digitale non misurate in questa vista. La presenza nell'elenco non prova che il processo stia lavorando.";
++}
+diff --git a/src/ProcessLens.Windows/WindowsSystemProcessSource.cs b/src/ProcessLens.Windows/WindowsSystemProcessSource.cs
+new file mode 100644
+index 0000000..89ca490
+--- /dev/null
++++ b/src/ProcessLens.Windows/WindowsSystemProcessSource.cs
+@@ -0,0 +1,219 @@
++using System.ComponentModel;
++using System.Runtime.InteropServices;
++using System.Text;
++using ProcessLens.Core;
++
++namespace ProcessLens.Windows;
++
++// On-demand, read-only inventory. The normal collector, CPU sampler and Guardian are unchanged.
++public sealed class WindowsSystemProcessSource : ISystemProcessSource
++{
++    public const int MaximumBuffer = 16 * 1024 * 1024, MaximumRows = 16384;
++    [StructLayout(LayoutKind.Sequential)]
++    internal struct UnicodeName { public ushort Length, MaximumLength; public IntPtr Buffer; }
++    // Published winternl layout. Reserved fields establish offsets; their contents are never used.
++    [StructLayout(LayoutKind.Sequential)]
++    internal struct ProcessInfo
++    {
++        public uint NextEntryOffset, NumberOfThreads;
++        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 48)] public byte[] Reserved1;
++        public UnicodeName ImageName;
++        public int BasePriority;
++        public IntPtr UniqueProcessId, InheritedFromUniqueProcessId;
++        public uint HandleCount, SessionId;
++        public IntPtr Reserved3;
++        public UIntPtr PeakVirtualSize, VirtualSize;
++        public uint Reserved4;
++        public UIntPtr PeakWorkingSetSize, WorkingSetSize;
++        public IntPtr Reserved5;
++        public UIntPtr QuotaPagedPoolUsage;
++        public IntPtr Reserved6;
++        public UIntPtr QuotaNonPagedPoolUsage, PagefileUsage, PeakPagefileUsage, PrivatePageCount;
++        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)] public long[] Reserved7;
++    }
++    [StructLayout(LayoutKind.Sequential)]
++    internal struct PerformanceInfo
++    {
++        public uint Size;
++        public UIntPtr CommitTotal, CommitLimit, CommitPeak, PhysicalTotal, PhysicalAvailable,
++            SystemCache, KernelTotal, KernelPaged, KernelNonpaged, PageSize;
++        public uint HandleCount, ProcessCount, ThreadCount;
++    }
++    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
++    private struct ToolhelpEntry
++    {
++        public uint Size, Usage, Pid;
++        public UIntPtr Heap;
++        public uint Module, Threads, Parent;
++        public int Priority;
++        public uint Flags;
++        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public string Name;
++    }
++    [DllImport("ntdll.dll", ExactSpelling = true)]
++    private static extern int NtQuerySystemInformation(int infoClass, IntPtr data, uint length, out uint required);
++    [DllImport("psapi.dll", SetLastError = true)]
++    [return: MarshalAs(UnmanagedType.Bool)]
++    private static extern bool GetPerformanceInfo(ref PerformanceInfo data, uint size);
++    [DllImport("kernel32.dll", SetLastError = true)] private static extern IntPtr CreateToolhelp32Snapshot(uint flags, uint pid);
++    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
++    [return: MarshalAs(UnmanagedType.Bool)] private static extern bool Process32FirstW(IntPtr snapshot, ref ToolhelpEntry entry);
++    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
++    [return: MarshalAs(UnmanagedType.Bool)] private static extern bool Process32NextW(IntPtr snapshot, ref ToolhelpEntry entry);
++    [DllImport("kernel32.dll", SetLastError = true)] private static extern IntPtr OpenProcess(uint access, bool inherit, uint pid);
++    [DllImport("kernel32.dll")] [return: MarshalAs(UnmanagedType.Bool)] private static extern bool CloseHandle(IntPtr handle);
++    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
++    [return: MarshalAs(UnmanagedType.Bool)] private static extern bool QueryFullProcessImageNameW(IntPtr handle, uint flags, StringBuilder path, ref uint size);
++    [DllImport("kernel32.dll", SetLastError = true)]
++    [return: MarshalAs(UnmanagedType.Bool)] private static extern bool GetProcessTimes(IntPtr handle,
++        out long creation, out long exit, out long kernel, out long user);
++
++    public SystemProcessCatalog Capture(CancellationToken cancellationToken)
++    {
++        DateTime began = DateTime.UtcNow;
++        var memory = ReadMemory();
++        IReadOnlyList<SystemProcessEntry> rows;
++        string source = "NtQuerySystemInformation · SystemProcessInformation", note = "";
++        bool partial = false;
++        try { rows = ReadNative(cancellationToken); }
++        catch (OperationCanceledException) { throw; }
++        catch (Exception ex) when (ex is Win32Exception or InvalidDataException or EntryPointNotFoundException or DllNotFoundException)
++        {
++            note = "Inventario nativo non disponibile: " + ex.Message + "\nFonte alternativa Toolhelp; le voci interne possono differire.";
++            partial = true; source = "Toolhelp · elenco alternativo";
++            try { rows = ReadToolhelp(cancellationToken); }
++            catch (OperationCanceledException) { throw; }
++            catch (Exception fallback) when (fallback is Win32Exception or InvalidDataException)
++            { return new(began, false, true, source, note + "\n" + fallback.Message, Array.Empty<SystemProcessEntry>(), memory); }
++        }
++        var enriched = new List<SystemProcessEntry>(rows.Count);
++        foreach (var row in rows)
++        {
++            cancellationToken.ThrowIfCancellationRequested();
++            enriched.Add(ReadIdentity(row, began));
++        }
++        return new(began, true, partial, source, note, enriched, memory);
++    }
++
++    private static IReadOnlyList<SystemProcessEntry> ReadNative(CancellationToken cancellationToken)
++    {
++        int size = 256 * 1024;
++        for (int attempt = 0; attempt < 8; attempt++)
++        {
++            cancellationToken.ThrowIfCancellationRequested();
++            IntPtr buffer = Marshal.AllocHGlobal(size);
++            try
++            {
++                int status = NtQuerySystemInformation(5, buffer, (uint)size, out uint required);
++                if (status == unchecked((int)0xC0000004) || status == unchecked((int)0xC0000023))
++                {
++                    long next = Math.Max((long)size * 2, (long)required + 65536);
++                    if (next > MaximumBuffer) throw new InvalidDataException("Inventario oltre il limite di 16 MiB.");
++                    size = (int)next; continue;
++                }
++                if (status < 0) throw new InvalidDataException($"NtQuerySystemInformation: NTSTATUS 0x{status:X8}.");
++                if (required == 0 || required > size) throw new InvalidDataException("Dimensione dell'inventario non valida.");
++                return ParseNative(buffer, checked((int)required), cancellationToken);
++            }
++            finally { Marshal.FreeHGlobal(buffer); }
++        }
++        throw new InvalidDataException("Inventario variato durante la lettura; riprova.");
++    }
++    internal static IReadOnlyList<SystemProcessEntry> ParseNative(IntPtr buffer, int length, CancellationToken token)
++    {
++        int header = Marshal.SizeOf<ProcessInfo>(), offset = 0;
++        if (buffer == IntPtr.Zero || length < header || length > MaximumBuffer) throw new InvalidDataException("Buffer processi non valido.");
++        var rows = new List<SystemProcessEntry>(); var pids = new HashSet<int>();
++        while (true)
++        {
++            token.ThrowIfCancellationRequested();
++            if (offset > length - header || rows.Count >= MaximumRows) throw new InvalidDataException("Elenco processi troncato o troppo lungo.");
++            var row = Marshal.PtrToStructure<ProcessInfo>(IntPtr.Add(buffer, offset));
++            uint next = row.NextEntryOffset;
++            if (next != 0 && (next < header || next > length - offset - header || next % IntPtr.Size != 0))
++                throw new InvalidDataException("Offset processi non valido.");
++            int end = next == 0 ? length : offset + (int)next;
++            long pid = row.UniqueProcessId.ToInt64(), parent = row.InheritedFromUniqueProcessId.ToInt64();
++            if (pid < 0 || pid > int.MaxValue || parent < 0 || parent > int.MaxValue || !pids.Add((int)pid))
++                throw new InvalidDataException("PID non valido o ripetuto.");
++            var n = row.ImageName;
++            long nameOffset = n.Buffer.ToInt64() - buffer.ToInt64();
++            if ((n.Length & 1) != 0 || n.Length > 2048 || n.MaximumLength < n.Length ||
++                (n.Length > 0 && (nameOffset < offset + header || nameOffset > end - n.Length)))
++                throw new InvalidDataException("Nome processo fuori dal buffer.");
++            string name = n.Length == 0 ? (pid == 0 ? "System Idle Process" : "Nome N/D") :
++                Marshal.PtrToStringUni(n.Buffer, n.Length / 2) ?? "Nome N/D";
++            ulong workingSet = row.WorkingSetSize.ToUInt64();
++            long? resident = workingSet <= (ulong)long.MaxValue ? (long)workingSet : null;
++            // Some special entries expose zero placeholders; do not turn those into measured zero RAM.
++            if (workingSet == 0 && (pid is 0 or 4 || SystemProcessPresentation.InternalName(name))) resident = null;
++            rows.Add(new((int)pid, (int)parent, name, row.NumberOfThreads, row.HandleCount,
++                row.SessionId, resident));
++            if (next == 0) return rows;
++            offset += (int)next;
++        }
++    }
++    private static IReadOnlyList<SystemProcessEntry> ReadToolhelp(CancellationToken token)
++    {
++        IntPtr snapshot = CreateToolhelp32Snapshot(2, 0);
++        if (snapshot == new IntPtr(-1)) throw new Win32Exception(Marshal.GetLastWin32Error());
++        try
++        {
++            var entry = new ToolhelpEntry { Size = (uint)Marshal.SizeOf<ToolhelpEntry>(), Name = "" };
++            if (!Process32FirstW(snapshot, ref entry)) throw new Win32Exception(Marshal.GetLastWin32Error());
++            var rows = new List<SystemProcessEntry>();
++            do
++            {
++                token.ThrowIfCancellationRequested();
++                if (rows.Count >= MaximumRows || entry.Pid > int.MaxValue || entry.Parent > int.MaxValue)
++                    throw new InvalidDataException("Inventario Toolhelp oltre i limiti.");
++                rows.Add(new((int)entry.Pid, (int)entry.Parent, entry.Name, entry.Threads, null, null, null));
++            } while (Process32NextW(snapshot, ref entry));
++            int error = Marshal.GetLastWin32Error();
++            if (error != 18) throw new Win32Exception(error); // ERROR_NO_MORE_FILES is normal termination.
++            return rows;
++        }
++        finally { CloseHandle(snapshot); }
++    }
++    private static SystemProcessEntry ReadIdentity(SystemProcessEntry row, DateTime began)
++    {
++        if (row.Pid is 0 or 4) return row with { Access = "Voce di sistema; dettagli limitati" };
++        IntPtr handle = OpenProcess(0x1000, false, (uint)row.Pid); // QUERY_LIMITED_INFORMATION only.
++        if (handle == IntPtr.Zero) return row with { Access = "Dettagli N/D · Win32 " + Marshal.GetLastWin32Error() };
++        try
++        {
++            if (!GetProcessTimes(handle, out long creation, out _, out _, out _) || creation <= 0)
++                return row with { Access = "Avvio N/D; identità non verificabile" };
++            DateTime start;
++            try { start = DateTime.FromFileTimeUtc(creation); }
++            catch (ArgumentOutOfRangeException) { return row with { Access = "Avvio non valido" }; }
++            if (start > began) return row with { Access = "Istanza cambiata durante la lettura; aggiorna" };
++            var path = new StringBuilder(1024); uint chars = (uint)path.Capacity;
++            if (!QueryFullProcessImageNameW(handle, 0, path, ref chars))
++            {
++                int error = Marshal.GetLastWin32Error();
++                if (error != 122) return row with { Access = "Percorso N/D · Win32 " + error };
++                path = new StringBuilder(32768); chars = (uint)path.Capacity;
++                if (!QueryFullProcessImageNameW(handle, 0, path, ref chars))
++                    return row with { Access = "Percorso N/D · Win32 " + Marshal.GetLastWin32Error() };
++            }
++            string value = path.ToString();
++            if (!System.IO.Path.GetFileName(value).Equals(row.Name, StringComparison.OrdinalIgnoreCase))
++                return row with { Access = "Identità non verificabile dal percorso" };
++            return row with { Path = value, StartUtc = start, Access = "Percorso e avvio letti" };
++        }
++        finally { CloseHandle(handle); }
++    }
++    internal static long? PageBytes(ulong pages, ulong pageSize) => pageSize == 0 ||
++        pages > (ulong)long.MaxValue / pageSize ? null : (long)(pages * pageSize);
++    private static SystemMemorySnapshot ReadMemory()
++    {
++        var data = new PerformanceInfo { Size = (uint)Marshal.SizeOf<PerformanceInfo>() };
++        if (!GetPerformanceInfo(ref data, data.Size))
++            return new(null, null, null, null, null, null, "GetPerformanceInfo: Win32 " + Marshal.GetLastWin32Error());
++        ulong pageSize = data.PageSize.ToUInt64();
++        long? Bytes(UIntPtr pages) => PageBytes(pages.ToUInt64(), pageSize);
++        return new(Bytes(data.PhysicalTotal), Bytes(data.PhysicalAvailable), Bytes(data.CommitTotal),
++            Bytes(data.CommitLimit), Bytes(data.KernelPaged), Bytes(data.KernelNonpaged),
++            "Fonte: GetPerformanceInfo. Campione separato dall'inventario processi; non è una ripartizione esatta della RAM.");
++    }
++}
+diff --git a/tests/ProcessLens.SystemProcessTests/ProcessLens.SystemProcessTests.csproj b/tests/ProcessLens.SystemProcessTests/ProcessLens.SystemProcessTests.csproj
+new file mode 100644
+index 0000000..244482d
+--- /dev/null
++++ b/tests/ProcessLens.SystemProcessTests/ProcessLens.SystemProcessTests.csproj
+@@ -0,0 +1,6 @@
++<Project Sdk="Microsoft.NET.Sdk">
++ <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
++ <ItemGroup><ProjectReference Include="../../src/ProcessLens.Core/ProcessLens.Core.csproj"/>
++  <Compile Include="../../src/ProcessLens.Windows/WindowsSystemProcessSource.cs" Link="WindowsSystemProcessSource.cs"/>
++ </ItemGroup>
++</Project>
+diff --git a/tests/ProcessLens.SystemProcessTests/Program.cs b/tests/ProcessLens.SystemProcessTests/Program.cs
+new file mode 100644
+index 0000000..3baa304
+--- /dev/null
++++ b/tests/ProcessLens.SystemProcessTests/Program.cs
+@@ -0,0 +1,112 @@
++using System.Diagnostics;
++using System.Globalization;
++using System.Runtime.InteropServices;
++using System.Text;
++using ProcessLens.Core;
++using ProcessLens.Windows;
++
++static void Check(bool ok, string label)
++{ if (!ok) throw new Exception("FAIL system: " + label); Console.WriteLine("PASS system: " + label); }
++static void Reject(Action action, string label)
++{
++    try { action(); } catch (InvalidDataException) { Check(true, label); return; }
++    throw new Exception("FAIL system: " + label);
++}
++// Constants from the published Windows SDK ABI, independent of production Marshal.OffsetOf.
++bool wide = IntPtr.Size == 8;
++int header = wide ? 256 : 184, namePointer = wide ? 64 : 60,
++    pidOffset = wide ? 80 : 68, parentOffset = wide ? 88 : 72,
++    handlesOffset = wide ? 96 : 76, sessionOffset = wide ? 100 : 80,
++    residentOffset = wide ? 144 : 104, stride = 320;
++Check(Marshal.SizeOf<WindowsSystemProcessSource.ProcessInfo>() == header, "published process header size");
++Check(Marshal.OffsetOf<WindowsSystemProcessSource.ProcessInfo>("ImageName").ToInt32() == 56 &&
++    Marshal.OffsetOf<WindowsSystemProcessSource.ProcessInfo>("UniqueProcessId").ToInt32() == pidOffset &&
++    Marshal.OffsetOf<WindowsSystemProcessSource.ProcessInfo>("WorkingSetSize").ToInt32() == residentOffset,
++    "published Unicode PID and Working Set offsets");
++Check(Marshal.SizeOf<WindowsSystemProcessSource.PerformanceInfo>() == (wide ? 104 : 56), "PSAPI performance ABI size");
++Check(Marshal.OffsetOf<WindowsSystemProcessSource.PerformanceInfo>("PageSize").ToInt32() == (wide ? 80 : 40), "PSAPI page-size offset");
++IntPtr buffer = Marshal.AllocHGlobal(stride * 2);
++try
++{
++    void Reset()
++    {
++        Marshal.Copy(new byte[stride * 2], 0, buffer, stride * 2);
++        Marshal.WriteInt32(buffer, 0, stride); // PID 0, genuine zero placeholder for idle.
++        IntPtr row = IntPtr.Add(buffer, stride);
++        Marshal.WriteInt32(row, 4, 7);
++        string name = "Memory Compression"; byte[] text = Encoding.Unicode.GetBytes(name);
++        Marshal.WriteInt16(row, 56, (short)text.Length); Marshal.WriteInt16(row, 58, (short)text.Length);
++        Marshal.WriteIntPtr(row, namePointer, IntPtr.Add(row, header));
++        Marshal.Copy(text, 0, IntPtr.Add(row, header), text.Length);
++        Marshal.WriteIntPtr(row, pidOffset, new IntPtr(44)); Marshal.WriteIntPtr(row, parentOffset, new IntPtr(4));
++        Marshal.WriteInt32(row, handlesOffset, 9); Marshal.WriteInt32(row, sessionOffset, 0);
++        Marshal.WriteIntPtr(row, residentOffset, new IntPtr(12 * 1048576));
++    }
++    Reset();
++    var rows = WindowsSystemProcessSource.ParseNative(buffer, stride * 2, default);
++    Check(rows.Count == 2 && rows[0].Pid == 0 && rows[0].WorkingSetBytes is null,
++        "idle retained and placeholder RAM does not become measured zero");
++    Check(rows[1].Name == "Memory Compression" && rows[1].Pid == 44 && rows[1].ParentPid == 4 &&
++        rows[1].Threads == 7 && rows[1].Handles == 9 && rows[1].WorkingSetBytes == 12 * 1048576,
++        "independent raw fixture retains internal process name PID counters and physical total Working Set");
++    Reset(); Marshal.WriteInt32(buffer, 0, 8);
++    Reject(() => WindowsSystemProcessSource.ParseNative(buffer, stride * 2, default), "reject header overlap");
++    Reset(); Marshal.WriteInt32(buffer, 0, int.MaxValue);
++    Reject(() => WindowsSystemProcessSource.ParseNative(buffer, stride * 2, default), "reject out-of-range next offset");
++    Reset(); Marshal.WriteIntPtr(IntPtr.Add(buffer, stride), namePointer, IntPtr.Add(buffer, stride * 2));
++    Reject(() => WindowsSystemProcessSource.ParseNative(buffer, stride * 2, default), "reject name outside record");
++    Reset(); Marshal.WriteInt16(IntPtr.Add(buffer, stride), 56, 3);
++    Reject(() => WindowsSystemProcessSource.ParseNative(buffer, stride * 2, default), "reject odd Unicode byte length");
++    Reset(); Marshal.WriteIntPtr(IntPtr.Add(buffer, stride), pidOffset, IntPtr.Zero);
++    Reject(() => WindowsSystemProcessSource.ParseNative(buffer, stride * 2, default), "reject duplicate PID");
++    Reset(); Reject(() => WindowsSystemProcessSource.ParseNative(buffer, header - 1, default), "reject truncated header");
++    using var cancel = new CancellationTokenSource(); cancel.Cancel();
++    try { WindowsSystemProcessSource.ParseNative(buffer, stride * 2, cancel.Token); throw new Exception("cancellation ignored"); }
++    catch (OperationCanceledException) { Check(true, "cancellation stops inventory parsing"); }
++}
++finally { Marshal.FreeHGlobal(buffer); }
++Check(WindowsSystemProcessSource.PageBytes(12, 4096) == 49152 &&
++    WindowsSystemProcessSource.PageBytes(0, 4096) == 0 &&
++    WindowsSystemProcessSource.PageBytes(ulong.MaxValue, 4096) is null &&
++    WindowsSystemProcessSource.PageBytes(5, 0) is null, "page units preserve zero and reject overflow or unknown page size");
++var unknown = new SystemProcessEntry(512, 4, "example.exe", 2, null, null, null);
++Check(SystemProcessPresentation.WindowsGroup(unknown with { Name = "Memory Compression" }, @"C:\Windows") &&
++    !SystemProcessPresentation.WindowsGroup(unknown with { Name = "Memory Compression.exe" }, @"C:\Windows"),
++    "internal names exact and suffix lookalike not classified as compression");
++Check(SystemProcessPresentation.UnderWindows(@"D:\Windows\System32\csrss.exe", @"D:\Windows") &&
++    !SystemProcessPresentation.UnderWindows(@"D:\Windows-old\csrss.exe", @"D:\Windows") &&
++    !SystemProcessPresentation.UnderWindows(@"D:\Windows\..\Users\fake.exe", @"D:\Windows"),
++    "Windows directory boundaries and traversal rejected");
++Check(SystemProcessPresentation.Origin(unknown with { Name = "lsass.exe", Path = @"C:\Users\test\lsass.exe" }, @"C:\Windows")
++    .Contains("non verificata"), "familiar name in user directory never certifies Windows ownership");
++DateTime start = new(2026, 10, 21, 12, 0, 0, DateTimeKind.Utc);
++var observed = unknown with { StartUtc = start };
++var snapshot = new ProcessSnapshot { Pid = 512, ParentPid = 4, Name = "example.exe", StartTime = start.ToLocalTime() };
++Check(SystemProcessPresentation.SameInstance(observed, snapshot) &&
++    !SystemProcessPresentation.SameInstance(observed, snapshot with { StartTime = start.AddSeconds(1) }) &&
++    !SystemProcessPresentation.SameInstance(observed, snapshot with { Name = "other.exe" }) &&
++    !SystemProcessPresentation.SameInstance(observed with { StartUtc = null }, snapshot),
++    "analysis navigation requires exact PID executable and known creation time across UTC and local time");
++foreach (string culture in new[] { "it-IT", "en-US" })
++{
++    CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(culture);
++    string text = SystemProcessPresentation.MiB(26L * 1048576);
++    Check(text == (culture == "it-IT" ? "26,0 MiB" : "26.0 MiB") &&
++        SystemProcessPresentation.MiB(null) == "N/D", "culture and unavailable memory " + culture);
++    string memory = SystemProcessPresentation.MemoryReport(new(null, null, null, null, 0, null, "errore originale"));
++    Check(memory.Contains("non sommarli") && memory.Contains("errore originale") && memory.Contains("N/D"),
++        "global kernel counters retain source errors and cannot become process totals " + culture);
++}
++if (OperatingSystem.IsWindows())
++{
++    // Read-only smoke check against a second API; no process creation, termination, driver or privilege change.
++    using var self = Process.GetCurrentProcess();
++    var live = new WindowsSystemProcessSource().Capture(default);
++    var mine = live.Processes.Single(p => p.Pid == self.Id);
++    Check(live.Available && mine.Name.Equals(self.ProcessName + ".exe", StringComparison.OrdinalIgnoreCase) &&
++        mine.StartUtc == self.StartTime.ToUniversalTime(), "live Windows inventory agrees with independent self PID name and creation time");
++    Check(live.Processes.Any(p => p.Pid == 0) && live.Processes.Any(p => p.Pid == 4), "live Windows idle and System entries remain visible");
++    Check(live.Memory.PhysicalTotal > 0 && live.Memory.KernelNonpaged >= 0, "live PSAPI memory counters available");
++}
++else Console.WriteLine("SKIP live Windows read: non-Windows host.");
++Console.WriteLine("System process tests complete.");
+diff --git a/tests/ProcessLens.SystemProcessUiTests/ProcessLens.SystemProcessUiTests.csproj b/tests/ProcessLens.SystemProcessUiTests/ProcessLens.SystemProcessUiTests.csproj
+new file mode 100644
+index 0000000..0182c44
+--- /dev/null
++++ b/tests/ProcessLens.SystemProcessUiTests/ProcessLens.SystemProcessUiTests.csproj
+@@ -0,0 +1,4 @@
++<Project Sdk="Microsoft.NET.Sdk">
++ <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
++ <ItemGroup><ProjectReference Include="../../src/ProcessLens.App/ProcessLens.App.csproj"/></ItemGroup>
++</Project>
+diff --git a/tests/ProcessLens.SystemProcessUiTests/Program.cs b/tests/ProcessLens.SystemProcessUiTests/Program.cs
+new file mode 100644
+index 0000000..52227d0
+--- /dev/null
++++ b/tests/ProcessLens.SystemProcessUiTests/Program.cs
+@@ -0,0 +1,86 @@
++using System.Windows;
++using System.Windows.Controls;
++using System.Windows.Threading;
++using ProcessLens.App;
++using ProcessLens.Core;
++
++internal static class Program
++{
++    static void Check(bool ok, string label)
++    { if (!ok) throw new Exception("FAIL system UI: " + label); Console.WriteLine("PASS system UI: " + label); }
++    static void Complete(Task task)
++    {
++        var frame = new DispatcherFrame(); var dispatcher = Dispatcher.CurrentDispatcher;
++        bool timedOut = false;
++        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(10) };
++        timer.Tick += (_, _) => { timedOut = true; frame.Continue = false; };
++        task.ContinueWith(_ => dispatcher.BeginInvoke(new Action(() => frame.Continue = false)), TaskScheduler.Default);
++        timer.Start(); Dispatcher.PushFrame(frame); timer.Stop();
++        if (timedOut) throw new Exception("UI fixture timed out");
++        task.GetAwaiter().GetResult();
++    }
++    [STAThread]
++    public static void Main()
++    {
++        _ = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
++        using var source = new Fixture();
++        var view = new SystemProcessesView(source, @"C:\Windows");
++        Check(source.Calls == 0, "constructor performs no native inventory");
++        view.SetActive(true); Check(source.Calls == 0, "activation does not automatically query Windows");
++        Complete(view.RefreshAsync());
++        var grid = (DataGrid)view.FindName("SystemProcessesTable");
++        var analyze = (Button)view.FindName("AnalyzeSystemButton");
++        Check(grid.IsReadOnly && GridCopySupport.GetEnabled(grid) && grid.EnableRowVirtualization && grid.Items.Count == 2,
++            "Windows scope retains internal entries and denied details in copied virtualized table");
++        Check(GridCopySupport.CaptureTable(grid, false).Contains("Memory Compression"), "actual grid copy preserves internal process names");
++        grid.SelectedItem = grid.Items.Cast<SystemProcessRow>().Single(r => r.Name == "Memory Compression");
++        Check(!analyze.IsEnabled && ((SelectableText)view.FindName("SystemSelectionText")).Text.Contains("dimensione logica"),
++            "unknown creation time blocks analysis navigation without hiding compression details");
++        var scope = (ComboBox)view.FindName("SystemScopeBox"); scope.SelectedIndex = 1;
++        Check(grid.Items.Count == 3, "all-process scope includes processes with unknown origin");
++        ((TextBox)view.FindName("SystemSearchBox")).Text = "12";
++        Check(grid.Items.Count == 1 && ((SystemProcessRow)grid.Items[0]).Pid == 12, "numeric PID search does not match substring 112");
++        grid.SelectedIndex = 0; SystemProcessEntry? request = null; view.AnalysisRequested += p => request = p;
++        analyze.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
++        Check(request?.Pid == 12 && request.StartUtc.HasValue, "analysis button forwards selected immutable process identity");
++        ((TextBox)view.FindName("SystemSearchBox")).Clear();
++        source.Block = true; Task pending = view.RefreshAsync();
++        Check(source.Started.Wait(TimeSpan.FromSeconds(5)), "blocked native fixture begins");
++        Complete(view.RefreshAsync()); Check(source.Calls == 2 && grid.Items.Count == 0, "refresh coalesces and clears old rows while pending");
++        view.SetActive(false); source.Release.Set(); Complete(pending);
++        Check(grid.Items.Count == 0 && !analyze.IsEnabled && ((SelectableText)view.FindName("SystemMemoryText")).Text.Contains("N/D"),
++            "late uncancellable result rejected after section closes and rows released");
++        view.SetActive(true); source.Block = false; source.Fail = true; Complete(view.RefreshAsync());
++        Check(grid.Items.Count == 0 && ((SelectableText)view.FindName("SystemSourceText")).Text.Contains("synthetic failure"),
++            "acquisition error preserves failure instead of a valid empty inventory");
++        view.SetActive(false);
++        var window = new MainWindow();
++        var host = (ContentControl)window.FindName("SystemProcessesHost");
++        Check(host.Content is null, "main window leaves system pane unconstructed");
++        ((Button)window.FindName("NavSystemButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
++        Check(host.Content is SystemProcessesView && host.Visibility == Visibility.Visible &&
++            ((Grid)window.FindName("ProcessWorkspace")).Visibility == Visibility.Collapsed, "System Windows button opens a dedicated lazy workspace");
++        ((Button)window.FindName("NavNetworkButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
++        Check(host.Visibility == Visibility.Collapsed, "switching to network deactivates system workspace");
++        window.Close(); Application.Current.Shutdown();
++        Console.WriteLine("System process WPF tests complete; no real native query, process action or clipboard used.");
++    }
++    sealed class Fixture : ISystemProcessSource, IDisposable
++    {
++        public int Calls; public bool Block, Fail;
++        public ManualResetEventSlim Started = new(false), Release = new(false);
++        public SystemProcessCatalog Capture(CancellationToken cancellationToken)
++        {
++            Interlocked.Increment(ref Calls);
++            if (Block) { Started.Set(); if (!Release.Wait(TimeSpan.FromSeconds(5))) throw new TimeoutException(); }
++            if (Fail) throw new InvalidOperationException("synthetic failure");
++            return new(DateTime.UtcNow, true, false, "synthetic source", "unchanged source note",
++                new[] { new SystemProcessEntry(0, 0, "System Idle Process", 4, 0, 0, null),
++                    new SystemProcessEntry(112, 4, "Memory Compression", 4, 3, 0, 1048576, Access: "Win32 5"),
++                    new SystemProcessEntry(12, 4, "example.exe", 1, 3, 1, 0,
++                        @"C:\Apps\example.exe", new DateTime(2026, 10, 21, 12, 0, 0, DateTimeKind.Utc), "Percorso e avvio letti") },
++                new(8L * 1024 * 1048576, 2L * 1024 * 1048576, null, null, null, null, "synthetic memory"));
++        }
++        public void Dispose() { Started.Dispose(); Release.Dispose(); }
++    }
++}
+diff --git a/tests/check-system-processes-r14.ps1 b/tests/check-system-processes-r14.ps1
+new file mode 100644
+index 0000000..521a4ab
+--- /dev/null
++++ b/tests/check-system-processes-r14.ps1
+@@ -0,0 +1,28 @@
++$ErrorActionPreference = 'Stop'
++$root = Split-Path -Parent $PSScriptRoot
++[xml]$main = Get-Content -LiteralPath (Join-Path $root 'src\ProcessLens.App\MainWindow.xaml') -Raw -Encoding UTF8
++[xml]$view = Get-Content -LiteralPath (Join-Path $root 'src\ProcessLens.App\SystemProcessesView.xaml') -Raw -Encoding UTF8
++$code = Get-Content -LiteralPath (Join-Path $root 'src\ProcessLens.App\SystemProcessesView.xaml.cs') -Raw -Encoding UTF8
++$native = Get-Content -LiteralPath (Join-Path $root 'src\ProcessLens.Windows\WindowsSystemProcessSource.cs') -Raw -Encoding UTF8
++foreach ($name in @('NavSystemButton','SystemProcessesHost')) {
++ if (-not $main.SelectSingleNode("//*[@*[local-name()='Name']='$name']")) { throw "FAIL R14 missing navigation: $name" }
++}
++if ($main.SelectNodes("//*[local-name()='SystemProcessesView']").Count -ne 0) { throw 'FAIL R14 eager native view.' }
++foreach ($token in @('MaximumBuffer = 16 * 1024 * 1024','MaximumRows = 16384',
++ 'finally { Marshal.FreeHGlobal(buffer); }','OpenProcess(0x1000, false', 'if (start > began)',
++ 'NTSTATUS 0x{status:X8}', 'error != 18', 'nameOffset > end - n.Length')) {
++ if (-not $native.Contains($token)) { throw "FAIL R14 native guard: $token" }
++}
++foreach ($token in @('if (!_active || _busy) return;', 'generation != _generation',
++ '_operation?.Cancel()', 'SystemProcessesTable.ItemsSource = null;', 'ClipboardText.Copy(this,')) {
++ if (-not $code.Contains($token)) { throw "FAIL R14 lifecycle: $token" }
++}
++foreach ($forbidden in @('PROCESS_VM_READ', 'Process.Start(', '.Kill(', 'AdjustTokenPrivileges(', 'DispatcherTimer')) {
++ if (($native + $code).Contains($forbidden)) { throw "FAIL R14 unexpected operation: $forbidden" }
++}
++foreach ($button in $view.SelectNodes("//*[local-name()='Button']")) {
++ if ($button.HasAttribute('Height') -or $button.GetAttribute('Style') -ne '{StaticResource SystemAction}') {
++  throw 'FAIL R14 button spacing or wrapping style.'
++ }
++}
++Write-Host 'PASS R14 source only: lazy system inventory, bounded read-only acquisition, identity guards and copy.'

@@ -1,0 +1,145 @@
+using System.Globalization;
+using System.Windows;
+using System.Windows.Controls;
+using ProcessLens.Core;
+using ProcessLens.Windows;
+
+namespace ProcessLens.App;
+
+public sealed record SystemProcessRow(SystemProcessEntry Entry, string WindowsDirectory)
+{
+    public int Pid => Entry.Pid;
+    public string Name => Entry.Name;
+    public int Parent => Entry.ParentPid;
+    public string Origin => SystemProcessPresentation.Origin(Entry, WindowsDirectory);
+    public string Resident => SystemProcessPresentation.MiB(Entry.WorkingSetBytes);
+    public string Threads => Entry.Threads?.ToString(CultureInfo.CurrentCulture) ?? "N/D";
+    public string Handles => Entry.Handles?.ToString(CultureInfo.CurrentCulture) ?? "N/D";
+    public string Session => Entry.Session?.ToString(CultureInfo.CurrentCulture) ?? "N/D";
+    public string Access => Entry.Access;
+    public string Label => $"PID {Pid} · {Name} · Sessione {Entry.Session?.ToString(CultureInfo.CurrentCulture) ?? "N/D"}";
+}
+
+public partial class SystemProcessesView : UserControl
+{
+    private readonly ISystemProcessSource _source;
+    private readonly string _windowsDirectory;
+    private bool _active, _busy;
+    private int _generation;
+    private CancellationTokenSource? _operation;
+    private SystemProcessCatalog? _catalog;
+    public event Action<SystemProcessEntry>? AnalysisRequested;
+    public SystemProcessesView() : this(new WindowsSystemProcessSource(),
+        Environment.GetFolderPath(Environment.SpecialFolder.Windows)) { }
+    internal SystemProcessesView(ISystemProcessSource source, string windowsDirectory)
+    {
+        _source = source; _windowsDirectory = windowsDirectory;
+        InitializeComponent(); UpdateButtons(); // No native query and no timer here.
+    }
+    public void SetActive(bool active)
+    {
+        if (_active == active) return;
+        _active = active;
+        if (!active)
+        {
+            _generation++; _operation?.Cancel(); _catalog = null;
+            SystemProcessesTable.ItemsSource = null;
+            SystemInstancesBox.ItemsSource = null;
+            SystemStatusText.Text = "Campione da aggiornare.";
+            SystemCoverageText.Text = "Copertura: N/D";
+            SystemMemoryText.Text = "Memoria: N/D";
+            SystemSourceText.Text = "Nessuna lettura corrente.";
+            SystemSelectionText.Text = "Seleziona un componente dopo l'aggiornamento.";
+        }
+        UpdateButtons();
+    }
+    internal async Task RefreshAsync()
+    {
+        if (!_active || _busy) return;
+        _busy = true; int generation = _generation;
+        using var operation = new CancellationTokenSource(); _operation = operation;
+        _catalog = null; SystemProcessesTable.ItemsSource = null; SystemInstancesBox.ItemsSource = null;
+        SystemStatusText.Text = "Lettura dei componenti Windows…";
+        SystemCoverageText.Text = "Copertura: lettura in corso.";
+        SystemMemoryText.Text = "Memoria: N/D"; SystemSourceText.Text = "Lettura in corso.";
+        SystemSelectionText.Text = "Seleziona un componente dopo l'aggiornamento.";
+        UpdateButtons();
+        try
+        {
+            var result = await Task.Run(() => WindowsComponentCatalog.Retain(_source.Capture(operation.Token), _windowsDirectory), operation.Token);
+            if (!_active || generation != _generation || operation.IsCancellationRequested) return;
+            _catalog = result; // Retain only catalog matches, not the complete application inventory.
+            SystemMemoryText.Text = SystemProcessPresentation.MemoryReport(result.Memory);
+            string coverage = WindowsComponentCatalog.CoverageReport(result);
+            SystemCoverageText.Text = coverage.Split('\n')[0];
+            SystemSourceText.Text = result.Source + "\n" + result.Note + "\n\n" + coverage;
+            ApplyFilter();
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            if (_active && generation == _generation)
+            { SystemStatusText.Text = "Lettura non disponibile."; SystemCoverageText.Text = "Copertura: N/D"; SystemSourceText.Text = ex.Message; }
+        }
+        finally
+        {
+            if (ReferenceEquals(_operation, operation)) _operation = null;
+            _busy = false; UpdateButtons();
+        }
+    }
+    private void ApplyFilter()
+    {
+        if (SystemProcessesTable is null || _catalog is null) return;
+        var c = _catalog;
+        SystemInstancesBox.ItemsSource = null;
+        if (!c.Available)
+        { SystemProcessesTable.ItemsSource = null; SystemStatusText.Text = "Campione non disponibile. Consulta la fonte della lettura."; return; }
+        string category = SystemScopeBox.SelectedIndex > 0 && SystemScopeBox.SelectedIndex <= WindowsComponentCatalog.Categories.Count
+            ? WindowsComponentCatalog.Categories[SystemScopeBox.SelectedIndex - 1] : "";
+        var visible = WindowsComponentCatalog.Groups(c.Processes, _windowsDirectory, category, SystemSearchBox.Text);
+        SystemProcessesTable.ItemsSource = visible;
+        SystemStatusText.Text = WindowsComponentCatalog.SampleStatus(c, visible,
+            category.Length > 0 || SystemSearchBox.Text.Trim().Length > 0);
+        if (visible.Count == 0) SystemStatusText.Text += " · nessuna corrispondenza; non è una verifica di assenza";
+        SystemSelectionText.Text = "Seleziona un componente per funzione e dettagli. Poi scegli un PID per l'analisi.";
+        UpdateButtons();
+    }
+    private void UpdateButtons()
+    {
+        RefreshSystemButton.IsEnabled = _active && !_busy;
+        CopySystemButton.IsEnabled = _active && !_busy && _catalog is not null;
+        AnalyzeSystemButton.IsEnabled = _active && !_busy && SystemInstancesBox.SelectedItem is SystemProcessRow { Entry.StartUtc: not null };
+        SystemInstancesBox.IsEnabled = _active && !_busy && SystemInstancesBox.Items.Count > 0;
+    }
+    private async void RefreshSystem_Click(object sender, RoutedEventArgs e) => await RefreshAsync();
+    private void Scope_Changed(object sender, SelectionChangedEventArgs e) => ApplyFilter();
+    private void Search_Changed(object sender, TextChangedEventArgs e) => ApplyFilter();
+    private void SystemSelection_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (SystemInstancesBox is null || SystemSelectionText is null) return;
+        SystemInstancesBox.ItemsSource = SystemProcessesTable.SelectedItem is WindowsComponentGroup group
+            ? group.Instances.Select(p => new SystemProcessRow(p, _windowsDirectory)).ToArray() : null;
+        SystemInstancesBox.SelectedIndex = SystemInstancesBox.Items.Count > 0 ? 0 : -1;
+        UpdateSelection();
+    }
+    private void SystemInstance_Changed(object sender, SelectionChangedEventArgs e)
+    { if (SystemSelectionText is not null && AnalyzeSystemButton is not null) UpdateSelection(); }
+    private void UpdateSelection()
+    {
+        SystemSelectionText.Text = SystemProcessesTable.SelectedItem is WindowsComponentGroup group &&
+            SystemInstancesBox.SelectedItem is SystemProcessRow row
+            ? WindowsComponentCatalog.Details(group, row.Entry, _windowsDirectory)
+            : "Seleziona un componente per leggere funzione e dati del campione.";
+        UpdateButtons();
+    }
+    private void AnalyzeSystem_Click(object sender, RoutedEventArgs e)
+    {
+        if (_active && !_busy && SystemInstancesBox.SelectedItem is SystemProcessRow { Entry.StartUtc: not null } row)
+            AnalysisRequested?.Invoke(row.Entry);
+    }
+    internal void ShowNavigationProblem(string text) => SystemSelectionText.Text = text;
+    private void CopySystem_Click(object sender, RoutedEventArgs e) => ClipboardText.Copy(this,
+        SystemStatusText.Text + "\n" + SystemSourceText.Text + "\n\n" + SystemMemoryText.Text + "\n\n" +
+        "WS max letto: massimo tra le istanze con contatore disponibile; non è la somma del gruppo.\n" +
+        GridCopySupport.CaptureTable(SystemProcessesTable, false) + "\n\n" + SystemSelectionText.Text);
+}

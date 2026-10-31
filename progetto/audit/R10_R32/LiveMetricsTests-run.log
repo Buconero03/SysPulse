@@ -1,0 +1,49 @@
+PASS R24 resident, private resident and commit stay distinct [it-IT]
+PASS R24 memory update preserves CPU, evidence and original snapshot [it-IT]
+PASS R24 exact sample time retained [it-IT]
+PASS R24 stale and invalid clocks rejected [it-IT]
+PASS R24 PID and known creation time required [it-IT]
+PASS R24 PID and known creation time required [it-IT]
+PASS R24 PID and known creation time required [it-IT]
+PASS R24 unknown sample identity cannot attach [it-IT]
+PASS R24 older fast sample cannot overwrite newer inventory read [it-IT]
+PASS R24 newer fast sample supersedes slow inventory [it-IT]
+PASS R24 failed or suspended acquisition clears old data without measured zero [it-IT]
+PASS R24 genuine zero retained [it-IT]
+PASS R24 invalid private value falls back to explicitly total WS [it-IT]
+PASS R24 resident, private resident and commit stay distinct [en-US]
+PASS R24 memory update preserves CPU, evidence and original snapshot [en-US]
+PASS R24 exact sample time retained [en-US]
+PASS R24 stale and invalid clocks rejected [en-US]
+PASS R24 PID and known creation time required [en-US]
+PASS R24 PID and known creation time required [en-US]
+PASS R24 PID and known creation time required [en-US]
+PASS R24 unknown sample identity cannot attach [en-US]
+PASS R24 older fast sample cannot overwrite newer inventory read [en-US]
+PASS R24 newer fast sample supersedes slow inventory [en-US]
+PASS R24 failed or suspended acquisition clears old data without measured zero [en-US]
+PASS R24 genuine zero retained [en-US]
+PASS R24 invalid private value falls back to explicitly total WS [en-US]
+PASS R24 one-second counters independent of bounded metadata scheduling
+PASS R24 duplicate, out-of-order and invalid trend inputs ignored
+PASS R24 one-second history remains bounded at 160 samples
+PASS R24 Closing only queues one minimize after returning
+PASS R24 queued minimize executes once
+PASS R24 restore supersedes pending minimize without losing reopen
+PASS R24 latest explicit minimize wins a pending restore
+PASS R24 real exit or disposal cancels queued changes
+PASS R24 X keeps taskbar fallback and explicit exit remains possible
+PASS R24 PSAPI EX2 x64 size and offsets match Windows SDK fixture
+PASS R24 same borrowed handle and explicit EX2 size
+PASS R24 one read yields all three native counters without another process open
+PASS R24 success with only EX prefix cannot invent zero private WS
+PASS R24 fallback uses SDK EX byte count
+PASS R24 EX fallback retains total WS and commit without false private zero
+PASS R24 denied acquisition stays unavailable with its attempted sample time
+PASS R24 invalid handle cannot reach the counter reader
+PASS R24 native explicit zero is measured
+PASS R24 native private WS above total cannot become a valid private counter
+PASS R24 unsigned overflow invalidates resident counters without losing valid commit
+NOT RUN: real Windows handles, PSAPI, tray, WPF and Task Manager comparison (Linux host).
+R24 live metrics and window command regressions complete.
+

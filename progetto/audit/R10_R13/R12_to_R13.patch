@@ -1,0 +1,1109 @@
+--- /dev/null
++++ b/INTEGRAZIONE_WIRESHARK_R13.md
+@@ -0,0 +1,90 @@
++# ProcessLens R13 — integrazione Wireshark/Npcap su Windows
++
++La candidata riparte dalla R12. In **Rete** sono disponibili due schede: **Dispositivi nella cache** e **Wireshark / Wi-Fi**. La seconda viene costruita solo quando viene aperta. Non avvia catture, verifiche del monitor o installazioni automaticamente.
++
++## Installazione sul PC Windows
++
++1. Installa [Wireshark per Windows](https://www.wireshark.org/download.html), includendo il componente **TShark**. La cartella standard è `C:\Program Files\Wireshark`.
++2. Installa Npcap, proposto dall’installer Wireshark oppure disponibile dal [sito ufficiale Npcap](https://npcap.com/#download). Abilita **Support raw 802.11 traffic (and monitor mode) for wireless adapters**. Se Npcap è già installato senza questa opzione, modificane/reinstalla la configurazione tramite il suo installer.
++3. Segui le eventuali richieste dell’installer e riavvia solo se richiesto. ProcessLens non installa né riconfigura il driver.
++4. La scheda e il driver devono supportare monitor/raw 802.11. La presenza di Npcap non basta a garantirlo. Come prima indicazione puoi leggere:
++
++```powershell
++netsh wlan show wirelesscapabilities
++```
++
++La voce relativa al monitor è un’indicazione del driver. La verifica operativa rimane quella di dumpcap e della successiva ricezione di frame. Se il supporto manca, puoi usare una cattura normale oppure importare un file ottenuto con hardware compatibile.
++
++## Compilazione e utilizzo
++
++```powershell
++.\build-dashboard.ps1
++```
++
++1. Avvia la candidata compilata e apri **Rete → Wireshark / Wi-Fi**.
++2. Premi **Verifica strumenti**. Per un’installazione personalizzata scegli **Scegli dumpcap.exe…**: `tshark.exe` deve trovarsi nella stessa cartella. La presenza del file Npcap è distinta dal funzionamento del driver.
++3. Seleziona esplicitamente un’interfaccia. L’app non sceglie automaticamente la prima e accetta soltanto interfacce locali Npcap con identificatore stabile, non indici numerici, pipe o sorgenti remote.
++4. Per la modalità normale lascia il monitor disattivato. Per ricevere intestazioni/frame 802.11 seleziona **Usa modalità monitor** e premi **Verifica monitor**. **Già questa verifica può disconnettere il Wi-Fi.** Il pulsante di cattura monitor si abilita soltanto dopo una dichiarazione positiva dei link type per quella interfaccia/strumento. Non è ancora una prova di ricezione radio.
++5. Premi **Salva nuova cattura…** e scegli un **nuovo file locale `.pcapng`**. I file esistenti non vengono sovrascritti. La cattura termina al primo limite applicabile: 20 secondi, 10.000 pacchetti o 10.000 kB nel criterio dumpcap. Snaplen 256 byte e buffer richiesto 2 MiB. Il driver può applicare un buffer diverso; non è un limite alla memoria totale del processo.
++6. Premi **Analizza ultima cattura**. In alternativa usa **Analizza file…** per una cattura locale già esistente, fino a 12 MiB.
++7. Puoi copiare tabella/rapporto o aprire il file con **Apri file in Wireshark**. La GUI Wireshark si avvia soltanto da quel pulsante e rimane uno strumento esterno sotto il tuo controllo.
++
++**Interrompi operazione**, cambio scheda, riduzione o chiusura della sezione annullano il lavoro gestito dall’app. Vengono interrotti soltanto i processi diagnostici creati da quel comando. Un’interruzione può lasciare il file scelto vuoto o parziale: il percorso è quello selezionato nel dialogo. Un file parziale può essere provato con Analizza file; un errore del decoder resta un errore. La riconnessione Wi-Fi dopo il monitor dipende da Windows/driver; l’app non cambia profilo, password o canale per forzarla.
++
++## Cosa mostra il rapporto
++
++| Dato | Significato |
++|---|---|
++| Trasmettitore nel frame | Campo `wlan.ta` del pacchetto letto |
++| Destinatario nel frame | Campo `wlan.ra`; non prova che il destinatario abbia risposto |
++| BSSID nel frame | Valore dichiarato nel campo `wlan.bssid` |
++| Rete annunciata / SSID | Nome dichiarato in beacon o probe response; non nei probe request |
++| Frequenza e segnale | Campi Radiotap, quando presenti; altrimenti N/D |
++| Frame nel campione | Conteggio per quella osservazione; uno stesso frame può alimentare più righe, quindi le righe non vanno sommate come pacchetti distinti |
++
++L’analisi legge i primi 2.048 pacchetti del file, mostra al massimo 512 combinazioni di osservazioni e segnala i limiti. Il decoder gira separatamente, con risoluzione dei nomi disabilitata. Durante l’analisi il file è aperto in lettura senza condivisione di scrittura su Windows; nel rapporto è incluso lo SHA-256 dei byte letti. I dettagli della cattura appena eseguita vengono mantenuti nel rapporto relativo allo stesso file.
++
++SSID e indirizzi sono contenuto dei frame: possono cambiare o essere imitati. Un SSID può appartenere a un router, un ripetitore o un telefono. La sua presenza non ne dimostra l’appartenenza alla LAN. Un indirizzo nei frame non identifica una persona e non conferma un’associazione attuale al tuo access point. Questa versione non aggiunge una tabella client del router né un elenco dei client dell’hotspot Windows.
++
++Una cattura normale può avere soltanto intestazioni Ethernet anche se il PC usa Wi-Fi. Zero frame 802.11 decodificati non significa zero dispositivi wireless. In monitor si osserva ciò che riceve la scheda sul canale impostato dal driver, non tutti i canali contemporaneamente. Non sono implementati cambi automatici di canale, decrittazione o trasmissione/iniezione di frame. Il NAT di un telefono può nascondere i client a valle rispetto alla LAN principale.
++
++## Comandi integrati
++
++Esempi strutturali; l’app passa ogni argomento separatamente, senza shell. Il segnaposto dell’interfaccia viene sostituito con il nome Npcap scelto, non con il suo indice.
++
++```text
++dumpcap.exe -D
++dumpcap.exe -i <interfaccia-locale> -I -L
++dumpcap.exe -i <interfaccia-locale> [-I oppure -p] -a duration:20 -a filesize:10000 -c 10000 -s 256 -B 2 -q -w <nuovo-file.pcapng>
++tshark.exe -n -r <file-locale> -c 2048 -T fields -E separator=/t -E quote=n -E occurrence=f -E escape=y -e frame.number -e wlan.ta -e wlan.ra -e wlan.bssid -e wlan.fc.type -e wlan.fc.subtype -e wlan.ssid -e radiotap.channel.freq -e radiotap.dbm_antsignal
++```
++
++La verifica monitor richiede una scelta esplicita anche quando l’interfaccia è già presente nell’elenco. Timeout dei comandi: elenco/verifica 10 s, acquisizione massimo 30 s di processo inclusa inizializzazione, decoder 15 s. Output massimo 512 Ki caratteri per ciascun flusso stdout/stderr; un superamento interrompe il comando, non produce un rapporto vuoto di successo. La normale fine della cattura resta regolata dai criteri dumpcap sopra.
++
++## Risorse, file e ambito
++
++Dumpcap, TShark e la GUI Wireshark sono processi separati. I limiti di durata, file e output non sono limiti alla loro RAM complessiva. **Consumo CPU/RAM non misurato qui.** Non restano catture automatiche in background; il visualizzatore aperto dall’utente è indipendente. Per confrontare il consumo totale considera anche gli strumenti esterni; il monitor RAM conserva le sue regole precedenti di inclusione e discendenza verificata.
++
++Il file scelto può contenere dati di rete anche con snaplen 256. Rimane sul PC nel percorso indicato; non viene caricato automaticamente né inserito nello ZIP del progetto. Eliminalo quando non serve. L’app non elimina automaticamente i file scelti e non registra payload nel rapporto testuale. L’analisi limitata può non contenere tutte le osservazioni presenti nel file.
++
++MainWindow, calcoli CPU/RAM, collector precedenti, Guardian, lettori SQLite, MemoryAgent, profiler e monitor RAM sono conservati rispetto alla R12. Aggiunti policy/parser, adattatore dei comandi e pannello WPF; la vista Rete precedente è estesa con una scheda caricata su richiesta. Le righe della cache vengono invalidate entrando nella scheda radio, per evitare di presentare il vecchio elenco come aggiornato dopo una possibile disconnessione.
++
++## Verifica tecnica
++
++Nuova suite `ProcessLens.PacketCaptureTests`: argomenti e limiti, parser di fixture TShark, culture it-IT/en-US, SSID, valori mancanti, scope locale, file nuovi/limiti/errori e hash. Le prove del runner avviano **soltanto una copia dello stesso eseguibile di test** per controllare argomenti, timeout, annullamento e output eccessivo; nessun tool di cattura viene avviato da questi test. Estesa `ProcessLens.NetworkUiTests` con client simulato, gate monitor, selezione esplicita, copia e risultati tardivi. Collegati entrambi alla build Windows.
++
++**Compilazione .NET/WPF, suite C#, PowerShell, installazione Npcap, cattura reale e prove DPI non eseguiti qui:** SDK .NET, PowerShell, Windows e scheda radio non disponibili. I controlli Python verificano sorgenti/XML e mutazioni, non certificano compilazione o compatibilità hardware. Stato corrente, patch e registri sono in `audit/R10_R13`; gli audit precedenti sono storici.
++
++Sul PC Windows verificare modalità normale, supporto monitor, errore permessi/driver, ricezione effettiva, interruzione/cambio sezione/riduzione, riapertura della connessione e importazione di file malformati. Provare 950×680 e 1180×800 DIP alle scale 100/125/150/200%. Il pannello ha scorrimento verticale e tabella virtualizzata con altezza finita.
++
++## Fonti
++
++Consultate il 20 ottobre 2026. Le etichette e i limiti operativi sono scelte di ProcessLens.
++
++- [Manuale dumpcap](https://www.wireshark.org/docs/man-pages/dumpcap.html)
++- [Manuale TShark](https://www.wireshark.org/docs/man-pages/tshark.html)
++- [Guida Npcap e modalità monitor](https://npcap.com/guide/npcap-users-guide.html)
++- [Cattura WLAN su Windows](https://wiki.wireshark.org/CaptureSetup/WLAN)
++- [Campi IEEE 802.11](https://www.wireshark.org/docs/dfref/w/wlan.html)
++- [Campi Radiotap](https://www.wireshark.org/docs/dfref/r/radiotap.html)
++- [Tethering Android e NAT IPv4](https://source.android.com/docs/core/ota/modular-system/tethering)
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,5 @@
++> **Candidata R13:** in Rete è aggiunta la scheda Wireshark / Wi-Fi con verifiche, cattura limitata e analisi di file. Installazione e istruzioni in `INTEGRAZIONE_WIRESHARK_R13.md`.
++
+ > **Candidata R12:** nuova sezione Rete, aggiornamento manuale, dispositivi riconosciuti e avviso per nuove voci. Include le correzioni R11 R1/R2. Dettagli e verifiche in `RETE_R10_R12.md`.
+ 
+ > **Candidata R11 R2:** corrette le asserzioni rimaste sui vecchi testi RAM e sul riepilogo audit; aggiunti casi di registro vuoto, timestamp assente e singolare. Dettagli in `UX_WRITING_R10_R11.md`.
+--- a/audit/tools/check_network_devices_r12.py
++++ b/audit/tools/check_network_devices_r12.py
+@@ -3,6 +3,7 @@
+ from pathlib import Path
+ import xml.etree.ElementTree as ET
+ from network_device_rules import violations
++from ux_writing_rules import approved_revision
+ from test_clipboard_calls_r10r9 import invalid_calls
+ 
+ p = argparse.ArgumentParser(description=__doc__)
+@@ -26,8 +27,8 @@
+ check('only four authorized existing UI sources differ from R11 R2', changed == allowed_existing)
+ check('all prior collectors Core semantics Guardian profiler and RAM monitor are byte identical',
+       all((root / rel).read_bytes() == data for rel, data in old.items() if rel.startswith('src/') and rel not in allowed_existing))
+-check('every new or changed source matches its exact feature manifest',
+-      all(hashlib.sha256((root / row['file']).read_bytes()).hexdigest() == row['sha256_after'] for row in approved))
++check('every network source matches an exact R12 or authorized R13 feature manifest',
++      all(approved_revision(root, row['file']) for row in approved))
+ w = '{http://schemas.microsoft.com/winfx/2006/xaml/presentation}'
+ x = '{http://schemas.microsoft.com/winfx/2006/xaml}'
+ local = '{clr-namespace:ProcessLens.App}'
+--- /dev/null
++++ b/audit/tools/check_packet_capture_r13.py
+@@ -0,0 +1,82 @@
++"""R13 source/XML and mutation checks only. Does not execute C#, drivers or captures."""
++import argparse, hashlib, json, re, zipfile
++from pathlib import Path
++import xml.etree.ElementTree as ET
++from test_clipboard_calls_r10r9 import invalid_calls
++
++def violations(files):
++    c=files['src/ProcessLens.Windows/WiresharkTools.cs']; p=files['src/ProcessLens.Core/PacketCaptureEvidence.cs']
++    u=files['src/ProcessLens.App/NetworkCaptureView.xaml.cs']; parent=files['src/ProcessLens.App/NetworkDevicesView.xaml.cs']
++    bad=[]
++    def need(ok,label):
++        if not ok:bad.append(label)
++    need('UseShellExecute = false' in c and 'child.StartInfo.ArgumentList.Add(argument)' in c and
++         not any(x in c+u for x in ['cmd.exe','powershell.exe','GetProcessesByName(', 'GetProcessById(']), 'no shell or foreign-process lookup')
++    need('budget.CancelAfter' in c and 'PacketCapturePolicy.MaximumTextChars - destination.Length' in c and
++         'budget.Cancel(); break;' in c and 'Task.WhenAll(stdout, stderr)' in c, 'bounded asynchronous output and time')
++    need('if (started)' in c and 'if (!child.HasExited) child.Kill();' in c and
++         'started = true;' in c and 'child.WaitForExitAsync(stop.Token)' in c, 'cleanup applies only to the exact launched child')
++    need('FileMode.CreateNew' in c and 'FileShare.Read,' in c and 'SHA256.HashDataAsync' in c and
++         'file.Length > PacketCapturePolicy.MaximumFileBytes' in c, 'new capture files immutable bounded analysis and source hash')
++    need('LocalInterface(adapter.Name)' in p and 'Guid.TryParseExact(name[12..], "B"' in p and
++         'path.StartsWith(@"\\\\"' in p, 'stable local identifiers and local file destinations')
++    need('"duration:20"' in p and '"filesize:10000"' in p and '"-c", "10000"' in p and
++         '"-s", "256"' in p and '"-B", "2"' in p, 'capture duration packet snaplen size and buffer budgets')
++    need('if (monitor) args.Add("-I"); else args.Add("-p");' in p and
++         '_verifiedMonitor.Contains(Stamp(tools, adapter))' in c and 'result.Success && PacketCapturePolicy.HasMonitorLinkType' in c,
++         'monitor opt-in and exact-interface capability declaration')
++    need('new[] { "-i", adapter.Name, "-I", "-L" }' in c and 'File.Exists(npcap)' in c and
++         'Path.GetDirectoryName(tools.Dumpcap)' in c, 'explicit probe and installed sibling tools')
++    need('"-n", "-r", path' in p and '"-c", "2048"' in p and '"escape=y"' in p and
++         'if (!result.Success) throw new IOException' in c, 'offline decoder cannot fabricate an empty result after error')
++    need('rows.Count < 512' in p and 'f.Length != 9' in p and 'char.IsControl(c)' in p and
++         'type == 0 && subtype is 5 or 8' in p, 'bounded defensive parser and advertised SSID only in beacon or response')
++    need('generation == _generation' in u and '_operation?.Cancel()' in u and
++         'CaptureObservationsTable.ItemsSource = null;' in u and 'if (!_active || _busy)' in u,
++         'inactive UI cancels owned work and rejects late publication')
++    need('CaptureInterfacesBox.SelectedIndex = -1' in u and
++         'CaptureMonitorBox.IsChecked != true || _monitorVerified' in u and '_fileReady = result.Complete' in u,
++         'explicit interface selection and valid-file action gates')
++    need('NetworkTabs.SelectedIndex == 1 && _captureView is null' in parent and
++         '_captureView?.SetActive(active && NetworkTabs.SelectedIndex == 1)' in parent,
++         'packet pane is lazy and follows parent visibility')
++    return bad
++
++def main():
++    parser=argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--candidate',type=Path,required=True);parser.add_argument('--baseline-zip',type=Path,required=True);parser.add_argument('--output',type=Path,required=True)
++    a=parser.parse_args();root=a.candidate
++    assert hashlib.sha256(a.baseline_zip.read_bytes()).hexdigest()=='66139e181d3bcc684f1d4a492976f15b8ca1b08eed3aeb92d31d9b1a39e2d6dd'
++    with zipfile.ZipFile(a.baseline_zip) as z:old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++    files={f.relative_to(root).as_posix():f.read_text(encoding='utf-8-sig') for f in root.rglob('*') if f.suffix in {'.cs','.xaml','.ps1'}}
++    rows=[]
++    def check(label,ok):rows.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML or source mutation only'});print(rows[-1]['status'],label)
++    check('packet integration satisfies all source guards',not violations(files))
++    allowed={'src/ProcessLens.App/NetworkDevicesView.xaml','src/ProcessLens.App/NetworkDevicesView.xaml.cs','src/ProcessLens.App/ProcessLens.App.csproj'}
++    check('only three existing production sources changed since R12',
++          {rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel]}==allowed)
++    check('all existing collectors Core semantics Guardian profiler and RAM monitor exact to R12',
++          all((root/rel).read_bytes()==data for rel,data in old.items() if rel.startswith('src/') and rel not in allowed))
++    approved=json.loads((root/'audit/R10_R13/authorized-source-edits.json').read_text())['files']
++    check('all added and modified production sources match exact R13 manifest',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] for r in approved))
++    for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]:ET.parse(f)
++    check('all XAML and project XML parse',True)
++    view=ET.parse(root/'src/ProcessLens.App/NetworkCaptureView.xaml').getroot();x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
++    names=[e.get(x+'Name') for e in view.iter() if e.get(x+'Name')]
++    check('capture view names unique and handlers connected',len(names)==len(set(names)) and all(re.search(r'\b'+re.escape(v)+r'\s*\(',files['src/ProcessLens.App/NetworkCaptureView.xaml.cs']) for e in view.iter() for k,v in e.attrib.items() if k in {'Click','SelectionChanged','Checked','Unchecked'}))
++    check('capture outputs copied wrapped and virtualized',all(e.get('TextWrapping')=='Wrap' for e in view.iter(local+'SelectableText')) and all(e.get(local+'GridCopySupport.Enabled')=='True' and e.get('VirtualizingPanel.VirtualizationMode')=='Recycling' for e in view.iter(w+'DataGrid')))
++    check('capture buttons wrap with no fixed height',all(e.get('Style')=='{StaticResource CaptureAction}' and 'Height' not in e.attrib for e in view.iter(w+'Button')))
++    check('all clipboard calls preserve two required arguments',not any(invalid_calls(f.read_text()) for f in (root/'src/ProcessLens.App').rglob('*.cs')))
++    t=files['tests/ProcessLens.PacketCaptureTests/Program.cs'];ui=files['tests/ProcessLens.NetworkUiTests/Program.cs']
++    check('independent synthetic CLI parser and owned-process tests supplied',all(s in t for s in ['it-IT','en-US','--capture-fixture','OWNED FIXTURE','Runner','FixtureRunner','existing capture files cannot be overwritten','no decoded Wi-Fi does not establish absence','oversized imported capture']))
++    check('real WPF fixture covers selection monitor and late results',all(s in ui for s in ['new NetworkCaptureView(packets)','captureView.VerifyMonitorAsync','captureView.CaptureAsync','packets.Block.SetResult','packet capture pane is lazy']))
++    check('Windows build runs source gate and packet suite','check-packet-capture-r13.ps1' in files['build-dashboard.ps1'] and 'Tests.ProcessLens.PacketCaptureTests' in files['build-dashboard.ps1'])
++    paths={'client':'src/ProcessLens.Windows/WiresharkTools.cs','policy':'src/ProcessLens.Core/PacketCaptureEvidence.cs','ui':'src/ProcessLens.App/NetworkCaptureView.xaml.cs'}
++    mutations=[('shell enabled','client','UseShellExecute = false','UseShellExecute = true'),('unbounded output','client','PacketCapturePolicy.MaximumTextChars - destination.Length','int.MaxValue'),('unbounded child wait','client','budget.CancelAfter','NoTimeout'),('foreign PID substitution','client','child.Kill();','Process.GetProcessById(5).Kill();'),('overwrite capture','client','FileMode.CreateNew','FileMode.Create'),('decoder input not locked','client','FileShare.Read,','FileShare.ReadWrite,'),('missing source hash','client','SHA256.HashDataAsync','NoHash'),('remote or index input accepted','policy','LocalInterface(adapter.Name)','true'),('capture duration removed','policy','duration:20','duration:20000'),('packet cap removed','policy','"-c", "10000"','"-c", "10000000"'),('monitor gate bypassed','client','_verifiedMonitor.Contains(Stamp(tools, adapter))','true'),('failed decoder becomes success','client','if (!result.Success) throw new IOException','if (false) throw new IOException'),('payload SSID fabricated','policy','type == 0 && subtype is 5 or 8','type == 2'),('old UI generation accepted','ui','generation == _generation','true'),('hidden capture left running','ui','_operation?.Cancel()','KeepRunning()'),('first interface auto-selected','ui','CaptureInterfacesBox.SelectedIndex = -1','CaptureInterfacesBox.SelectedIndex = 0')]
++    for label,kind,before,after in mutations:
++        path=paths[kind];assert before in files[path],label
++        changed=dict(files);changed[path]=changed[path].replace(before,after)
++        check('reject '+label,bool(violations(changed)))
++    a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(rows,indent=2)+'\n')
++    raise SystemExit(0 if all(r['status']=='PASS' for r in rows) else 1)
++if __name__=='__main__':main()
+--- a/audit/tools/check_ux_writing_r10r11.py
++++ b/audit/tools/check_ux_writing_r10r11.py
+@@ -33,7 +33,7 @@
+     check('native collectors services profiler SQLite readers and meter acquisition unchanged',
+           all((root / rel).read_bytes() == old[rel] for rel in protected))
+     changed = [rel for rel in old if rel.startswith('src/') and (root / rel).read_bytes() != old[rel]]
+-    check('every source edit belongs to the recorded editorial or R12 feature delta', all(approved_revision(root, rel) for rel in changed))
++    check('every source edit belongs to the recorded editorial or authorized network feature delta', all(approved_revision(root, rel) for rel in changed))
+     modules = ['Semantics/RoleClassifier', 'Semantics/ProcessIntelligenceAnalyzer', 'Semantics/ProcessOriginAnalyzer',
+                'Semantics/ProcessBehaviorExplainer', 'Semantics/ProcessQueryEngine', 'Core/WindowsAllocationEvidence',
+                'Core/StructuredDiagnostics', 'Core/ServiceExplanation', 'Core/ServiceHistoryInterpretation']
+--- a/audit/tools/ux_writing_rules.py
++++ b/audit/tools/ux_writing_rules.py
+@@ -15,10 +15,14 @@
+ 
+ 
+ def approved_revision(root, relative):
+-    """R11 editorial delta or separately recorded, user-requested R12 feature delta."""
++    """R11 editorial delta or separately recorded, user-requested R12/R13 feature delta."""
+     if approved_editorial(root, relative):
+         return True
+-    manifest = root / 'audit/R10_R12/authorized-source-edits.json'
++    return approved_feature(root, relative, 'R10_R12') or approved_feature(root, relative, 'R10_R13')
++
++
++def approved_feature(root, relative, revision):
++    manifest = root / ('audit/' + revision + '/authorized-source-edits.json')
+     if not manifest.exists():
+         return False
+     rows = json.loads(manifest.read_text())['files']
+--- a/build-dashboard.ps1
++++ b/build-dashboard.ps1
+@@ -15,6 +15,7 @@
+ & (Join-Path $PSScriptRoot 'tests\check-workspace-r10r10.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-ux-writing-r10r11.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-network-devices-r12.ps1')
++& (Join-Path $PSScriptRoot 'tests\check-packet-capture-r13.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-copy-ui-r10.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-terminology-ui.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-detail-hierarchy-v01910.ps1')
+@@ -51,6 +52,8 @@
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.CopyTests' -Project '.\tests\ProcessLens.CopyTests\ProcessLens.CopyTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.CopyTests\ProcessLens.CopyTests.csproj','-c','Release')
+ Write-Host 'Test dispositivi rete: dati sintetici, riconoscimenti e layout nativo...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.NetworkDeviceTests' -Project '.\tests\ProcessLens.NetworkDeviceTests\ProcessLens.NetworkDeviceTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.NetworkDeviceTests\ProcessLens.NetworkDeviceTests.csproj','-c','Release')
++Write-Host 'Test integrazione Wireshark: parser sintetici e processi fixture posseduti, nessuna cattura reale...' -ForegroundColor Cyan
++Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.PacketCaptureTests' -Project '.\tests\ProcessLens.PacketCaptureTests\ProcessLens.PacketCaptureTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.PacketCaptureTests\ProcessLens.PacketCaptureTests.csproj','-c','Release')
+ Write-Host 'Test WPF rete: sorgente simulata, nessuna lettura di rete reale...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.NetworkUiTests' -Project '.\tests\ProcessLens.NetworkUiTests\ProcessLens.NetworkUiTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.NetworkUiTests\ProcessLens.NetworkUiTests.csproj','-c','Release')
+ 
+--- a/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv
++++ b/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv
+@@ -106,3 +106,9 @@
+ PLT-105,Rete,Connesso,In cache · presenza non confermata,Voce senza conferma recente della raggiungibilità,"Stati Stale, Delay o Probe",Contatori cache Windows e scelta utente dove prevista,Connesso,UX-R12,,sintesi,alta,Vocabolario ProcessLens; API e limiti documentati in RETE_R10_R12.md
+ PLT-106,Rete,Sempre collegato,Voce statica · presenza non confermata,Voce permanente della cache; non prova presenza attuale,Stato Permanent,Contatori cache Windows e scelta utente dove prevista,Sempre collegato,UX-R12,,sintesi,alta,Vocabolario ProcessLens; API e limiti documentati in RETE_R10_R12.md
+ PLT-107,Rete,Nessuno sconosciuto,Dati incompleti,Assenza dei dati necessari per valutare le etichette della vista,"Errore, limite, cache vuota, MAC o scope mancante",Contatori cache Windows e scelta utente dove prevista,Nessuno sconosciuto,UX-R12,,sintesi,alta,Vocabolario ProcessLens; API e limiti documentati in RETE_R10_R12.md
++PLT-108,Rete / cattura,Tutto il traffico della rete,Campione iniziale del file,Massimo 2.048 pacchetti analizzati; non tutto il traffico radio,File locale letto dal decoder,Fonte nel file e stato dello strumento,Tutto il traffico della rete,UX-R13,,sintesi,alta,Vocabolario ProcessLens; fonti e limiti in INTEGRAZIONE_WIRESHARK_R13.md
++PLT-109,Rete / cattura,Hotspot identificato,Rete annunciata,SSID/BSSID dichiarati in beacon o probe response; origine non autenticata,Campi 802.11 presenti nel file,Fonte nel file e stato dello strumento,Hotspot identificato,UX-R13,,sintesi,alta,Vocabolario ProcessLens; fonti e limiti in INTEGRAZIONE_WIRESHARK_R13.md
++PLT-110,Rete / cattura,Dispositivo collegato,Trasmettitore nel frame,Indirizzo nel campo wlan.ta; non identità o associazione attuale,Frame 802.11 decodificato,Fonte nel file e stato dello strumento,Dispositivo collegato,UX-R13,,sintesi,alta,Vocabolario ProcessLens; fonti e limiti in INTEGRAZIONE_WIRESHARK_R13.md
++PLT-111,Rete / cattura,Dispositivo attivo,Destinatario nel frame,Indirizzo wlan.ra; non prova ricezione o risposta,Frame 802.11 decodificato,Fonte nel file e stato dello strumento,Dispositivo attivo,UX-R13,,sintesi,alta,Vocabolario ProcessLens; fonti e limiti in INTEGRAZIONE_WIRESHARK_R13.md
++PLT-112,Rete / cattura,Monitor sicuramente funzionante,Lo strumento dichiara intestazioni 802.11 in modalità monitor,Capacità dichiarata; ricezione da verificare,dumpcap -I -L riuscito e link type 802.11,Fonte nel file e stato dello strumento,Monitor sicuramente funzionante,UX-R13,,sintesi,alta,Vocabolario ProcessLens; fonti e limiti in INTEGRAZIONE_WIRESHARK_R13.md
++PLT-113,Rete / cattura,Nessun dispositivo Wi-Fi,Nessun frame 802.11 decodificato nel campione,Non dimostra assenza di client wireless,Analisi riuscita senza frame Wi-Fi,Fonte nel file e stato dello strumento,Nessun dispositivo Wi-Fi,UX-R13,,sintesi,alta,Vocabolario ProcessLens; fonti e limiti in INTEGRAZIONE_WIRESHARK_R13.md
+--- /dev/null
++++ b/src/ProcessLens.App/NetworkCaptureView.xaml
+@@ -0,0 +1,68 @@
++<UserControl x:Class="ProcessLens.App.NetworkCaptureView"
++ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
++ xmlns:local="clr-namespace:ProcessLens.App">
++ <UserControl.Resources>
++  <Style x:Key="CaptureAction" TargetType="Button">
++   <Setter Property="MinHeight" Value="36"/><Setter Property="Padding" Value="10,7"/><Setter Property="Margin" Value="0,0,8,6"/>
++   <Setter Property="ContentTemplate"><Setter.Value><DataTemplate><TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center"/></DataTemplate></Setter.Value></Setter>
++  </Style>
++  <Style x:Key="CaptureCell" TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/><Setter Property="Margin" Value="6,5"/></Style>
++ </UserControl.Resources>
++ <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><Grid Margin="0,10,0,0">
++  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*" MinHeight="100"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
++  <StackPanel>
++   <TextBlock Text="Cattura Wireshark / Wi-Fi" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap"/>
++   <local:SelectableText Text="Strumenti separati, avviati solo su richiesta. Limiti: 20 s, 10.000 pacchetti, 10.000 kB; 256 byte per pacchetto." TextWrapping="Wrap" Margin="0,4,0,8"/>
++   <WrapPanel>
++    <Button x:Name="DiscoverCaptureButton" Content="Verifica strumenti" Style="{StaticResource CaptureAction}" Click="Discover_Click"/>
++    <Button x:Name="ChooseToolsButton" Content="Scegli dumpcap.exe…" Style="{StaticResource CaptureAction}" Click="ChooseTools_Click"/>
++    <Button x:Name="ImportCaptureButton" Content="Analizza file…" Style="{StaticResource CaptureAction}" Click="Import_Click" IsEnabled="False"/>
++   </WrapPanel>
++  </StackPanel>
++  <StackPanel Grid.Row="1">
++   <TextBlock Text="Interfaccia locale da usare" TextWrapping="Wrap"/>
++   <ComboBox x:Name="CaptureInterfacesBox" MinHeight="32" Margin="0,4,0,8" SelectionChanged="Interface_Changed">
++    <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Display}" TextWrapping="Wrap"/></DataTemplate></ComboBox.ItemTemplate>
++   </ComboBox>
++   <CheckBox x:Name="CaptureMonitorBox" Content="Usa modalità monitor · può disconnettere il Wi-Fi" Margin="0,0,0,8" Checked="Monitor_Changed" Unchecked="Monitor_Changed"/>
++   <WrapPanel>
++    <Button x:Name="VerifyMonitorButton" Content="Verifica monitor" Style="{StaticResource CaptureAction}" Click="Monitor_Click" IsEnabled="False"/>
++    <Button x:Name="StartCaptureButton" Content="Salva nuova cattura…" Style="{StaticResource CaptureAction}" Click="Capture_Click" IsEnabled="False"/>
++    <Button x:Name="StopCaptureButton" Content="Interrompi operazione" Style="{StaticResource CaptureAction}" Click="Stop_Click" IsEnabled="False"/>
++    <Button x:Name="ReadCaptureButton" Content="Analizza ultima cattura" Style="{StaticResource CaptureAction}" Click="Read_Click" IsEnabled="False"/>
++   </WrapPanel>
++  </StackPanel>
++  <StackPanel Grid.Row="2" Margin="0,0,0,8">
++   <local:SelectableText x:Name="CaptureStatusText" Text="Premi Verifica strumenti. Wireshark e Npcap non vengono installati automaticamente." TextWrapping="Wrap"/>
++   <local:SelectableText x:Name="CaptureFileText" Text="Nessun file selezionato." TextWrapping="Wrap" Foreground="#64748B"/>
++   <local:SelectableText x:Name="CaptureSummaryText" Text="Nessun campione analizzato." TextWrapping="Wrap" FontWeight="SemiBold"/>
++  </StackPanel>
++  <DataGrid x:Name="CaptureObservationsTable" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False"
++    EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"
++    local:GridCopySupport.Enabled="True" HeadersVisibility="Column" MinRowHeight="36" Height="240">
++   <DataGrid.Columns>
++    <DataGridTextColumn Header="Osservazione" Binding="{Binding Kind, Mode=OneWay}" Width="185" ElementStyle="{StaticResource CaptureCell}"/>
++    <DataGridTextColumn Header="MAC" Binding="{Binding Mac, Mode=OneWay}" Width="155" ElementStyle="{StaticResource CaptureCell}"/>
++    <DataGridTextColumn Header="BSSID nel frame" Binding="{Binding Bssid, Mode=OneWay}" Width="155" ElementStyle="{StaticResource CaptureCell}"/>
++    <DataGridTextColumn Header="SSID annunciato" Binding="{Binding Ssid, Mode=OneWay}" Width="160" ElementStyle="{StaticResource CaptureCell}"/>
++    <DataGridTextColumn Header="Frequenza" Binding="{Binding Frequency, Mode=OneWay}" Width="110" ElementStyle="{StaticResource CaptureCell}"/>
++    <DataGridTextColumn Header="Segnale" Binding="{Binding Signal, Mode=OneWay}" Width="100" ElementStyle="{StaticResource CaptureCell}"/>
++    <DataGridTextColumn Header="Frame nel campione" Binding="{Binding Frames, Mode=OneWay}" Width="105" ElementStyle="{StaticResource CaptureCell}"/>
++   </DataGrid.Columns>
++  </DataGrid>
++  <StackPanel Grid.Row="4" Margin="0,10,0,0">
++   <WrapPanel>
++    <Button x:Name="OpenWiresharkButton" Content="Apri file in Wireshark" Style="{StaticResource CaptureAction}" Click="Open_Click" IsEnabled="False"/>
++    <Button x:Name="CopyCaptureButton" Content="Copia rapporto" Style="{StaticResource CaptureAction}" Click="Copy_Click" IsEnabled="False"/>
++   </WrapPanel>
++   <Expander Header="Installazione, limiti e dettagli">
++    <ScrollViewer MaxHeight="140" VerticalScrollBarVisibility="Auto"><StackPanel Margin="0,6,0,0">
++     <local:SelectableText Text="Installa Wireshark con TShark e Npcap. In Npcap abilita Support raw 802.11 traffic (and monitor mode) for wireless adapters. Servono scheda e driver compatibili. Istruzioni: INTEGRAZIONE_WIRESHARK_R13.md." TextWrapping="Wrap" Margin="0,0,0,6"/>
++     <local:SelectableText Text="La verifica monitor può già disconnettere la scheda. Una cattura normale può mostrare solo intestazioni Ethernet. Il monitor riceve sul canale del driver: non è una scansione di tutti i canali. Un BSSID/SSID osservato non prova che sia un hotspot del telefono o che usi la tua LAN." TextWrapping="Wrap" Margin="0,0,0,6"/>
++     <local:SelectableText Text="Dumpcap e TShark consumano risorse come processi separati. Il file può contenere dati di rete anche con snaplen 256: scegli dove salvarlo ed eliminalo quando non serve. Una cattura interrotta può lasciare un file parziale." TextWrapping="Wrap" Margin="0,0,0,6"/>
++     <local:SelectableText x:Name="CaptureDetailsText" Text="Strumenti non ancora verificati." TextWrapping="Wrap"/>
++    </StackPanel></ScrollViewer>
++   </Expander>
++  </StackPanel>
++ </Grid></ScrollViewer>
++</UserControl>
+--- /dev/null
++++ b/src/ProcessLens.App/NetworkCaptureView.xaml.cs
+@@ -0,0 +1,154 @@
++using System.Diagnostics;
++using System.IO;
++using System.Windows;
++using System.Windows.Controls;
++using Microsoft.Win32;
++using ProcessLens.Core;
++using ProcessLens.Windows;
++
++namespace ProcessLens.App;
++
++public partial class NetworkCaptureView : UserControl
++{
++    private readonly IPacketCaptureClient _client;
++    private CaptureTools? _tools;
++    private string? _selectedDumpcap, _lastFile;
++    private string? _capturedFile;
++    private string _captureDetail = "";
++    private PacketEvidence? _evidence;
++    private CancellationTokenSource? _operation;
++    private bool _active, _busy, _monitorVerified, _fileReady;
++    private int _generation;
++    public NetworkCaptureView() : this(new WiresharkTools()) { }
++    internal NetworkCaptureView(IPacketCaptureClient client) { _client = client; InitializeComponent(); UpdateButtons(); }
++    public void SetActive(bool active)
++    {
++        _active = active;
++        if (!active)
++        {
++            _generation++; _operation?.Cancel(); _monitorVerified = false; _evidence = null;
++            CaptureObservationsTable.ItemsSource = null;
++            CaptureSummaryText.Text = "Campione rilasciato. Le operazioni in corso vengono interrotte.";
++            CaptureStatusText.Text = "Vista sospesa. Nessuna cattura automatica alla riapertura.";
++        }
++        UpdateButtons();
++    }
++    private async Task ExecuteAsync<T>(Func<CancellationToken, Task<T>> operation, Action<T> publish, string progress)
++    {
++        if (!_active || _busy) return;
++        _busy = true; int generation = ++_generation;
++        using var cancel = new CancellationTokenSource(); _operation = cancel;
++        CaptureStatusText.Text = progress; UpdateButtons();
++        try
++        {
++            T result = await operation(cancel.Token);
++            if (_active && generation == _generation && !cancel.IsCancellationRequested) publish(result);
++            else if (_active && generation == _generation) CaptureStatusText.Text = "Operazione interrotta; eventuale file salvato può essere parziale.";
++        }
++        catch (OperationCanceledException) { if (_active && generation == _generation) CaptureStatusText.Text = "Operazione interrotta."; }
++        catch (Exception ex)
++        {
++            if (_active && generation == _generation)
++            { CaptureStatusText.Text = "Operazione non riuscita: " + ex.Message; if (_evidence is null) CaptureSummaryText.Text = "Risultato: N/D."; }
++        }
++        finally { _operation = null; _busy = false; UpdateButtons(); }
++    }
++    internal Task DiscoverAsync()
++    {
++        if (!_active || _busy) return Task.CompletedTask;
++        _tools = null; _monitorVerified = false; CaptureInterfacesBox.ItemsSource = null;
++        return ExecuteAsync(token => _client.DiscoverAsync(_selectedDumpcap, token), result =>
++        {
++            _tools = result.Tools; _monitorVerified = false;
++            CaptureInterfacesBox.ItemsSource = result.Interfaces; CaptureInterfacesBox.SelectedIndex = -1;
++            CaptureStatusText.Text = result.Detail;
++            CaptureDetailsText.Text = _tools is null ? result.Detail : _tools.Dumpcap + "\n" + _tools.Tshark + "\n" + result.Detail;
++        }, "Verifica strumenti e interfacce in corso…");
++    }
++    private async void Discover_Click(object sender, RoutedEventArgs e) => await DiscoverAsync();
++    private async void ChooseTools_Click(object sender, RoutedEventArgs e)
++    {
++        var dialog = new OpenFileDialog { Title = "Scegli dumpcap.exe della tua installazione Wireshark", Filter = "Wireshark dumpcap|dumpcap.exe", CheckFileExists = true };
++        if (dialog.ShowDialog() == true) { _selectedDumpcap = dialog.FileName; _tools = null; _monitorVerified = false; await DiscoverAsync(); }
++    }
++    private void Interface_Changed(object sender, SelectionChangedEventArgs e) { _monitorVerified = false; UpdateButtons(); }
++    private void Monitor_Changed(object sender, RoutedEventArgs e) { _monitorVerified = false; UpdateButtons(); }
++    internal Task VerifyMonitorAsync()
++    {
++        if (_tools is null || CaptureInterfacesBox.SelectedItem is not CaptureInterface adapter || CaptureMonitorBox.IsChecked != true) return Task.CompletedTask;
++        if (!_active || _busy) return Task.CompletedTask;
++        _monitorVerified = false;
++        return ExecuteAsync(token => _client.CheckMonitorAsync(_tools, adapter, token), result =>
++        { _monitorVerified = result.Supported; CaptureStatusText.Text = result.Detail; }, "Verifica monitor: la scheda può disconnettersi dal Wi-Fi…");
++    }
++    private async void Monitor_Click(object sender, RoutedEventArgs e) => await VerifyMonitorAsync();
++    internal Task CaptureAsync(string path)
++    {
++        if (!_active || _busy || _tools is null || CaptureInterfacesBox.SelectedItem is not CaptureInterface adapter ||
++            (CaptureMonitorBox.IsChecked == true && !_monitorVerified)) return Task.CompletedTask;
++        bool monitor = CaptureMonitorBox.IsChecked == true;
++        _evidence = null; CaptureObservationsTable.ItemsSource = null; CaptureSummaryText.Text = "Nessun campione analizzato per questa cattura.";
++        _fileReady = false;
++        _lastFile = path; CaptureFileText.Text = "File scelto: " + path;
++        return ExecuteAsync(token => _client.CaptureAsync(_tools, adapter, monitor, path, token), result =>
++        { _lastFile = _capturedFile = result.Path; _captureDetail = result.Detail; _fileReady = result.Complete; CaptureFileText.Text = result.Path; CaptureStatusText.Text = result.Detail; }, "Cattura in corso · massimo 20 secondi…");
++    }
++    private async void Capture_Click(object sender, RoutedEventArgs e)
++    {
++        var dialog = new SaveFileDialog { Title = "Salva in un nuovo file locale .pcapng", Filter = "Cattura pcapng|*.pcapng", FileName = "ProcessLens-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".pcapng", AddExtension = true, DefaultExt = ".pcapng" };
++        if (dialog.ShowDialog() == true) await CaptureAsync(dialog.FileName);
++    }
++    internal Task AnalyzeAsync(string path)
++    {
++        if (!_active || _busy || _tools is null) return Task.CompletedTask;
++        _evidence = null; CaptureObservationsTable.ItemsSource = null; CaptureSummaryText.Text = "Analisi in corso…";
++        _fileReady = false;
++        _lastFile = path; CaptureFileText.Text = "File selezionato: " + path;
++        return ExecuteAsync(token => _client.AnalyzeAsync(_tools, path, token), result =>
++        {
++            _fileReady = true;
++            _evidence = result with { Note = result.Note + (string.Equals(path, _capturedFile, StringComparison.OrdinalIgnoreCase) ? "\nEsito della cattura:\n" + _captureDetail : "") };
++            CaptureObservationsTable.ItemsSource = result.Rows;
++            CaptureSummaryText.Text = $"{result.Packets} pacchetti esaminati · {result.WifiFrames} frame 802.11" + (result.Limited ? " · campione limitato" : "");
++            CaptureStatusText.Text = "Analisi del file completata."; CaptureDetailsText.Text = _evidence.Note;
++        }, "Analisi locale con TShark in corso…");
++    }
++    private async void Read_Click(object sender, RoutedEventArgs e) { if (_lastFile is not null) await AnalyzeAsync(_lastFile); }
++    private async void Import_Click(object sender, RoutedEventArgs e)
++    {
++        var dialog = new OpenFileDialog { Title = "Analizza una cattura locale · massimo 12 MiB", Filter = "Catture|*.pcapng;*.pcap", CheckFileExists = true };
++        if (dialog.ShowDialog() == true) await AnalyzeAsync(dialog.FileName);
++    }
++    private void Stop_Click(object sender, RoutedEventArgs e) => _operation?.Cancel();
++    private void UpdateButtons()
++    {
++        if (CopyCaptureButton is null) return;
++        bool ready = _active && !_busy, selected = CaptureInterfacesBox.SelectedItem is CaptureInterface;
++        DiscoverCaptureButton.IsEnabled = ChooseToolsButton.IsEnabled = ready;
++        CaptureInterfacesBox.IsEnabled = CaptureMonitorBox.IsEnabled = ready;
++        VerifyMonitorButton.IsEnabled = ready && _tools is not null && selected && CaptureMonitorBox.IsChecked == true;
++        StartCaptureButton.IsEnabled = ready && _tools is not null && selected && (CaptureMonitorBox.IsChecked != true || _monitorVerified);
++        StopCaptureButton.IsEnabled = _active && _busy;
++        ImportCaptureButton.IsEnabled = ready && _tools is not null;
++        ReadCaptureButton.IsEnabled = ready && _fileReady && _tools is not null && _lastFile is not null;
++        OpenWiresharkButton.IsEnabled = ready && _fileReady && _tools is not null && _lastFile is not null;
++        CopyCaptureButton.IsEnabled = ready && _evidence is not null;
++    }
++    private void Open_Click(object sender, RoutedEventArgs e)
++    {
++        if (_tools is null || _lastFile is null || !File.Exists(_lastFile) || !File.Exists(_tools.Wireshark)) return;
++        try
++        {
++            var start = new ProcessStartInfo(_tools.Wireshark) { UseShellExecute = false };
++            start.ArgumentList.Add("-r"); start.ArgumentList.Add(_lastFile);
++            Process.Start(start)?.Dispose(); // Explicit user action opens a viewer, never a live capture.
++        }
++        catch (Exception ex) { CaptureStatusText.Text = "Apertura non riuscita: " + ex.Message; }
++    }
++    private void Copy_Click(object sender, RoutedEventArgs e)
++    {
++        if (_evidence is null) return;
++        ClipboardText.Copy(this, "CATTURA WIRESHARK / WI-FI\n" + CaptureFileText.Text + "\n" + CaptureSummaryText.Text +
++            "\n" + CaptureStatusText.Text + "\n\n" + GridCopySupport.CaptureTable(CaptureObservationsTable, false) + "\n\n" + _evidence.Note);
++    }
++}
+--- a/src/ProcessLens.App/NetworkDevicesView.xaml
++++ b/src/ProcessLens.App/NetworkDevicesView.xaml
+@@ -16,6 +16,8 @@
+   </Style>
+  </UserControl.Resources>
+  <Border Background="White" BorderBrush="#E2E5E9" BorderThickness="1" CornerRadius="12" Padding="16">
++  <TabControl x:Name="NetworkTabs" SelectionChanged="NetworkTabs_Changed">
++   <TabItem Header="Dispositivi nella cache">
+   <Grid>
+    <Grid.RowDefinitions>
+     <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+@@ -77,5 +79,8 @@
+     </ScrollViewer>
+    </Expander>
+   </Grid>
++   </TabItem>
++   <TabItem Header="Wireshark / Wi-Fi"><ContentControl x:Name="NetworkCaptureHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/></TabItem>
++  </TabControl>
+  </Border>
+ </UserControl>
+--- a/src/ProcessLens.App/NetworkDevicesView.xaml.cs
++++ b/src/ProcessLens.App/NetworkDevicesView.xaml.cs
+@@ -12,6 +12,7 @@
+     private readonly INetworkDeviceSource _source;
+     private readonly DeviceRecognitionStore _store;
+     private readonly NetworkDeviceTracker _tracker = new();
++    private NetworkCaptureView? _captureView;
+     private RecognitionCatalog _catalog = new(Array.Empty<DeviceRecognition>(), "");
+     private NetworkDeviceSnapshot? _snapshot;
+     private NetworkDeviceView? _view;
+@@ -30,6 +31,7 @@
+     {
+         if (_active == active) return;
+         _active = active;
++        _captureView?.SetActive(active && NetworkTabs.SelectedIndex == 1);
+         if (!active)
+         {
+             _generation++;
+@@ -48,10 +50,30 @@
+         UpdateButtons();
+     }
+ 
++    private void NetworkTabs_Changed(object sender, SelectionChangedEventArgs e)
++    {
++        if (NetworkTabs is null || NetworkCaptureHost is null || !ReferenceEquals(e.Source, NetworkTabs)) return;
++        if (NetworkTabs.SelectedIndex == 1)
++        {
++            _generation++; _current = false; _snapshot = null; _view = null;
++            _catalog = new(Array.Empty<DeviceRecognition>(), ""); NetworkDevicesTable.ItemsSource = null;
++            NetworkIndicatorText.Text = "Elenco da aggiornare";
++            NetworkSummaryText.Text = "Aggiorna la cache dopo le operazioni sulla scheda Wi-Fi.";
++        }
++        if (NetworkTabs.SelectedIndex == 1 && _captureView is null)
++        {
++            _captureView = new NetworkCaptureView();
++            NetworkCaptureHost.Content = _captureView;
++        }
++        _captureView?.SetActive(_active && NetworkTabs.SelectedIndex == 1);
++        UpdateButtons();
++    }
++
+     private async void RefreshNetwork_Click(object sender, RoutedEventArgs e) => await RefreshAsync();
+     internal async Task RefreshAsync()
+     {
+         if (!_active || _busy) return;
++        if (NetworkTabs.SelectedIndex != 0) return;
+         _busy = true; int generation = ++_generation;
+         _current = false;
+         UpdateButtons();
+@@ -109,7 +131,7 @@
+     {
+         if (RefreshNetworkButton is null || RecognizeNetworkButton is null) return;
+         var row = NetworkDevicesTable.SelectedItem as NetworkDeviceRow;
+-        RefreshNetworkButton.IsEnabled = _active && !_busy;
++        RefreshNetworkButton.IsEnabled = _active && !_busy && NetworkTabs.SelectedIndex == 0;
+         CopyNetworkButton.IsEnabled = _active && !_busy && _view?.Rows.Count > 0;
+         RecognizeNetworkButton.IsEnabled = _active && !_busy && _current && row?.CanRecognize == true && _catalog.Available;
+         ForgetNetworkButton.IsEnabled = _active && !_busy && _current && row?.Recognized == true && _catalog.Available;
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R12-network-devices-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R13-wireshark-integration-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+--- /dev/null
++++ b/src/ProcessLens.Core/PacketCaptureEvidence.cs
+@@ -0,0 +1,119 @@
++using System.Globalization;
++using System.Text;
++using System.Text.RegularExpressions;
++
++namespace ProcessLens.Core;
++
++public sealed record CaptureInterface(string Name, string Description)
++{
++    public string Display => Description.Length > 0 ? Description + " · " + Name : Name;
++}
++public sealed record CaptureTools(string Dumpcap, string Tshark, string Wireshark, string DriverNote);
++public sealed record CaptureDiscovery(CaptureTools? Tools, IReadOnlyList<CaptureInterface> Interfaces, string Detail);
++public sealed record CaptureCheck(bool Supported, string Detail);
++public sealed record CaptureFileResult(string Path, bool Complete, string Detail);
++public sealed record PacketObservation(string Kind, string Mac, string Bssid, string Ssid,
++    string Frequency, string Signal, int Frames);
++public sealed record PacketEvidence(int Packets, int WifiFrames, bool Limited,
++    IReadOnlyList<PacketObservation> Rows, string Note);
++public interface IPacketCaptureClient
++{
++    Task<CaptureDiscovery> DiscoverAsync(string? dumpcapPath, CancellationToken token);
++    Task<CaptureCheck> CheckMonitorAsync(CaptureTools tools, CaptureInterface adapter, CancellationToken token);
++    Task<CaptureFileResult> CaptureAsync(CaptureTools tools, CaptureInterface adapter, bool monitor, string output, CancellationToken token);
++    Task<PacketEvidence> AnalyzeAsync(CaptureTools tools, string path, CancellationToken token);
++}
++
++public static class PacketCapturePolicy
++{
++    public const int Seconds = 20, FileKilobytes = 10000, Packets = 10000, Snaplen = 256, AnalysisPackets = 2048;
++    public const int MaximumFileBytes = 12 * 1024 * 1024, MaximumTextChars = 512 * 1024;
++    public static bool LocalInterface(string name) => name == @"\Device\NPF_Loopback" ||
++        (name.StartsWith(@"\Device\NPF_", StringComparison.Ordinal) && name.Length == 50 &&
++         Guid.TryParseExact(name[12..], "B", out _));
++    public static string[] CaptureArguments(CaptureInterface adapter, bool monitor, string path)
++    {
++        if (!LocalInterface(adapter.Name)) throw new ArgumentException("Interfaccia locale Npcap non valida.");
++        if (!Path.IsPathFullyQualified(path) || path.StartsWith(@"\\", StringComparison.Ordinal) || !path.EndsWith(".pcapng", StringComparison.OrdinalIgnoreCase))
++            throw new ArgumentException("Scegli un nuovo file locale .pcapng.");
++        var args = new List<string> { "-i", adapter.Name };
++        if (monitor) args.Add("-I"); else args.Add("-p");
++        args.AddRange(new[] { "-a", "duration:20", "-a", "filesize:10000", "-c", "10000", "-s", "256", "-B", "2", "-q", "-w", path });
++        return args.ToArray();
++    }
++    public static string[] AnalysisArguments(string path)
++    {
++        var args = new List<string> { "-n", "-r", path, "-c", "2048", "-T", "fields", "-E", "separator=/t", "-E", "quote=n", "-E", "occurrence=f", "-E", "escape=y" };
++        foreach (string field in new[] { "frame.number", "wlan.ta", "wlan.ra", "wlan.bssid", "wlan.fc.type", "wlan.fc.subtype", "wlan.ssid", "radiotap.channel.freq", "radiotap.dbm_antsignal" })
++            args.AddRange(new[] { "-e", field });
++        return args.ToArray();
++    }
++    public static IReadOnlyList<CaptureInterface> ParseInterfaces(string text) => text.Split('\n').Take(512)
++        .Select(line => Regex.Match(line.TrimEnd('\r'), @"^\d+\. (?<name>\S+)(?: \((?<description>.*)\))?$", RegexOptions.CultureInvariant))
++        .Where(m => m.Success && LocalInterface(m.Groups["name"].Value))
++        .Select(m => new CaptureInterface(m.Groups["name"].Value, m.Groups["description"].Value))
++        .DistinctBy(x => x.Name).ToArray();
++    public static bool HasMonitorLinkType(string text) => Regex.IsMatch(text, @"(?m)^\s*IEEE802_11(?:_RADIO)?(?:\s|\(|$)", RegexOptions.CultureInvariant);
++}
++
++public static class PacketEvidenceParser
++{
++    private static int? Number(string value)
++    {
++        if (value.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
++            return int.TryParse(value.AsSpan(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int hex) ? hex : null;
++        return int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int number) ? number : null;
++    }
++    private static string Ssid(string raw)
++    {
++        if (raw.Length == 0) return "N/D";
++        string hex = raw.Replace(":", "", StringComparison.Ordinal);
++        if (hex.Length > 64 || hex.Length % 2 != 0 || hex.Any(c => !Uri.IsHexDigit(c))) return "SSID non decodificato";
++        try
++        {
++            string value = new UTF8Encoding(false, true).GetString(Convert.FromHexString(hex));
++            return string.Concat(value.Select(c => char.IsControl(c) || char.GetUnicodeCategory(c) == UnicodeCategory.Format ? "\\u" + ((int)c).ToString("X4") : c.ToString()));
++        }
++        catch (DecoderFallbackException) { return "SSID hex: " + hex; }
++    }
++    public static PacketEvidence Parse(string text)
++    {
++        bool limited = text.Length > PacketCapturePolicy.MaximumTextChars;
++        if (limited) text = text[..PacketCapturePolicy.MaximumTextChars];
++        int packets = 0, wifi = 0;
++        var rows = new Dictionary<(string Kind, string Mac, string Bssid, string Ssid, string Frequency, string Signal), int>();
++        foreach (string line in text.Split('\n'))
++        {
++            if (line.Length == 0) continue;
++            if (packets == PacketCapturePolicy.AnalysisPackets) { limited = true; break; }
++            string[] f = line.TrimEnd('\r').Split('\t');
++            if (f.Length != 9 || f.Any(v => v.Length > 512) || Number(f[0]) is not > 0) { limited = true; continue; }
++            packets++;
++            int? type = Number(f[4]), subtype = Number(f[5]);
++            if (type is not (>= 0 and <= 3)) { if (f[4].Length > 0) limited = true; continue; }
++            wifi++;
++            string bssid = NetworkDeviceRules.NormalizeMac(f[3]);
++            string ssid = type == 0 && subtype is 5 or 8 ? Ssid(f[6]) : "N/D";
++            string frequency = Number(f[7]) is > 0 and < 100000 ? f[7] + " MHz" : "N/D";
++            string signal = Number(f[8]) is >= -200 and <= 0 ? f[8] + " dBm" : "N/D";
++            void Add(string kind, string mac)
++            {
++                mac = NetworkDeviceRules.NormalizeMac(mac);
++                if (mac.Length == 0) return;
++                var key = (kind, mac, bssid.Length > 0 ? bssid : "N/D", ssid, frequency, signal);
++                if (rows.TryGetValue(key, out int count)) rows[key] = count + 1;
++                else if (rows.Count < 512) rows[key] = 1;
++                else limited = true;
++            }
++            Add("Trasmettitore nel frame", f[1]);
++            Add("Destinatario nel frame", f[2]);
++            Add(type == 0 && subtype is 5 or 8 ? "Rete annunciata" : "BSSID nel frame", f[3]);
++        }
++        if (packets == PacketCapturePolicy.AnalysisPackets) limited = true;
++        var observations = rows.Select(r => new PacketObservation(r.Key.Kind, r.Key.Mac, r.Key.Bssid, r.Key.Ssid, r.Key.Frequency, r.Key.Signal, r.Value)).ToArray();
++        return new(packets, wifi, limited, observations,
++            "Campione iniziale del file: massimo 2.048 pacchetti. Indirizzi e SSID sono dichiarati nei frame; non verificano identità, associazione attuale o origine da un telefono/hotspot. " +
++            (wifi == 0 ? "Nessun frame 802.11 decodificato nel campione: una cattura normale può avere solo intestazioni Ethernet." :
++                "Osservati frame 802.11 nel file; la ricezione non copre tutti i canali o tutti i dispositivi."));
++    }
++}
+--- /dev/null
++++ b/src/ProcessLens.Windows/WiresharkTools.cs
+@@ -0,0 +1,154 @@
++using System.ComponentModel;
++using System.Diagnostics;
++using System.Text;
++using System.Security.Cryptography;
++using ProcessLens.Core;
++
++namespace ProcessLens.Windows;
++
++public sealed record CaptureCommandResult(int ExitCode, string Output, string Error, bool Interrupted)
++{
++    public bool Success => ExitCode == 0 && !Interrupted;
++}
++public interface ICaptureCommandRunner
++{
++    Task<CaptureCommandResult> RunAsync(string executable, IReadOnlyList<string> arguments, int seconds, CancellationToken token);
++}
++
++public sealed class CaptureCommandRunner : ICaptureCommandRunner
++{
++    public async Task<CaptureCommandResult> RunAsync(string executable, IReadOnlyList<string> arguments, int seconds, CancellationToken token)
++    {
++        token.ThrowIfCancellationRequested();
++        using var child = new Process { StartInfo = new ProcessStartInfo(executable) {
++            UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true,
++            StandardOutputEncoding = Encoding.UTF8, StandardErrorEncoding = Encoding.UTF8,
++            WorkingDirectory = Path.GetDirectoryName(executable)!
++        }};
++        foreach (string argument in arguments) child.StartInfo.ArgumentList.Add(argument);
++        using var budget = CancellationTokenSource.CreateLinkedTokenSource(token);
++        budget.CancelAfter(TimeSpan.FromSeconds(seconds));
++        var output = new StringBuilder(); var error = new StringBuilder();
++        bool started = false, interrupted = false; int overflow = 0;
++        async Task ReadAsync(StreamReader reader, StringBuilder destination)
++        {
++            char[] buffer = new char[4096];
++            try
++            {
++                int count;
++                while ((count = await reader.ReadAsync(buffer.AsMemory(), budget.Token)) > 0)
++                {
++                    int remaining = PacketCapturePolicy.MaximumTextChars - destination.Length;
++                    destination.Append(buffer, 0, Math.Min(remaining, count));
++                    if (count > remaining) { Interlocked.Exchange(ref overflow, 1); budget.Cancel(); break; }
++                }
++            }
++            catch (OperationCanceledException) { }
++            catch (IOException) when (budget.IsCancellationRequested) { }
++        }
++        try
++        {
++            if (!child.Start()) return new(-1, "", "Avvio dello strumento non riuscito.", false);
++            started = true;
++            Task stdout = ReadAsync(child.StandardOutput, output), stderr = ReadAsync(child.StandardError, error);
++            try { await child.WaitForExitAsync(budget.Token); }
++            catch (OperationCanceledException)
++            {
++                interrupted = true;
++                if (!child.HasExited) child.Kill(); // Only the exact child started above, never a process-name lookup.
++                using var stop = new CancellationTokenSource(TimeSpan.FromSeconds(3));
++                await child.WaitForExitAsync(stop.Token);
++            }
++            await Task.WhenAll(stdout, stderr);
++            string reason = token.IsCancellationRequested ? "Operazione interrotta." : overflow != 0 ? "Output oltre il limite." : interrupted ? "Tempo massimo superato." : "";
++            return new(child.ExitCode, output.ToString(), reason + (reason.Length > 0 ? "\n" : "") + error, interrupted || overflow != 0);
++        }
++        catch (Exception ex) when (ex is IOException or Win32Exception or InvalidOperationException or OperationCanceledException)
++        { return new(-1, "", "Strumento non disponibile: " + ex.Message, true); }
++        finally
++        {
++            budget.Cancel();
++            if (started)
++                try { if (!child.HasExited) child.Kill(); }
++                catch (InvalidOperationException) { }
++                catch (Win32Exception) { }
++        }
++    }
++}
++
++public sealed class WiresharkTools : IPacketCaptureClient
++{
++    private readonly ICaptureCommandRunner _runner;
++    private readonly HashSet<string> _verifiedMonitor = new(StringComparer.Ordinal);
++    public WiresharkTools(ICaptureCommandRunner? runner = null) => _runner = runner ?? new CaptureCommandRunner();
++    private static string Stamp(CaptureTools tools, CaptureInterface adapter)
++    {
++        var file = new FileInfo(tools.Dumpcap);
++        return tools.Dumpcap + "|" + file.Length + "|" + file.LastWriteTimeUtc.Ticks + "|" + adapter.Name;
++    }
++    private static void ValidateTools(CaptureTools tools)
++    {
++        foreach (var (path, name) in new[] { (tools.Dumpcap, "dumpcap.exe"), (tools.Tshark, "tshark.exe") })
++            if (!Path.IsPathFullyQualified(path) || path.StartsWith(@"\\", StringComparison.Ordinal) || !File.Exists(path) ||
++                !Path.GetFileName(path).Equals(name, StringComparison.OrdinalIgnoreCase) ||
++                !string.Equals(Path.GetDirectoryName(path), Path.GetDirectoryName(tools.Dumpcap), StringComparison.OrdinalIgnoreCase))
++                throw new IOException("Seleziona dumpcap.exe nella cartella di installazione di Wireshark, con tshark.exe accanto.");
++    }
++    public async Task<CaptureDiscovery> DiscoverAsync(string? dumpcapPath, CancellationToken token)
++    {
++        _verifiedMonitor.Clear();
++        if (dumpcapPath is null)
++        {
++            dumpcapPath = new[] { Environment.SpecialFolder.ProgramFiles, Environment.SpecialFolder.ProgramFilesX86 }
++                .Select(f => Path.Combine(Environment.GetFolderPath(f), "Wireshark", "dumpcap.exe"))
++                .FirstOrDefault(File.Exists);
++        }
++        if (dumpcapPath is null) return new(null, Array.Empty<CaptureInterface>(), "Wireshark non rilevato. Installa Wireshark con TShark e Npcap, poi scegli Verifica strumenti.");
++        string directory = Path.GetDirectoryName(Path.GetFullPath(dumpcapPath))!;
++        string npcap = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "Npcap", "wpcap.dll");
++        var tools = new CaptureTools(Path.GetFullPath(dumpcapPath), Path.Combine(directory, "tshark.exe"), Path.Combine(directory, "Wireshark.exe"),
++            File.Exists(npcap) ? "File Npcap rilevati; il supporto monitor va verificato per scheda e driver." : "File Npcap non rilevati nel percorso standard: verifica l’installazione.");
++        ValidateTools(tools);
++        var result = await _runner.RunAsync(tools.Dumpcap, new[] { "-D" }, 10, token);
++        return new(tools, result.Success ? PacketCapturePolicy.ParseInterfaces(result.Output) : Array.Empty<CaptureInterface>(),
++            tools.DriverNote + "\n" + (result.Success ? "Elenco interfacce locali aggiornato." : "Elenco interfacce non disponibile: " + result.Error));
++    }
++    public async Task<CaptureCheck> CheckMonitorAsync(CaptureTools tools, CaptureInterface adapter, CancellationToken token)
++    {
++        ValidateTools(tools);
++        if (!PacketCapturePolicy.LocalInterface(adapter.Name)) throw new ArgumentException("Interfaccia locale non valida.");
++        string stamp = Stamp(tools, adapter); _verifiedMonitor.Remove(stamp);
++        var result = await _runner.RunAsync(tools.Dumpcap, new[] { "-i", adapter.Name, "-I", "-L" }, 10, token);
++        bool supported = result.Success && PacketCapturePolicy.HasMonitorLinkType(result.Output);
++        if (supported) _verifiedMonitor.Add(stamp);
++        return new(supported, supported ? "Lo strumento dichiara intestazioni 802.11 in modalità monitor. La ricezione va verificata con una cattura." :
++            "Modalità monitor non verificata. Controlla driver, Npcap e permessi.\n" + result.Error + "\n" + result.Output);
++    }
++    public async Task<CaptureFileResult> CaptureAsync(CaptureTools tools, CaptureInterface adapter, bool monitor, string output, CancellationToken token)
++    {
++        ValidateTools(tools); token.ThrowIfCancellationRequested();
++        if (monitor && !_verifiedMonitor.Contains(Stamp(tools, adapter)))
++            throw new InvalidOperationException("Verifica la modalità monitor per questa interfaccia prima di acquisire.");
++        string[] args = PacketCapturePolicy.CaptureArguments(adapter, monitor, output);
++        // Reserve a NEW user-selected file; never overwrite an existing recording.
++        using (File.Open(output, FileMode.CreateNew, FileAccess.Write, FileShare.None)) { }
++        var result = await _runner.RunAsync(tools.Dumpcap, args, PacketCapturePolicy.Seconds + 10, token);
++        long bytes = new FileInfo(output).Length;
++        bool complete = result.Success && bytes > 0 && bytes <= PacketCapturePolicy.MaximumFileBytes;
++        return new(output, complete, complete ? "Cattura terminata entro i limiti impostati.\n" + result.Error :
++            "Cattura interrotta, non valida o parziale. Il file può essere incompleto.\n" + result.Error);
++    }
++    public async Task<PacketEvidence> AnalyzeAsync(CaptureTools tools, string path, CancellationToken token)
++    {
++        ValidateTools(tools);
++        if (!Path.IsPathFullyQualified(path) || path.StartsWith(@"\\", StringComparison.Ordinal)) throw new IOException("Scegli un file locale.");
++        await using var file = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 65536, useAsync: true);
++        if (file.Length == 0 || file.Length > PacketCapturePolicy.MaximumFileBytes)
++            throw new IOException("File mancante, vuoto o oltre il limite di 12 MiB.");
++        string hash = Convert.ToHexString(await SHA256.HashDataAsync(file, token));
++        var result = await _runner.RunAsync(tools.Tshark, PacketCapturePolicy.AnalysisArguments(path), 15, token);
++        if (!result.Success) throw new IOException("Analisi non disponibile o interrotta: " + result.Error);
++        var evidence = PacketEvidenceParser.Parse(result.Output);
++        return evidence with { Note = evidence.Note + "\nSHA-256 del file letto: " + hash };
++    }
++}
+--- a/tests/ProcessLens.NetworkUiTests/Program.cs
++++ b/tests/ProcessLens.NetworkUiTests/Program.cs
+@@ -79,6 +79,33 @@
+             Check(!recognize.IsEnabled && indicator.Text == "Dati incompleti", "partial capture cannot enable identity labeling or show green");
+             view.SetActive(false);
+ 
++            var packets = new PacketFixture();
++            var captureView = new NetworkCaptureView(packets);
++            Check(packets.Calls == 0, "packet view construction does not find tools or start child processes");
++            captureView.SetActive(true);
++            Check(packets.Calls == 0, "packet view activation does not acquire or probe automatically");
++            Complete(captureView.DiscoverAsync());
++            var adapters = (ComboBox)captureView.FindName("CaptureInterfacesBox");
++            var startCapture = (Button)captureView.FindName("StartCaptureButton");
++            Check(adapters.Items.Count == 1 && adapters.SelectedIndex == -1 && !startCapture.IsEnabled,
++                "capture requires explicit interface selection and never defaults to the first device");
++            adapters.SelectedIndex = 0;
++            ((CheckBox)captureView.FindName("CaptureMonitorBox")).IsChecked = true;
++            Check(!startCapture.IsEnabled, "monitor capture is blocked until a capability check succeeds");
++            Complete(captureView.VerifyMonitorAsync());
++            Check(startCapture.IsEnabled, "declared monitor link type unlocks the selected capture mode");
++            Complete(captureView.CaptureAsync(Path.Combine(root, "test.pcapng")));
++            Check(packets.LastMonitor, "actual capture UI passes the explicit monitor choice to its client");
++            Complete(captureView.AnalyzeAsync(Path.Combine(root, "test.pcapng")));
++            var packetGrid = (DataGrid)captureView.FindName("CaptureObservationsTable");
++            Check(packetGrid.Items.Count == 1 && GridCopySupport.CaptureTable(packetGrid, false).Contains("02-11-22-33-44-55"),
++                "actual packet grid binds observed fields and supports copying without the OS clipboard");
++            packets.Block = new TaskCompletionSource<PacketEvidence>(TaskCreationOptions.RunContinuationsAsynchronously);
++            Task late = captureView.AnalyzeAsync(Path.Combine(root, "test.pcapng"));
++            captureView.SetActive(false); packets.Block.SetResult(PacketFixture.Evidence); Complete(late);
++            Check(packetGrid.Items.Count == 0 && !startCapture.IsEnabled,
++                "packet deactivation releases rows and rejects late results even if a client ignores cancellation");
++
+             var window = new MainWindow();
+             var host = (ContentControl)window.FindName("NetworkDevicesHost");
+             Check(host.Content is null, "main window does not eagerly construct network view");
+@@ -86,6 +113,13 @@
+             Check(host.Content is NetworkDevicesView && host.Visibility == Visibility.Visible &&
+                 ((Grid)window.FindName("ProcessWorkspace")).Visibility == Visibility.Collapsed,
+                 "Rete button opens its own lazy workspace");
++            var actualNetwork = (NetworkDevicesView)host.Content;
++            var packetHost = (ContentControl)actualNetwork.FindName("NetworkCaptureHost");
++            Check(packetHost.Content is null, "packet capture pane is lazy inside the network workspace");
++            ((TabControl)actualNetwork.FindName("NetworkTabs")).SelectedIndex = 1;
++            Check(packetHost.Content is NetworkCaptureView &&
++                ((ComboBox)((NetworkCaptureView)packetHost.Content).FindName("CaptureInterfacesBox")).Items.Count == 0,
++                "packet tab builds the real view without enumerating adapters or starting tools");
+             ((Button)window.FindName("NavProcessesButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+             Check(host.Visibility == Visibility.Collapsed && ((Grid)window.FindName("ProcessWorkspace")).Visibility == Visibility.Visible,
+                 "Processi restores the existing workspace");
+@@ -93,6 +127,24 @@
+         }
+         finally { source.Release.Set(); if (Directory.Exists(root)) Directory.Delete(root, true); }
+         Console.WriteLine("Network UI fixtures complete; no window shown, live network acquisition or real clipboard write.");
++    }
++    private sealed class PacketFixture : IPacketCaptureClient
++    {
++        public int Calls; public bool LastMonitor;
++        public TaskCompletionSource<PacketEvidence>? Block;
++        public static readonly PacketEvidence Evidence = new(1, 1, false, new[] {
++            new PacketObservation("Trasmettitore nel frame", "02-11-22-33-44-55", "N/D", "N/D", "N/D", "N/D", 1) }, "Fixture only.");
++        public Task<CaptureDiscovery> DiscoverAsync(string? path, CancellationToken token)
++        {
++            Calls++; return Task.FromResult(new CaptureDiscovery(new("dumpcap.exe", "tshark.exe", "Wireshark.exe", "fixture"),
++                new[] { new CaptureInterface(@"\Device\NPF_{00112233-4455-6677-8899-AABBCCDDEEFF}", "Wi-Fi") }, "fixture"));
++        }
++        public Task<CaptureCheck> CheckMonitorAsync(CaptureTools tools, CaptureInterface adapter, CancellationToken token)
++        { Calls++; return Task.FromResult(new CaptureCheck(true, "fixture link type")); }
++        public Task<CaptureFileResult> CaptureAsync(CaptureTools tools, CaptureInterface adapter, bool monitor, string path, CancellationToken token)
++        { Calls++; LastMonitor = monitor; return Task.FromResult(new CaptureFileResult(path, true, "fixture capture")); }
++        public Task<PacketEvidence> AnalyzeAsync(CaptureTools tools, string path, CancellationToken token)
++        { Calls++; return Block?.Task ?? Task.FromResult(Evidence); }
+     }
+     private sealed class FixtureSource : INetworkDeviceSource, IDisposable
+     {
+--- /dev/null
++++ b/tests/ProcessLens.PacketCaptureTests/ProcessLens.PacketCaptureTests.csproj
+@@ -0,0 +1,6 @@
++<Project Sdk="Microsoft.NET.Sdk">
++ <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
++ <ItemGroup><ProjectReference Include="../../src/ProcessLens.Core/ProcessLens.Core.csproj"/>
++  <Compile Include="../../src/ProcessLens.Windows/WiresharkTools.cs" Link="WiresharkTools.cs"/>
++ </ItemGroup>
++</Project>
+--- /dev/null
++++ b/tests/ProcessLens.PacketCaptureTests/Program.cs
+@@ -0,0 +1,127 @@
++using System.Globalization;
++using System.Reflection;
++using ProcessLens.Core;
++using ProcessLens.Windows;
++
++if (args.Length >= 2 && args[0] == "--capture-fixture")
++{
++    Console.WriteLine("OWNED FIXTURE"); Console.Out.Flush();
++    if (args[1] == "wait") Thread.Sleep(10000);
++    else if (args[1] == "overflow") { Console.Write(new string('x', PacketCapturePolicy.MaximumTextChars + 65536)); Console.Out.Flush(); }
++    else if (args.Length > 2) Console.WriteLine(args[2]);
++    return;
++}
++static void Check(bool ok, string label)
++{
++    if (!ok) throw new Exception("FAIL packet capture: " + label);
++    Console.WriteLine("PASS packet capture: " + label);
++}
++static bool Throws(Action action)
++{
++    try { action(); return false; } catch (ArgumentException) { return true; }
++}
++const string device = @"\Device\NPF_{00112233-4455-6677-8899-AABBCCDDEEFF}";
++var adapter = new CaptureInterface(device, "Wi-Fi");
++Check(PacketCapturePolicy.LocalInterface(device) && PacketCapturePolicy.LocalInterface(@"\Device\NPF_Loopback"), "local Npcap interface identifiers accepted");
++foreach (string invalid in new[] { "1", "-i anything", "rpcap://host/interface", "TCP@host:9", "-", "Wi-Fi", @"\Device\NPF_{not-a-guid}" })
++    Check(!PacketCapturePolicy.LocalInterface(invalid), "remote pipe index or injected interface rejected: " + invalid);
++var interfaces = PacketCapturePolicy.ParseInterfaces("1. " + device + " (Wi-Fi)\n2. rpcap://host/interface (remote)\n3. " + device + " (duplicate)");
++Check(interfaces.Count == 1 && interfaces[0].Name == device, "interface parser retains exact local identity and removes duplicates");
++Check(PacketCapturePolicy.HasMonitorLinkType("Data link types:\n  IEEE802_11_RADIO (802.11 plus radiotap header)\n") &&
++    !PacketCapturePolicy.HasMonitorLinkType("Error: no support for IEEE802_11_RADIO") &&
++    !PacketCapturePolicy.HasMonitorLinkType("EN10MB (Ethernet)"), "monitor check requires an actual declared 802.11 link type");
++string root = Path.Combine(Path.GetTempPath(), "ProcessLens-CaptureTests-" + Guid.NewGuid().ToString("N"));
++Directory.CreateDirectory(root);
++try
++{
++    string path = Path.Combine(root, "space & literal ; file.pcapng");
++    var normal = PacketCapturePolicy.CaptureArguments(adapter, false, path);
++    Check(normal.Contains("-p") && !normal.Contains("-I") && normal[^1] == path &&
++        string.Join("|", normal).Contains("-a|duration:20|-a|filesize:10000|-c|10000|-s|256|-B|2"), "normal capture is explicitly selected bounded and not monitor mode");
++    Check(PacketCapturePolicy.CaptureArguments(adapter, true, path).Contains("-I"), "monitor mode is an explicit separate argument");
++    Check(Throws(() => PacketCapturePolicy.CaptureArguments(adapter with { Name = "1" }, false, path)) &&
++        Throws(() => PacketCapturePolicy.CaptureArguments(adapter, false, @"\\server\share\test.pcapng")), "unsafe or ambiguous capture destinations and interfaces fail closed");
++    string beacon = "1\t02:aa:bb:cc:dd:ee\tff:ff:ff:ff:ff:ff\t02:aa:bb:cc:dd:ee\t0\t8\t486f6d65\t2412\t-40\n";
++    string data = "2\t02:11:22:33:44:55\t02:aa:bb:cc:dd:ee\t02:aa:bb:cc:dd:ee\t2\t0\t\t\t\n";
++    foreach (string name in new[] { "it-IT", "en-US" })
++    {
++        var saved = CultureInfo.CurrentCulture;
++        try
++        {
++            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(name);
++            var evidence = PacketEvidenceParser.Parse(beacon + data + "3\t\t\t\t\t\t\t\t\n");
++            Check(evidence.Packets == 3 && evidence.WifiFrames == 2 && evidence.Rows.Any(r => r.Kind == "Rete annunciata" && r.Ssid == "Home" && r.Frequency == "2412 MHz"), "beacon metadata is observed without inventing a phone hotspot [" + name + "]");
++            Check(evidence.Rows.Any(r => r.Mac == "02-11-22-33-44-55" && r.Signal == "N/D" && r.Frequency == "N/D") &&
++                !evidence.Rows.Any(r => r.Mac.StartsWith("FF-")), "missing radio values stay unavailable and broadcast MACs are not devices [" + name + "]");
++        }
++        finally { CultureInfo.CurrentCulture = saved; }
++    }
++    var ordinary = PacketEvidenceParser.Parse("1\t\t\t\t\t\t\t\t\n");
++    Check(ordinary.Packets == 1 && ordinary.WifiFrames == 0 && ordinary.Note.Contains("solo intestazioni Ethernet"), "no decoded Wi-Fi does not establish absence of wireless clients");
++    Check(PacketEvidenceParser.Parse("bad\tline\n").Limited, "malformed output remains explicitly incomplete");
++    Check(PacketEvidenceParser.Parse(beacon.Replace("486f6d65", "410a42")).Rows.Any(r => r.Ssid == @"A\u000AB"), "SSID control characters cannot create fake log lines");
++    Check(PacketEvidenceParser.Parse(beacon.Replace("\t0\t8\t", "\t0\t4\t")).Rows.All(r => r.Ssid == "N/D"), "probe request SSID does not become an advertised access point");
++    foreach (string exe in new[] { "dumpcap.exe", "tshark.exe", "Wireshark.exe" }) File.WriteAllText(Path.Combine(root, exe), "fixture, never executed");
++    var fake = new FixtureRunner(beacon);
++    var client = new WiresharkTools(fake);
++    var discovery = await client.DiscoverAsync(Path.Combine(root, "dumpcap.exe"), CancellationToken.None);
++    var tools = discovery.Tools!;
++    Check(discovery.Interfaces.Single().Name == device && fake.Calls[0].Args.SequenceEqual(new[] { "-D" }), "discovery only lists interfaces through the injected runner");
++    bool blocked = false;
++    try { await client.CaptureAsync(tools, adapter, true, path, CancellationToken.None); } catch (InvalidOperationException) { blocked = true; }
++    Check(blocked && !File.Exists(path), "unverified monitor cannot create a file or launch capture");
++    Check((await client.CheckMonitorAsync(tools, adapter, CancellationToken.None)).Supported, "monitor capability is tied to the selected tool and interface");
++    var captured = await client.CaptureAsync(tools, adapter, true, path, CancellationToken.None);
++    Check(captured.Complete && fake.Calls.Last().Args.Contains("-I") && File.Exists(path), "capture reserves a new file and applies explicit monitor arguments");
++    blocked = false;
++    try { await client.CaptureAsync(tools, adapter, false, path, CancellationToken.None); } catch (IOException) { blocked = true; }
++    Check(blocked, "existing capture files cannot be overwritten");
++    var result = await client.AnalyzeAsync(tools, path, CancellationToken.None);
++    Check(result.WifiFrames == 1 && result.Note.Contains("SHA-256") && fake.Calls.Last().Args.Contains("-n") &&
++        fake.Calls.Last().Args.Contains("2048") && fake.Calls.Last().Exe.EndsWith("tshark.exe"), "analysis is offline bounded disables names and identifies the file hash");
++    fake.Fail = true;
++    blocked = false;
++    try { await client.AnalyzeAsync(tools, path, CancellationToken.None); } catch (IOException ex) { blocked = ex.Message.Contains("fixture error"); }
++    Check(blocked, "failed decoder output cannot become a valid empty-network report");
++    using (var tooLarge = File.Create(Path.Combine(root, "large.pcapng"))) tooLarge.SetLength(PacketCapturePolicy.MaximumFileBytes + 1L);
++    blocked = false;
++    try { await client.AnalyzeAsync(tools, Path.Combine(root, "large.pcapng"), CancellationToken.None); } catch (IOException) { blocked = true; }
++    Check(blocked, "oversized imported capture is rejected before a decoder is launched");
++}
++finally { Directory.Delete(root, true); }
++
++// Independent process tests launch only this test executable, never a packet tool or target process.
++string self = Environment.ProcessPath!;
++string[] SelfArgs(string mode, string? value = null)
++{
++    var values = new List<string>();
++    if (Path.GetFileNameWithoutExtension(self).Equals("dotnet", StringComparison.OrdinalIgnoreCase)) values.Add(Assembly.GetExecutingAssembly().Location);
++    values.AddRange(new[] { "--capture-fixture", mode }); if (value is not null) values.Add(value);
++    return values.ToArray();
++}
++var runner = new CaptureCommandRunner();
++var echo = await runner.RunAsync(self, SelfArgs("echo", "literal & ; $(not-a-command)"), 10, CancellationToken.None);
++Check(echo.Success && echo.Output.Contains("OWNED FIXTURE") && echo.Output.Contains("literal & ; $(not-a-command)"), "real runner passes arguments without a shell to its own fixture");
++var timeout = await runner.RunAsync(self, SelfArgs("wait"), 3, CancellationToken.None);
++Check(timeout.Interrupted && !timeout.Success, "real runner stops only its own child at timeout");
++using var stop = new CancellationTokenSource(TimeSpan.FromMilliseconds(500));
++var cancelled = await runner.RunAsync(self, SelfArgs("wait"), 10, stop.Token);
++Check(cancelled.Interrupted, "real runner cancellation releases its own child");
++var overflow = await runner.RunAsync(self, SelfArgs("overflow"), 10, CancellationToken.None);
++Check(!overflow.Success && overflow.Output.Length <= PacketCapturePolicy.MaximumTextChars, "real runner output budget cannot grow without bound");
++Console.WriteLine("Packet capture tests complete; synthetic data and owned test children only, no live capture or driver changes.");
++
++sealed class FixtureRunner(string beacon) : ICaptureCommandRunner
++{
++    public readonly List<(string Exe, string[] Args)> Calls = new();
++    public bool Fail;
++    public Task<CaptureCommandResult> RunAsync(string executable, IReadOnlyList<string> arguments, int seconds, CancellationToken token)
++    {
++        token.ThrowIfCancellationRequested(); Calls.Add((executable, arguments.ToArray()));
++        if (Fail) return Task.FromResult(new CaptureCommandResult(1, "", "fixture error", false));
++        if (arguments.Contains("-D")) return Task.FromResult(new CaptureCommandResult(0, "1. \\Device\\NPF_{00112233-4455-6677-8899-AABBCCDDEEFF} (Wi-Fi)", "", false));
++        if (arguments.Contains("-L")) return Task.FromResult(new CaptureCommandResult(0, "IEEE802_11_RADIO (802.11 plus radiotap)", "", false));
++        if (arguments.Contains("-w")) { int index = Array.IndexOf(arguments.ToArray(), "-w"); File.WriteAllText(arguments[index + 1], "synthetic file bytes"); return Task.FromResult(new CaptureCommandResult(0, "", "", false)); }
++        return Task.FromResult(new CaptureCommandResult(0, beacon, "", false));
++    }
++}
+--- /dev/null
++++ b/tests/check-packet-capture-r13.ps1
+@@ -0,0 +1,28 @@
++$ErrorActionPreference = 'Stop'
++$root = Split-Path -Parent $PSScriptRoot
++$client = Get-Content (Join-Path $root 'src\ProcessLens.Windows\WiresharkTools.cs') -Raw -Encoding UTF8
++$policy = Get-Content (Join-Path $root 'src\ProcessLens.Core\PacketCaptureEvidence.cs') -Raw -Encoding UTF8
++$ui = Get-Content (Join-Path $root 'src\ProcessLens.App\NetworkCaptureView.xaml.cs') -Raw -Encoding UTF8
++[xml]$view = Get-Content (Join-Path $root 'src\ProcessLens.App\NetworkCaptureView.xaml') -Raw -Encoding UTF8
++foreach ($token in @('UseShellExecute = false','child.StartInfo.ArgumentList.Add(argument)', 'budget.CancelAfter',
++    'PacketCapturePolicy.MaximumTextChars', 'if (started)', 'child.Kill()', 'FileMode.CreateNew',
++    '_verifiedMonitor.Contains(Stamp(tools, adapter))', 'FileShare.Read', 'SHA256.HashDataAsync')) {
++    if (-not $client.Contains($token)) { throw "FAIL R13 capture guard: $token" }
++}
++foreach ($token in @('duration:20','filesize:10000','"-c", "10000"','"-s", "256"','"-n", "-r"','"-c", "2048"',
++    'LocalInterface(adapter.Name)', 'Rete annunciata', 'Destinatario nel frame')) {
++    if (-not $policy.Contains($token)) { throw "FAIL R13 packet policy: $token" }
++}
++foreach ($token in @('_operation?.Cancel()', 'generation == _generation', 'CaptureMonitorBox.IsChecked != true || _monitorVerified',
++    'CaptureInterfacesBox.SelectedIndex = -1', 'ClipboardText.Copy(this,')) {
++    if (-not $ui.Contains($token)) { throw "FAIL R13 UI lifecycle: $token" }
++}
++foreach ($button in $view.SelectNodes("//*[local-name()='Button']")) {
++    if ($button.HasAttribute('Height') -or $button.GetAttribute('Style') -ne '{StaticResource CaptureAction}') {
++        throw 'FAIL R13: unstyled or fixed-height capture button.'
++    }
++}
++foreach ($forbidden in @('GetProcessesByName(', 'GetProcessById(', 'cmd.exe', 'powershell.exe', 'msiexec', 'schtasks')) {
++    if (($client + $policy + $ui).Contains($forbidden)) { throw "FAIL R13 unexpected action: $forbidden" }
++}
++Write-Host 'PASS R13: explicit capture, bounded commands, local interface, monitor verification, owned-child cleanup, copied output. Source checks only.'

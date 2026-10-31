@@ -1,0 +1,132 @@
+[
+  {
+    "test": "no baseline files removed",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "R2 production retained outside exact authorized R15/R16 delta",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "R3 production delta or exact authorized R15/R16 presentation",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "only two WPF C# fixtures changed",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.NetworkUiTests installs context before pending await and worker completion",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.NetworkUiTests retains original checks or exact authorized R15/R16 replacement suite",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.NetworkUiTests retains original dispatcher pump and exception propagation",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.NetworkUiTests does not suppress thread ownership checks or awaiting context",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.NetworkUiTests guard rejects missing setup",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.NetworkUiTests guard rejects setup after asynchronous start",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.NetworkUiTests guard rejects worker scheduled before await",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.NetworkUiTests guard rejects missing restoration",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.NetworkUiTests guard rejects missing owner verification",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.SystemProcessUiTests installs context before pending await and worker completion",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.SystemProcessUiTests retains original checks or exact authorized R15/R16 replacement suite",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.SystemProcessUiTests retains original dispatcher pump and exception propagation",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.SystemProcessUiTests does not suppress thread ownership checks or awaiting context",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.SystemProcessUiTests guard rejects missing setup",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.SystemProcessUiTests guard rejects setup after asynchronous start",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.SystemProcessUiTests guard rejects worker scheduled before await",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.SystemProcessUiTests guard rejects missing restoration",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "ProcessLens.SystemProcessUiTests guard rejects missing owner verification",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "R3 baseline hashes and current hashes or exact authorized R15/R16 successors",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "standard Windows pipeline includes source gate",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "all XAML and project XML parse",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  },
+  {
+    "test": "reported R2 error retained separately from current source checks",
+    "status": "PASS",
+    "kind": "source/XML/mutation only; no WPF execution"
+  }
+]

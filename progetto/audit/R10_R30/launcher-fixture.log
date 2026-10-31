@@ -1,0 +1,24 @@
+PASS R30 launcher: empty package has no runnable GUI
+PASS R30 launcher: completed old installation cannot silently substitute its old GUI
+PASS R30 launcher: publication without successful R30 receipt is not accepted
+PASS R30 launcher: receipt for another revision is rejected
+Primo avvio R30: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R30 launcher: failed tests cannot issue a build receipt or launch a stale publication
+PASS R30 launcher: completed R20 cache reused without copying packages into ZIP
+PASS R30 launcher: R20 cache build has no configured network feed
+Primo avvio R30: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R30 launcher: missing executable after build remains an error
+Primo avvio R30: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R30 launcher: successful owned build resolves new publication with existing private runtime
+PASS R30 launcher: subsequent resolution needs no build or SDK command
+PASS R30 launcher: missing desktop runtime is not accepted
+PASS R30 launcher: wrong desktop runtime major is not accepted
+PASS R30 launcher: paths with spaces remain one UAC argument
+PASS R30 launcher: quotes and newlines cannot create extra launch arguments
+PASS R30 launcher: quotes and newlines cannot create extra launch arguments
+PASS R30 launcher: real PowerShell parser accepts complete launcher
+PASS R30 launcher: launcher installs no dependencies and changes no services or running processes
+R30 launcher fixture complete: 17 checks; synthetic files only, no Windows app or UAC.

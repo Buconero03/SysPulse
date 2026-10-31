@@ -1,0 +1,28 @@
+{
+  "baseline": "R15",
+  "new_tab": "Rete / Segnali Windows",
+  "native_APIs": [
+    "AuditQuerySystemPolicy",
+    "AuditFree",
+    "EvtQuery",
+    "EvtNext",
+    "EvtRender",
+    "EvtClose"
+  ],
+  "channel": "Security local only",
+  "events": {
+    "5157": "WFP connection blocked",
+    "4625": "LogonType 3 or 10 only"
+  },
+  "manual": true,
+  "system_changes": false,
+  "extra_programs_or_drivers": false,
+  "new_background_subscriptions": false,
+  "event_cap": 256,
+  "XML_char_cap": 32768,
+  "total_XML_char_cap": 1048576,
+  "enumeration_budget_seconds": 3,
+  "EvtNext_timeout_ms": 250,
+  "live_Windows_calls": "NOT EXECUTED",
+  "GUI_RAM_delta": "NOT MEASURED"
+}

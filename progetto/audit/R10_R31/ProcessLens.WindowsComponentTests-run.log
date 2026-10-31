@@ -1,0 +1,109 @@
+PASS Windows components: expanded finite catalog has 31 distinct component families
+PASS Windows components: expected component path or internal name: System Idle Process
+PASS Windows components: expected component path or internal name: System
+PASS Windows components: expected component path or internal name: Memory Compression
+PASS Windows components: expected component path or internal name: Registry
+PASS Windows components: expected component path or internal name: Secure System
+PASS Windows components: expected component path or internal name: smss.exe
+PASS Windows components: same name outside expected Windows location excluded: smss.exe
+PASS Windows components: expected component path or internal name: csrss.exe
+PASS Windows components: same name outside expected Windows location excluded: csrss.exe
+PASS Windows components: expected component path or internal name: wininit.exe
+PASS Windows components: same name outside expected Windows location excluded: wininit.exe
+PASS Windows components: expected component path or internal name: winlogon.exe
+PASS Windows components: same name outside expected Windows location excluded: winlogon.exe
+PASS Windows components: expected component path or internal name: LogonUI.exe
+PASS Windows components: same name outside expected Windows location excluded: LogonUI.exe
+PASS Windows components: expected component path or internal name: services.exe
+PASS Windows components: same name outside expected Windows location excluded: services.exe
+PASS Windows components: expected component path or internal name: svchost.exe
+PASS Windows components: same name outside expected Windows location excluded: svchost.exe
+PASS Windows components: expected component path or internal name: lsass.exe
+PASS Windows components: same name outside expected Windows location excluded: lsass.exe
+PASS Windows components: expected component path or internal name: LsaIso.exe
+PASS Windows components: same name outside expected Windows location excluded: LsaIso.exe
+PASS Windows components: expected component path or internal name: dwm.exe
+PASS Windows components: same name outside expected Windows location excluded: dwm.exe
+PASS Windows components: expected component path or internal name: explorer.exe
+PASS Windows components: same name outside expected Windows location excluded: explorer.exe
+PASS Windows components: expected component path or internal name: conhost.exe
+PASS Windows components: same name outside expected Windows location excluded: conhost.exe
+PASS Windows components: expected component path or internal name: fontdrvhost.exe
+PASS Windows components: same name outside expected Windows location excluded: fontdrvhost.exe
+PASS Windows components: expected component path or internal name: sihost.exe
+PASS Windows components: same name outside expected Windows location excluded: sihost.exe
+PASS Windows components: expected component path or internal name: ctfmon.exe
+PASS Windows components: same name outside expected Windows location excluded: ctfmon.exe
+PASS Windows components: expected component path or internal name: RuntimeBroker.exe
+PASS Windows components: same name outside expected Windows location excluded: RuntimeBroker.exe
+PASS Windows components: expected component path or internal name: taskhostw.exe
+PASS Windows components: same name outside expected Windows location excluded: taskhostw.exe
+PASS Windows components: expected component path or internal name: dllhost.exe
+PASS Windows components: same name outside expected Windows location excluded: dllhost.exe
+PASS Windows components: expected component path or internal name: audiodg.exe
+PASS Windows components: same name outside expected Windows location excluded: audiodg.exe
+PASS Windows components: expected component path or internal name: spoolsv.exe
+PASS Windows components: same name outside expected Windows location excluded: spoolsv.exe
+PASS Windows components: expected component path or internal name: WmiPrvSE.exe
+PASS Windows components: same name outside expected Windows location excluded: WmiPrvSE.exe
+PASS Windows components: expected component path or internal name: SearchIndexer.exe
+PASS Windows components: same name outside expected Windows location excluded: SearchIndexer.exe
+PASS Windows components: expected component path or internal name: SearchProtocolHost.exe
+PASS Windows components: same name outside expected Windows location excluded: SearchProtocolHost.exe
+PASS Windows components: expected component path or internal name: prevhost.exe
+PASS Windows components: same name outside expected Windows location excluded: prevhost.exe
+PASS Windows components: expected component path or internal name: smartscreen.exe
+PASS Windows components: same name outside expected Windows location excluded: smartscreen.exe
+PASS Windows components: expected component path or internal name: SearchFilterHost.exe
+PASS Windows components: same name outside expected Windows location excluded: SearchFilterHost.exe
+PASS Windows components: Windows folder alone cannot include an ordinary program: chrome.exe
+PASS Windows components: Windows folder alone cannot include an ordinary program: notepad.exe
+PASS Windows components: Windows folder alone cannot include an ordinary program: powershell.exe
+PASS Windows components: Windows folder alone cannot include an ordinary program: ProcessLens.exe
+PASS Windows components: Windows folder alone cannot include an ordinary program: service-vendor.exe
+PASS Windows components: wrong path or lookalike excluded: D:\Windows-old\System32\svchost.exe
+PASS Windows components: wrong path or lookalike excluded: D:\Windows\Temp\svchost.exe
+PASS Windows components: wrong path or lookalike excluded: D:\Windows\System32\..\System32\svchost.exe
+PASS Windows components: wrong path or lookalike excluded: D:\Windows\System32\fake.exe
+PASS Windows components: wrong path or lookalike excluded: E:\Windows\System32\svchost.exe
+PASS Windows components: case and separator normalization keep the same expected path
+PASS Windows components: Explorer requires Windows root instead of a generic System32 match
+PASS Windows components: suffixes and unknown names never enter the system component catalog
+PASS Windows components: native reserved entries retained without executable metadata
+PASS Windows components: retain discards application rows and preserves source counters errors and original snapshot
+PASS Windows components: many instances grouped once without losing PID identities
+PASS Windows components: maximum available resident value is not the sum and unavailable identity remains explicit
+PASS Windows components: numeric search matches exact PID rather than 112 or 512
+PASS Windows components: name and role search both remain within the curated component set
+PASS Windows components: categories filter by component function without an all-applications escape
+PASS Windows components: rendered maximum uses current decimal culture it-IT
+PASS Windows components: missing or invalid memory cannot become measured zero it-IT
+PASS Windows components: detail separates catalog role from observed identity memory and events it-IT
+PASS Windows components: rendered maximum uses current decimal culture en-US
+PASS Windows components: missing or invalid memory cannot become measured zero en-US
+PASS Windows components: detail separates catalog role from observed identity memory and events en-US
+PASS Windows components: large application inventory is not retained and 200 service hosts yield one UI row
+PASS Windows components: empty or failed samples cannot fabricate observed components
+Windows component tests complete; synthetic data only, no Windows query or live RAM measurement.
+PASS Windows components: R22 coverage partitions original enumeration without calling excluded entries applications or threats
+PASS Windows components: R22 source total survives compact retention without mutating or retaining excluded rows
+PASS Windows components: R22 unreadable details stay visible and reserved PID does not inflate missing executable paths
+PASS Windows components: R22 repeated retention does not silently replace enumeration total with catalog total
+PASS Windows components: R22 explicit 32-bit host path: ctfmon
+PASS Windows components: R22 added host cannot match a temporary directory: ctfmon
+PASS Windows components: R22 explicit 32-bit host path: dllhost
+PASS Windows components: R22 added host cannot match a temporary directory: dllhost
+PASS Windows components: R22 explicit 32-bit host path: wmiprvse
+PASS Windows components: R22 added host cannot match a temporary directory: wmiprvse
+PASS Windows components: R22 explicit 32-bit host path: searchprotocolhost
+PASS Windows components: R22 added host cannot match a temporary directory: searchprotocolhost
+PASS Windows components: R22 explicit 32-bit host path: searchfilterhost
+PASS Windows components: R22 added host cannot match a temporary directory: searchfilterhost
+PASS Windows components: R22 visible counts change with exact PID filter while source total stays unchanged it-IT
+PASS Windows components: R22 alternative or partial enumeration cannot claim completion it-IT
+PASS Windows components: R22 unavailable enumeration never becomes a valid zero count it-IT
+PASS Windows components: R22 visible counts change with exact PID filter while source total stays unchanged en-US
+PASS Windows components: R22 alternative or partial enumeration cannot claim completion en-US
+PASS Windows components: R22 unavailable enumeration never becomes a valid zero count en-US
+PASS Windows components: R22 large sample retains scalar exclusion counts and only Windows host rows
+R22 coverage and expanded Windows catalog regressions complete.

@@ -1,0 +1,36 @@
+file,line,added_or_modified_source_text,context
+tests/ProcessLens.NetworkUiTests/Program.cs,31,"Check(workerThread != ownerThread, ""R14 R3 fixture completion comes from a worker thread"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,34,"""R14 R3 awaited continuation returns to the owning WPF dispatcher"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,50,"""R14 R3 WPF context installed before starting asynchronous operations"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,26,"Check(workerThread != ownerThread, ""R14 R3 fixture completion comes from a worker thread"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,29,"""R14 R3 awaited continuation returns to the owning WPF dispatcher"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,42,"""R14 R3 WPF context installed before starting asynchronous operations"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,49,"var view = new SystemProcessesView(source, @""C:\Windows"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,50,"Check(source.Calls == 0, ""constructor performs no native inventory"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,51,"view.SetActive(true); Check(source.Calls == 0, ""activation does not automatically query Windows"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,53,"var grid = (DataGrid)view.FindName(""SystemProcessesTable"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,54,"var analyze = (Button)view.FindName(""AnalyzeSystemButton"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,56,"""Windows scope retains internal entries and denied details in copied virtualized table"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,57,"Check(GridCopySupport.CaptureTable(grid, false).Contains(""Memory Compression""), ""actual grid copy preserves internal process names"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,58,"grid.SelectedItem = grid.Items.Cast<SystemProcessRow>().Single(r => r.Name == ""Memory Compression"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,59,"Check(!analyze.IsEnabled && ((SelectableText)view.FindName(""SystemSelectionText"")).Text.Contains(""dimensione logica""),",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,60,"""unknown creation time blocks analysis navigation without hiding compression details"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,61,"var scope = (ComboBox)view.FindName(""SystemScopeBox""); scope.SelectedIndex = 1;",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,62,"Check(grid.Items.Count == 3, ""all-process scope includes processes with unknown origin"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,63,"((TextBox)view.FindName(""SystemSearchBox"")).Text = ""12"";",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,64,"Check(grid.Items.Count == 1 && ((SystemProcessRow)grid.Items[0]).Pid == 12, ""numeric PID search does not match substring 112"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,67,"Check(request?.Pid == 12 && request.StartUtc.HasValue, ""analysis button forwards selected immutable process identity"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,68,"((TextBox)view.FindName(""SystemSearchBox"")).Clear();",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,70,"Check(source.Started.Wait(TimeSpan.FromSeconds(5)), ""blocked native fixture begins"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,71,"Complete(view.RefreshAsync()); Check(source.Calls == 2 && grid.Items.Count == 0, ""refresh coalesces and clears old rows while pending"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,73,"Check(grid.Items.Count == 0 && !analyze.IsEnabled && ((SelectableText)view.FindName(""SystemMemoryText"")).Text.Contains(""N/D""),",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,74,"""late uncancellable result rejected after section closes and rows released"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,76,"Check(grid.Items.Count == 0 && ((SelectableText)view.FindName(""SystemSourceText"")).Text.Contains(""synthetic failure""),",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,77,"""acquisition error preserves failure instead of a valid empty inventory"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,80,"var host = (ContentControl)window.FindName(""SystemProcessesHost"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,81,"Check(host.Content is null, ""main window leaves system pane unconstructed"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,82,"((Button)window.FindName(""NavSystemButton"")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,84,"((Grid)window.FindName(""ProcessWorkspace"")).Visibility == Visibility.Collapsed, ""System Windows button opens a dedicated lazy workspace"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,85,"((Button)window.FindName(""NavNetworkButton"")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,86,"Check(host.Visibility == Visibility.Collapsed, ""switching to network deactivates system workspace"");",UI/report or technical source context
+tests/ProcessLens.SystemProcessUiTests/Program.cs,88,"Console.WriteLine(""System process WPF tests complete; no real native query, process action or clipboard used."");",UI/report or technical source context

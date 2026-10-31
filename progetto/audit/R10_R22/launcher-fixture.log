@@ -1,0 +1,24 @@
+PASS R22 launcher: empty package has no runnable GUI
+PASS R22 launcher: completed old installation cannot silently substitute its old GUI
+PASS R22 launcher: publication without successful R22 receipt is not accepted
+PASS R22 launcher: receipt for another revision is rejected
+Primo avvio R22: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R22 launcher: failed tests cannot issue a build receipt or launch a stale publication
+PASS R22 launcher: completed R20 cache reused without copying packages into ZIP
+PASS R22 launcher: R20 cache build has no configured network feed
+Primo avvio R22: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R22 launcher: missing executable after build remains an error
+Primo avvio R22: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R22 launcher: successful owned build resolves new publication with existing private runtime
+PASS R22 launcher: subsequent resolution needs no build or SDK command
+PASS R22 launcher: missing desktop runtime is not accepted
+PASS R22 launcher: wrong desktop runtime major is not accepted
+PASS R22 launcher: paths with spaces remain one UAC argument
+PASS R22 launcher: quotes and newlines cannot create extra launch arguments
+PASS R22 launcher: quotes and newlines cannot create extra launch arguments
+PASS R22 launcher: real PowerShell parser accepts complete launcher
+PASS R22 launcher: launcher installs no dependencies and changes no services or running processes
+R22 launcher fixture complete: 17 checks; synthetic files only, no Windows app or UAC.

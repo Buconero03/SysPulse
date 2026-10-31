@@ -1,0 +1,216 @@
+ORIGINAL R18 R1 GUARD (expected failure)
+Exception: /tmp/source-guard-3gg2m386/tests/check-copy-layout-r18r1.ps1:10
+Line |
+  10 |  … ate\s*=') { throw 'FAIL R18 R1 must retain native theme without showi …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | FAIL R18 R1 must retain native theme without showing windows.
+
+
+current unchanged WPF fixture
+PASS R18 R2 source guard: 13 regression cases; original false positive reproduced.
+PASS R18 R1 source: bounded native Dispatcher layout; original height, wrap and selection assertions retained.
+
+
+real Template assignment rejected
+PASS R18 R2 source guard: 13 regression cases; original false positive reproduced.
+Exception: /tmp/source-guard-3gg2m386/tests/check-copy-layout-r18r1.ps1:42
+Line |
+  42 |  … on $test) { throw 'FAIL R18 R1 must retain native theme without showi …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | FAIL R18 R1 must retain native theme without showing windows.
+
+
+real Show call rejected
+PASS R18 R2 source guard: 13 regression cases; original false positive reproduced.
+Exception: /tmp/source-guard-3gg2m386/tests/check-copy-layout-r18r1.ps1:42
+Line |
+  42 |  … on $test) { throw 'FAIL R18 R1 must retain native theme without showi …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | FAIL R18 R1 must retain native theme without showing windows.
+
+
+initializer assignment rejected
+PASS R18 R2 source guard: 13 regression cases; original false positive reproduced.
+Exception: /tmp/source-guard-3gg2m386/tests/check-copy-layout-r18r1.ps1:42
+Line |
+  42 |  … on $test) { throw 'FAIL R18 R1 must retain native theme without showi …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | FAIL R18 R1 must retain native theme without showing windows.
+
+
+uppercase diagnostics and comments allowed
+PASS R18 R2 source guard: 13 regression cases; original false positive reproduced.
+PASS R18 R1 source: bounded native Dispatcher layout; original height, wrap and selection assertions retained.
+
+
+template equality is not assignment
+PASS R18 R2 source guard: 13 regression cases; original false positive reproduced.
+PASS R18 R1 source: bounded native Dispatcher layout; original height, wrap and selection assertions retained.
+
+
+missing original height assertion rejected
+Exception: /tmp/source-guard-3gg2m386/tests/check-copy-layout-r18r1.ps1:8
+Line |
+   8 |  … est.Contains($token)) { throw "FAIL R18 R1 WPF layout test: $token" }
+     |                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | FAIL R18 R1 WPF layout test: text.DesiredSize.Height > 20
+
+
+missing deferred work bound rejected
+Exception: /tmp/source-guard-3gg2m386/tests/check-copy-layout-r18r1.ps1:8
+Line |
+   8 |  … est.Contains($token)) { throw "FAIL R18 R1 WPF layout test: $token" }
+     |                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | FAIL R18 R1 WPF layout test: passes < 16
+
+
+tests\check-powershell-syntax.ps1
+PASS Sintassi PowerShell: 69 script verificati.
+
+
+tests\check-wpf-contextmenu.ps1
+PASS menu servizi: tasto destro, azione SCM e PID ospitante collegati.
+PASS XAML: nessun ContextMenu con handler dentro Style.Setter.Value.
+PASS menu contestuale: creazione e handlers in C#.
+
+
+tests\check-ui-readability.ps1
+PASS UI readability: window centered at startup
+PASS UI readability: filters and counters on separate rows
+PASS UI readability: text wraps in process explanations
+PASS UI readability: process labels wrap
+PASS UI readability: technical identification section
+PASS UI readability: XML valido e nomi univoci
+PASS UI readability v0.19.16 R3: metric columns and technical tooltips.
+PASS UI readability R4: optional RAM guide, Windows API source and PID example.
+
+
+tests\check-memory-efficiency-r8.ps1
+PASS R8: lazy dashboard hosts, on-demand details, sample buffer, recycling and lifecycle guards.
+
+
+tests\check-ui-format-r9.ps1
+PASS R10 R1: all buttons styled; missing/unknown styles and fixed-height regressions rejected.
+PASS R9: time and network presentation wired; button labels and metric cells can wrap. Structural checks only; visual Windows verification is separate.
+
+
+tests\check-workspace-r10r10.ps1
+PASS R10 R10: resizable analysis, focus/return, Windows context and Guardian diagnostic details wired. Source checks only; WPF and DPI checks remain separate.
+
+
+tests\check-ux-writing-r10r11.ps1
+PASS UX R11: concise terminology and memory summary; compact logs with legacy parsing. Source checks only.
+
+
+tests\check-network-devices-r12.ps1
+PASS R12: passive network view, manual refresh, scoped labels, incomplete-data states and copy. Source checks only.
+
+
+tests\check-native-network-r16.ps1
+PASS R16 source: local read-only Windows evidence, audit status, bounded history and owned resource cleanup.
+
+
+tests\check-native-capture-r17.ps1
+PASS R17 source: owned native capture, WLAN cache, manual activation and bounded metadata.
+
+
+tests\check-network-recovery-r18.ps1
+PASS R18 source: bounded own IPv4 socket, retained error diagnostics, no probes or policy changes.
+
+
+tests\check-copy-layout-r18r1.ps1
+PASS R18 R2 source guard: 13 regression cases; original false positive reproduced.
+PASS R18 R1 source: bounded native Dispatcher layout; original height, wrap and selection assertions retained.
+
+
+tests\check-packet-capture-r13.ps1
+PASS R13: explicit capture, bounded commands, local interface, monitor verification, owned-child cleanup, copied output. Source checks only.
+
+
+tests\check-system-processes-r14.ps1
+PASS R14 source only: lazy system inventory, bounded read-only acquisition, identity guards and copy.
+
+
+tests\check-windows-components-r15.ps1
+PASS R15 source: curated components, grouped instances, manual acquisition and explicit RAM maximum.
+
+
+tests\check-wpf-test-context-r14r3.ps1
+PASS R14 R3: headless WPF context setup and asynchronous ownership preflight supplied (source check).
+
+
+tests\check-copy-ui-r10.ps1
+PASS R10 copy: selectable output, one-way bindings, grid copy, complete report and no automatic GUI termination. Structural checks only.
+PASS R10 R3 hierarchy: overview, chapters, wrapping, source retention and lazy controls. Source checks only.
+PASS R10 R4 exit notice: verified instance, Windows exit signal and bounded UI lifecycle. Source checks only.
+PASS R10 R7 lifecycle: taskbar restore route, Mostra, explicit exit and shell recovery wired. Source checks only.
+PASS R10 R6 audit layout: timestamp/stage/message cards, spacing, append and original copy wired. Source checks only.
+PASS R10 R7 resources: CPU tick, stale generation, sample age and self-resource copy wired. Source checks only.
+
+
+tests\check-terminology-ui.ps1
+PASS Terminologia UI: etichette, vocabolario centrale e XAML validi.
+PASS UX R11: short role labels; redundant badge and sorting prose removed.
+
+
+tests\check-detail-hierarchy-v01910.ps1
+PASS Detail UI v0.19.10: sezioni, gerarchia, dati originali e collegamenti WPF.
+
+
+tests\check-classification-language-v01911.ps1
+PASS Classification UI: concise facts, diagnostic details and limit statements.
+
+
+tests\check-classification-hierarchy-v01914.ps1
+PASS Classification hierarchy v0.19.14: readable groups, preserved original, bounded display.
+
+
+tests\check-guardian-dashboard.ps1
+PASS Guardian dashboard: valid XML, navigation, bindings, System.IO import, null guard and read-only SQLite access.
+
+
+tests\check-memory-dashboard.ps1
+PASS Memory Dashboard: navigazione, XAML, soglia e riarmo, timer leggero e notifica WinForms.
+
+
+tests\check-memory-ui-v0195.ps1
+PASS RAM UI v0.19.5: XAML, indicatori, prove, stati agente e nomi unici
+
+
+tests\check-structured-queries.ps1
+PASS: menu hover WPF, handler, rapporto RAM strutturato e pressione fisica reale.
+
+
+tests\check-memory-measurement-audit.ps1
+PASS: selected PID memory refresh, source audit and evidence boundaries.
+
+
+tests\check-windows-allocation-inspector.ps1
+PASS native Windows allocation API, PID identity, bounded sampling, UI evidence and logs.
+
+
+tests\check-profiler-isolation.ps1
+PASS profiler isolation: GUI esplicita e consenso
+PASS profiler isolation: Nessun tool auto-installato
+PASS profiler isolation: GUI avvia solo il profiler esterno
+PASS profiler isolation: RAM gate all 85 percent
+PASS profiler isolation: Dump temporaneo
+PASS profiler isolation: Profilazione annullabile
+PASS profiler isolation: Binario profiler separato
+
+
+tests\check-profiler-fixture-v01912.ps1
+PASS fixture: consenso scritto richiesto
+PASS fixture: identita PID con ora avvio
+PASS fixture: nessun profiler automatico nella build
+PASS fixture: processo sintetico chiuso e file rimossi
+PASS fixture: default senza acquisizione
+PASS fixture: target di prova con oggetti sintetici
+PASS fixture: soglia preventiva RAM
+PASS fixture: nessun profiler automatico nel launcher
+PASS fixture: nessuna installazione automatica
+PASS fixture: nessun servizio Guardian modificato
+
+
+tests\check-diagnostics-v01913.ps1
+PASS v0.19.13: catalogo eventi, build, RAM, profiler e lettore JSONL collegati.

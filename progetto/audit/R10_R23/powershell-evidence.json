@@ -1,0 +1,158 @@
+{
+  "PowerShell": "7.4.21 Linux; Windows PowerShell execution not performed here",
+  "stages": [
+    {
+      "file": "tests/check-powershell-syntax.ps1",
+      "sha256": "10b833dd269cd615291c0d3cf1084eee1a6c842366cc4fc578f493e0f5ec3ed2",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-wpf-contextmenu.ps1",
+      "sha256": "99621e155e5171e62ac10f41b766e1bc9a5beb0f008fc798e51bb704a7635d5a",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-ui-readability.ps1",
+      "sha256": "06a591140e2e6805e6bee4412d13967efaac1cbd84cc45a35de072285b5af4f1",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-memory-efficiency-r8.ps1",
+      "sha256": "a89f5a97ddf5f3a9985b8faba3995fc8f4993b5dca5bb18fabacee0e36ae9ebc",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-ui-format-r9.ps1",
+      "sha256": "ceb356fb3d5def5c5036cd6b1b3383d963e244c23f6367c068be0ee57c44f396",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-workspace-r10r10.ps1",
+      "sha256": "a3efb1919f4cfa98953c567a14365c579e05db10df0aabfd782fb6d05bbe9cb7",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-ux-writing-r10r11.ps1",
+      "sha256": "3b9a4ec69c62c280ddf970b12954e4ef6b9e3bc35e18ac6bcdb1eefee1360e08",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-network-devices-r12.ps1",
+      "sha256": "9eec0866cc888681f4f4f5c4bdba1d92a3995276aa30ca1114ee7057a962f906",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-native-network-r16.ps1",
+      "sha256": "6b54233fab0e0468abb6a93d04ce5d8e646b80c24baa20d3e4d92a37a51de09c",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-native-capture-r17.ps1",
+      "sha256": "16203b984d3bbd51167940fcce65add942e3d3667411ecb7f94c7606cb0b44f0",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-network-recovery-r18.ps1",
+      "sha256": "c56712112f7bc0262dd9b7d4275c678b178c7f75c866764e46545c71307d65dc",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-copy-layout-r18r1.ps1",
+      "sha256": "dad1a777257ca583f6a1aeeb4b1669f533cefd57bf490863480b1d76106af1d2",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-packet-capture-r13.ps1",
+      "sha256": "c457ea1b6e6ca5a696d56c73da5f9c1aba56b1b1f9342d37e47e0e5772fa08a6",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-system-processes-r14.ps1",
+      "sha256": "10ee038ee59c8b06d2e2923dbb34f5724eef6a6110434608d7577a8e8e6b0eed",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-windows-components-r15.ps1",
+      "sha256": "60de35a048c4efba59a93719bb2c54f0e6a675fba036eed2a9f9bbc53284e614",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-wpf-test-context-r14r3.ps1",
+      "sha256": "10c90c71781865be21a46efac578f98ef4d9da80c893edf3356db4fcbb31d0a5",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-copy-ui-r10.ps1",
+      "sha256": "4722c7cbe819057f29dfd6fa5dbcfe3fea73b11795270b2435c2423af83311e0",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-terminology-ui.ps1",
+      "sha256": "a7ff096af588b30cab13c12c7f445d66aad5ed15caa1b8f101cb6450f2b155b4",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-detail-hierarchy-v01910.ps1",
+      "sha256": "66abf4ec0a9e3b6db03057013211795931754327a5ee8b1e3e5abda093800b73",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-classification-language-v01911.ps1",
+      "sha256": "a310e370d2027ba5a5372debab69bd9f6034893d0b43f3f71c090ed3e8dd6065",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-classification-hierarchy-v01914.ps1",
+      "sha256": "6e0e38ed0b9282e587331304e55151945f95916aa5b42c3e7d04c5780f76d945",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-guardian-dashboard.ps1",
+      "sha256": "4e4c4c930543290c3241d8052d0a250a5f71397d55a22fee39118cd8fd541cc5",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-memory-dashboard.ps1",
+      "sha256": "75716feb62aea75fe22f2546f6a2f68b113f1e73448c508ecdde3a4d22b260ae",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-memory-ui-v0195.ps1",
+      "sha256": "79e5876d94e32b618a7271cf08ebb309aa8af77743e33cc0f7434acf49ca77ed",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-structured-queries.ps1",
+      "sha256": "3d9bbcd00b566238355e6649c5f6ecc0132180f9d767fe9d7f20beffe8370e5d",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-memory-measurement-audit.ps1",
+      "sha256": "c27d1b5100c605cced5cf07069236bdb49d19f4918e59846dd22559eb9f29f13",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-windows-allocation-inspector.ps1",
+      "sha256": "a16aca2a9c9e51af64a627ec0107fefcf73dff09625c3f053ba378b49f2d9a87",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-profiler-isolation.ps1",
+      "sha256": "62f9865a005dd98c515a3f7fae8506a9df1687f4910e02d17f84397e04a07267",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-profiler-fixture-v01912.ps1",
+      "sha256": "e9da501d589a786e288f42be4197b197205511dde1171b811dc74fa41524fcff",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/check-diagnostics-v01913.ps1",
+      "sha256": "9db8c8e4777bd7263c4ee2f5680f425ffb48de0ee653b03e25bd4ccc02a515b6",
+      "status": "PASS"
+    }
+  ],
+  "launcher_fixture_checks": 17,
+  "launcher_sha256": "bcf1a44e9bdfd914fb4a6edbd11cf35027ec8725271c0144042689eb7f7d6384",
+  "fixture_sha256": "35be7c169f1fc126325e31e1db70f6441ed32bef0a54a76dba6c0faef364ba04"
+}

@@ -1,0 +1,35 @@
+﻿file,testo_precedente,testo_nuovo,occorrenze_sostituite
+src/ProcessLens.App/MainWindow.xaml.cs,"$""CPU quasi inattiva: {p.CpuPercent:F1}% in questo intervallo.""","$""CPU misurata molto bassa: {p.CpuPercent:F1}% in questo intervallo; non indica inattività complessiva.""",1
+src/ProcessLens.App/MainWindow.xaml.cs,"$""Affidabilità: {result.Confidence}""","$""Esito della valutazione: {result.Confidence}""",1
+src/ProcessLens.App/ProcessRow.cs,"_ => ""CPU quasi inattiva""","_ => ""CPU misurata molto bassa""",1
+src/ProcessLens.App/ProcessRow.cs,"$""Avviato da {Process.ParentName}""","$""Padre indicato: {Process.ParentName}""",1
+src/ProcessLens.App/MainWindow.xaml,"Text=""Cosa fa questo processo""","Text=""Che cosa sappiamo del processo""",1
+src/ProcessLens.App/MainWindow.xaml,"Text=""Prima la conclusione; sotto trovi il motivo e le prove tecniche.""","Text=""Prima i dati osservati, poi le interpretazioni e i relativi limiti.""",1
+src/ProcessLens.App/MainWindow.xaml,"Text=""INFORMAZIONI SULL’AVVIO""","Text=""AVVIO E LIMITI""",2
+src/ProcessLens.App/MainWindow.xaml,"Text=""FUNZIONE DEL PROCESSO""","Text=""TIPO SUGGERITO""",2
+src/ProcessLens.Semantics/ProcessQueryEngine.cs,La CPU quasi inattiva non impone al programma di rilasciare RAM: molti dati restano disponibili per riuso.,Un campione di CPU molto basso non implica che il programma debba rilasciare la RAM: molti dati possono restare disponibili per il riuso.,1
+src/ProcessLens.Semantics/ProcessQueryEngine.cs,CPU quasi inattiva in questo intervallo,CPU misurata molto bassa in questo intervallo (non prova inattività),1
+src/ProcessLens.Semantics/ProcessQueryEngine.cs,"Questo non garantisce che ogni sua funzione stia rispondendo, ma esclude l'idea di un processo completamente fermo.",Queste misure non permettono di escludere un blocco parziale: per verificarlo servono segnali di progresso o informazioni sui thread.,1
+src/ProcessLens.Semantics/ProcessQueryEngine.cs,Non vedo prove sufficienti di blocco: il processo ha mostrato attività recente. ,CPU e stato TCP forniscono solo segnali parziali: non bastano per stabilire se il processo sia bloccato. ,1
+src/ProcessLens.Semantics/ProcessQueryEngine.cs,"$""Funzione classificata: {i.Role} (indizi {i.RoleConfidenceLabel}; punteggio regole {i.RoleConfidencePercent}/100, non probabilità)""","$""Tipo proposto dalle regole: {i.Role}. Il punteggio del classificatore è disponibile nel rapporto tecnico.""",1
+src/ProcessLens.Semantics/RoleClassifier.cs,È attivo perché Windows mantiene in esecuzione il servizio {services}.,SCM associa questo PID al servizio {services}; la causa storica dell’avvio non è identificata.,1
+src/ProcessLens.Semantics/RoleClassifier.cs,È attivo perché {owner.Owner} è aperto e coordina interfaccia e sottoprocessi.,La finestra visibile e i figli omonimi sono compatibili con un componente principale di {owner.Owner}; l’attività di coordinamento non è stata misurata.,1
+src/ProcessLens.Semantics/RoleClassifier.cs,È attivo perché {owner.Owner} ha una finestra/interfaccia aperta.,Windows associa almeno una finestra visibile a questo PID; non è noto il motivo originario dell’avvio.,1
+src/ProcessLens.Semantics/RoleClassifier.cs,È attivo perché {owner.Owner} è aperto e coordina i propri componenti.,"La presenza di processi figli omonimi suggerisce un componente principale, senza dimostrare un’attività di coordinamento.",1
+src/ProcessLens.Semantics/RoleClassifier.cs,"È attivo perché una distro, shell o applicazione sta usando WSL.",Il processo appartiene all’ambiente WSL; lo specifico utilizzatore o lavoro corrente non è identificato.,1
+src/ProcessLens.Semantics/RoleClassifier.cs,È attivo perché {owner.Owner} ha un'interfaccia aperta o visibile.,Windows associa una finestra visibile a questo PID; la ragione dell’avvio non è osservata.,1
+src/ProcessLens.Semantics/RoleClassifier.cs,È attivo perché l'applicazione o una sua attività in background è in esecuzione.,Windows identifica il pacchetto applicativo; il motivo dell’avvio e il lavoro interno non sono determinati.,1
+src/ProcessLens.Semantics/RoleClassifier.cs,È attivo perché è stato avviato dotnet {verb}.,Nella riga di comando compare dotnet {verb}; l’esito e il progresso del comando non sono misurati.,1
+src/ProcessLens.Semantics/RoleClassifier.cs,Una build/restore/operazione di progetto è in corso.,Il processo è compatibile con una build o altra operazione MSBuild; il progresso non è disponibile.,1
+src/ProcessLens.Semantics/RoleClassifier.cs,"Il runtime è certo, ma le evidenze disponibili non espongono un assembly o un ruolo sufficiente.",Il processo è stato riconosciuto come dotnet.exe; assembly e operazione applicativa non sono determinati con i dati disponibili.,1
+src/ProcessLens.Semantics/RoleClassifier.cs,È attivo perché la sua interfaccia è aperta.,Windows associa una finestra visibile al processo Python; il compito del codice non è rilevato.,1
+src/ProcessLens.Semantics/RoleClassifier.cs,È attivo per eseguire {Path.GetFileName(path)}.,La riga di comando indica come punto di ingresso {Path.GetFileName(path)}; l’operazione corrente non è stata misurata.,2
+src/ProcessLens.Semantics/RoleClassifier.cs,"Windows osserva socket TCP LISTEN attribuite al runtime Node.js. Anche senza entrypoint leggibile, il comportamento server è dimostrato.","Windows rileva socket TCP nello stato LISTEN attribuite al PID Node.js. Non sono misurate richieste accettate, risposte o byte trasferiti.",1
+src/ProcessLens.Semantics/RoleClassifier.cs,È attivo per attendere connessioni o richieste.,Il PID ha socket TCP in ascolto; questo non dimostra che abbia elaborato richieste.,2
+src/ProcessLens.Semantics/RoleClassifier.cs,"Il runtime è certo, ma l'entrypoint non è ricavabile con sicurezza.",Il processo Node.js è identificato; l’entrypoint applicativo non è disponibile.,1
+src/ProcessLens.Semantics/RoleClassifier.cs,È attiva perché l'applicazione Java è aperta.,Windows associa una finestra visibile alla JVM; il motivo dell’avvio non è misurato.,1
+src/ProcessLens.Semantics/RoleClassifier.cs,È attivo perché un editor o IDE lo ha avviato.,Il nome o i metadati suggeriscono un componente di supporto a editor/IDE; il processo che ha richiesto l’avvio non è noto.,1
+src/ProcessLens.Semantics/RoleClassifier.cs,È stato avviato da {p.ParentName} per supportare analisi del codice.,Padre riportato da Windows: {p.ParentName}; il nome non dimostra il motivo dell’avvio.,1
+src/ProcessLens.Semantics/knowledge/role-signatures.json,Un editor o IDE lo mantiene attivo per analizzare il progetto in background.,Nome o parametri compatibili con un componente per editor/IDE; il lavoro e il motivo dell’avvio non sono misurati.,1
+VERSION.txt,R5 candidate,R6 candidate,1
+start-processlens-all.ps1,ProcessLens v0.19.16 R5 - Avvio guidato in sequenza,ProcessLens v0.19.16 R6 - Avvio guidato in sequenza,1

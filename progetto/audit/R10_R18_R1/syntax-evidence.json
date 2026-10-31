@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "qualification": "Roslyn syntax parsing, not execution",
+  "source_hashes": {
+    "tests/ProcessLens.CopyUiTests/Program.cs": "30151ce76361f4b05013f67aaf627f11dc24b6fa8545d93ec696cd56a2001055"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "active_source_trees": 1,
+  "baseline": "Delivered R10 retained exact",
+  "historical_results": "Retained as history, not rerun claims",
+  "temporary_patch_tree": "Removed after exact patch replay",
+  "screenshots_added_to_archive": 0,
+  "automatic_install_profile_or_terminate_actions": 0
+}

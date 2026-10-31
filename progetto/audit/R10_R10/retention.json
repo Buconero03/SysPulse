@@ -1,0 +1,8 @@
+{
+  "active_source_trees": 1,
+  "baseline": "Delivered R9 preserved exact",
+  "earlier_local_workspaces": "Recovered current source after workspace maintenance; prior artifacts retained inside delivered archive",
+  "temporary_patch_tree": "Removed only after exact replay verification",
+  "new_service_installations_or_target_terminations": 0,
+  "new_screenshots_in_release": 0
+}

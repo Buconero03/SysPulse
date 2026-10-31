@@ -1,0 +1,46 @@
+PASS R25 same executable linked children form a group
+PASS R25 independent browser instances and other executables remain separate
+PASS R25 homonymous executable from another path is not the same app
+PASS R25 newer reused parent cannot adopt an older child
+PASS R25 unknown creation or path never establishes grouping
+PASS R25 cyclic parent graph cannot fabricate an application tree
+PASS R25 orphan stays a separate group
+PASS R25 group expansion key cannot cross PID reuse
+PASS R25 search accepts executable identity, display metadata and exact PID
+PASS R25 parent, arguments and PID substrings cannot add unrelated search results
+PASS R25 trimmed and empty identity filters
+PASS R25 hidden product/description metadata cannot override the displayed name filter
+PASS R25 repeated refreshed snapshots keep the active identity filter
+PASS R25 network ownership gate requires exact known creation and executable path
+PASS R25 group sums private resident and valid CPU [it-IT]
+PASS R25 partial coverage cannot mix total WS or missing CPU into private totals [it-IT]
+PASS R25 explicit total-resident fallback stays separate [it-IT]
+PASS R25 missing group counters remain unavailable [it-IT]
+PASS R25 sample time, partial read and per-PID local/remote port ownership retained [it-IT]
+PASS R25 unverified selected instance cannot acquire measured zero sockets [it-IT]
+PASS R25 group sums private resident and valid CPU [en-US]
+PASS R25 partial coverage cannot mix total WS or missing CPU into private totals [en-US]
+PASS R25 explicit total-resident fallback stays separate [en-US]
+PASS R25 missing group counters remain unavailable [en-US]
+PASS R25 sample time, partial read and per-PID local/remote port ownership retained [en-US]
+PASS R25 unverified selected instance cannot acquire measured zero sockets [en-US]
+PASS R25 invalid selected anchor cannot retain another instance's group sockets or counters
+PASS R25 network invalidation preserves independent CPU/RAM while displaying unavailable socket identity
+PASS R25 visible tray click requests minimize
+PASS R25 duplicate or double-click notification cannot immediately reopen minimized window
+PASS R25 later tray click restores a minimized window
+PASS R25 second click of restore double-click cannot minimize again
+PASS R25 hidden window is restored and invalid callback clock is ignored
+PASS R25 IPv4/IPv6 TCP/UDP row stride matches SDK fixture
+PASS R25 native port conversion distinguishes ephemeral local 50000 and remote 443
+PASS R25 independent IPv6 fixture preserves scope, owner and network-order port
+PASS R25 independent native table fixture decodes owner, state and network-order port
+PASS R25 growing socket table retried with new capacity
+PASS R25 native access error cannot become a valid empty table
+PASS R25 table count exceeding returned bytes is rejected
+PASS R25 oversized table rejected before allocation
+NOT RUN: Windows native tables and owned loopback listener (Linux host).
+R25 grouping, identity filter and network table regressions complete.
+Unhandled exception. System.Exception: FAIL R25 R26 user input cancels an older queued position
+   at Program.<<Main>$>g__Check|0_0(Boolean ok, String label)
+   at Program.<Main>$(String[] args)

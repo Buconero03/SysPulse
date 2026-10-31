@@ -1,0 +1,733 @@
+diff --git a/LEGGIMI.txt b/LEGGIMI.txt
+index a45ea09..dc9d762 100644
+--- a/LEGGIMI.txt
++++ b/LEGGIMI.txt
+@@ -1,37 +1,30 @@
+-PROCESSLENS - PACCHETTO LEGGERO R21
+-
+-1. Estrai questa cartella.
+-2. Fai doppio clic su AVVIA_PROCESSLENS.cmd.
+-
+-L'avvio usa ProcessLens che hai gia installato con la R20.
+-Non installa nulla, non scarica dipendenze, non esegue test e non ricompila.
+-Windows puo mostrare la consueta richiesta amministratore.
+-
+-Mantieni per ora l'installazione R20: contiene l'eseguibile e il runtime
+-utilizzati dall'avvio rapido. Non occorre conservare anche il vecchio ZIP
+-per avviare il programma. Questo pacchetto NON contiene un nuovo EXE.
+-
+-Se compili i sorgenti nella sottocartella progetto, l'avvio preferisce
+-progetto/publish/win-x64/ProcessLens.exe. In alternativa riconosce
+-app/ProcessLens.exe, se aggiungi una pubblicazione gia compilata.
+-
+-PERCHE IL VECCHIO ZIP ERA GRANDE
+-SDK .NET: circa 285 MB; NuGet: circa 46 MB; progetto: circa 3 MB.
+-Servivano a compilare e verificare tutto senza Internet.
+-Quasi il 99% del pacchetto era materiale per la compilazione offline.
+-Il nuovo ZIP contiene sorgenti e avvio rapido, senza SDK e cache NuGet.
+-
+-Il codice dell'app resta quello della R19, installato dalla R20.
+-RAM in alto, schermata Sistema Windows e funzioni di rete restano uguali.
+-La riduzione dello ZIP non e una riduzione misurata della RAM dell'app.
+-
+-I sorgenti e i controlli di sviluppo sono in progetto. Chi vuole modificarli
+-puo eseguire progetto/build-dashboard.ps1 con il proprio .NET 8 SDK.
+-Questo percorso di sviluppo resta separato dall'avvio quotidiano.
+-Il vincolo rigido sull'SDK 8.0.426 e stato tolto dal pacchetto leggero.
+-NuGet deve poter ripristinare le librerie alla prima compilazione.
+-
+-Non eliminare a mano la cartella .NET dell'installazione R20: l'avvio
+-puo usarne il runtime. Questo pacchetto non cambia o ripulisce il PC.
+-Il comportamento reale di avvio su Windows resta da verificare;
+-i test allegati verificano percorsi, selezione e assenza di compilazione.
++﻿ProcessLens R22 - copertura del catalogo Windows
++
++Chiudi la precedente GUI, estrai TUTTO lo ZIP e apri AVVIA_PROCESSLENS.cmd.
++Al primo avvio vengono eseguiti test e compilazione della nuova candidata.
++Poi lo stesso comando apre direttamente R22. Non apre il vecchio eseguibile R20.
++
++Non sono inclusi SDK o pacchetti NuGet: ZIP leggero, nessuna nuova installazione.
++Se R20 e stata installata correttamente, riusa lo SDK e la cache presenti in
++%LOCALAPPDATA%\Programs\ProcessLens\R20. In quel caso usa solo la cache locale.
++Altrimenti serve uno SDK .NET compatibile gia installato; la compilazione usa
++il normale ripristino NuGet. Non vengono scaricati automaticamente SDK o driver.
++Se manca una dipendenza il comando si ferma e mostra l'errore.
++
++Sistema Windows -> Aggiorna campione:
++- catalogo ampliato da 17 a 29 componenti;
++- totale dei processi restituiti dalla fonte, anche app;
++- istanze del catalogo, gruppi, righe e istanze mostrate dopo i filtri;
++- esclusioni e dettagli N/D nella sezione fonte e copertura;
++- copia rapporto include conteggi, fonte ed eventuali errori.
++
++Il catalogo non e un elenco completo di Windows. Nessuna scansione file o
++verifica firme viene aggiunta. I nomi con percorso N/D restano indicazioni.
++Un percorso inatteso non certifica un'intrusione. Il campione non esclude
++processi nascosti alla fonte, gia terminati, driver o attivita DPC/interrupt.
++Nessun nuovo timer, driver o monitor in background. RAM reale non misurata qui.
++
++Validazione candidata: test portabili e controlli sorgente eseguiti su Linux.
++Compilazione WPF reale, avvio e resa DPI richiedono la verifica Windows al primo avvio.
++Dettagli in progetto/audit/R10_R22. Per ricompilare dopo modifiche ai sorgenti,
++elimina soltanto supporto/build-r22.ok e riapri AVVIA_PROCESSLENS.cmd.
+diff --git a/progetto/audit/tools/package_coverage_r22.py b/progetto/audit/tools/package_coverage_r22.py
+new file mode 100644
+index 0000000..a90d665
+--- /dev/null
++++ b/progetto/audit/tools/package_coverage_r22.py
+@@ -0,0 +1,80 @@
++"""Package the complete lightweight R22 source candidate and verify exact scope, evidence, patch and hashes."""
++import argparse,csv,difflib,hashlib,json,shutil,subprocess,tempfile,zipfile
++from pathlib import Path
++import xml.etree.ElementTree as ET
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--shell',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True);p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()
++r=a.project.resolve();shell=a.shell.resolve();audit=r/'audit/R10_R22';sha=lambda b:hashlib.sha256(b).hexdigest()
++assert sha(a.baseline_zip.read_bytes())=='35840fde94e8b978b11074f67ef0f95cbe3ea17fb293579f153dbf421018566c'
++with zipfile.ZipFile(a.baseline_zip) as z:before={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++for base in [r,shell]:
++ for d in sorted(base.rglob('__pycache__'),reverse=True):shutil.rmtree(d)
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file()}
++old={n[len('progetto/'):]:b for n,b in before.items() if n.startswith('progetto/')}
++allowed={
++ 'src/ProcessLens.Core/SystemProcessCatalog.cs','src/ProcessLens.Core/WindowsComponentCatalog.cs',
++ 'src/ProcessLens.App/SystemProcessesView.xaml','src/ProcessLens.App/SystemProcessesView.xaml.cs',
++ 'src/ProcessLens.App/ProcessLens.App.csproj','tests/ProcessLens.WindowsComponentTests/Program.cs',
++ 'tests/ProcessLens.SystemProcessUiTests/Program.cs'}
++changes={n for n,b in current.items() if n.startswith(('src/','tests/')) and old.get(n)!=b}
++assert changes==allowed,(changes,allowed)
++assert all(n in current for n in old), 'No R21 project file may disappear'
++assert all(current[n]==b for n,b in old.items() if n.startswith(('src/ProcessLens.Windows/','src/ProcessLens.Guardian/','src/ProcessLens.MemoryAgent/','src/ProcessLens.Profiler/','src/ProcessLens.RamMonitor/')))
++for n,b in current.items():
++ if n.endswith(('.xaml','.csproj')):ET.fromstring(b)
++for name,key in [('runtime-evidence.json','source_hashes'),('wpf-typecheck-evidence.json','inputs')]:
++ e=json.loads((audit/name).read_text());assert e[key]
++ assert all(sha(current[n])==h for n,h in e[key].items()), name
++runtime=json.loads((audit/'runtime-evidence.json').read_text());assert [x['assertions'] for x in runtime['outcomes']]==[103,22]
++types=json.loads((audit/'wpf-typecheck-evidence.json').read_text());assert len(types['assemblies'])==6 and all(x['status']=='PASS' for x in types['assemblies'])
++e=json.loads((audit/'powershell-evidence.json').read_text());assert e['launcher_fixture_checks']==17 and len(e['stages'])==30
++assert sha((shell/'supporto/avvia.ps1').read_bytes())==e['launcher_sha256']
++assert all(x['status']=='PASS' and sha(current[x['file']])==x['sha256'] for x in e['stages'])
++assert sha(current['audit/tools/test_launcher_r22.ps1'])==e['fixture_sha256']
++(audit/'scope-evidence.json').write_text(json.dumps({'baseline_sha256':sha(a.baseline_zip.read_bytes()),'changed_production_and_test_files':sorted(changes),'native_acquisition_Guardian_MemoryAgent_profiler_RAM_monitor':'BYTE IDENTICAL TO R21','new_dependencies':0,'new_binary':'NOT INCLUDED; full Windows build required once','WPF_runtime_DPI_UAC_RAM':'NOT EXECUTED / NOT MEASURED'},indent=2)+'\n')
++with (audit/'string-ledger.csv').open('w',newline='') as f:
++ w=csv.writer(f);w.writerow(['file','line','before_or_after','changed_text'])
++ for n in sorted(changes):
++  for line in difflib.unified_diff(old[n].decode('utf-8-sig').splitlines(),current[n].decode('utf-8-sig').splitlines(),n,n,n=0):
++   if line.startswith(('+','-')) and not line.startswith(('+++','---')):w.writerow([n,'see patch','after' if line[0]=='+' else 'before',line[1:]])
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file()}
++after={**{f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file()},**{'progetto/'+n:b for n,b in current.items()}}
++include=lambda n:not n.startswith('progetto/audit/R10_R22/') and n not in {'SHA256SUMS.txt','progetto/SHA256SUMS_R10.txt'}
++delta=sorted(n for n in set(before)|set(after) if include(n) and before.get(n)!=after.get(n))
++with (audit/'files-changed.csv').open('w',newline='') as f:
++ w=csv.writer(f);w.writerow(['file','kind','sha256_before','sha256_after'])
++ for n in delta:w.writerow([n,'removed' if n not in after else 'added' if n not in before else 'modified',sha(before[n]) if n in before else '',sha(after[n]) if n in after else ''])
++with tempfile.TemporaryDirectory(prefix='patch-r22-',dir=r.parent.parent/'test') as d:
++ t=Path(d);bdir=t/'before';adir=t/'after';bdir.mkdir();adir.mkdir()
++ for base,values in [(bdir,before),(adir,after)]:
++  for n,b in values.items():
++   if include(n):f=base/n;f.parent.mkdir(parents=True,exist_ok=True);f.write_bytes(b)
++ x=subprocess.run(['git','diff','--no-index','--no-renames','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=t,capture_output=True);assert x.returncode==1
++ lines=[]
++ for line in x.stdout.splitlines(keepends=True):
++  if line.startswith((b'diff --git ',b'--- ',b'+++ ')):
++   for prefix in [b'a/before/',b'a/after/']:line=line.replace(prefix,b'a/')
++   for prefix in [b'b/before/',b'b/after/']:line=line.replace(prefix,b'b/')
++  lines.append(line)
++ patch=b''.join(lines);path=audit/'R21_to_R22.patch';path.write_bytes(patch)
++ x=subprocess.run(['git','apply','--check',str(path)],cwd=bdir,capture_output=True);assert x.returncode==0,x.stderr
++ subprocess.run(['git','apply',str(path)],cwd=bdir,capture_output=True,check=True)
++ assert {f.relative_to(bdir).as_posix():f.read_bytes() for f in bdir.rglob('*') if f.is_file()}=={n:b for n,b in after.items() if include(n)}
++(audit/'patch-evidence.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','delta_files':len(delta),'patch_sha256':sha(patch),'qualification':'Current audit folder and recursive manifests excluded from diff only, included in final full ZIP'},indent=2)+'\n')
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt'}
++(r/'SHA256SUMS_R10.txt').write_text(''.join(sha(b)+'  '+n+'\n' for n,b in sorted(current.items())))
++current['SHA256SUMS_R10.txt']=(r/'SHA256SUMS_R10.txt').read_bytes()
++files={**{f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file()},**{'progetto/'+n:b for n,b in current.items()}}
++assert not any(n.endswith(('.nupkg','.deb','.dll','.exe','.pdb')) or '/setup/payload/' in n or n.endswith('build-r22.ok') for n in files)
++assert not any(n.startswith(('sdk/','runtime/','app/')) for n in files)
++assert all(len(b)<10*1024*1024 for b in files.values())
++manifest=''.join(sha(b)+'  '+n+'\n' for n,b in sorted(files.items()));files['SHA256SUMS.txt']=manifest.encode()
++out=a.output_directory.resolve();out.mkdir(exist_ok=True,parents=True);target=out/'ProcessLens-R22-copertura-Windows.zip'
++with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
++ for n,b in sorted(files.items()):z.writestr('ProcessLens-Leggero/'+n,b)
++with zipfile.ZipFile(target) as z:
++ assert z.testzip() is None
++ for line in manifest.splitlines():
++  h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/'+n))==h
++ assert {n.split('/')[1] for n in z.namelist()}=={'AVVIA_PROCESSLENS.cmd','LEGGIMI.txt','supporto','progetto','SHA256SUMS.txt'}
++result={'zip':str(target),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files)-1,'portable_assertions':125,'PowerShell_fixtures':17,'source_preflight_stages':30,'WPF_CSharp_typechecked_assemblies':6,'WPF_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'}
++(out/'verification-r22.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
+diff --git a/progetto/audit/tools/run_coverage_r22.py b/progetto/audit/tools/run_coverage_r22.py
+new file mode 100644
+index 0000000..9a0f4cf
+--- /dev/null
++++ b/progetto/audit/tools/run_coverage_r22.py
+@@ -0,0 +1,25 @@
++"""Run actual portable component and native-parser regressions; no WPF/native Windows acquisition."""
++import argparse,hashlib,json,subprocess
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();work.mkdir(parents=True,exist_ok=True);audit=r/'audit/R10_R22';audit.mkdir(exist_ok=True)
++refs=sorted((sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll'));sha=lambda b:hashlib.sha256(b).hexdigest()
++globals=work/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))
++hashes={};outcomes=[]
++def compile(name,sources,extra=(),library=False):
++ hashes.update({f.relative_to(r).as_posix():sha(f.read_bytes()) for f in sources})
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(work/(name+'.dll'))]
++ args+=['-r:'+str(f) for f in [*refs,*extra]]+[str(globals)]+[str(f) for f in sources]
++ x=subprocess.run(args,capture_output=True,text=True,timeout=60);(audit/(name+'-build.log')).write_text(x.stdout+x.stderr)
++ if x.returncode:raise SystemExit(x.stdout+x.stderr)
++compile('ProcessLens.Core',sorted((r/'src/ProcessLens.Core').glob('*.cs')),library=True)
++for suite in ['WindowsComponentTests','SystemProcessTests']:
++ name='ProcessLens.'+suite;sources=[r/'tests'/name/'Program.cs']
++ if suite=='SystemProcessTests':sources+=[r/'src/ProcessLens.Windows/WindowsSystemProcessSource.cs']
++ compile(name,sources,extra=[work/'ProcessLens.Core.dll'])
++ (work/(name+'.runtimeconfig.json')).write_text(json.dumps({'runtimeOptions':{'tfm':'net8.0','framework':{'name':'Microsoft.NETCore.App','version':'8.0.32'}}}))
++ x=subprocess.run([str(sdk/'dotnet'),str(work/(name+'.dll'))],capture_output=True,text=True,timeout=45);log=x.stdout+x.stderr;(audit/(name+'-run.log')).write_text(log)
++ if x.returncode:raise SystemExit(log)
++ outcomes.append({'suite':name,'status':'PASS','assertions':sum(l.startswith('PASS ') for l in log.splitlines())})
++e={'environment':'Linux x64; direct Roslyn SDK 8.0.426 / .NET 8.0.32; no MSBuild or WPF; synthetic fixtures only','outcomes':outcomes,'source_hashes':hashes}
++(audit/'runtime-evidence.json').write_text(json.dumps(e,indent=2)+'\n');print(json.dumps(outcomes,indent=2))
+diff --git a/progetto/audit/tools/test_launcher_r22.ps1 b/progetto/audit/tools/test_launcher_r22.ps1
+new file mode 100644
+index 0000000..6f97ef9
+--- /dev/null
++++ b/progetto/audit/tools/test_launcher_r22.ps1
+@@ -0,0 +1,76 @@
++param([string] $Launcher)
++$ErrorActionPreference = 'Stop'
++. $Launcher -FunctionsOnly
++$count = 0
++function Check([bool] $Ok, [string] $Label) {
++    if (-not $Ok) { throw ('FAIL R22 launcher: ' + $Label) }
++    Write-Host ('PASS R22 launcher: ' + $Label); $script:count++
++}
++function Touch([string] $Path) {
++    New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
++    Set-Content -LiteralPath $Path -Value 'fixture only' -Encoding ASCII
++}
++function Make-Runtime([string] $Path, [string] $Version='8.0.32') {
++    Touch (Join-Path $Path 'dotnet.exe')
++    New-Item -ItemType Directory -Path (Join-Path $Path 'shared/Microsoft.NETCore.App/8.0.32') -Force | Out-Null
++    New-Item -ItemType Directory -Path (Join-Path $Path ('shared/Microsoft.WindowsDesktop.App/' + $Version)) -Force | Out-Null
++}
++$temporary = Join-Path ([IO.Path]::GetTempPath()) ('processlens-r22-' + [Guid]::NewGuid().ToString('N'))
++$saved = @{}
++foreach ($name in @('PATH','DOTNET_ROOT','DOTNET_ROOT_X64','NUGET_PACKAGES')) { $saved[$name] = [Environment]::GetEnvironmentVariable($name) }
++try {
++    $root = Join-Path $temporary 'bundle with space'; $profile = Join-Path $temporary 'profile with space'
++    New-Item -ItemType Directory -Path $root,$profile,(Join-Path $root 'supporto') -Force | Out-Null
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'empty package has no runnable GUI'
++    $installed = Join-Path $profile 'Programs/ProcessLens/R20'
++    Touch (Join-Path $installed 'app/win-x64/ProcessLens.exe'); Touch (Join-Path $installed 'start-installed.ps1')
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'completed old installation cannot silently substitute its old GUI'
++    $exe = Join-Path $root 'progetto/publish/win-x64/ProcessLens.exe'; Touch $exe
++    $receipt = Join-Path $root 'supporto/build-r22.ok'
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'publication without successful R22 receipt is not accepted'
++    Set-Content -LiteralPath $receipt -Value 'older version'
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'receipt for another revision is rejected'
++    Remove-Item -LiteralPath $receipt
++    $sdk = Join-Path $installed 'dotnet'; Make-Runtime $sdk
++    New-Item -ItemType Directory -Path (Join-Path $sdk 'sdk/8.0.426'),(Join-Path $installed 'packages') -Force | Out-Null
++    # Stub only the compiler entry point and project build script; no dotnet, app or service is launched.
++    function global:dotnet { throw 'fixture must not launch a real compiler' }
++    $build = Join-Path $root 'progetto/build-dashboard.ps1'
++    Set-Content -LiteralPath $build -Value 'throw "synthetic failed tests"'
++    $failed = $false
++    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('synthetic failed tests') }
++    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'failed tests cannot issue a build receipt or launch a stale publication'
++    Check ($env:NUGET_PACKAGES -eq (Join-Path $installed 'packages')) 'completed R20 cache reused without copying packages into ZIP'
++    [xml]$config = Get-Content -LiteralPath (Join-Path $root 'progetto/NuGet.Config') -Raw
++    Check ($config.configuration.packageSources.clear -ne $null -and -not $config.configuration.packageSources.add) 'R20 cache build has no configured network feed'
++    Remove-Item -LiteralPath $exe
++    Set-Content -LiteralPath $build -Value '# fixture successful script but no executable'
++    $failed = $false
++    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('senza eseguibile') }
++    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'missing executable after build remains an error'
++    Set-Content -LiteralPath $build -Value 'New-Item -ItemType Directory -Path "publish/win-x64" -Force | Out-Null; Set-Content -LiteralPath "publish/win-x64/ProcessLens.exe" -Value "fixture"'
++    Invoke-ProcessLensBuild $root $profile
++    $target = Resolve-ProcessLensLaunch $root $profile
++    Check ($target.Kind -eq 'Exe' -and $target.Entry -eq $exe -and $target.Runtime -eq $sdk) 'successful owned build resolves new publication with existing private runtime'
++    Set-Content -LiteralPath $build -Value 'throw "fast path must not rebuild"'
++    Check ((Resolve-ProcessLensLaunch $root $profile).Entry -eq $exe) 'subsequent resolution needs no build or SDK command'
++    $incomplete = Join-Path $temporary 'incomplete'; Touch (Join-Path $incomplete 'dotnet.exe')
++    Check (-not (Test-DesktopRuntime8 $incomplete)) 'missing desktop runtime is not accepted'
++    Make-Runtime $incomplete '9.0.1'
++    Check (-not (Test-DesktopRuntime8 $incomplete)) 'wrong desktop runtime major is not accepted'
++    Check ((Quote-LaunchArgument 'C:\Program Files\ProcessLens\ProcessLens.exe') -eq '"C:\Program Files\ProcessLens\ProcessLens.exe"') 'paths with spaces remain one UAC argument'
++    foreach ($bad in @('C:\bad"path', "C:\bad`npath")) {
++        $failed = $false; try { Quote-LaunchArgument $bad | Out-Null } catch { $failed = $true }
++        Check $failed 'quotes and newlines cannot create extra launch arguments'
++    }
++    $tokens = $null; $errors = $null
++    $ast = [System.Management.Automation.Language.Parser]::ParseFile($Launcher,[ref]$tokens,[ref]$errors)
++    Check ($errors.Count -eq 0) 'real PowerShell parser accepts complete launcher'
++    $commands = @($ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] },$true) | ForEach-Object { $_.GetCommandName() })
++    Check (@($commands | Where-Object { $_ -in @('Expand-Archive','Invoke-WebRequest','Install-Package','Install-Module','Set-Service','Start-Service','Stop-Service','Stop-Process') }).Count -eq 0) 'launcher installs no dependencies and changes no services or running processes'
++    Write-Host ('R22 launcher fixture complete: ' + $count + ' checks; synthetic files only, no Windows app or UAC.')
++} finally {
++    Remove-Item function:global:dotnet -ErrorAction SilentlyContinue
++    foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name,$saved[$name]) }
++    if (Test-Path -LiteralPath $temporary) { Remove-Item -LiteralPath $temporary -Recurse -Force }
++}
+diff --git a/progetto/audit/tools/typecheck_wpf_sources_r22.py b/progetto/audit/tools/typecheck_wpf_sources_r22.py
+new file mode 100644
+index 0000000..638a0d1
+--- /dev/null
++++ b/progetto/audit/tools/typecheck_wpf_sources_r22.py
+@@ -0,0 +1,44 @@
++"""Type-check real C# against WindowsDesktop reference assemblies with explicit generated-field stubs.
++This is NOT WPF markup compilation, BAML, MSBuild, or runtime validation. Stubs live outside the deliverable.
++"""
++import argparse,hashlib,json,subprocess,xml.etree.ElementTree as ET
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();out=work/'typecheck';out.mkdir(exist_ok=True);audit=r/'audit/R10_R22';sha=lambda b:hashlib.sha256(b).hexdigest()
++base={p.name:p for p in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll')};desktop=list((work/'wpf-ref').glob('*.dll'))
++assert len(desktop)>20
++for f in desktop:base[f.name]=f
++refs=list(base.values());event=sdk/'packs/Microsoft.AspNetCore.App.Ref/8.0.32/ref/net8.0/System.Diagnostics.EventLog.dll';sqlite=work/'Microsoft.Data.Sqlite.dll'
++globals=out/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))
++x='{http://schemas.microsoft.com/winfx/2006/xaml}';stubs=[];inputs={}
++for path in (r/'src/ProcessLens.App').glob('*.xaml'):
++ tree=ET.parse(path).getroot();cls=tree.get(x+'Class');assert cls
++ fields=[]
++ for e in tree.iter():
++  name=e.get(x+'Name')
++  if not name:continue
++  tag=e.tag.split('}',1)[1]
++  if e.tag.startswith('{clr-namespace:ProcessLens.App}'):typ='ProcessLens.App.'+tag
++  elif tag=='Polyline':typ='System.Windows.Shapes.Polyline'
++  else:typ='System.Windows.Controls.'+tag
++  fields.append('internal '+typ+' '+name+' = null!;')
++ ns,short=cls.rsplit('.',1);stubs.append('namespace '+ns+' { public partial class '+short+' { '+ ' '.join(fields)+' private void InitializeComponent() {} } }')
++ inputs[path.relative_to(r).as_posix()]=sha(path.read_bytes())
++stub=out/'MarkupFieldStubs.cs';stub.write_text('\n'.join(stubs));results=[]
++def compile(name,sources,extra=(),library=True):
++ for f in sources:
++  if f.is_relative_to(r):inputs[f.relative_to(r).as_posix()]=sha(f.read_bytes())
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(out/(name+'.dll'))]
++ args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
++ args+=['-r:'+str(f) for f in [*refs,event,*extra]]+[str(globals)]+[str(f) for f in sources]
++ result=subprocess.run(args,capture_output=True,text=True);log=result.stdout+result.stderr;(audit/(name+'-typecheck.log')).write_text(log)
++ print(name, 'PASS' if result.returncode==0 else 'FAIL');results.append({'assembly':name,'status':'PASS' if result.returncode==0 else 'FAIL','warning_count':log.count('warning CS')})
++ if result.returncode:raise SystemExit(log)
++core=work/'runtime/ProcessLens.Core.dll';assert core.is_file()
++compile('ProcessLens.Windows',sorted((r/'src/ProcessLens.Windows').glob('*.cs')),[core])
++compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),[core])
++extra=[core,out/'ProcessLens.Windows.dll',out/'ProcessLens.Semantics.dll',sqlite]
++compile('ProcessLens',sorted((r/'src/ProcessLens.App').rglob('*.cs'))+[stub],extra)
++for name in ['NetworkUiTests','CopyUiTests','SystemProcessUiTests']:
++ compile('ProcessLens.'+name,[r/'tests'/('ProcessLens.'+name)/'Program.cs'],extra+[out/'ProcessLens.dll'],False)
++(audit/'wpf-typecheck-evidence.json').write_text(json.dumps({'qualification':'C# type checking with generated-field stubs only; NOT actual WPF markup compilation or runtime','assemblies':results,'inputs':inputs,'stub_sha256':sha(stub.read_bytes()),'reference_hashes':{f.name:sha(f.read_bytes()) for f in [*desktop,event,sqlite]}},indent=2)+'\n')
+diff --git a/progetto/src/ProcessLens.App/ProcessLens.App.csproj b/progetto/src/ProcessLens.App/ProcessLens.App.csproj
+index 1afc497..e5fbdc3 100644
+--- a/progetto/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/progetto/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R19-system-layout-ram-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R22-system-coverage-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+diff --git a/progetto/src/ProcessLens.App/SystemProcessesView.xaml b/progetto/src/ProcessLens.App/SystemProcessesView.xaml
+index 5fedb7b..6a0c885 100644
+--- a/progetto/src/ProcessLens.App/SystemProcessesView.xaml
++++ b/progetto/src/ProcessLens.App/SystemProcessesView.xaml
+@@ -47,7 +47,7 @@
+   <StackPanel>
+   <StackPanel Margin="14,12,14,4">
+    <TextBlock Text="Componenti di Windows" FontSize="21" FontWeight="SemiBold"/>
+-   <local:SelectableText Text="Kernel, sessioni, servizi e sicurezza. Un campione manuale, organizzato per funzione."
++   <local:SelectableText Text="Kernel, sessioni, servizi e sicurezza. Catalogo mirato, non un elenco completo di Windows. R22"
+        TextWrapping="Wrap" Margin="0,5,0,0"/>
+   </StackPanel>
+   <WrapPanel Margin="12,8,12,2">
+@@ -66,10 +66,11 @@
+   </WrapPanel>
+   <StackPanel Margin="12,4,12,8">
+    <local:SelectableText x:Name="SystemStatusText" Text="Premi Aggiorna campione. Una riga per componente; le istanze sono riunite." TextWrapping="Wrap" FontWeight="SemiBold"/>
++   <local:SelectableText x:Name="SystemCoverageText" Text="Copertura: N/D" TextWrapping="Wrap" Margin="0,5,0,0"/>
+    <Expander Header="Memoria del kernel, fonte e copertura" Margin="0,8,0,0">
+     <ScrollViewer MaxHeight="160" VerticalScrollBarVisibility="Auto">
+      <StackPanel Margin="0,8,0,0">
+-   <local:SelectableText Text="Catalogo mirato di 17 componenti: nome e percorso previsto, oppure nome con percorso N/D. Firma digitale non verificata. Non è un elenco completo di Windows."
++   <local:SelectableText Text="Una riga riunisce più istanze: selezionala per vedere ogni PID. I conteggi includono solo le voci restituite dalla fonte, anche con dettagli N/D. La firma digitale non è verificata."
+        TextWrapping="Wrap" Foreground="#667085" Margin="0,4,0,0"/>
+ 
+       <local:SelectableText x:Name="SystemMemoryText" Text="Memoria: N/D" TextWrapping="Wrap"/>
+diff --git a/progetto/src/ProcessLens.App/SystemProcessesView.xaml.cs b/progetto/src/ProcessLens.App/SystemProcessesView.xaml.cs
+index 2b49af0..4375a31 100644
+--- a/progetto/src/ProcessLens.App/SystemProcessesView.xaml.cs
++++ b/progetto/src/ProcessLens.App/SystemProcessesView.xaml.cs
+@@ -46,6 +46,7 @@ public partial class SystemProcessesView : UserControl
+             SystemProcessesTable.ItemsSource = null;
+             SystemInstancesBox.ItemsSource = null;
+             SystemStatusText.Text = "Campione da aggiornare.";
++            SystemCoverageText.Text = "Copertura: N/D";
+             SystemMemoryText.Text = "Memoria: N/D";
+             SystemSourceText.Text = "Nessuna lettura corrente.";
+             SystemSelectionText.Text = "Seleziona un componente dopo l'aggiornamento.";
+@@ -59,6 +60,7 @@ public partial class SystemProcessesView : UserControl
+         using var operation = new CancellationTokenSource(); _operation = operation;
+         _catalog = null; SystemProcessesTable.ItemsSource = null; SystemInstancesBox.ItemsSource = null;
+         SystemStatusText.Text = "Lettura dei componenti Windows…";
++        SystemCoverageText.Text = "Copertura: lettura in corso.";
+         SystemMemoryText.Text = "Memoria: N/D"; SystemSourceText.Text = "Lettura in corso.";
+         SystemSelectionText.Text = "Seleziona un componente dopo l'aggiornamento.";
+         UpdateButtons();
+@@ -68,14 +70,16 @@ public partial class SystemProcessesView : UserControl
+             if (!_active || generation != _generation || operation.IsCancellationRequested) return;
+             _catalog = result; // Retain only catalog matches, not the complete application inventory.
+             SystemMemoryText.Text = SystemProcessPresentation.MemoryReport(result.Memory);
+-            SystemSourceText.Text = result.Source + "\n" + result.Note;
++            string coverage = WindowsComponentCatalog.CoverageReport(result);
++            SystemCoverageText.Text = coverage.Split('\n')[0];
++            SystemSourceText.Text = result.Source + "\n" + result.Note + "\n\n" + coverage;
+             ApplyFilter();
+         }
+         catch (OperationCanceledException) { }
+         catch (Exception ex)
+         {
+             if (_active && generation == _generation)
+-            { SystemStatusText.Text = "Lettura non disponibile."; SystemSourceText.Text = ex.Message; }
++            { SystemStatusText.Text = "Lettura non disponibile."; SystemCoverageText.Text = "Copertura: N/D"; SystemSourceText.Text = ex.Message; }
+         }
+         finally
+         {
+@@ -94,8 +98,8 @@ public partial class SystemProcessesView : UserControl
+             ? WindowsComponentCatalog.Categories[SystemScopeBox.SelectedIndex - 1] : "";
+         var visible = WindowsComponentCatalog.Groups(c.Processes, _windowsDirectory, category, SystemSearchBox.Text);
+         SystemProcessesTable.ItemsSource = visible;
+-        SystemStatusText.Text = $"Campione {c.CapturedUtc.ToLocalTime():HH:mm:ss} · {visible.Count} componenti mostrati · {c.Processes.Count} istanze nel catalogo" +
+-            (c.Partial ? " · fonte alternativa / dati parziali" : "") + " · aggiornamento manuale";
++        SystemStatusText.Text = WindowsComponentCatalog.SampleStatus(c, visible,
++            category.Length > 0 || SystemSearchBox.Text.Trim().Length > 0);
+         if (visible.Count == 0) SystemStatusText.Text += " · nessuna corrispondenza; non è una verifica di assenza";
+         SystemSelectionText.Text = "Seleziona un componente per funzione e dettagli. Poi scegli un PID per l'analisi.";
+         UpdateButtons();
+diff --git a/progetto/src/ProcessLens.Core/SystemProcessCatalog.cs b/progetto/src/ProcessLens.Core/SystemProcessCatalog.cs
+index b45b7d0..3a3fcad 100644
+--- a/progetto/src/ProcessLens.Core/SystemProcessCatalog.cs
++++ b/progetto/src/ProcessLens.Core/SystemProcessCatalog.cs
+@@ -8,7 +8,12 @@ public sealed record SystemProcessEntry(int Pid, int ParentPid, string Name, uin
+ public sealed record SystemMemorySnapshot(long? PhysicalTotal, long? PhysicalAvailable,
+     long? Commit, long? CommitLimit, long? KernelPaged, long? KernelNonpaged, string Note);
+ public sealed record SystemProcessCatalog(DateTime CapturedUtc, bool Available, bool Partial,
+-    string Source, string Note, IReadOnlyList<SystemProcessEntry> Processes, SystemMemorySnapshot Memory);
++    string Source, string Note, IReadOnlyList<SystemProcessEntry> Processes, SystemMemorySnapshot Memory)
++{
++    // Counts from the original enumeration, before the Windows-only navigation filter.
++    // No duplicate inventory or history is retained.
++    public WindowsComponentCoverage? ComponentCoverage { get; init; }
++}
+ public interface ISystemProcessSource
+ {
+     SystemProcessCatalog Capture(CancellationToken cancellationToken);
+diff --git a/progetto/src/ProcessLens.Core/WindowsComponentCatalog.cs b/progetto/src/ProcessLens.Core/WindowsComponentCatalog.cs
+index 6a2271d..fa61d4c 100644
+--- a/progetto/src/ProcessLens.Core/WindowsComponentCatalog.cs
++++ b/progetto/src/ProcessLens.Core/WindowsComponentCatalog.cs
+@@ -4,6 +4,12 @@ namespace ProcessLens.Core;
+ 
+ public sealed record WindowsComponentDefinition(string Id, string Name, string Category,
+     string Function, string Detail, string? RelativePath);
++public sealed record WindowsComponentCoverage(int Returned, int Included, int Groups,
++    int OtherWindowsPath, int OtherPath, int UnknownPath, int UnexpectedPath,
++    int IncludedWithoutPath, int IncludedWithoutStart, int IncludedWithoutMemory)
++{
++    public int Excluded => OtherWindowsPath + OtherPath + UnknownPath + UnexpectedPath;
++}
+ public sealed record WindowsComponentGroup(WindowsComponentDefinition Definition,
+     IReadOnlyList<SystemProcessEntry> Instances)
+ {
+@@ -16,7 +22,7 @@ public sealed record WindowsComponentGroup(WindowsComponentDefinition Definition
+         .Select(p => p.WorkingSetBytes).DefaultIfEmpty(null).Max();
+     public string Resident => SystemProcessPresentation.MiB(MaximumWorkingSet);
+     public string Identity => Instances.Any(p => p.Path is null && p.Pid is not (0 or 4))
+-        ? "Percorso N/D per alcune istanze" : "PID interno o percorso previsto";
++        ? "Dal nome · percorso N/D" : "PID riservato o percorso previsto";
+ }
+ 
+ // A small navigation catalog, not an exhaustive OS inventory or a signature verifier.
+@@ -58,7 +64,31 @@ public static class WindowsComponentCatalog
+         new("explorer", "explorer.exe", "Desktop e console", "Shell di Windows ed Esplora file",
+             "Fornisce funzioni della shell e la navigazione dei file. Una o più istanze possono coesistere; dal solo inventario non si identifica quale finestra o operazione le occupa.", @"explorer.exe"),
+         new("conhost", "conhost.exe", "Desktop e console", "Host del sottosistema console",
+-            "Gestisce funzioni della console per i programmi collegati. Non coincide con il comando eseguito: terminale, shell e applicazione sono componenti distinti.", @"System32\conhost.exe")
++            "Gestisce funzioni della console per i programmi collegati. Non coincide con il comando eseguito: terminale, shell e applicazione sono componenti distinti.", @"System32\conhost.exe"),
++        new("fontdrvhost", "fontdrvhost.exe", "Desktop e console", "Host dei driver dei caratteri in modalità utente",
++            "Ospita l'elaborazione dei caratteri in modalità utente. Il campione non identifica il carattere o il documento elaborato.", @"System32\fontdrvhost.exe"),
++        new("sihost", "sihost.exe", "Desktop e console", "Infrastruttura della shell di Windows",
++            "Supporta funzioni della shell. La presenza del processo non dimostra che il desktop risponda correttamente.", @"System32\sihost.exe"),
++        new("ctfmon", "ctfmon.exe", "Desktop e console", "Servizi di input e testo",
++            "Componente dei servizi di testo di Windows. Non vengono letti i caratteri digitati o gli input dell'utente.", @"System32\ctfmon.exe"),
++        new("runtimebroker", "RuntimeBroker.exe", "Desktop e console", "Mediazione per le app di Windows",
++            "Supporta l'accesso delle app alle risorse gestite da Windows. Il solo processo non identifica l'app o i permessi usati nel momento del campione.", @"System32\RuntimeBroker.exe"),
++        new("taskhostw", "taskhostw.exe", "Servizi", "Host per attività di Windows",
++            "Ospita attività di Windows. Il nome non identifica la singola attività caricata o il suo avanzamento.", @"System32\taskhostw.exe"),
++        new("dllhost", "dllhost.exe", "Servizi", "Host di componenti COM",
++            "Ospita componenti COM fuori dal processo chiamante, anche di terze parti. Il campione non identifica il componente caricato.", @"System32\dllhost.exe"),
++        new("audiodg", "audiodg.exe", "Servizi", "Motore e grafo audio di Windows",
++            "Ospita il motore audio e può caricare effetti dei produttori. La sua presenza non dimostra che sia in riproduzione un suono.", @"System32\audiodg.exe"),
++        new("spoolsv", "spoolsv.exe", "Servizi", "Spooler di stampa",
++            "Gestisce il sottosistema di stampa. Il campione non legge le code e non dimostra che una stampa sia in corso.", @"System32\spoolsv.exe"),
++        new("wmiprvse", "WmiPrvSE.exe", "Servizi", "Host dei provider WMI",
++            "Ospita provider WMI, anche di terze parti. Per attribuire una richiesta a un client servono dati aggiuntivi; questi contatori non bastano.", @"System32\wbem\WmiPrvSE.exe"),
++        new("searchindexer", "SearchIndexer.exe", "Servizi", "Indicizzazione per Windows Search",
++            "Gestisce l'indice di ricerca. Il campione non verifica lo stato dell'indice o il documento in elaborazione.", @"System32\SearchIndexer.exe"),
++        new("searchprotocolhost", "SearchProtocolHost.exe", "Servizi", "Host dei protocolli di Windows Search",
++            "Ospita i gestori che accedono alle fonti da indicizzare, anche di terze parti. Il campione non legge i contenuti indicizzati.", @"System32\SearchProtocolHost.exe"),
++        new("searchfilterhost", "SearchFilterHost.exe", "Servizi", "Host dei filtri di Windows Search",
++            "Ospita filtri e gestori delle proprietà per estrarre dati da indicizzare. La presenza non identifica il filtro o il file elaborato.", @"System32\SearchFilterHost.exe")
+     });
+     public static WindowsComponentDefinition? Match(SystemProcessEntry p, string windowsDirectory)
+     {
+@@ -71,11 +101,55 @@ public static class WindowsComponentCatalog
+         if (p.Path is null) return d;
+         if (d.RelativePath is null || !SystemProcessPresentation.UnderWindows(p.Path, windowsDirectory)) return null;
+         string expected = windowsDirectory.Replace('/', '\\').TrimEnd('\\') + "\\" + d.RelativePath;
+-        return p.Path.Replace('/', '\\').Equals(expected, StringComparison.OrdinalIgnoreCase) ? d : null;
++        string actual = p.Path.Replace('/', '\\');
++        if (actual.Equals(expected, StringComparison.OrdinalIgnoreCase)) return d;
++        // Explicit 32-bit Windows host locations; not an arbitrary path or name wildcard.
++        if (d.Id is "ctfmon" or "dllhost" or "wmiprvse" or "searchprotocolhost" or "searchfilterhost")
++            return actual.Equals(windowsDirectory.Replace('/', '\\').TrimEnd('\\') + "\\SysWOW64\\" + d.RelativePath[9..],
++                StringComparison.OrdinalIgnoreCase) ? d : null;
++        return null;
++    }
++    public static SystemProcessCatalog Retain(SystemProcessCatalog source, string windowsDirectory)
++    {
++        if (source.ComponentCoverage is not null) return source;
++        var kept = new List<SystemProcessEntry>(); var groups = new HashSet<string>();
++        int otherWindows = 0, otherPath = 0, unknown = 0, unexpected = 0;
++        foreach (var p in source.Processes)
++        {
++            var d = Match(p, windowsDirectory);
++            if (d is not null) { kept.Add(p); groups.Add(d.Id); }
++            else if (Definitions.Any(x => x.Name.Equals(p.Name, StringComparison.OrdinalIgnoreCase))) unexpected++;
++            else if (p.Path is null) unknown++;
++            else if (SystemProcessPresentation.UnderWindows(p.Path, windowsDirectory)) otherWindows++;
++            else otherPath++;
++        }
++        return source with {
++            Processes = kept.ToArray(),
++            ComponentCoverage = new(source.Processes.Count, kept.Count, groups.Count, otherWindows, otherPath,
++                unknown, unexpected, kept.Count(p => p.Path is null && p.Pid is not (0 or 4)),
++                kept.Count(p => !p.StartUtc.HasValue), kept.Count(p => p.WorkingSetBytes is null or < 0))
++        };
++    }
++    public static string CoverageReport(SystemProcessCatalog source)
++    {
++        if (!source.Available || source.ComponentCoverage is not { } c)
++            return "Copertura N/D · il campione non consente di contare i processi.";
++        return $"Processi restituiti dalla fonte: {c.Returned} · incluse le app. " +
++            $"Catalogo Windows: istanze {c.Included} · gruppi {c.Groups}. Fuori catalogo: {c.Excluded}.\n" +
++            $"Esclusioni: altro nome con percorso in Windows {c.OtherWindowsPath}; altro nome con percorso esterno {c.OtherPath}; " +
++            $"altro nome senza percorso {c.UnknownPath}; nome del catalogo con percorso inatteso {c.UnexpectedPath}.\n" +
++            $"Nel catalogo: percorso N/D {c.IncludedWithoutPath}; avvio N/D {c.IncludedWithoutStart}; Working Set N/D {c.IncludedWithoutMemory}.\n" +
++            $"Catalogo di {Definitions.Count} componenti, non esaustivo. Nome e percorso non verificano la firma digitale. " +
++            "Le esclusioni non indicano processi sospetti. La lettura non può escludere processi nascosti alla fonte o già terminati.";
++    }
++    public static string SampleStatus(SystemProcessCatalog source, IReadOnlyList<WindowsComponentGroup> visible, bool filtered)
++    {
++        if (!source.Available) return "Campione non disponibile · conteggi N/D.";
++        return $"Campione {source.CapturedUtc.ToLocalTime():HH:mm:ss} · gruppi mostrati: {visible.Count} · istanze mostrate: {visible.SelectMany(g => g.Instances).Count()}" +
++            (filtered ? " · filtri attivi" : " · senza filtri") +
++            (source.Partial ? " · LETTURA PARZIALE / ALTERNATIVA" : " · lettura della fonte completata") +
++            " · aggiornamento manuale";
+     }
+-    public static SystemProcessCatalog Retain(SystemProcessCatalog source, string windowsDirectory) => source with {
+-        Processes = source.Processes.Where(p => Match(p, windowsDirectory) is not null).ToArray()
+-    };
+     public static IReadOnlyList<WindowsComponentGroup> Groups(IReadOnlyList<SystemProcessEntry> processes,
+         string windowsDirectory, string category = "", string search = "")
+     {
+diff --git a/progetto/tests/ProcessLens.SystemProcessUiTests/Program.cs b/progetto/tests/ProcessLens.SystemProcessUiTests/Program.cs
+index ef580d7..7653364 100644
+--- a/progetto/tests/ProcessLens.SystemProcessUiTests/Program.cs
++++ b/progetto/tests/ProcessLens.SystemProcessUiTests/Program.cs
+@@ -55,6 +55,10 @@ internal static class Program
+             Check(grid.IsReadOnly && GridCopySupport.GetEnabled(grid) && grid.EnableRowVirtualization && grid.Items.Count == 3,
+                 "R15 component table retains internal entries and groups service hosts without applications");
+             Check(GridCopySupport.CaptureTable(grid, false).Contains("Memory Compression"), "actual grid copy preserves internal process names");
++            var coverage = (SelectableText)view.FindName("SystemCoverageText");
++            Check(coverage.Text.Contains("fonte: 5") && coverage.Text.Contains("istanze 4 · gruppi 3") &&
++                coverage.Text.Contains("Fuori catalogo: 1"),
++                "R22 visible coverage keeps full enumeration distinct from grouped Windows instances");
+             grid.SelectedItem = grid.Items.Cast<WindowsComponentGroup>().Single(r => r.Name == "Memory Compression");
+             Check(!analyze.IsEnabled && ((SelectableText)view.FindName("SystemSelectionText")).Text.Contains("dimensione logica"),
+                 "unknown creation time blocks analysis navigation without hiding compression details");
+@@ -68,6 +72,9 @@ internal static class Program
+                 "R15 service scope groups two hosts in one row");
+             ((TextBox)view.FindName("SystemSearchBox")).Text = "12";
+             Check(grid.Items.Count == 1 && ((WindowsComponentGroup)grid.Items[0]).Instances.Single().Pid == 12, "numeric PID search does not match substring 112");
++            Check(((SelectableText)view.FindName("SystemStatusText")).Text.Contains("gruppi mostrati: 1 · istanze mostrate: 1") &&
++                ((SelectableText)view.FindName("SystemStatusText")).Text.Contains("filtri attivi") && coverage.Text.Contains("fonte: 5"),
++                "R22 filter changes visible instances without rewriting enumeration coverage");
+             grid.SelectedIndex = 0; SystemProcessEntry? request = null; view.AnalysisRequested += p => request = p;
+             analyze.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+             Check(request?.Pid == 12 && request.StartUtc.HasValue, "analysis button forwards selected immutable process identity");
+@@ -83,9 +90,11 @@ internal static class Program
+             view.SetActive(false); source.Release.Set(); Complete(pending);
+             Check(grid.Items.Count == 0 && !analyze.IsEnabled && ((SelectableText)view.FindName("SystemMemoryText")).Text.Contains("N/D"),
+                 "late uncancellable result rejected after section closes and rows released");
++            Check(coverage.Text.Contains("N/D"), "R22 deactivation clears previous coverage");
+             view.SetActive(true); source.Block = false; source.Fail = true; Complete(view.RefreshAsync());
+             Check(grid.Items.Count == 0 && ((SelectableText)view.FindName("SystemSourceText")).Text.Contains("synthetic failure"),
+                 "acquisition error preserves failure instead of a valid empty inventory");
++            Check(coverage.Text.Contains("N/D"), "R22 acquisition failure cannot retain old enumeration counts");
+             view.SetActive(false);
+             var window = new MainWindow();
+             var ram = (SelectableText)window.FindName("SystemRamText");
+diff --git a/progetto/tests/ProcessLens.WindowsComponentTests/Program.cs b/progetto/tests/ProcessLens.WindowsComponentTests/Program.cs
+index 891823b..22962d1 100644
+--- a/progetto/tests/ProcessLens.WindowsComponentTests/Program.cs
++++ b/progetto/tests/ProcessLens.WindowsComponentTests/Program.cs
+@@ -6,8 +6,8 @@ static void Check(bool ok, string label)
+ static SystemProcessEntry Row(int pid, string name, string? path = null, long? ram = null) =>
+     new(pid, 4, name, 2, 10, 0, ram, path, new DateTime(2026, 10, 21, 0, 0, 0, DateTimeKind.Utc));
+ const string win = @"D:\Windows";
+-Check(WindowsComponentCatalog.Definitions.Count == 17 && WindowsComponentCatalog.Definitions.Select(d => d.Id).Distinct().Count() == 17,
+-    "finite catalog has 17 distinct component families");
++Check(WindowsComponentCatalog.Definitions.Count == 29 && WindowsComponentCatalog.Definitions.Select(d => d.Id).Distinct().Count() == 29,
++    "expanded finite catalog has 29 distinct component families");
+ foreach (var d in WindowsComponentCatalog.Definitions)
+ {
+     var row = Row(120, d.Name, d.RelativePath is null ? null : win + "\\" + d.RelativePath);
+@@ -81,3 +81,55 @@ Check(WindowsComponentCatalog.Groups(Array.Empty<SystemProcessEntry>(), win).Cou
+     !WindowsComponentCatalog.Retain(source with { Available = false }, win).Available,
+     "empty or failed samples cannot fabricate observed components");
+ Console.WriteLine("Windows component tests complete; synthetic data only, no Windows query or live RAM measurement.");
++
++var coverageSource = source with { Partial = false, Processes = new[] {
++    Row(0, "System Idle Process") with { StartUtc = null }, a, b with { StartUtc = null, WorkingSetBytes = null },
++    Row(20, "audiodg.exe", win + @"\System32\audiodg.exe"),
++    Row(21, "WmiPrvSE.exe", win + @"\SysWOW64\wbem\WmiPrvSE.exe"),
++    Row(22, "chrome.exe", @"D:\Apps\chrome.exe"),
++    Row(23, "new-windows-component.exe", win + @"\System32\new-windows-component.exe"),
++    Row(24, "unknown.exe"), Row(25, "svchost.exe", @"D:\Users\fake\svchost.exe")
++} };
++var expanded = WindowsComponentCatalog.Retain(coverageSource, win);
++var coverage = expanded.ComponentCoverage!;
++Check(coverage.Returned == 9 && coverage.Included == 5 && coverage.Groups == 4 && coverage.Excluded == 4 &&
++    coverage.OtherWindowsPath == 1 && coverage.OtherPath == 1 && coverage.UnknownPath == 1 && coverage.UnexpectedPath == 1,
++    "R22 coverage partitions original enumeration without calling excluded entries applications or threats");
++Check(coverage.Included + coverage.Excluded == coverage.Returned && expanded.Processes.Count == coverage.Included &&
++    coverageSource.Processes.Count == 9 && coverageSource.ComponentCoverage is null,
++    "R22 source total survives compact retention without mutating or retaining excluded rows");
++Check(coverage.IncludedWithoutPath == 1 && coverage.IncludedWithoutStart == 2 && coverage.IncludedWithoutMemory == 4,
++    "R22 unreadable details stay visible and reserved PID does not inflate missing executable paths");
++Check(ReferenceEquals(WindowsComponentCatalog.Retain(expanded, win), expanded),
++    "R22 repeated retention does not silently replace enumeration total with catalog total");
++foreach (string id in new[] { "ctfmon", "dllhost", "wmiprvse", "searchprotocolhost", "searchfilterhost" })
++{
++    var d = WindowsComponentCatalog.Definitions.Single(x => x.Id == id);
++    string path32 = win + @"\SysWOW64\" + d.RelativePath![9..];
++    Check(WindowsComponentCatalog.Match(Row(30, d.Name, path32), win)?.Id == id,
++        "R22 explicit 32-bit host path: " + id);
++    Check(WindowsComponentCatalog.Match(Row(30, d.Name, win + @"\Temp\" + d.Name), win) is null,
++        "R22 added host cannot match a temporary directory: " + id);
++}
++foreach (string culture in new[] { "it-IT", "en-US" })
++{
++    CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(culture);
++    var all = WindowsComponentCatalog.Groups(expanded.Processes, win);
++    var selected = WindowsComponentCatalog.Groups(expanded.Processes, win, search: "12");
++    string full = WindowsComponentCatalog.SampleStatus(expanded, all, false);
++    string filtered = WindowsComponentCatalog.SampleStatus(expanded, selected, true);
++    Check(full.Contains("gruppi mostrati: 4 · istanze mostrate: 5") && full.Contains("senza filtri") &&
++        filtered.Contains("gruppi mostrati: 1 · istanze mostrate: 1") && filtered.Contains("filtri attivi") &&
++        WindowsComponentCatalog.CoverageReport(expanded).Contains("fonte: 9"),
++        "R22 visible counts change with exact PID filter while source total stays unchanged " + culture);
++    Check(WindowsComponentCatalog.SampleStatus(expanded with { Partial = true }, all, false).Contains("LETTURA PARZIALE") &&
++        !WindowsComponentCatalog.SampleStatus(expanded with { Partial = true }, all, false).Contains("completata"),
++        "R22 alternative or partial enumeration cannot claim completion " + culture);
++    Check(WindowsComponentCatalog.CoverageReport(expanded with { Available = false }).Contains("N/D") &&
++        !WindowsComponentCatalog.CoverageReport(expanded with { Available = false }).Contains("fonte: 0") &&
++        WindowsComponentCatalog.SampleStatus(expanded with { Available = false }, all, false).Contains("N/D"),
++        "R22 unavailable enumeration never becomes a valid zero count " + culture);
++}
++Check(compact.ComponentCoverage is { Returned: 5200, Included: 200, OtherWindowsPath: 5000, Groups: 1 },
++    "R22 large sample retains scalar exclusion counts and only Windows host rows");
++Console.WriteLine("R22 coverage and expanded Windows catalog regressions complete.");
+diff --git a/supporto/avvia.ps1 b/supporto/avvia.ps1
+index bab8e22..eea3705 100644
+--- a/supporto/avvia.ps1
++++ b/supporto/avvia.ps1
+@@ -1,4 +1,4 @@
+-param([switch] $FunctionsOnly, [string] $Executable, [string] $RuntimeRoot)
++﻿param([switch] $FunctionsOnly, [string] $Executable, [string] $RuntimeRoot)
+ $ErrorActionPreference = 'Stop'
+ function Test-DesktopRuntime8([string] $Root) {
+     if (-not $Root -or -not (Test-Path -LiteralPath (Join-Path $Root 'dotnet.exe') -PathType Leaf)) { return $false }
+@@ -15,19 +15,46 @@ function Resolve-ProcessLensLaunch([string] $Root, [string] $UserLocalAppData) {
+     foreach ($candidate in @((Join-Path $Root 'runtime'), $(if ($installed) { Join-Path $installed 'dotnet' }))) {
+         if (Test-DesktopRuntime8 $candidate) { $runtime = $candidate; break }
+     }
+-    foreach ($candidate in @((Join-Path $Root 'app/ProcessLens.exe'), (Join-Path $Root 'progetto/publish/win-x64/ProcessLens.exe'))) {
+-        if (Test-Path -LiteralPath $candidate -PathType Leaf) {
+-            return [PSCustomObject]@{ Kind='Exe'; Entry=$candidate; Runtime=$runtime }
+-        }
++    $exe = Join-Path $Root 'progetto/publish/win-x64/ProcessLens.exe'
++    $receipt = Join-Path $Root 'supporto/build-r22.ok'
++    if ((Test-Path -LiteralPath $exe -PathType Leaf) -and (Test-Path -LiteralPath $receipt -PathType Leaf) -and
++        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R22-coverage') {
++        return [PSCustomObject]@{ Kind='Exe'; Entry=$exe; Runtime=$runtime }
+     }
+-    if ($installed) {
+-        $exe = Join-Path $installed 'app/win-x64/ProcessLens.exe'
+-        $script = Join-Path $installed 'start-installed.ps1'
+-        if ((Test-Path -LiteralPath $exe -PathType Leaf) -and (Test-Path -LiteralPath $script -PathType Leaf)) {
+-            return [PSCustomObject]@{ Kind='Installed'; Entry=$script; Runtime=$null }
++    return $null
++}
++function Invoke-ProcessLensBuild([string] $Root, [string] $UserLocalAppData) {
++    $project = Join-Path $Root 'progetto'
++    $installed = if ($UserLocalAppData) { Join-Path $UserLocalAppData 'Programs/ProcessLens/R20' } else { $null }
++    $privateSdk = if ($installed) { Join-Path $installed 'dotnet' } else { $null }
++    $sdkFolder = if ($privateSdk) { Join-Path $privateSdk 'sdk' } else { $null }
++    $usePrivate = $sdkFolder -and (Test-Path -LiteralPath $sdkFolder -PathType Container) -and
++        @(Get-ChildItem -LiteralPath $sdkFolder -Directory | Where-Object { $_.Name -match '^8\.0\.\d+$' }).Count -gt 0 -and
++        (Test-DesktopRuntime8 $privateSdk)
++    if ($usePrivate) {
++        $env:DOTNET_ROOT = $privateSdk; $env:DOTNET_ROOT_X64 = $privateSdk
++        $env:PATH = $privateSdk + [IO.Path]::PathSeparator + $env:PATH
++        $cache = Join-Path $installed 'packages'
++        if (Test-Path -LiteralPath $cache -PathType Container) {
++            $env:NUGET_PACKAGES = $cache
++            # Project-local configuration only. Use the completed R20 package cache without network feeds.
++            $config = Join-Path $project 'NuGet.Config'
++            if (-not (Test-Path -LiteralPath $config)) {
++                Set-Content -LiteralPath $config -Encoding UTF8 -Value '<configuration><packageSources><clear/></packageSources></configuration>'
++            }
+         }
+     }
+-    return $null
++    if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
++        throw 'SDK .NET non trovato. Usa lo SDK 8 gia installato oppure quello della precedente installazione R20. Nessun download automatico.'
++    }
++    Write-Host 'Primo avvio R22: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
++    Write-Host 'Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.'
++    Push-Location -LiteralPath $project
++    try { & (Join-Path $project 'build-dashboard.ps1') }
++    finally { Pop-Location }
++    $exe = Join-Path $project 'publish/win-x64/ProcessLens.exe'
++    if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { throw 'Compilazione senza eseguibile R22. Avvio interrotto.' }
++    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r22.ok') -Value 'ProcessLens-R22-coverage' -Encoding ASCII
+ }
+ function Quote-LaunchArgument([string] $Value) {
+     if ($Value.Contains('"') -or $Value -match "[`r`n]") { throw 'Percorso non valido.' }
+@@ -39,8 +66,8 @@ try {
+     $root = Split-Path -Parent $PSScriptRoot
+     if (-not $Executable) {
+         $target = Resolve-ProcessLensLaunch $root $env:LOCALAPPDATA
+-        if (-not $target) { throw 'ProcessLens non trovato. Apri la versione installata dal menu Start, oppure compila il progetto una volta. Nessun download o installazione automatica.' }
+-        if ($target.Kind -eq 'Installed') { & $target.Entry; exit }
++        if (-not $target) { Invoke-ProcessLensBuild $root $env:LOCALAPPDATA; $target = Resolve-ProcessLensLaunch $root $env:LOCALAPPDATA }
++        if (-not $target) { throw 'Pubblicazione R22 non disponibile dopo la compilazione.' }
+         $Executable = $target.Entry; $RuntimeRoot = $target.Runtime
+     }
+     if (-not (Test-Path -LiteralPath $Executable -PathType Leaf)) { throw 'Eseguibile ProcessLens non trovato.' }

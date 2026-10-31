@@ -1,0 +1,609 @@
+diff --git a/LEGGIMI.txt b/LEGGIMI.txt
+index 740ff2a..8cb3a16 100644
+--- a/LEGGIMI.txt
++++ b/LEGGIMI.txt
+@@ -1,28 +1,27 @@
+-ProcessLens R32 R1 — area di notifica, icone e testi
++ProcessLens R32 R2 — correzione caricamento icona all'avvio
+ 
+ AVVIO
+-Chiudi la precedente con Esci. Estrai tutto in una cartella nuova.
+-Avvia soltanto AVVIA_PROCESSLENS.cmd.
+-Al primo avvio esegue test e compilazione con il .NET 8 già disponibile; nessun SDK, runtime o driver incluso nel pacchetto.
++Chiudi il messaggio di errore con OK e chiudi eventuali versioni precedenti con Esci.
++Estrai questo ZIP in una cartella nuova.
++Entra in ProcessLens-Leggero e avvia AVVIA_PROCESSLENS.cmd.
++Esplora file puo mostrare il nome AVVIA_PROCESSLENS senza estensione.
++Non occorre avviare file dentro progetto o supporto.
+ 
+-FINESTRA
+-Nascondi accanto all’orologio: nasconde ProcessLens e il log, mantenendo l’icona blu.
+-Per riaprire: clic sull’icona blu oppure tasto destro > Mostra ProcessLens.
+-Se non la vedi, apri ^ accanto all’orologio. Puoi trascinare l’icona da lì nella zona visibile.
+-Il trattino e la X riducono nella barra delle applicazioni. Esci chiude il programma.
+-Se l’icona non viene registrata, la finestra resta accessibile; il log distingue HIDE_REQUEST, HIDE_RESULT e HIDDEN_TO_TRAY.
+-
+-ICONE E TESTI
+-Prima le icone originali del file. Se non disponibili: iniziali e colori distinti, senza inventare loghi.
+-Il simbolo Windows comune resta limitato a pochi componenti di base.
+-Analisi con titoli più brevi; ruolo stimato e attività misurata restano distinti.
++CORREZIONE
++La nuova icona non viene piu caricata tramite un percorso XAML esterno.
++Finestra e tray leggono la risorsa incorporata nell'assembly, anche nel file unico pubblicato.
++Se l'icona non puo essere caricata, ProcessLens continua ad aprirsi con l'icona standard.
+ 
+-VERIFICHE
+-Base R32: 13 progetti MSBuild e 834 asserzioni PASS, non ripetuti in R32 R1.
+-R32 R1: 41 controlli PowerShell e 17 prove launcher; correzione del riferimento System.IO.Path.
+-Controllo C# WindowsDesktop con campi XAML simulati: 9 assembly PASS.
+-Build completa WPF, clic fisico, DPI e RAM: da verificare su Windows.
+-Dettagli e prove: progetto/audit/R10_R32_R1/REVIEW.md.
++FINESTRA
++Nascondi accanto all'orologio nasconde la finestra e i dettagli posseduti.
++Per riaprire: clic sull'icona oppure tasto destro > Mostra ProcessLens.
++Se l'icona e sotto ^, puoi trascinarla nella zona visibile accanto all'orologio.
++Trattino e X riducono nella barra delle applicazioni. Esci chiude ProcessLens.
+ 
+-Avvio corretto: AVVIA_PROCESSLENS.cmd (Esplora file puo mostrarlo come AVVIA_PROCESSLENS).
+-Errore CS0103 corretto in TrayWindowController.cs: non dipende dalla cartella di avvio.
++VERIFICHE R32 R2
++17 controlli risorsa/ICO e 19 controlli nella pubblicazione reale in file unico Linux: PASS.
++42 controlli PowerShell e 17 prove del launcher: PASS.
++C# WindowsDesktop con campi XAML simulati: 9 assembly PASS.
++Avvio WPF, decodifica nativa tray e clic fisico: da verificare su Windows.
++Nessun SDK, runtime o driver aggiunto allo ZIP. Le prove storiche precedenti restano nell'audit.
++Dettagli: progetto/audit/R10_R32_R2/REVIEW.md.
+diff --git a/progetto/audit/tools/check_embedded_icon_r32r2.ps1 b/progetto/audit/tools/check_embedded_icon_r32r2.ps1
+new file mode 100644
+index 0000000..ca486a7
+--- /dev/null
++++ b/progetto/audit/tools/check_embedded_icon_r32r2.ps1
+@@ -0,0 +1,15 @@
++$ErrorActionPreference='Stop'
++$root=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
++[xml]$project=Get-Content (Join-Path $root 'src/ProcessLens.App/ProcessLens.App.csproj') -Raw -Encoding UTF8
++$embedded=@($project.Project.ItemGroup.EmbeddedResource | Where-Object { $_.Include -eq 'Assets/ProcessLens.ico' })
++if($embedded.Count -ne 1 -or $embedded[0].LogicalName -ne 'ProcessLens.AppIcon'){throw 'FAIL R32 R2: icon must have one explicit manifest resource name.'}
++if(@($project.Project.ItemGroup.Content | Where-Object { $_.Include -eq 'Assets/ProcessLens.ico' }).Count){throw 'FAIL R32 R2: optional icon cannot become WPF external content.'}
++[xml]$view=Get-Content (Join-Path $root 'src/ProcessLens.App/MainWindow.xaml') -Raw -Encoding UTF8
++if($view.DocumentElement.HasAttribute('Icon')){throw 'FAIL R32 R2: optional icon cannot abort XAML construction.'}
++$icon=Get-Content (Join-Path $root 'src/ProcessLens.App/ProcessLensIcon.cs') -Raw -Encoding UTF8
++foreach($token in @('BitmapCacheOption.OnLoad','image.Freeze()','catch (Exception','IconFile.ReadEmbedded')){if(-not $icon.Contains($token)){throw ('FAIL R32 R2 icon loader: '+$token)}}
++$tray=Get-Content (Join-Path $root 'src/ProcessLens.App/TrayWindowController.cs') -Raw -Encoding UTF8
++foreach($token in @('IconFile.TrySelectImage','CreateIconFromResourceEx','DestroyIcon(_trayIcon)')){if(-not $tray.Contains($token)){throw ('FAIL R32 R2 tray: '+$token)}}
++$build=Get-Content (Join-Path $root 'build-dashboard.ps1') -Raw -Encoding UTF8
++if(-not $build.Contains('Tests.ProcessLens.IconResourceTests')){throw 'FAIL R32 R2: actual resource test missing from build.'}
++Write-Host 'PASS R32 R2: embedded optional window/tray icon, no mandatory XAML path or Content declaration; actual Windows startup remains separate.'
+diff --git a/progetto/audit/tools/check_powershell_r32r2.py b/progetto/audit/tools/check_powershell_r32r2.py
+new file mode 100644
+index 0000000..162b0b4
+--- /dev/null
++++ b/progetto/audit/tools/check_powershell_r32r2.py
+@@ -0,0 +1,17 @@
++"""Run PowerShell source preflight and isolated launcher fixtures, never a build or installation."""
++import argparse,json,hashlib,subprocess
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--shell',type=Path,required=True);p.add_argument('--pwsh',type=Path,required=True);a=p.parse_args()
++r=a.project.resolve();shell=a.shell.resolve();audit=r/'audit/R10_R32_R2';sha=lambda b:hashlib.sha256(b).hexdigest()
++# Same 30 authorized baseline source stages, plus the R24 wiring gate.
++stages=[x['file'] for x in json.loads((r/'audit/R10_R23_R1/powershell-evidence.json').read_text())['stages']]+['audit/tools/check_live_metrics_r24.ps1','audit/tools/check_process_groups_r25.ps1','audit/tools/check_scroll_minimize_r26.ps1','audit/tools/check_windows_icons_r27.ps1','audit/tools/check_window_controls_r28.ps1','audit/tools/check_window_diagnostics_r29.ps1','audit/tools/check_tray_callbacks_r30.ps1','audit/tools/check_search_hosts_r31.ps1','audit/tools/check_build_reference_r31r1.ps1','audit/tools/check_notification_area_r32.ps1','audit/tools/check_wpf_path_r32r1.ps1','audit/tools/check_embedded_icon_r32r2.ps1'];results=[];logs=[]
++for n in stages:
++ x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(r/n)],cwd=r,capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;logs.append(n+'\n'+log)
++ if x.returncode:(audit/'preflight.log').write_text('\n'.join(logs));raise SystemExit(log)
++ results.append({'file':n,'sha256':sha((r/n).read_bytes()),'status':'PASS'})
++(audit/'preflight.log').write_text('\n'.join(logs))
++fixture=r/'audit/tools/test_launcher_r32r2.ps1';launcher=shell/'supporto/avvia.ps1'
++x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(fixture),'-Launcher',str(launcher)],capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;(audit/'launcher-fixture.log').write_text(log)
++if x.returncode:raise SystemExit(log)
++count=sum(line.startswith('PASS R32 R2 launcher:') for line in log.splitlines());assert count==17,count
++(audit/'powershell-evidence.json').write_text(json.dumps({'PowerShell':'7.4.21 Linux; no Windows runtime execution','stages':results,'launcher_fixture_checks':count,'launcher_sha256':sha(launcher.read_bytes()),'fixture_sha256':sha(fixture.read_bytes())},indent=2)+'\n');print('PASS',len(results),'source stages;',count,'launcher checks')
+diff --git a/progetto/audit/tools/check_wpf_path_r32r1.ps1 b/progetto/audit/tools/check_wpf_path_r32r1.ps1
+index 3ca6faf..14ff5f3 100644
+--- a/progetto/audit/tools/check_wpf_path_r32r1.ps1
++++ b/progetto/audit/tools/check_wpf_path_r32r1.ps1
+@@ -1,7 +1,7 @@
+ $ErrorActionPreference='Stop'
+ $root=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+ $tray=Get-Content (Join-Path $root 'src/ProcessLens.App/TrayWindowController.cs') -Raw -Encoding UTF8
+-if(-not $tray.Contains('System.IO.Path.Combine(AppContext.BaseDirectory')){throw 'FAIL R32 R1: tray icon path must explicitly resolve System.IO.Path.'}
++if(-not $tray.Contains('IconFile.ReadEmbedded') -or $tray.Contains('System.IO.Path.Combine(AppContext.BaseDirectory')){throw 'FAIL R32 R2: tray icon must use embedded bytes instead of an external path.'}
+ $usingCheck=Get-Content (Join-Path $root 'audit/tools/typecheck_wpf_sources_r32r1.py') -Raw -Encoding UTF8
+ if(-not $usingCheck.Contains('msbuild-wpf-usings.json') -or -not $usingCheck.Contains('wpf_globals if name')){throw 'FAIL R32 R1: C# checks must use evaluated WPF implicit usings.'}
+-Write-Host 'PASS R32 R1: explicit IO path and evaluated WPF implicit usings; markup and Windows execution remain separate.'
++Write-Host 'PASS R32 R1: embedded icon and evaluated WPF implicit usings; markup and Windows execution remain separate.'
+diff --git a/progetto/audit/tools/package_embedded_icon_r32r2.py b/progetto/audit/tools/package_embedded_icon_r32r2.py
+new file mode 100644
+index 0000000..30ce0f0
+--- /dev/null
++++ b/progetto/audit/tools/package_embedded_icon_r32r2.py
+@@ -0,0 +1,80 @@
++"""Create a lightweight R32 R2 candidate; assert the precise R32 R1 delta, evidence hashes and manifests."""
++import argparse,csv,difflib,hashlib,json,shutil,subprocess,tempfile,zipfile
++from pathlib import Path
++import xml.etree.ElementTree as ET
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--shell',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True);p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()
++shell=a.shell.resolve();r=shell/'progetto';audit=r/'audit/R10_R32_R2';sha=lambda b:hashlib.sha256(b).hexdigest()
++assert sha(a.baseline_zip.read_bytes())=='ff5e50322cd46997ad056b118b0abd76f27d88854bbdf8bbeac32db963053909'
++with zipfile.ZipFile(a.baseline_zip) as z:before={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++for d in sorted(shell.rglob('__pycache__'),reverse=True):shutil.rmtree(d)
++after={f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file()}
++modified={'LEGGIMI.txt','supporto/avvia.ps1','progetto/build-dashboard.ps1','progetto/audit/tools/check_wpf_path_r32r1.ps1','progetto/src/ProcessLens.App/MainWindow.xaml','progetto/src/ProcessLens.App/MainWindow.xaml.cs','progetto/src/ProcessLens.App/TrayWindowController.cs','progetto/src/ProcessLens.App/ProcessLens.App.csproj','progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs'}
++added={'progetto/src/ProcessLens.App/IconFile.cs','progetto/src/ProcessLens.App/ProcessLensIcon.cs','progetto/tests/ProcessLens.IconResourceTests/Program.cs','progetto/tests/ProcessLens.IconResourceTests/ProcessLens.IconResourceTests.csproj'}|{f'progetto/audit/tools/{n}' for n in ['typecheck_wpf_sources_r32r2.py','check_powershell_r32r2.py','check_embedded_icon_r32r2.ps1','test_launcher_r32r2.ps1','package_embedded_icon_r32r2.py']}
++manifests={'SHA256SUMS.txt','progetto/SHA256SUMS_R10.txt'}
++assert all(n in after for n in before),'No baseline file may disappear'
++assert {n for n,b in before.items() if n not in manifests and after[n]!=b}==modified,'Unexpected modification or missing intended change'
++assert {n for n in after if n not in before and not n.startswith('progetto/audit/R10_R32_R2/')}==added,'Unexpected new file'
++assert not any(n.startswith('progetto/progetto/') for n in after),'Nested duplicate project'
++for n,b in after.items():
++ if n.endswith(('.xaml','.csproj')):ET.fromstring(b)
++assert all(after[n]==b for n,b in before.items() if n not in modified and n.startswith(('progetto/src/ProcessLens.Core/','progetto/src/ProcessLens.Semantics/','progetto/src/ProcessLens.Windows/','progetto/src/ProcessLens.Guardian/','progetto/src/ProcessLens.MemoryAgent/','progetto/src/ProcessLens.Profiler/','progetto/src/ProcessLens.RamMonitor/')))
++for n in ['AutomaticViewport.cs','ReadingPositionPolicy.cs','WindowLifetimePolicy.cs','IconPreferencePolicy.cs','DeferredDiagnosticWriter.cs','ProcessIconResolver.cs','NativeIconPreference.cs','AppDiagnostics.cs']:
++ assert after['progetto/src/ProcessLens.App/'+n]==before['progetto/src/ProcessLens.App/'+n],n
++d=json.loads((audit/'wpf-typecheck-evidence.json').read_text())
++assert len(d['assemblies'])==9 and all(x['status']=='PASS' for x in d['assemblies'])
++assert 'System.IO' not in d['evaluated_wpf_implicit_usings']
++for n,h in d['inputs'].items():assert sha((r/n).read_bytes())==h,(n,'stale typecheck input')
++ps=json.loads((audit/'powershell-evidence.json').read_text());assert len(ps['stages'])==42 and ps['launcher_fixture_checks']==17
++for row in ps['stages']:assert sha((r/row['file']).read_bytes())==row['sha256']
++assert sha((shell/'supporto/avvia.ps1').read_bytes())==ps['launcher_sha256']
++runtime=json.loads((audit/'runtime-evidence.json').read_text());assert runtime['checks']==36
++for n,h in runtime['source_hashes'].items():assert sha((r/n).read_bytes())==h,(n,'stale runtime input')
++assert 'Build succeeded.' in (audit/'icon-msbuild.log').read_text()
++assert sum(l.startswith('PASS') for l in (audit/'icon-single-file-run.log').read_text().splitlines())==19
++items=json.loads((audit/'msbuild-wpf-usings.json').read_text())['Items']
++assert not any('ProcessLens.ico' in x['Identity'] for x in items['Content'])
++assert any(x.get('LogicalName')=='ProcessLens.AppIcon' for x in items['EmbeddedResource'])
++assert ' Icon=' not in (r/'src/ProcessLens.App/MainWindow.xaml').read_text().split('>')[0]
++(audit/'scope-evidence.json').write_text(json.dumps({'baseline_sha256':sha(a.baseline_zip.read_bytes()),'modified_files':sorted(modified),'new_files':sorted(added),'protected':'Core, Semantics, native process/network acquisition, Guardian, metrics, window policies and icon asset byte identical. Only optional application icon pipeline and declared test/build/version files changed','new_dependencies':0,'Windows_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'},indent=2)+'\n')
++with (audit/'string-ledger.csv').open('w',newline='') as f:
++ w=csv.writer(f);w.writerow(['file','side','changed_text'])
++ for n in sorted(modified|added):
++  for line in difflib.unified_diff(before.get(n,b'').decode('utf-8-sig').splitlines(),after[n].decode('utf-8-sig').splitlines(),n,n,n=0):
++   if line.startswith(('+','-')) and not line.startswith(('+++','---')):w.writerow([n,'after' if line[0]=='+' else 'before',line[1:]])
++with (audit/'files-changed.csv').open('w',newline='') as f:
++ w=csv.writer(f);w.writerow(['file','kind','sha256_before','sha256_after'])
++ for n in sorted(modified|added):w.writerow([n,'added' if n in added else 'modified',sha(before[n]) if n in before else '',sha(after[n])])
++include=lambda n:n not in manifests and not n.startswith('progetto/audit/R10_R32_R2/')
++with tempfile.TemporaryDirectory(prefix='processlens-r31-') as tmp:
++ t=Path(tmp);bdir=t/'before';adir=t/'after';bdir.mkdir();adir.mkdir()
++ for base,data in [(bdir,before),(adir,after)]:
++  for n,b in data.items():
++   if include(n):p=base/n;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b)
++ x=subprocess.run(['git','diff','--no-index','--no-renames','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=t,capture_output=True);assert x.returncode==1
++ lines=[]
++ for line in x.stdout.splitlines(keepends=True):
++  if line.startswith((b'diff --git ',b'--- ',b'+++ ')):
++   for prefix in [b'a/before/',b'a/after/']:line=line.replace(prefix,b'a/')
++   for prefix in [b'b/before/',b'b/after/']:line=line.replace(prefix,b'b/')
++  lines.append(line)
++ patch=b''.join(lines);path=audit/'R32_R1_to_R32_R2.patch';path.write_bytes(patch)
++ x=subprocess.run(['git','apply','--check',str(path)],cwd=bdir,capture_output=True);assert x.returncode==0,x.stderr
++ subprocess.run(['git','apply',str(path)],cwd=bdir,check=True)
++ assert {f.relative_to(bdir).as_posix():f.read_bytes() for f in bdir.rglob('*') if f.is_file()}=={n:b for n,b in after.items() if include(n)}
++(audit/'patch-evidence.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','patch_sha256':sha(patch),'excluded_from_diff_only':'current R31 audit and recursive manifests; all included in final ZIP'},indent=2)+'\n')
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt'}
++(r/'SHA256SUMS_R10.txt').write_text(''.join(sha(b)+'  '+n+'\n' for n,b in sorted(current.items())))
++files={f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file() and f.name!='SHA256SUMS.txt'}
++assert not any(n.endswith(('.dll','.exe','.pdb','.deb','.nupkg','.pyc','.ok')) for n in files),'Build/SDK artifacts forbidden'
++assert all(len(b)<10*1024*1024 for b in files.values())
++manifest=''.join(sha(b)+'  '+n+'\n' for n,b in sorted(files.items()));files['SHA256SUMS.txt']=manifest.encode();(shell/'SHA256SUMS.txt').write_text(manifest)
++a.output_directory.mkdir(parents=True,exist_ok=True);target=a.output_directory/'ProcessLens-R32-R2-correzione-icona-avvio.zip'
++with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
++ for n,b in sorted(files.items()):z.writestr('ProcessLens-Leggero/'+n,b)
++with zipfile.ZipFile(target) as z:
++ assert z.testzip() is None
++ for line in manifest.splitlines():h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/'+n))==h
++ for line in (r/'SHA256SUMS_R10.txt').read_text().splitlines():h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/progetto/'+n))==h
++ assert {n.split('/')[1] for n in z.namelist()}=={'AVVIA_PROCESSLENS.cmd','LEGGIMI.txt','supporto','progetto','SHA256SUMS.txt'}
++result={'zip':str(target.resolve()),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files)-1,'R32_historical_assertions_not_rerun':834,'PowerShell_source_stages':42,'launcher_fixture_checks':17,'new_icon_assertions':36,'real_single_file_fixture':'PASS linux-x64; WPF Windows NOT EXECUTED','CSharp_WindowsDesktop_typechecked_assemblies':9,'Windows_WPF_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'}
++(a.output_directory/'verification-r32r2.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
+diff --git a/progetto/audit/tools/test_launcher_r32r2.ps1 b/progetto/audit/tools/test_launcher_r32r2.ps1
+new file mode 100644
+index 0000000..abd4281
+--- /dev/null
++++ b/progetto/audit/tools/test_launcher_r32r2.ps1
+@@ -0,0 +1,76 @@
++﻿param([string] $Launcher)
++$ErrorActionPreference = 'Stop'
++. $Launcher -FunctionsOnly
++$count = 0
++function Check([bool] $Ok, [string] $Label) {
++    if (-not $Ok) { throw ('FAIL R32 R2 launcher: ' + $Label) }
++    Write-Host ('PASS R32 R2 launcher: ' + $Label); $script:count++
++}
++function Touch([string] $Path) {
++    New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
++    Set-Content -LiteralPath $Path -Value 'fixture only' -Encoding ASCII
++}
++function Make-Runtime([string] $Path, [string] $Version='8.0.32') {
++    Touch (Join-Path $Path 'dotnet.exe')
++    New-Item -ItemType Directory -Path (Join-Path $Path 'shared/Microsoft.NETCore.App/8.0.32') -Force | Out-Null
++    New-Item -ItemType Directory -Path (Join-Path $Path ('shared/Microsoft.WindowsDesktop.App/' + $Version)) -Force | Out-Null
++}
++$temporary = Join-Path ([IO.Path]::GetTempPath()) ('processlens-r23-' + [Guid]::NewGuid().ToString('N'))
++$saved = @{}
++foreach ($name in @('PATH','DOTNET_ROOT','DOTNET_ROOT_X64','NUGET_PACKAGES')) { $saved[$name] = [Environment]::GetEnvironmentVariable($name) }
++try {
++    $root = Join-Path $temporary 'bundle with space'; $profile = Join-Path $temporary 'profile with space'
++    New-Item -ItemType Directory -Path $root,$profile,(Join-Path $root 'supporto') -Force | Out-Null
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'empty package has no runnable GUI'
++    $installed = Join-Path $profile 'Programs/ProcessLens/R20'
++    Touch (Join-Path $installed 'app/win-x64/ProcessLens.exe'); Touch (Join-Path $installed 'start-installed.ps1')
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'completed old installation cannot silently substitute its old GUI'
++    $exe = Join-Path $root 'progetto/publish/win-x64/ProcessLens.exe'; Touch $exe
++    $receipt = Join-Path $root 'supporto/build-r32-r2.ok'
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'publication without successful R31 receipt is not accepted'
++    Set-Content -LiteralPath $receipt -Value 'older version'
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'receipt for another revision is rejected'
++    Remove-Item -LiteralPath $receipt
++    $sdk = Join-Path $installed 'dotnet'; Make-Runtime $sdk
++    New-Item -ItemType Directory -Path (Join-Path $sdk 'sdk/8.0.426'),(Join-Path $installed 'packages') -Force | Out-Null
++    # Stub only the compiler entry point and project build script; no dotnet, app or service is launched.
++    function global:dotnet { throw 'fixture must not launch a real compiler' }
++    $build = Join-Path $root 'progetto/build-dashboard.ps1'
++    Set-Content -LiteralPath $build -Value 'throw "synthetic failed tests"'
++    $failed = $false
++    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('synthetic failed tests') }
++    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'failed tests cannot issue a build receipt or launch a stale publication'
++    Check ($env:NUGET_PACKAGES -eq (Join-Path $installed 'packages')) 'completed R20 cache reused without copying packages into ZIP'
++    [xml]$config = Get-Content -LiteralPath (Join-Path $root 'progetto/NuGet.Config') -Raw
++    Check ($config.configuration.packageSources.clear -ne $null -and -not $config.configuration.packageSources.add) 'R20 cache build has no configured network feed'
++    Remove-Item -LiteralPath $exe
++    Set-Content -LiteralPath $build -Value '# fixture successful script but no executable'
++    $failed = $false
++    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('senza eseguibile') }
++    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'missing executable after build remains an error'
++    Set-Content -LiteralPath $build -Value 'New-Item -ItemType Directory -Path "publish/win-x64" -Force | Out-Null; Set-Content -LiteralPath "publish/win-x64/ProcessLens.exe" -Value "fixture"'
++    Invoke-ProcessLensBuild $root $profile
++    $target = Resolve-ProcessLensLaunch $root $profile
++    Check ($target.Kind -eq 'Exe' -and $target.Entry -eq $exe -and $target.Runtime -eq $sdk) 'successful owned build resolves new publication with existing private runtime'
++    Set-Content -LiteralPath $build -Value 'throw "fast path must not rebuild"'
++    Check ((Resolve-ProcessLensLaunch $root $profile).Entry -eq $exe) 'subsequent resolution needs no build or SDK command'
++    $incomplete = Join-Path $temporary 'incomplete'; Touch (Join-Path $incomplete 'dotnet.exe')
++    Check (-not (Test-DesktopRuntime8 $incomplete)) 'missing desktop runtime is not accepted'
++    Make-Runtime $incomplete '9.0.1'
++    Check (-not (Test-DesktopRuntime8 $incomplete)) 'wrong desktop runtime major is not accepted'
++    Check ((Quote-LaunchArgument 'C:\Program Files\ProcessLens\ProcessLens.exe') -eq '"C:\Program Files\ProcessLens\ProcessLens.exe"') 'paths with spaces remain one UAC argument'
++    foreach ($bad in @('C:\bad"path', "C:\bad`npath")) {
++        $failed = $false; try { Quote-LaunchArgument $bad | Out-Null } catch { $failed = $true }
++        Check $failed 'quotes and newlines cannot create extra launch arguments'
++    }
++    $tokens = $null; $errors = $null
++    $ast = [System.Management.Automation.Language.Parser]::ParseFile($Launcher,[ref]$tokens,[ref]$errors)
++    Check ($errors.Count -eq 0) 'real PowerShell parser accepts complete launcher'
++    $commands = @($ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] },$true) | ForEach-Object { $_.GetCommandName() })
++    Check (@($commands | Where-Object { $_ -in @('Expand-Archive','Invoke-WebRequest','Install-Package','Install-Module','Set-Service','Start-Service','Stop-Service','Stop-Process') }).Count -eq 0) 'launcher installs no dependencies and changes no services or running processes'
++    Write-Host ('R32 R2 launcher fixture complete: ' + $count + ' checks; synthetic files only, no Windows app or UAC.')
++} finally {
++    Remove-Item function:global:dotnet -ErrorAction SilentlyContinue
++    foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name,$saved[$name]) }
++    if (Test-Path -LiteralPath $temporary) { Remove-Item -LiteralPath $temporary -Recurse -Force }
++}
+diff --git a/progetto/audit/tools/typecheck_wpf_sources_r32r2.py b/progetto/audit/tools/typecheck_wpf_sources_r32r2.py
+new file mode 100644
+index 0000000..a9ae0a9
+--- /dev/null
++++ b/progetto/audit/tools/typecheck_wpf_sources_r32r2.py
+@@ -0,0 +1,48 @@
++"""Type-check real C# against WindowsDesktop reference assemblies with explicit generated-field stubs.
++This is NOT WPF markup compilation, BAML, MSBuild, or runtime validation. Stubs live outside the deliverable.
++"""
++import argparse,hashlib,json,subprocess,xml.etree.ElementTree as ET
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();out=work/'typecheck';out.mkdir(exist_ok=True);audit=r/'audit/R10_R32_R2';sha=lambda b:hashlib.sha256(b).hexdigest()
++base={p.name:p for p in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll')};desktop=list((work/'wpf-ref').glob('*.dll'))
++assert len(desktop)>20
++for f in desktop:base[f.name]=f
++refs=list(base.values());event=sdk/'packs/Microsoft.AspNetCore.App.Ref/8.0.32/ref/net8.0/System.Diagnostics.EventLog.dll';sqlite=work/'Microsoft.Data.Sqlite.dll'
++globals=out/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))
++wpf_usings=[x['Identity'] for x in json.loads((audit/'msbuild-wpf-usings.json').read_text())['Items']['Using']]
++assert set(wpf_usings)=={'System','System.Collections.Generic','System.Linq','System.Threading','System.Threading.Tasks'}, 'Unexpected evaluated WPF implicit usings'
++wpf_globals=out/'WpfGlobalUsings.cs';wpf_globals.write_text(''.join('global using '+s+';\n' for s in wpf_usings))
++x='{http://schemas.microsoft.com/winfx/2006/xaml}';stubs=[];inputs={}
++for path in (r/'src/ProcessLens.App').glob('*.xaml'):
++ tree=ET.parse(path).getroot();cls=tree.get(x+'Class');assert cls
++ fields=[]
++ for e in tree.iter():
++  name=e.get(x+'Name')
++  if not name:continue
++  tag=e.tag.split('}',1)[1]
++  if e.tag.startswith('{clr-namespace:ProcessLens.App}'):typ='ProcessLens.App.'+tag
++  elif tag=='Polyline':typ='System.Windows.Shapes.Polyline'
++  else:typ='System.Windows.Controls.'+tag
++  fields.append('internal '+typ+' '+name+' = null!;')
++ ns,short=cls.rsplit('.',1);stubs.append('namespace '+ns+' { public partial class '+short+' { '+ ' '.join(fields)+' private void InitializeComponent() {} } }')
++ inputs[path.relative_to(r).as_posix()]=sha(path.read_bytes())
++stub=out/'MarkupFieldStubs.cs';stub.write_text('\n'.join(stubs));results=[]
++def compile(name,sources,extra=(),library=True):
++ for f in sources:
++  if f.is_relative_to(r):inputs[f.relative_to(r).as_posix()]=sha(f.read_bytes())
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(out/(name+'.dll'))]
++ args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
++ args+=['-resource:'+str(r/'src/ProcessLens.App/Assets/ProcessLens.ico')+',ProcessLens.AppIcon'] if name=='ProcessLens' else []
++ args+=['-r:'+str(f) for f in [*refs,event,*extra]]+[str(wpf_globals if name == 'ProcessLens' or name.endswith('UiTests') else globals)]+[str(f) for f in sources]
++ result=subprocess.run(args,capture_output=True,text=True);log=result.stdout+result.stderr;(audit/(name+'-typecheck.log')).write_text(log)
++ print(name, 'PASS' if result.returncode==0 else 'FAIL');results.append({'assembly':name,'status':'PASS' if result.returncode==0 else 'FAIL','warning_count':log.count('warning CS')})
++ if result.returncode:raise SystemExit(log)
++core=work/'runtime/ProcessLens.Core.dll';assert core.is_file()
++compile('ProcessLens.Windows',sorted((r/'src/ProcessLens.Windows').glob('*.cs')),[core])
++compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),[core])
++extra=[core,out/'ProcessLens.Windows.dll',out/'ProcessLens.Semantics.dll',sqlite]
++compile('ProcessLens',sorted((r/'src/ProcessLens.App').rglob('*.cs'))+[stub],extra)
++for name in ['NetworkUiTests','CopyUiTests','SystemProcessUiTests','NewTaskUiTests','LiveMetricsUiTests','ProcessGroupsUiTests']:
++ compile('ProcessLens.'+name,[r/'tests'/('ProcessLens.'+name)/'Program.cs'],extra+[out/'ProcessLens.dll'],False)
++(audit/'wpf-typecheck-evidence.json').write_text(json.dumps({'qualification':'C# type checking with generated-field stubs only; NOT actual WPF markup compilation or runtime','evaluated_wpf_implicit_usings':wpf_usings,'assemblies':results,'inputs':inputs,'stub_sha256':sha(stub.read_bytes()),'reference_hashes':{f.name:sha(f.read_bytes()) for f in [*desktop,event,sqlite]}},indent=2)+'\n')
+diff --git a/progetto/build-dashboard.ps1 b/progetto/build-dashboard.ps1
+index 4833b85..af89787 100644
+--- a/progetto/build-dashboard.ps1
++++ b/progetto/build-dashboard.ps1
+@@ -48,6 +48,7 @@ Write-Host 'Controllo sintassi di tutti gli script PowerShell...' -ForegroundCol
+ & (Join-Path $PSScriptRoot 'audit\tools\check_build_reference_r31r1.ps1')
+ & (Join-Path $PSScriptRoot 'audit\tools\check_notification_area_r32.ps1')
+ & (Join-Path $PSScriptRoot 'audit\tools\check_wpf_path_r32r1.ps1')
++& (Join-Path $PSScriptRoot 'audit\tools\check_embedded_icon_r32r2.ps1')
+ Write-Host 'Test catalogo eventi, struttura JSONL e privacy...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.DiagnosticsTests' -Project '.\tests\ProcessLens.DiagnosticsTests\ProcessLens.DiagnosticsTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.DiagnosticsTests\ProcessLens.DiagnosticsTests.csproj','-c','Release')
+ Write-Host 'Test del lettore SQLite (solo lettura, dati sintetici)...' -ForegroundColor Cyan
+@@ -66,6 +67,8 @@ Write-Host 'Test WPF R25: gruppi e filtro con fixture, nessuna acquisizione real
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.ProcessGroupsUiTests' -Project '.\tests\ProcessLens.ProcessGroupsUiTests\ProcessLens.ProcessGroupsUiTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.ProcessGroupsUiTests\ProcessLens.ProcessGroupsUiTests.csproj','-c','Release')
+ Write-Host 'Test R30 finestra reale: callback icona orologio, pulsante Riduci, riapertura e uscita; dati simulati...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.MainWindowShell' -Project '.\tests\ProcessLens.ProcessGroupsUiTests\ProcessLens.ProcessGroupsUiTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.ProcessGroupsUiTests\ProcessLens.ProcessGroupsUiTests.csproj','-c','Release','--','--window-smoke')
++Write-Host 'Test icona incorporata: risorsa assembly e formato ICO, nessuna finestra...' -ForegroundColor Cyan
++Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.IconResourceTests' -Project '.\tests\ProcessLens.IconResourceTests\ProcessLens.IconResourceTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.IconResourceTests\ProcessLens.IconResourceTests.csproj','-c','Release')
+ Write-Host '[FASE 2] Test RAM: separazione memoria fisica/virtuale, campioni e culture it-IT/en-US...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.MemoryTests' -Project '.\tests\ProcessLens.MemoryTests\ProcessLens.MemoryTests.csproj' -Arguments @('run', '--project', '.\tests\ProcessLens.MemoryTests\ProcessLens.MemoryTests.csproj', '-c', 'Release')
+ Write-Host 'Test interpretazione approfondita dei processi...' -ForegroundColor Cyan
+diff --git a/progetto/src/ProcessLens.App/IconFile.cs b/progetto/src/ProcessLens.App/IconFile.cs
+new file mode 100644
+index 0000000..40665a9
+--- /dev/null
++++ b/progetto/src/ProcessLens.App/IconFile.cs
+@@ -0,0 +1,45 @@
++using System.Buffers.Binary;
++using System.IO;
++using System.Reflection;
++
++namespace ProcessLens.App;
++
++// Reads only this assembly's embedded ICO. No filesystem path or WPF pack URI.
++internal static class IconFile
++{
++    internal const string ResourceName = "ProcessLens.AppIcon";
++    internal const int MaximumBytes = 256 * 1024;
++    internal static byte[]? ReadEmbedded(Assembly assembly)
++    {
++        using var stream = assembly.GetManifestResourceStream(ResourceName);
++        if (stream is null || stream.Length is <= 0 or > MaximumBytes) return null;
++        var bytes = new byte[(int)stream.Length];
++        stream.ReadExactly(bytes);
++        return bytes;
++    }
++
++    internal static bool TrySelectImage(byte[]? file, int desiredSize, out byte[] bits)
++    {
++        bits = Array.Empty<byte>();
++        if (file is null || file.Length is < 6 or > MaximumBytes || desiredSize is < 1 or > 256) return false;
++        var data = file.AsSpan();
++        if (BinaryPrimitives.ReadUInt16LittleEndian(data) != 0 || BinaryPrimitives.ReadUInt16LittleEndian(data[2..]) != 1) return false;
++        int count = BinaryPrimitives.ReadUInt16LittleEndian(data[4..]);
++        if (count is < 1 or > 64 || file.Length < 6 + count * 16) return false;
++        int best = -1, distance = int.MaxValue;
++        for (int i = 0; i < count; i++) {
++            var entry = data.Slice(6 + i * 16, 16);
++            uint length = BinaryPrimitives.ReadUInt32LittleEndian(entry[8..]);
++            uint offset = BinaryPrimitives.ReadUInt32LittleEndian(entry[12..]);
++            if (entry[3] != 0 || length == 0 || offset < 6 + count * 16 || (ulong)offset + length > (ulong)file.Length) return false;
++            int width = entry[0] == 0 ? 256 : entry[0], height = entry[1] == 0 ? 256 : entry[1];
++            int delta = Math.Abs(width - desiredSize) + Math.Abs(height - desiredSize);
++            if (delta < distance) { best = i; distance = delta; }
++        }
++        var selected = data.Slice(6 + best * 16, 16);
++        int size = (int)BinaryPrimitives.ReadUInt32LittleEndian(selected[8..]);
++        int start = (int)BinaryPrimitives.ReadUInt32LittleEndian(selected[12..]);
++        bits = data.Slice(start, size).ToArray();
++        return true;
++    }
++}
+diff --git a/progetto/src/ProcessLens.App/MainWindow.xaml b/progetto/src/ProcessLens.App/MainWindow.xaml
+index c4cba34..fe3f38e 100644
+--- a/progetto/src/ProcessLens.App/MainWindow.xaml
++++ b/progetto/src/ProcessLens.App/MainWindow.xaml
+@@ -2,7 +2,7 @@
+         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:local="clr-namespace:ProcessLens.App"
+-        Title="ProcessLens" Icon="Assets/ProcessLens.ico"
++        Title="ProcessLens"
+         Width="1180"
+         Height="800"
+         MinWidth="950"
+diff --git a/progetto/src/ProcessLens.App/MainWindow.xaml.cs b/progetto/src/ProcessLens.App/MainWindow.xaml.cs
+index 7afe49b..9b1fa1b 100644
+--- a/progetto/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/progetto/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -113,6 +113,7 @@ public partial class MainWindow : Window
+     {
+         _monitoringEnabled = startMonitoring;
+         InitializeComponent();
++        ProcessLensIcon.Apply(this); // Optional embedded image; never a fatal XAML dependency.
+         WindowDiagnostics = new WindowActionDiagnostics(this, MinimizeWindowButton, startMonitoring);
+         CommandBindings.Add(new System.Windows.Input.CommandBinding(System.Windows.Input.ApplicationCommands.Find,
+             (_, e) => { FocusSearch(selectAll: true); e.Handled = true; },
+diff --git a/progetto/src/ProcessLens.App/ProcessLens.App.csproj b/progetto/src/ProcessLens.App/ProcessLens.App.csproj
+index 069e51e..719f169 100644
+--- a/progetto/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/progetto/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -9,7 +9,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R32-R1-wpf-path-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R32-R2-embedded-icon-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+@@ -19,8 +19,7 @@
+     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+   </PropertyGroup>
+   <ItemGroup>
+-    <Resource Include="Assets/ProcessLens.ico" />
+-    <Content Include="Assets/ProcessLens.ico" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
++    <EmbeddedResource Include="Assets/ProcessLens.ico" LogicalName="ProcessLens.AppIcon" />
+   </ItemGroup>
+   <ItemGroup>
+     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.20" />
+diff --git a/progetto/src/ProcessLens.App/ProcessLensIcon.cs b/progetto/src/ProcessLens.App/ProcessLensIcon.cs
+new file mode 100644
+index 0000000..5d2b59e
+--- /dev/null
++++ b/progetto/src/ProcessLens.App/ProcessLensIcon.cs
+@@ -0,0 +1,32 @@
++using System.IO;
++using System.Windows;
++using System.Windows.Media.Imaging;
++
++namespace ProcessLens.App;
++
++internal static class ProcessLensIcon
++{
++    private static readonly Lazy<BitmapFrame?> Image = new(() => Decode(
++        () => IconFile.ReadEmbedded(typeof(ProcessLensIcon).Assembly)));
++
++    internal static BitmapFrame? Decode(Func<byte[]?> read)
++    {
++        try {
++            byte[]? bytes = read();
++            if (!IconFile.TrySelectImage(bytes, 32, out _)) return null;
++            using var stream = new MemoryStream(bytes!, writable: false);
++            var image = BitmapFrame.Create(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
++            image.Freeze();
++            return image;
++        } catch (Exception ex) {
++            AppDiagnostics.Record("Icona facoltativa non disponibile; avvio senza icona personalizzata", ex);
++            return null;
++        }
++    }
++
++    internal static void Apply(Window window)
++    {
++        try { if (Image.Value is { } icon) window.Icon = icon; }
++        catch (Exception ex) { AppDiagnostics.Record("Icona finestra non applicata; avvio prosegue", ex); }
++    }
++}
+diff --git a/progetto/src/ProcessLens.App/TrayWindowController.cs b/progetto/src/ProcessLens.App/TrayWindowController.cs
+index 3970519..43aca88 100644
+--- a/progetto/src/ProcessLens.App/TrayWindowController.cs
++++ b/progetto/src/ProcessLens.App/TrayWindowController.cs
+@@ -317,8 +317,13 @@ internal sealed class TrayWindowController : IDisposable
+ 
+     private nint TrayIcon()
+     {
+-        if (_trayIcon == 0) _trayIcon = LoadImageW(IntPtr.Zero,
+-            System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "ProcessLens.ico"), 1, 32, 32, 0x10);
++        if (_trayIcon == 0) {
++            try {
++                byte[]? file = IconFile.ReadEmbedded(typeof(TrayWindowController).Assembly);
++                if (IconFile.TrySelectImage(file, 32, out var bits))
++                    _trayIcon = CreateIconFromResourceEx(bits, (uint)bits.Length, true, 0x00030000, 32, 32, 0);
++            } catch (Exception ex) { _diagnostics?.Record("TRAY_ICON_ERROR", ex.GetType().Name); }
++        }
+         return _trayIcon != 0 ? _trayIcon : LoadIconW(IntPtr.Zero, new IntPtr(32512));
+     }
+ 
+@@ -400,7 +405,7 @@ internal sealed class TrayWindowController : IDisposable
+     [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern uint RegisterWindowMessageW(string text);
+     [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern IntPtr LoadIconW(IntPtr instance, IntPtr name);
+     [DllImport("user32.dll")] private static extern uint GetDoubleClickTime();
+-    [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern nint LoadImageW(nint instance, string path, uint type, int width, int height, uint flags);
++    [DllImport("user32.dll", SetLastError = true)] private static extern nint CreateIconFromResourceEx(byte[] bits, uint byteCount, [MarshalAs(UnmanagedType.Bool)] bool icon, uint version, int width, int height, uint flags);
+     [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] private static extern bool DestroyIcon(nint icon);
+     [DllImport("user32.dll", SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)]
+     private static extern bool CloseWindow(IntPtr hwnd);
+diff --git a/progetto/tests/ProcessLens.IconResourceTests/ProcessLens.IconResourceTests.csproj b/progetto/tests/ProcessLens.IconResourceTests/ProcessLens.IconResourceTests.csproj
+new file mode 100644
+index 0000000..819a419
+--- /dev/null
++++ b/progetto/tests/ProcessLens.IconResourceTests/ProcessLens.IconResourceTests.csproj
+@@ -0,0 +1,7 @@
++<Project Sdk="Microsoft.NET.Sdk">
++  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
++  <ItemGroup>
++    <Compile Include="../../src/ProcessLens.App/IconFile.cs" Link="IconFile.cs" />
++    <EmbeddedResource Include="../../src/ProcessLens.App/Assets/ProcessLens.ico" LogicalName="ProcessLens.AppIcon" />
++  </ItemGroup>
++</Project>
+diff --git a/progetto/tests/ProcessLens.IconResourceTests/Program.cs b/progetto/tests/ProcessLens.IconResourceTests/Program.cs
+new file mode 100644
+index 0000000..a97ad64
+--- /dev/null
++++ b/progetto/tests/ProcessLens.IconResourceTests/Program.cs
+@@ -0,0 +1,30 @@
++using System.Buffers.Binary;
++using System.Reflection;
++using ProcessLens.App;
++
++static void Check(bool ok, string label) { if (!ok) throw new Exception("FAIL icon: " + label); Console.WriteLine("PASS icon: " + label); }
++var assembly = Assembly.GetExecutingAssembly();
++byte[]? original = IconFile.ReadEmbedded(assembly);
++Check(original is { Length: > 100 and <= IconFile.MaximumBytes }, "actual SDK embedded resource is available without a path");
++Check(IconFile.TrySelectImage(original,32,out var native), "32-pixel native icon payload selected from actual asset");
++Check(native.AsSpan().StartsWith(new byte[]{137,80,78,71,13,10,26,10}), "selected actual image has PNG resource signature");
++Check(IconFile.TrySelectImage(original,16,out var small)&&!small.SequenceEqual(native), "small and tray sizes retain distinct image payloads");
++Check(IconFile.TrySelectImage(original,256,out var large)&&large.Length>native.Length, "256-pixel entry retains its actual dimensions");
++foreach(var invalid in new byte[]?[]{null,Array.Empty<byte>(),new byte[5],new byte[7],new byte[IconFile.MaximumBytes+1]})
++ Check(!IconFile.TrySelectImage(invalid,32,out var missing)&&missing.Length==0,"invalid or missing data is unavailable");
++byte[] Mutate(int offset,uint value) { var b=original!.ToArray();BinaryPrimitives.WriteUInt32LittleEndian(b.AsSpan(offset),value);return b; }
++Check(!IconFile.TrySelectImage(Mutate(18,uint.MaxValue),32,out _),"overflowing payload offset rejected");
++Check(!IconFile.TrySelectImage(Mutate(14,uint.MaxValue),32,out _),"overflowing payload length rejected");
++Check(!IconFile.TrySelectImage(Mutate(18,0),32,out _),"payload cannot overlap icon directory");
++var cursor=original!.ToArray();cursor[2]=2;
++Check(!IconFile.TrySelectImage(cursor,32,out _),"cursor does not masquerade as icon");
++Check(!IconFile.TrySelectImage(original,0,out _)&&!IconFile.TrySelectImage(original,257,out _),"invalid requested dimensions rejected");
++Check(IconFile.ReadEmbedded(typeof(object).Assembly) is null,"missing optional assembly resource is unavailable");
++Check(original!.SequenceEqual(IconFile.ReadEmbedded(assembly)!),"reads preserve embedded bytes exactly");
++if(args.Contains("--expect-single-file")) {
++#pragma warning disable IL3000 // Deliberately assert the single-file compatibility condition.
++ Check(assembly.Location.Length==0,"single-file assembly has no external location");
++#pragma warning restore IL3000
++ Check(IconFile.TrySelectImage(IconFile.ReadEmbedded(assembly),32,out _),"embedded icon survives real single-file publication without external assets");
++}
++Console.WriteLine("Icon resource tests complete; no WPF, native icon handles, filesystem icon lookup or user data.");
+diff --git a/progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs b/progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs
+index d550924..c933f5d 100644
+--- a/progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs
++++ b/progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs
+@@ -111,6 +111,8 @@ internal static class Program
+         var placeholder32=ProcessIconResolver.GetIcon(unknown32);
+         Check(placeholder32 is DrawingImage { IsFrozen:true } && !ReferenceEquals(placeholder32,ProcessIconResolver.GetIcon(other32)),"R32 missing originals get distinct frozen initials placeholders");
+         Check(ReferenceEquals(placeholder32,ProcessIconResolver.GetIcon(unknown32))&&ProcessIconResolver.IconDescription(unknown32).Contains("Segnaposto"),"R32 placeholders are cached and explicitly described as placeholders");
++        Check(main.Icon is BitmapSource { IsFrozen:true },"R32 R2 main window reads its optional icon from embedded bytes");
++        Check(ProcessLensIcon.Decode(()=>null) is null && ProcessLensIcon.Decode(()=>new byte[7]) is null,"R32 R2 missing or malformed optional icon cannot abort markup construction");
+         Console.WriteLine("R25 WPF fixture complete: no shown window, native process/network reads, tray registration or user clipboard.");
+     }
+     static void Until(Func<bool> condition,int timeoutMilliseconds=5000)
+diff --git a/supporto/avvia.ps1 b/supporto/avvia.ps1
+index edab53e..38249ef 100644
+--- a/supporto/avvia.ps1
++++ b/supporto/avvia.ps1
+@@ -16,9 +16,9 @@ function Resolve-ProcessLensLaunch([string] $Root, [string] $UserLocalAppData) {
+         if (Test-DesktopRuntime8 $candidate) { $runtime = $candidate; break }
+     }
+     $exe = Join-Path $Root 'progetto/publish/win-x64/ProcessLens.exe'
+-    $receipt = Join-Path $Root 'supporto/build-r32-r1.ok'
++    $receipt = Join-Path $Root 'supporto/build-r32-r2.ok'
+     if ((Test-Path -LiteralPath $exe -PathType Leaf) -and (Test-Path -LiteralPath $receipt -PathType Leaf) -and
+-        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R32-R1-wpf-path') {
++        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R32-R2-embedded-icon') {
+         return [PSCustomObject]@{ Kind='Exe'; Entry=$exe; Runtime=$runtime }
+     }
+     return $null
+@@ -54,7 +54,7 @@ function Invoke-ProcessLensBuild([string] $Root, [string] $UserLocalAppData) {
+     finally { Pop-Location }
+     $exe = Join-Path $project 'publish/win-x64/ProcessLens.exe'
+     if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { throw 'Compilazione senza eseguibile R23. Avvio interrotto.' }
+-    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r32-r1.ok') -Value 'ProcessLens-R32-R1-wpf-path' -Encoding ASCII
++    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r32-r2.ok') -Value 'ProcessLens-R32-R2-embedded-icon' -Encoding ASCII
+ }
+ function Quote-LaunchArgument([string] $Value) {
+     if ($Value.Contains('"') -or $Value -match "[`r`n]") { throw 'Percorso non valido.' }

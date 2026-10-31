@@ -1,0 +1,604 @@
+file,side,changed_text
+LEGGIMI.txt,before,ProcessLens R29 - Log riduzione a icona e recupero icone
+LEGGIMI.txt,after,ProcessLens R30 - Clic sull'icona accanto all'orologio
+LEGGIMI.txt,before,Chiudi la vecchia versione con Esci. Estrai in una cartella nuova e apri
+LEGGIMI.txt,before,AVVIA_PROCESSLENS.cmd. Il primo avvio compila e verifica questa candidata;
+LEGGIMI.txt,before,gli avvii successivi sono diretti. Durante i test appare una finestra di prova.
+LEGGIMI.txt,after,Chiudi la versione precedente con Esci. Estrai in una cartella nuova e apri
+LEGGIMI.txt,after,AVVIA_PROCESSLENS.cmd. Il primo avvio compila e verifica R30; gli altri sono diretti.
+LEGGIMI.txt,after,I test Windows mostrano una finestra di prova e la riducono/riaprono.
+LEGGIMI.txt,before,SE RIDUCI A ICONA NON FUNZIONA
+LEGGIMI.txt,before,1. Prova il pulsante Riduci a icona e attendi almeno 3 secondi.
+LEGGIMI.txt,before,"2. Se la finestra resta aperta, scegli Log finestra, Aggiorna e Copia tutto."
+LEGGIMI.txt,before,"   Se si riduce e torna subito aperta, copia il rapporto dopo il ritorno."
+LEGGIMI.txt,before,3. Incolla il rapporto per analizzare la sequenza. Il log non attribuisce
+LEGGIMI.txt,before,   automaticamente la causa e non dichiara risolto il difetto.
+LEGGIMI.txt,before,Il rapporto resta selezionabile e copiabile anche se la scrittura su disco fallisce.
+LEGGIMI.txt,before,La finestra del log non e modale: non blocca il pulsante che stiamo diagnosticando.
+LEGGIMI.txt,after,ICONA ACCANTO ALL'OROLOGIO
+LEGGIMI.txt,after,"L'intervento R30 riguarda l'icona nell'area notifiche, anche nel riquadro aperto"
+LEGGIMI.txt,after,con la freccia vicino all'orologio. E distinta dal pulsante Riduci nella finestra.
+LEGGIMI.txt,after,- Clic sinistro con finestra aperta: riduci.
+LEGGIMI.txt,after,- Un clic successivo con finestra ridotta: riapri.
+LEGGIMI.txt,after,- Doppio clic / notifiche duplicate dello stesso clic: una sola azione.
+LEGGIMI.txt,after,"- Tasto destro: Mostra ProcessLens, Riduci a icona, Esci da ProcessLens."
+LEGGIMI.txt,after,La barra applicazioni resta disponibile come percorso di riapertura.
+LEGGIMI.txt,after,
+LEGGIMI.txt,after,COSA E CAMBIATO
+LEGGIMI.txt,after,R29 accettava solo NIN_SELECT/NIN_KEYSELECT quando era negoziato il protocollo
+LEGGIMI.txt,after,moderno. Il normale rilascio sinistro WM_LBUTTONUP poteva essere ignorato.
+LEGGIMI.txt,after,"R30 decodifica i due formati documentati dei callback Windows, verifica l'ID"
+LEGGIMI.txt,after,"della propria icona e gestisce rilascio sinistro, doppio clic, selezione e tastiera."
+LEGGIMI.txt,after,La protezione dai duplicati evita che il secondo evento riapra subito la finestra.
+LEGGIMI.txt,after,Questo corregge il percorso del codice; il clic fisico sul tuo PC va verificato.
+LEGGIMI.txt,after,
+LEGGIMI.txt,after,SE L'ICONA NON RISPONDE
+LEGGIMI.txt,after,"1. Clicca l'icona accanto all'orologio, poi attendi almeno 3 secondi."
+LEGGIMI.txt,after,2. Riapri dalla barra applicazioni se necessario.
+LEGGIMI.txt,after,"3. Apri Log finestra, Aggiorna e Copia tutto. Incolla il rapporto per analizzarlo."
+LEGGIMI.txt,before,"Rotazione: window-actions.previous.log. Le righe includono ora evento, sessione,"
+LEGGIMI.txt,before,numero progressivo e tentativo. Il file e locale; nessun invio automatico.
+LEGGIMI.txt,after,TRAY_REGISTER / TRAY_FILTER: registrazione dell'icona e filtro dei callback.
+LEGGIMI.txt,after,TRAY_CALLBACK: evento e parametri ricevuti PRIMA della selezione dell'azione.
+LEGGIMI.txt,after,"TRAY_DECISION: riduci, ripristina, duplicato ignorato o altro evento senza azione."
+LEGGIMI.txt,after,"TRAY_INPUT / TRAY_BEFORE: nuovo tentativo dall'icona, con stato iniziale."
+LEGGIMI.txt,after,MINIMIZE_RETURN / STATE / UI_CHECK: stato della finestra dopo l'azione.
+LEGGIMI.txt,after,"Il semplice movimento del puntatore non viene registrato. Se manca TRAY_CALLBACK,"
+LEGGIMI.txt,after,non si presume la causa: serve capire se il messaggio arriva alla finestra corretta.
+LEGGIMI.txt,after,"Il log e selezionabile/copiabile, non modale e con scrittura locale in background."
+LEGGIMI.txt,after,"Ultime 256 righe in memoria, coda 256, rotazione file a circa 1 MiB e una copia."
+LEGGIMI.txt,after,"Nessun invio automatico, cattura schermo o registrazione del testo dei tasti."
+LEGGIMI.txt,before,COME LEGGERE IL LOG
+LEGGIMI.txt,before,INPUT: pressione rilevata nell'area del pulsante o da tastiera.
+LEGGIMI.txt,before,CLICK: l'evento del pulsante e arrivato; ROUTE indica il collegamento al controller.
+LEGGIMI.txt,before,MINIMIZE_ENTER / MINIMIZE_RETURN: stato prima e dopo la richiesta.
+LEGGIMI.txt,before,STATE / WM_SIZE: cambiamenti di stato WPF e notifiche Windows.
+LEGGIMI.txt,before,VERIFY_LOADED: verifica successiva; VERIFY_SKIPPED spiega se e stata superata.
+LEGGIMI.txt,before,UI_CHECK_QUEUED: dopo 2 s e stato chiesto un controllo al dispatcher.
+LEGGIMI.txt,before,UI_CHECK: il dispatcher ha eseguito il controllo; confrontare i tempi.
+LEGGIMI.txt,before,"RESTORE_SOURCE / TRAY_INPUT / RIPRISTINO: richiesta di ripristino e sua origine,"
+LEGGIMI.txt,before,quando osservata. Un cambiamento esterno puo avere solo STATE / WM_SIZE.
+LEGGIMI.txt,before,Nessun evento INPUT non prova che non hai cliccato: il clic potrebbe non essere
+LEGGIMI.txt,before,"arrivato alla finestra. Il registro non registra schermate, tasti digitati,"
+LEGGIMI.txt,before,titoli di altre app o inventario dei processi.
+LEGGIMI.txt,before,
+LEGGIMI.txt,before,ICONE
+LEGGIMI.txt,before,Prima l'icona associata da Windows al percorso dell'eseguibile. Se e generica o
+LEGGIMI.txt,before,"manca, secondo tentativo: prima icona incorporata nell'eseguibile indicato dal"
+LEGGIMI.txt,before,"campione, solo con percorso assoluto di unita e suffisso .exe, senza ricerca"
+LEGGIMI.txt,before,per nome e senza eseguire il programma. Un'icona Shell distinta evita il secondo
+LEGGIMI.txt,before,tentativo. Gli handle estratti vengono liberati; cache limitata a 128 chiavi.
+LEGGIMI.txt,before,Il simbolo Windows e solo un ripiego per componenti Windows classificati.
+LEGGIMI.txt,before,"Se manca il percorso o anche il file non offre un'icona, resta il ripiego:"
+LEGGIMI.txt,before,non si inventa il logo di un prodotto dal solo nome. L'icona non verifica firma
+LEGGIMI.txt,before,"digitale, identita o sicurezza. Il tooltip distingue Shell, risorsa e ripiego."
+LEGGIMI.txt,before,
+LEGGIMI.txt,before,PESO E VERIFICHE
+LEGGIMI.txt,before,"Registro in memoria: ultime 256 righe, dettaglio massimo 1400 caratteri."
+LEGGIMI.txt,before,"Scrittura in background: coda massima 256; file ruotato dopo circa 1 MiB,"
+LEGGIMI.txt,before,con una copia precedente. Nessun controllo continuo: una verifica dopo il tentativo.
+LEGGIMI.txt,before,"755 asserzioni portabili, 36 controlli PowerShell, 17 fixture launcher,"
+LEGGIMI.txt,before,7 controlli negativi runtime e 14 controlli risorse superati.
+LEGGIMI.txt,after,VERIFICHE
+LEGGIMI.txt,after,787 asserzioni portabili; 37 controlli PowerShell; 17 fixture launcher;
+LEGGIMI.txt,after,10 controlli negativi runtime e 14 controlli risorse superati.
+LEGGIMI.txt,before,"NON equivale a compilazione WPF/BAML, esecuzione Windows, prova DPI o misura RAM."
+LEGGIMI.txt,before,Prove e limiti in progetto\audit\R10_R29. I registri precedenti restano storici.
+LEGGIMI.txt,before,La build Windows include una prova della vera MainWindow con dati simulati:
+LEGGIMI.txt,before,"riduzione, stato nativo, riapertura, controllo dopo 2 s e log non modale."
+LEGGIMI.txt,before,Si ferma se la riduzione non e confermata. Il test richiede un desktop Windows.
+LEGGIMI.txt,before,La correzione sul tuo PC non e ancora confermata: serve il nuovo log se ricapita.
+LEGGIMI.txt,after,"NON equivale a compilazione XAML/BAML, esecuzione WPF, prova DPI o misura RAM."
+LEGGIMI.txt,after,La build Windows verifica anche callback sintetici nel vero HWND della MainWindow:
+LEGGIMI.txt,after,"rilascio sinistro v4, select duplicato, clic successivo, formato legacy, tastiera,"
+LEGGIMI.txt,after,ID diverso e hover. Non equivale a un clic fisico generato da Explorer.
+LEGGIMI.txt,after,Prove in progetto\audit\R10_R30; i rapporti precedenti restano storici.
+LEGGIMI.txt,after,Il log R29 fornito dall'utente conferma il pulsante della finestra; non conteneva
+LEGGIMI.txt,after,i callback grezzi del clic sull'icona. Non basta per attribuire la causa sul suo PC.
+LEGGIMI.txt,before,"Nessun SDK, runtime, driver, immagine scaricata o dipendenza aggiunta allo ZIP."
+LEGGIMI.txt,before,Riusa SDK/cache R20 oppure uno SDK .NET 8 installato. Il ripristino NuGet puo
+LEGGIMI.txt,before,richiedere rete se manca la cache. Nessuna installazione automatica di SDK o driver.
+LEGGIMI.txt,before,Per ricompilare elimina solo supporto/build-r29.ok.
+LEGGIMI.txt,before,"Guardian, RAM/CPU, rete, servizi, profiler e scorrimento mantengono il codice R28."
+LEGGIMI.txt,before,Nessuna riduzione o incremento di RAM misurato qui.
+LEGGIMI.txt,after,"Nessun SDK, runtime, driver o nuova dipendenza aggiunta; nessun processo in piu,"
+LEGGIMI.txt,after,nuovo polling o finestra nativa nascosta per gestire l'icona.
+LEGGIMI.txt,after,Riusa SDK/cache R20 o uno SDK .NET 8 installato. NuGet puo richiedere rete se manca
+LEGGIMI.txt,after,la cache. Nessuna installazione automatica di SDK o driver.
+LEGGIMI.txt,after,Per ricompilare elimina solo supporto/build-r30.ok.
+LEGGIMI.txt,after,"Icone dei processi, layout principale, scorrimento, campionamento CPU/RAM,"
+LEGGIMI.txt,after,"Guardian, rete, servizi, profiler e MemoryAgent mantengono il codice R29."
+LEGGIMI.txt,after,Il consumo effettivo di RAM non e stato misurato in questa sessione.
+progetto/audit/tools/check_powershell_r30.py,after,"""""""Run PowerShell source preflight and isolated launcher fixtures, never a build or installation."""""""
+progetto/audit/tools/check_powershell_r30.py,after,"import argparse,json,hashlib,subprocess"
+progetto/audit/tools/check_powershell_r30.py,after,from pathlib import Path
+progetto/audit/tools/check_powershell_r30.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--shell',type=Path,required=True);p.add_argument('--pwsh',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/check_powershell_r30.py,after,r=a.project.resolve();shell=a.shell.resolve();audit=r/'audit/R10_R30';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/check_powershell_r30.py,after,"# Same 30 authorized baseline source stages, plus the R24 wiring gate."
+progetto/audit/tools/check_powershell_r30.py,after,"stages=[x['file'] for x in json.loads((r/'audit/R10_R23_R1/powershell-evidence.json').read_text())['stages']]+['audit/tools/check_live_metrics_r24.ps1','audit/tools/check_process_groups_r25.ps1','audit/tools/check_scroll_minimize_r26.ps1','audit/tools/check_windows_icons_r27.ps1','audit/tools/check_window_controls_r28.ps1','audit/tools/check_window_diagnostics_r29.ps1','audit/tools/check_tray_callbacks_r30.ps1'];results=[];logs=[]"
+progetto/audit/tools/check_powershell_r30.py,after,for n in stages:
+progetto/audit/tools/check_powershell_r30.py,after," x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(r/n)],cwd=r,capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;logs.append(n+'\n'+log)"
+progetto/audit/tools/check_powershell_r30.py,after, if x.returncode:(audit/'preflight.log').write_text('\n'.join(logs));raise SystemExit(log)
+progetto/audit/tools/check_powershell_r30.py,after," results.append({'file':n,'sha256':sha((r/n).read_bytes()),'status':'PASS'})"
+progetto/audit/tools/check_powershell_r30.py,after,(audit/'preflight.log').write_text('\n'.join(logs))
+progetto/audit/tools/check_powershell_r30.py,after,fixture=r/'audit/tools/test_launcher_r30.ps1';launcher=shell/'supporto/avvia.ps1'
+progetto/audit/tools/check_powershell_r30.py,after,"x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(fixture),'-Launcher',str(launcher)],capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;(audit/'launcher-fixture.log').write_text(log)"
+progetto/audit/tools/check_powershell_r30.py,after,if x.returncode:raise SystemExit(log)
+progetto/audit/tools/check_powershell_r30.py,after,"count=sum(line.startswith('PASS R30 launcher:') for line in log.splitlines());assert count==17,count"
+progetto/audit/tools/check_powershell_r30.py,after,"(audit/'powershell-evidence.json').write_text(json.dumps({'PowerShell':'7.4.21 Linux; no Windows runtime execution','stages':results,'launcher_fixture_checks':count,'launcher_sha256':sha(launcher.read_bytes()),'fixture_sha256':sha(fixture.read_bytes())},indent=2)+'\n');print('PASS',len(results),'source stages;',count,'launcher checks')"
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,$ErrorActionPreference='Stop'
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,$root=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,function Source([string]$name) { Get-Content (Join-Path $root $name) -Raw -Encoding UTF8 }
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,$tray=Source 'src/ProcessLens.App/TrayWindowController.cs'
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,$router=Source 'src/ProcessLens.App/TrayCallbackRouter.cs'
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,$trace=Source 'src/ProcessLens.App/WindowActionDiagnostics.cs'
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,$ui=Source 'tests/ProcessLens.ProcessGroupsUiTests/Program.cs'
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,"foreach($value in @('TrayCallbackRouter.Decode(wParam.ToInt64(), lParam.ToInt64(), 1)','TRAY_CALLBACK','TrayCallbackRouter.IsActivation(packet)','TrayCallbackRouter.IsContextMenu(packet)','TRAY_DECISION','duplicato ignorato','_trayActivation.Activate','TRAY_FILTER','TRAY_REGISTER','BeginTrayAttempt')) {"
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after, if(-not $tray.Contains($value)){throw ('FAIL R30 tray callback: '+$value)}
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,}
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,if($tray.Contains('_trayVersion4 ? notification')){throw 'FAIL R30 negotiated version must not discard a left-button callback.'}
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,"if($tray.IndexOf('""TRAY_CALLBACK""') -gt $tray.IndexOf('if (TrayCallbackRouter.IsActivation(packet))')){throw 'FAIL R30 raw callback must be logged before filtering.'}"
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,"foreach($value in @('bits & 0xFFFF','bits >> 16','packedId == expectedIconId','wParam == expectedIconId','0x0202 or 0x0203 or 0x0400 or 0x0401','0x0205 or 0x007B')) {"
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after, if(-not $router.Contains($value)){throw ('FAIL R30 packet decode/identity: '+$value)}
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,}
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,"foreach($value in @('BeginTrayAttempt','Begin(""TRAY_INPUT"", detail)','Snapshot(""TRAY_BEFORE"")')) {"
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after, if(-not $trace.Contains($value)){throw ('FAIL R30 independent tray attempt trace: '+$value)}
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,}
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,"foreach($value in @('void Tray30(','0x8000+69','actual HWND v4 mouse release','actual HWND later select/up','actual HWND legacy-layout','actual HWND keyboard activation','actual HWND wrong icon')) {"
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after, if(-not $ui.Contains($value)){throw ('FAIL R30 owned-HWND fixture: '+$value)}
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,}
+progetto/audit/tools/check_tray_callbacks_r30.ps1,after,"Write-Host 'PASS R30 source: both Shell packet layouts, left release/select/key activation, exact icon ID, duplicate gate, raw callback diagnostics and owned-HWND Windows fixture. Physical tray clicks remain separate.'"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,"""""""Runtime negative controls for Windows icon classification, snapshot fixtures only."""""""
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,"import argparse,json,hashlib,subprocess"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,from pathlib import Path
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,r=a.project.resolve();sdk=a.sdk.resolve();work=a.work.resolve();root=work/'mutants-r30';root.mkdir(exist_ok=True);audit=r/'audit/R10_R30';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,refs=sorted((sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll'));globals=work/'runtime/GlobalUsings.cs'
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,core_sources=sorted((r/'src/ProcessLens.Core').glob('*.cs'))
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,"sources=[r/'tests/ProcessLens.ProcessGroupsTests/Program.cs']+[r/'src/ProcessLens.Windows'/n for n in ['NativeMethods.cs','OwnedNetworkTableReader.cs','WindowsDeepProcessInspector.cs']]+[r/'src/ProcessLens.App'/n for n in ['ProcessDisplayFormatter.cs','ProcessNetworkPresentation.cs','WindowLifetimePolicy.cs','ReadingPositionPolicy.cs','WindowsProcessIconPolicy.cs','IconPreferencePolicy.cs','DeferredDiagnosticWriter.cs','WindowDiagnosticJournal.cs','NativeIconPreference.cs','TrayCallbackRouter.cs']]"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,mutations=[
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," ('override-specific-native-icon','src/ProcessLens.App/IconPreferencePolicy.cs','windowsComponent && (original is null || generic)','windowsComponent','R28 Explorer or another Windows component keeps its distinct executable icon'),"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," ('defer-ordinary-click','src/ProcessLens.App/WindowLifetimePolicy.cs','_pending = null; // A queued restore must not undo this explicit click.\n        minimize();','_pending = null; // A queued restore must not undo this explicit click.\n        Schedule(minimize);','R28 explicit minimize acts before the queued dispatcher turn'),"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," ('stale-restore-after-minimize','src/ProcessLens.App/WindowLifetimePolicy.cs','_pending = null; // A queued restore must not undo this explicit click.','_pending = restore; // Deliberately retain a stale restore for this mutant.','R28 old queued restore cannot undo an immediate minimize'),"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," ('synchronous-window-log','src/ProcessLens.App/DeferredDiagnosticWriter.cs','post(Drain); return true;','Drain(); return true;','R28 window logging never writes from the caller thread'),"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," ('generic-icon-hides-resource','src/ProcessLens.App/NativeIconPreference.cs','shell is not null && !generic(shell)','shell is not null','R29 embedded executable icon replaces only a generic Shell icon'),"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," ('unbounded-window-journal','src/ProcessLens.App/WindowDiagnosticJournal.cs','if (_lines.Count >= Math.Clamp(capacity, 1, 256)) _lines.Dequeue();','// Deliberately keep all lines.','R29 journal retains at most its fixed capacity'),"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," ('culture-sensitive-window-clock','src/ProcessLens.App/WindowDiagnosticJournal.cs','string.Create(CultureInfo.InvariantCulture,','string.Create(CultureInfo.CurrentCulture,','R29 trace captures event time and invariant monotonic elapsed time'),"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," ('ignored-v4-mouse-release','src/ProcessLens.App/TrayCallbackRouter.cs','0x0202 or 0x0203 or','0x0203 or','R30 ordinary left-button release activates the v4 tray icon'),"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," ('other-tray-id-accepted','src/ProcessLens.App/TrayCallbackRouter.cs','packedId == expectedIconId','true','R30 another packed icon cannot trigger a window action'),"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," ('packed-event-not-masked','src/ProcessLens.App/TrayCallbackRouter.cs','(int)(bits & 0xFFFF)','(int)bits','R30 v4 decodes event and icon ID separately from coordinates')]"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,results=[]
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,"for name,file,before,after,expected in mutations:"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," out=root/name;out.mkdir(exist_ok=True);original=r/file;data=original.read_text();assert before in data;mutated=out/'mutated.cs';mutated.write_text(data.replace(before,after,1));core=out/'ProcessLens.Core.dll'"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," def compile(target,inputs,extra=(),library=False):"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,"  args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-target:'+('library' if library else 'exe'),'-out:'+str(target)]"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,  args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,"  args+=['-r:'+str(f) for f in [*refs,*extra]]+[str(globals)]+[str(mutated if f==original else f) for f in inputs]"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,"  x=subprocess.run(args,capture_output=True,text=True,timeout=60);assert x.returncode==0,x.stdout+x.stderr"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," if file.startswith('src/ProcessLens.Core/'):compile(core,core_sources,library=True)"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after, else:core.write_bytes((work/'runtime/ProcessLens.Core.dll').read_bytes())
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," dll=out/'ProcessLens.ProcessGroupsTests.dll';compile(dll,sources,[core]);dll.with_suffix('.runtimeconfig.json').write_text(json.dumps({'runtimeOptions':{'tfm':'net8.0','framework':{'name':'Microsoft.NETCore.App','version':'8.0.32'}}}))"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," x=subprocess.run([str(sdk/'dotnet'),str(dll)],capture_output=True,text=True,timeout=45);log=x.stdout+x.stderr;(audit/(name+'-expected-failure.log')).write_text(log)"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," assert x.returncode!=0 and expected in log,log"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after," results.append({'mutation':name,'expected_failure':expected,'expected_runtime_failure_observed':True,'status':'PASS','production_file':file,'production_sha256':sha(original.read_bytes()),'test_sha256':sha(sources[0].read_bytes())})"
+progetto/audit/tools/mutate_tray_callbacks_r30.py,after,"(audit/'mutation-evidence.json').write_text(json.dumps(results,indent=2)+'\n');print('PASS',len(results),'runtime negative controls')"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"""""""Create a lightweight R30 candidate; assert the precise R29 delta, evidence hashes and manifests."""""""
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"import argparse,csv,difflib,hashlib,json,shutil,subprocess,tempfile,zipfile"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,from pathlib import Path
+progetto/audit/tools/package_tray_callbacks_r30.py,after,import xml.etree.ElementTree as ET
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--shell',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True);p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,shell=a.shell.resolve();r=shell/'progetto';audit=r/'audit/R10_R30';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/package_tray_callbacks_r30.py,after,assert sha(a.baseline_zip.read_bytes())=='4cb332965fb2e8fec37056547d0202e7448edd7fecf16eb738f9bb99683d04a7'
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"with zipfile.ZipFile(a.baseline_zip) as z:before={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"for d in sorted(shell.rglob('__pycache__'),reverse=True):shutil.rmtree(d)"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,after={f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file()}
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"modified={'LEGGIMI.txt','supporto/avvia.ps1','progetto/build-dashboard.ps1',*[f'progetto/src/ProcessLens.App/{n}' for n in ['TrayWindowController.cs','WindowActionDiagnostics.cs','ProcessLens.App.csproj']],*[f'progetto/tests/{n}' for n in ['ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj','ProcessLens.ProcessGroupsTests/Program.cs','ProcessLens.ProcessGroupsUiTests/Program.cs']]}"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"added={'progetto/src/ProcessLens.App/TrayCallbackRouter.cs',*[f'progetto/audit/tools/{n}' for n in ['run_process_groups_r30.py','typecheck_wpf_sources_r30.py','check_powershell_r30.py','check_tray_callbacks_r30.ps1','test_launcher_r30.ps1','mutate_tray_callbacks_r30.py','package_tray_callbacks_r30.py']]}"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"manifests={'SHA256SUMS.txt','progetto/SHA256SUMS_R10.txt'}"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"assert all(n in after for n in before),'No baseline file may disappear'"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"assert {n for n,b in before.items() if n not in manifests and after[n]!=b}==modified,'Unexpected modification or missing intended change'"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"assert {n for n in after if n not in before and not n.startswith('progetto/audit/R10_R30/')}==added,'Unexpected new file'"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"assert not any(n.startswith('progetto/progetto/') for n in after),'Nested duplicate project'"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"for n,b in after.items():"
+progetto/audit/tools/package_tray_callbacks_r30.py,after," if n.endswith(('.xaml','.csproj')):ET.fromstring(b)"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"assert all(after[n]==b for n,b in before.items() if n.startswith(('progetto/src/ProcessLens.Core/','progetto/src/ProcessLens.Semantics/','progetto/src/ProcessLens.Windows/','progetto/src/ProcessLens.Guardian/','progetto/src/ProcessLens.MemoryAgent/','progetto/src/ProcessLens.Profiler/','progetto/src/ProcessLens.RamMonitor/')))"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"for n in ['AutomaticViewport.cs','ReadingPositionPolicy.cs','WindowLifetimePolicy.cs','WindowsProcessIconPolicy.cs','IconPreferencePolicy.cs','DeferredDiagnosticWriter.cs','ProcessIconResolver.cs','NativeIconPreference.cs','AppDiagnostics.cs','MainWindow.xaml.cs','MainWindow.xaml']:"
+progetto/audit/tools/package_tray_callbacks_r30.py,after," assert after['progetto/src/ProcessLens.App/'+n]==before['progetto/src/ProcessLens.App/'+n],n"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"for filename,key in [('runtime-evidence.json','source_hashes'),('wpf-typecheck-evidence.json','inputs')]:"
+progetto/audit/tools/package_tray_callbacks_r30.py,after, data=json.loads((audit/filename).read_text());assert data[key]
+progetto/audit/tools/package_tray_callbacks_r30.py,after," for n,h in data[key].items():assert sha((r/n).read_bytes())==h,(filename,n)"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,runtime=json.loads((audit/'runtime-evidence.json').read_text());assert len(runtime['outcomes'])==13 and all(x['status']=='PASS' for x in runtime['outcomes']);assert sum(x['assertions'] for x in runtime['outcomes'])==787
+progetto/audit/tools/package_tray_callbacks_r30.py,after,wpf=json.loads((audit/'wpf-typecheck-evidence.json').read_text());assert len(wpf['assemblies'])==9 and all(x['status']=='PASS' for x in wpf['assemblies'])
+progetto/audit/tools/package_tray_callbacks_r30.py,after,ps=json.loads((audit/'powershell-evidence.json').read_text());assert len(ps['stages'])==37 and ps['launcher_fixture_checks']==17
+progetto/audit/tools/package_tray_callbacks_r30.py,after,for x in ps['stages']:assert x['status']=='PASS' and sha((r/x['file']).read_bytes())==x['sha256']
+progetto/audit/tools/package_tray_callbacks_r30.py,after,assert sha((shell/'supporto/avvia.ps1').read_bytes())==ps['launcher_sha256']
+progetto/audit/tools/package_tray_callbacks_r30.py,after,assert sha((r/'audit/tools/test_launcher_r30.ps1').read_bytes())==ps['fixture_sha256']
+progetto/audit/tools/package_tray_callbacks_r30.py,after,negative=json.loads((audit/'mutation-evidence.json').read_text());assert len(negative)==10
+progetto/audit/tools/package_tray_callbacks_r30.py,after,for x in negative:
+progetto/audit/tools/package_tray_callbacks_r30.py,after, assert x['status']=='PASS' and x['expected_runtime_failure_observed']
+progetto/audit/tools/package_tray_callbacks_r30.py,after, assert sha((r/x['production_file']).read_bytes())==x['production_sha256']
+progetto/audit/tools/package_tray_callbacks_r30.py,after, assert sha((r/'tests/ProcessLens.ProcessGroupsTests/Program.cs').read_bytes())==x['test_sha256']
+progetto/audit/tools/package_tray_callbacks_r30.py,after,resource=json.loads((audit/'live-resource-guards.json').read_text());assert len(resource)==14 and all(x['status']=='PASS' for x in resource)
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"(audit/'scope-evidence.json').write_text(json.dumps({'baseline_sha256':sha(a.baseline_zip.read_bytes()),'modified_files':sorted(modified),'new_files':sorted(added),'protected':'All Core, Semantics, native acquisition, Guardian, MemoryAgent, profiler, RAM monitor, native icon retrieval, MainWindow layout/logic, scrolling and lifetime pure policies BYTE IDENTICAL TO R29','new_dependencies':0,'Windows_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'},indent=2)+'\n')"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"with (audit/'string-ledger.csv').open('w',newline='') as f:"
+progetto/audit/tools/package_tray_callbacks_r30.py,after," w=csv.writer(f);w.writerow(['file','side','changed_text'])"
+progetto/audit/tools/package_tray_callbacks_r30.py,after, for n in sorted(modified|added):
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"  for line in difflib.unified_diff(before.get(n,b'').decode('utf-8-sig').splitlines(),after[n].decode('utf-8-sig').splitlines(),n,n,n=0):"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"   if line.startswith(('+','-')) and not line.startswith(('+++','---')):w.writerow([n,'after' if line[0]=='+' else 'before',line[1:]])"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"with (audit/'files-changed.csv').open('w',newline='') as f:"
+progetto/audit/tools/package_tray_callbacks_r30.py,after," w=csv.writer(f);w.writerow(['file','kind','sha256_before','sha256_after'])"
+progetto/audit/tools/package_tray_callbacks_r30.py,after," for n in sorted(modified|added):w.writerow([n,'added' if n in added else 'modified',sha(before[n]) if n in before else '',sha(after[n])])"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,include=lambda n:n not in manifests and not n.startswith('progetto/audit/R10_R30/')
+progetto/audit/tools/package_tray_callbacks_r30.py,after,with tempfile.TemporaryDirectory(prefix='processlens-r30-') as tmp:
+progetto/audit/tools/package_tray_callbacks_r30.py,after, t=Path(tmp);bdir=t/'before';adir=t/'after';bdir.mkdir();adir.mkdir()
+progetto/audit/tools/package_tray_callbacks_r30.py,after," for base,data in [(bdir,before),(adir,after)]:"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"  for n,b in data.items():"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"   if include(n):p=base/n;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b)"
+progetto/audit/tools/package_tray_callbacks_r30.py,after," x=subprocess.run(['git','diff','--no-index','--no-renames','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=t,capture_output=True);assert x.returncode==1"
+progetto/audit/tools/package_tray_callbacks_r30.py,after, lines=[]
+progetto/audit/tools/package_tray_callbacks_r30.py,after, for line in x.stdout.splitlines(keepends=True):
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"  if line.startswith((b'diff --git ',b'--- ',b'+++ ')):"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"   for prefix in [b'a/before/',b'a/after/']:line=line.replace(prefix,b'a/')"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"   for prefix in [b'b/before/',b'b/after/']:line=line.replace(prefix,b'b/')"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,  lines.append(line)
+progetto/audit/tools/package_tray_callbacks_r30.py,after, patch=b''.join(lines);path=audit/'R29_to_R30.patch';path.write_bytes(patch)
+progetto/audit/tools/package_tray_callbacks_r30.py,after," x=subprocess.run(['git','apply','--check',str(path)],cwd=bdir,capture_output=True);assert x.returncode==0,x.stderr"
+progetto/audit/tools/package_tray_callbacks_r30.py,after," subprocess.run(['git','apply',str(path)],cwd=bdir,check=True)"
+progetto/audit/tools/package_tray_callbacks_r30.py,after," assert {f.relative_to(bdir).as_posix():f.read_bytes() for f in bdir.rglob('*') if f.is_file()}=={n:b for n,b in after.items() if include(n)}"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"(audit/'patch-evidence.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','patch_sha256':sha(patch),'excluded_from_diff_only':'current R30 audit and recursive manifests; all included in final ZIP'},indent=2)+'\n')"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt'}
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"(r/'SHA256SUMS_R10.txt').write_text(''.join(sha(b)+'  '+n+'\n' for n,b in sorted(current.items())))"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,files={f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file() and f.name!='SHA256SUMS.txt'}
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"assert not any(n.endswith(('.dll','.exe','.pdb','.deb','.nupkg','.pyc','.ok')) for n in files),'Build/SDK artifacts forbidden'"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,assert all(len(b)<10*1024*1024 for b in files.values())
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"manifest=''.join(sha(b)+'  '+n+'\n' for n,b in sorted(files.items()));files['SHA256SUMS.txt']=manifest.encode();(shell/'SHA256SUMS.txt').write_text(manifest)"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"a.output_directory.mkdir(parents=True,exist_ok=True);target=a.output_directory/'ProcessLens-R30-clic-icona-orologio.zip'"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:"
+progetto/audit/tools/package_tray_callbacks_r30.py,after," for n,b in sorted(files.items()):z.writestr('ProcessLens-Leggero/'+n,b)"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,with zipfile.ZipFile(target) as z:
+progetto/audit/tools/package_tray_callbacks_r30.py,after, assert z.testzip() is None
+progetto/audit/tools/package_tray_callbacks_r30.py,after," for line in manifest.splitlines():h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/'+n))==h"
+progetto/audit/tools/package_tray_callbacks_r30.py,after," for line in (r/'SHA256SUMS_R10.txt').read_text().splitlines():h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/progetto/'+n))==h"
+progetto/audit/tools/package_tray_callbacks_r30.py,after," assert {n.split('/')[1] for n in z.namelist()}=={'AVVIA_PROCESSLENS.cmd','LEGGIMI.txt','supporto','progetto','SHA256SUMS.txt'}"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"result={'zip':str(target.resolve()),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files)-1,'portable_assertions':787,'PowerShell_source_stages':37,'launcher_fixture_checks':17,'runtime_negative_controls':10,'resource_guard_checks':14,'CSharp_WindowsDesktop_typechecked_assemblies':9,'Windows_WPF_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'}"
+progetto/audit/tools/package_tray_callbacks_r30.py,after,"(a.output_directory/'verification-r30.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))"
+progetto/audit/tools/run_process_groups_r30.py,after,"""""""Run actual portable component and native-parser regressions; no WPF/native Windows acquisition."""""""
+progetto/audit/tools/run_process_groups_r30.py,after,"import argparse,hashlib,json,subprocess"
+progetto/audit/tools/run_process_groups_r30.py,after,from pathlib import Path
+progetto/audit/tools/run_process_groups_r30.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/run_process_groups_r30.py,after,"r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();work.mkdir(parents=True,exist_ok=True);audit=r/'audit/R10_R30';audit.mkdir(exist_ok=True)"
+progetto/audit/tools/run_process_groups_r30.py,after,refs=sorted((sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll'));sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/run_process_groups_r30.py,after,"globals=work/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))"
+progetto/audit/tools/run_process_groups_r30.py,after,hashes={};outcomes=[]
+progetto/audit/tools/run_process_groups_r30.py,after,"def compile(name,sources,extra=(),library=False):"
+progetto/audit/tools/run_process_groups_r30.py,after, hashes.update({f.relative_to(r).as_posix():sha(f.read_bytes()) for f in sources})
+progetto/audit/tools/run_process_groups_r30.py,after," args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(work/(name+'.dll'))]"
+progetto/audit/tools/run_process_groups_r30.py,after, args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
+progetto/audit/tools/run_process_groups_r30.py,after," args+=['-r:'+str(f) for f in [*refs,*extra]]+[str(globals)]+[str(f) for f in sources]"
+progetto/audit/tools/run_process_groups_r30.py,after," x=subprocess.run(args,capture_output=True,text=True,timeout=60);(audit/(name+'-build.log')).write_text(x.stdout+x.stderr)"
+progetto/audit/tools/run_process_groups_r30.py,after, if x.returncode:raise SystemExit(x.stdout+x.stderr)
+progetto/audit/tools/run_process_groups_r30.py,after,"compile('ProcessLens.Core',sorted((r/'src/ProcessLens.Core').glob('*.cs')),library=True)"
+progetto/audit/tools/run_process_groups_r30.py,after,"compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),extra=[work/'ProcessLens.Core.dll'],library=True)"
+progetto/audit/tools/run_process_groups_r30.py,after,"for suite in ['WindowsComponentTests','SystemProcessTests','NewTaskTests','CpuTests','MemoryTests','MemoryEfficiencyTests','RefreshPolicyTests','LiveMetricsTests','CopyTests','ProcessGroupsTests','PresentationTests','BehaviorTests','TerminologyTests']:"
+progetto/audit/tools/run_process_groups_r30.py,after, name='ProcessLens.'+suite;sources=[r/'tests'/name/'Program.cs']
+progetto/audit/tools/run_process_groups_r30.py,after, if suite=='SystemProcessTests':sources+=[r/'src/ProcessLens.Windows/WindowsSystemProcessSource.cs']
+progetto/audit/tools/run_process_groups_r30.py,after," if suite=='LiveMetricsTests':sources += [r/'src/ProcessLens.Windows'/f for f in ['WindowsMemorySampler.cs','WindowsLiveCpuSampler.cs','NativeMethods.cs']] + [r/'src/ProcessLens.App'/f for f in ['WindowLifetimePolicy.cs','MemoryObservationBuffer.cs']]"
+progetto/audit/tools/run_process_groups_r30.py,after," if suite=='MemoryEfficiencyTests':sources += [r/'src/ProcessLens.App'/f for f in ['BoundedCache.cs','MemoryObservationBuffer.cs']]"
+progetto/audit/tools/run_process_groups_r30.py,after," if suite=='CopyTests':sources += [r/'src/ProcessLens.App'/f for f in ['CopyTextFormat.cs','ReportLayout.cs','ProcessExitNotice.cs','WindowLifetimePolicy.cs','AuditLogPresentation.cs','ServiceNavigation.cs']]"
+progetto/audit/tools/run_process_groups_r30.py,after," if suite=='ProcessGroupsTests':sources += [r/'src/ProcessLens.Windows'/f for f in ['NativeMethods.cs','OwnedNetworkTableReader.cs','WindowsDeepProcessInspector.cs']] + [r/'src/ProcessLens.App'/f for f in ['ProcessDisplayFormatter.cs','ProcessNetworkPresentation.cs','WindowLifetimePolicy.cs','ReadingPositionPolicy.cs','WindowsProcessIconPolicy.cs','IconPreferencePolicy.cs','DeferredDiagnosticWriter.cs','WindowDiagnosticJournal.cs','NativeIconPreference.cs','TrayCallbackRouter.cs']]"
+progetto/audit/tools/run_process_groups_r30.py,after," if suite=='PresentationTests':sources += [r/'src/ProcessLens.App'/f for f in ['ProcessDisplayFormatter.cs','ProcessNetworkPresentation.cs']]"
+progetto/audit/tools/run_process_groups_r30.py,after, if suite=='NewTaskTests':sources+=[r/'src/ProcessLens.Windows/WindowsNewTaskLauncher.cs']
+progetto/audit/tools/run_process_groups_r30.py,after," compile(name,sources,extra=[work/'ProcessLens.Core.dll',work/'ProcessLens.Semantics.dll'])"
+progetto/audit/tools/run_process_groups_r30.py,after," (work/(name+'.runtimeconfig.json')).write_text(json.dumps({'runtimeOptions':{'tfm':'net8.0','framework':{'name':'Microsoft.NETCore.App','version':'8.0.32'}}}))"
+progetto/audit/tools/run_process_groups_r30.py,after," x=subprocess.run([str(sdk/'dotnet'),str(work/(name+'.dll'))],capture_output=True,text=True,timeout=45);log=x.stdout+x.stderr;(audit/(name+'-run.log')).write_text(log)"
+progetto/audit/tools/run_process_groups_r30.py,after, if x.returncode:raise SystemExit(log)
+progetto/audit/tools/run_process_groups_r30.py,after," outcomes.append({'suite':name,'status':'PASS','assertions':sum(l.startswith('PASS ') for l in log.splitlines())})"
+progetto/audit/tools/run_process_groups_r30.py,after,"e={'environment':'Linux x64; direct Roslyn SDK 8.0.426 / .NET 8.0.32; no MSBuild or WPF; synthetic fixtures only','outcomes':outcomes,'source_hashes':hashes}"
+progetto/audit/tools/run_process_groups_r30.py,after,"(audit/'runtime-evidence.json').write_text(json.dumps(e,indent=2)+'\n');print(json.dumps(outcomes,indent=2))"
+progetto/audit/tools/test_launcher_r30.ps1,after,param([string] $Launcher)
+progetto/audit/tools/test_launcher_r30.ps1,after,$ErrorActionPreference = 'Stop'
+progetto/audit/tools/test_launcher_r30.ps1,after,. $Launcher -FunctionsOnly
+progetto/audit/tools/test_launcher_r30.ps1,after,$count = 0
+progetto/audit/tools/test_launcher_r30.ps1,after,"function Check([bool] $Ok, [string] $Label) {"
+progetto/audit/tools/test_launcher_r30.ps1,after,    if (-not $Ok) { throw ('FAIL R30 launcher: ' + $Label) }
+progetto/audit/tools/test_launcher_r30.ps1,after,    Write-Host ('PASS R30 launcher: ' + $Label); $script:count++
+progetto/audit/tools/test_launcher_r30.ps1,after,}
+progetto/audit/tools/test_launcher_r30.ps1,after,function Touch([string] $Path) {
+progetto/audit/tools/test_launcher_r30.ps1,after,    New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
+progetto/audit/tools/test_launcher_r30.ps1,after,    Set-Content -LiteralPath $Path -Value 'fixture only' -Encoding ASCII
+progetto/audit/tools/test_launcher_r30.ps1,after,}
+progetto/audit/tools/test_launcher_r30.ps1,after,"function Make-Runtime([string] $Path, [string] $Version='8.0.32') {"
+progetto/audit/tools/test_launcher_r30.ps1,after,    Touch (Join-Path $Path 'dotnet.exe')
+progetto/audit/tools/test_launcher_r30.ps1,after,    New-Item -ItemType Directory -Path (Join-Path $Path 'shared/Microsoft.NETCore.App/8.0.32') -Force | Out-Null
+progetto/audit/tools/test_launcher_r30.ps1,after,    New-Item -ItemType Directory -Path (Join-Path $Path ('shared/Microsoft.WindowsDesktop.App/' + $Version)) -Force | Out-Null
+progetto/audit/tools/test_launcher_r30.ps1,after,}
+progetto/audit/tools/test_launcher_r30.ps1,after,$temporary = Join-Path ([IO.Path]::GetTempPath()) ('processlens-r23-' + [Guid]::NewGuid().ToString('N'))
+progetto/audit/tools/test_launcher_r30.ps1,after,$saved = @{}
+progetto/audit/tools/test_launcher_r30.ps1,after,"foreach ($name in @('PATH','DOTNET_ROOT','DOTNET_ROOT_X64','NUGET_PACKAGES')) { $saved[$name] = [Environment]::GetEnvironmentVariable($name) }"
+progetto/audit/tools/test_launcher_r30.ps1,after,try {
+progetto/audit/tools/test_launcher_r30.ps1,after,    $root = Join-Path $temporary 'bundle with space'; $profile = Join-Path $temporary 'profile with space'
+progetto/audit/tools/test_launcher_r30.ps1,after,"    New-Item -ItemType Directory -Path $root,$profile,(Join-Path $root 'supporto') -Force | Out-Null"
+progetto/audit/tools/test_launcher_r30.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'empty package has no runnable GUI'
+progetto/audit/tools/test_launcher_r30.ps1,after,    $installed = Join-Path $profile 'Programs/ProcessLens/R20'
+progetto/audit/tools/test_launcher_r30.ps1,after,    Touch (Join-Path $installed 'app/win-x64/ProcessLens.exe'); Touch (Join-Path $installed 'start-installed.ps1')
+progetto/audit/tools/test_launcher_r30.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'completed old installation cannot silently substitute its old GUI'
+progetto/audit/tools/test_launcher_r30.ps1,after,    $exe = Join-Path $root 'progetto/publish/win-x64/ProcessLens.exe'; Touch $exe
+progetto/audit/tools/test_launcher_r30.ps1,after,    $receipt = Join-Path $root 'supporto/build-r30.ok'
+progetto/audit/tools/test_launcher_r30.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'publication without successful R30 receipt is not accepted'
+progetto/audit/tools/test_launcher_r30.ps1,after,    Set-Content -LiteralPath $receipt -Value 'older version'
+progetto/audit/tools/test_launcher_r30.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'receipt for another revision is rejected'
+progetto/audit/tools/test_launcher_r30.ps1,after,    Remove-Item -LiteralPath $receipt
+progetto/audit/tools/test_launcher_r30.ps1,after,    $sdk = Join-Path $installed 'dotnet'; Make-Runtime $sdk
+progetto/audit/tools/test_launcher_r30.ps1,after,"    New-Item -ItemType Directory -Path (Join-Path $sdk 'sdk/8.0.426'),(Join-Path $installed 'packages') -Force | Out-Null"
+progetto/audit/tools/test_launcher_r30.ps1,after,"    # Stub only the compiler entry point and project build script; no dotnet, app or service is launched."
+progetto/audit/tools/test_launcher_r30.ps1,after,    function global:dotnet { throw 'fixture must not launch a real compiler' }
+progetto/audit/tools/test_launcher_r30.ps1,after,    $build = Join-Path $root 'progetto/build-dashboard.ps1'
+progetto/audit/tools/test_launcher_r30.ps1,after,"    Set-Content -LiteralPath $build -Value 'throw ""synthetic failed tests""'"
+progetto/audit/tools/test_launcher_r30.ps1,after,    $failed = $false
+progetto/audit/tools/test_launcher_r30.ps1,after,    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('synthetic failed tests') }
+progetto/audit/tools/test_launcher_r30.ps1,after,    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'failed tests cannot issue a build receipt or launch a stale publication'
+progetto/audit/tools/test_launcher_r30.ps1,after,    Check ($env:NUGET_PACKAGES -eq (Join-Path $installed 'packages')) 'completed R20 cache reused without copying packages into ZIP'
+progetto/audit/tools/test_launcher_r30.ps1,after,    [xml]$config = Get-Content -LiteralPath (Join-Path $root 'progetto/NuGet.Config') -Raw
+progetto/audit/tools/test_launcher_r30.ps1,after,    Check ($config.configuration.packageSources.clear -ne $null -and -not $config.configuration.packageSources.add) 'R20 cache build has no configured network feed'
+progetto/audit/tools/test_launcher_r30.ps1,after,    Remove-Item -LiteralPath $exe
+progetto/audit/tools/test_launcher_r30.ps1,after,    Set-Content -LiteralPath $build -Value '# fixture successful script but no executable'
+progetto/audit/tools/test_launcher_r30.ps1,after,    $failed = $false
+progetto/audit/tools/test_launcher_r30.ps1,after,    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('senza eseguibile') }
+progetto/audit/tools/test_launcher_r30.ps1,after,    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'missing executable after build remains an error'
+progetto/audit/tools/test_launcher_r30.ps1,after,"    Set-Content -LiteralPath $build -Value 'New-Item -ItemType Directory -Path ""publish/win-x64"" -Force | Out-Null; Set-Content -LiteralPath ""publish/win-x64/ProcessLens.exe"" -Value ""fixture""'"
+progetto/audit/tools/test_launcher_r30.ps1,after,    Invoke-ProcessLensBuild $root $profile
+progetto/audit/tools/test_launcher_r30.ps1,after,    $target = Resolve-ProcessLensLaunch $root $profile
+progetto/audit/tools/test_launcher_r30.ps1,after,    Check ($target.Kind -eq 'Exe' -and $target.Entry -eq $exe -and $target.Runtime -eq $sdk) 'successful owned build resolves new publication with existing private runtime'
+progetto/audit/tools/test_launcher_r30.ps1,after,"    Set-Content -LiteralPath $build -Value 'throw ""fast path must not rebuild""'"
+progetto/audit/tools/test_launcher_r30.ps1,after,    Check ((Resolve-ProcessLensLaunch $root $profile).Entry -eq $exe) 'subsequent resolution needs no build or SDK command'
+progetto/audit/tools/test_launcher_r30.ps1,after,    $incomplete = Join-Path $temporary 'incomplete'; Touch (Join-Path $incomplete 'dotnet.exe')
+progetto/audit/tools/test_launcher_r30.ps1,after,    Check (-not (Test-DesktopRuntime8 $incomplete)) 'missing desktop runtime is not accepted'
+progetto/audit/tools/test_launcher_r30.ps1,after,    Make-Runtime $incomplete '9.0.1'
+progetto/audit/tools/test_launcher_r30.ps1,after,    Check (-not (Test-DesktopRuntime8 $incomplete)) 'wrong desktop runtime major is not accepted'
+progetto/audit/tools/test_launcher_r30.ps1,after,"    Check ((Quote-LaunchArgument 'C:\Program Files\ProcessLens\ProcessLens.exe') -eq '""C:\Program Files\ProcessLens\ProcessLens.exe""') 'paths with spaces remain one UAC argument'"
+progetto/audit/tools/test_launcher_r30.ps1,after,"    foreach ($bad in @('C:\bad""path', ""C:\bad`npath"")) {"
+progetto/audit/tools/test_launcher_r30.ps1,after,        $failed = $false; try { Quote-LaunchArgument $bad | Out-Null } catch { $failed = $true }
+progetto/audit/tools/test_launcher_r30.ps1,after,        Check $failed 'quotes and newlines cannot create extra launch arguments'
+progetto/audit/tools/test_launcher_r30.ps1,after,    }
+progetto/audit/tools/test_launcher_r30.ps1,after,    $tokens = $null; $errors = $null
+progetto/audit/tools/test_launcher_r30.ps1,after,"    $ast = [System.Management.Automation.Language.Parser]::ParseFile($Launcher,[ref]$tokens,[ref]$errors)"
+progetto/audit/tools/test_launcher_r30.ps1,after,    Check ($errors.Count -eq 0) 'real PowerShell parser accepts complete launcher'
+progetto/audit/tools/test_launcher_r30.ps1,after,"    $commands = @($ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] },$true) | ForEach-Object { $_.GetCommandName() })"
+progetto/audit/tools/test_launcher_r30.ps1,after,"    Check (@($commands | Where-Object { $_ -in @('Expand-Archive','Invoke-WebRequest','Install-Package','Install-Module','Set-Service','Start-Service','Stop-Service','Stop-Process') }).Count -eq 0) 'launcher installs no dependencies and changes no services or running processes'"
+progetto/audit/tools/test_launcher_r30.ps1,after,"    Write-Host ('R30 launcher fixture complete: ' + $count + ' checks; synthetic files only, no Windows app or UAC.')"
+progetto/audit/tools/test_launcher_r30.ps1,after,} finally {
+progetto/audit/tools/test_launcher_r30.ps1,after,    Remove-Item function:global:dotnet -ErrorAction SilentlyContinue
+progetto/audit/tools/test_launcher_r30.ps1,after,"    foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name,$saved[$name]) }"
+progetto/audit/tools/test_launcher_r30.ps1,after,    if (Test-Path -LiteralPath $temporary) { Remove-Item -LiteralPath $temporary -Recurse -Force }
+progetto/audit/tools/test_launcher_r30.ps1,after,}
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,"""""""Type-check real C# against WindowsDesktop reference assemblies with explicit generated-field stubs."
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,"This is NOT WPF markup compilation, BAML, MSBuild, or runtime validation. Stubs live outside the deliverable."
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,""""""""
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,"import argparse,hashlib,json,subprocess,xml.etree.ElementTree as ET"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,from pathlib import Path
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();out=work/'typecheck';out.mkdir(exist_ok=True);audit=r/'audit/R10_R30';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,base={p.name:p for p in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll')};desktop=list((work/'wpf-ref').glob('*.dll'))
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,assert len(desktop)>20
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,for f in desktop:base[f.name]=f
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,refs=list(base.values());event=sdk/'packs/Microsoft.AspNetCore.App.Ref/8.0.32/ref/net8.0/System.Diagnostics.EventLog.dll';sqlite=work/'Microsoft.Data.Sqlite.dll'
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,"globals=out/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,x='{http://schemas.microsoft.com/winfx/2006/xaml}';stubs=[];inputs={}
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,for path in (r/'src/ProcessLens.App').glob('*.xaml'):
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after, tree=ET.parse(path).getroot();cls=tree.get(x+'Class');assert cls
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after, fields=[]
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after, for e in tree.iter():
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,  name=e.get(x+'Name')
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,  if not name:continue
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,"  tag=e.tag.split('}',1)[1]"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,  if e.tag.startswith('{clr-namespace:ProcessLens.App}'):typ='ProcessLens.App.'+tag
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,  elif tag=='Polyline':typ='System.Windows.Shapes.Polyline'
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,  else:typ='System.Windows.Controls.'+tag
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,  fields.append('internal '+typ+' '+name+' = null!;')
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after," ns,short=cls.rsplit('.',1);stubs.append('namespace '+ns+' { public partial class '+short+' { '+ ' '.join(fields)+' private void InitializeComponent() {} } }')"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after, inputs[path.relative_to(r).as_posix()]=sha(path.read_bytes())
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,stub=out/'MarkupFieldStubs.cs';stub.write_text('\n'.join(stubs));results=[]
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,"def compile(name,sources,extra=(),library=True):"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after, for f in sources:
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,  if f.is_relative_to(r):inputs[f.relative_to(r).as_posix()]=sha(f.read_bytes())
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after," args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(out/(name+'.dll'))]"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after, args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after," args+=['-r:'+str(f) for f in [*refs,event,*extra]]+[str(globals)]+[str(f) for f in sources]"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after," result=subprocess.run(args,capture_output=True,text=True);log=result.stdout+result.stderr;(audit/(name+'-typecheck.log')).write_text(log)"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after," print(name, 'PASS' if result.returncode==0 else 'FAIL');results.append({'assembly':name,'status':'PASS' if result.returncode==0 else 'FAIL','warning_count':log.count('warning CS')})"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after, if result.returncode:raise SystemExit(log)
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,core=work/'runtime/ProcessLens.Core.dll';assert core.is_file()
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,"compile('ProcessLens.Windows',sorted((r/'src/ProcessLens.Windows').glob('*.cs')),[core])"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,"compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),[core])"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,"extra=[core,out/'ProcessLens.Windows.dll',out/'ProcessLens.Semantics.dll',sqlite]"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,"compile('ProcessLens',sorted((r/'src/ProcessLens.App').rglob('*.cs'))+[stub],extra)"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,"for name in ['NetworkUiTests','CopyUiTests','SystemProcessUiTests','NewTaskUiTests','LiveMetricsUiTests','ProcessGroupsUiTests']:"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after," compile('ProcessLens.'+name,[r/'tests'/('ProcessLens.'+name)/'Program.cs'],extra+[out/'ProcessLens.dll'],False)"
+progetto/audit/tools/typecheck_wpf_sources_r30.py,after,"(audit/'wpf-typecheck-evidence.json').write_text(json.dumps({'qualification':'C# type checking with generated-field stubs only; NOT actual WPF markup compilation or runtime','assemblies':results,'inputs':inputs,'stub_sha256':sha(stub.read_bytes()),'reference_hashes':{f.name:sha(f.read_bytes()) for f in [*desktop,event,sqlite]}},indent=2)+'\n')"
+progetto/build-dashboard.ps1,after,& (Join-Path $PSScriptRoot 'audit\tools\check_tray_callbacks_r30.ps1')
+progetto/build-dashboard.ps1,before,"Write-Host 'Test R28 finestra reale: pulsante Riduci, barra del titolo, riapertura e uscita; dati simulati...' -ForegroundColor Cyan"
+progetto/build-dashboard.ps1,after,"Write-Host 'Test R30 finestra reale: callback icona orologio, pulsante Riduci, riapertura e uscita; dati simulati...' -ForegroundColor Cyan"
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,before,    <InformationalVersion>0.19.16-R10-R29-window-trace-native-icons-candidate</InformationalVersion>
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,after,    <InformationalVersion>0.19.16-R10-R30-tray-click-routing-candidate</InformationalVersion>
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,namespace ProcessLens.App;
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,"// Shell callbacks have two documented wire layouts. Decode the actual packet, not"
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,// a mouse-event whitelist chosen from the negotiated Shell version.
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,"internal readonly record struct TrayCallbackPacket(int Notification, uint IconId, string Format, bool Identified);"
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,internal static class TrayCallbackRouter
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,{
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,"    internal static TrayCallbackPacket Decode(long wParam, long lParam, uint expectedIconId)"
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,    {
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,        uint bits = unchecked((uint)lParam);
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,        int notification = (int)(bits & 0xFFFF);
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,        uint packedId = bits >> 16;
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,        bool fits32 = lParam == bits || lParam == unchecked((int)bits);
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,        if (fits32 && packedId != 0)
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,"            return new(notification, packedId, ""v4"", packedId == expectedIconId);"
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,        if (lParam is >= 0 and <= ushort.MaxValue && wParam is >= 0 and <= uint.MaxValue)
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,"            return new(notification, (uint)wParam, ""legacy"", (uint)wParam == expectedIconId);"
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,"        return new(notification, 0, ""non riconosciuto"", false);"
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,    }
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,    internal static bool IsActivation(TrayCallbackPacket packet) => packet.Identified &&
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,"        packet.Notification is 0x0202 or 0x0203 or 0x0400 or 0x0401; // left up/double click, NIN_SELECT/KEYSELECT"
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,    internal static bool IsContextMenu(TrayCallbackPacket packet) => packet.Identified &&
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,        packet.Notification is 0x0205 or 0x007B; // right up / WM_CONTEXTMENU
+progetto/src/ProcessLens.App/TrayCallbackRouter.cs,after,}
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"        ChangeWindowMessageFilterEx(_hwnd, TrayMessage, 1, IntPtr.Zero);"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"        if (RestoreMessage != 0) ChangeWindowMessageFilterEx(_hwnd, RestoreMessage, 1, IntPtr.Zero);"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"        if (TaskbarCreated != 0) ChangeWindowMessageFilterEx(_hwnd, TaskbarCreated, 1, IntPtr.Zero);"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        AllowCallback(TrayMessage, ""tray"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        if (RestoreMessage != 0) AllowCallback(RestoreMessage, ""ripristino istanza"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        if (TaskbarCreated != 0) AllowCallback(TaskbarCreated, ""riavvio Explorer"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"        open.Click += (_, _) => { _diagnostics?.Record(""RESTORE_SOURCE"", ""menu Mostra ProcessLens""); RequestRestore(); };"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        open.Click += (_, _) => { _diagnostics?.BeginTrayAttempt(""menu Mostra ProcessLens""); _diagnostics?.Record(""RESTORE_SOURCE"", ""menu Mostra ProcessLens""); RequestRestore(); };"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"        minimize.Click += (_, _) => { _diagnostics?.Record(""MINIMIZE_SOURCE"", ""menu tray""); RequestMinimize(); };"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        minimize.Click += (_, _) => { _diagnostics?.BeginTrayAttempt(""menu Riduci a icona""); _diagnostics?.Record(""MINIMIZE_SOURCE"", ""menu tray""); RequestMinimize(); };"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,        if (hwnd != IntPtr.Zero && !IsIconic(hwnd) && !CloseWindow(hwnd)) nativeError = Marshal.GetLastWin32Error();
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"        _diagnostics?.Record(""NATIVE_RESULT"", $""CloseWindow errore={nativeError}; zero significa nessun errore rilevato, non conferma il risultato"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        bool nativeAttempted = hwnd != IntPtr.Zero && !IsIconic(hwnd);
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        if (nativeAttempted && !CloseWindow(hwnd)) nativeError = Marshal.GetLastWin32Error();
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        _diagnostics?.Record(""NATIVE_RESULT"", $""fallback CloseWindow usato={nativeAttempted}; erroreWin32={nativeError}"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,            int notification = (int)(lParam.ToInt64() & 0xFFFF);
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,            bool activate = _trayVersion4 ? notification is 0x0400 or 0x0401 : notification is 0x0202 or 0x0203;
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,            if (activate)
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            var packet = TrayCallbackRouter.Decode(wParam.ToInt64(), lParam.ToInt64(), 1);"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            // Log before deciding: ignored mouse events were invisible in R29.
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            if (packet.Notification != 0x0200)
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"                _diagnostics?.Record(""TRAY_CALLBACK"", $""evento=0x{packet.Notification:X4}; formato={packet.Format}; id={packet.IconId}; nostra={packet.Identified}; versione4Negoziata={_trayVersion4}; wParam=0x{wParam.ToInt64():X}; lParam=0x{lParam.ToInt64():X}; HWND=0x{hwnd.ToInt64():X}"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            if (TrayCallbackRouter.IsActivation(packet))
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"                var action = _trayActivation.Activate(now, GetDoubleClickTime() / 1000d,"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"                    _window.IsVisible, _window.WindowState == WindowState.Minimized);"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"                _diagnostics?.Record(""TRAY_INPUT"", $""notifica=0x{notification:X}; protocollo4={_trayVersion4}; azione={action}"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,                var current = new WindowInteropHelper(_window).Handle;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,                bool minimized = _window.WindowState == WindowState.Minimized || (current != IntPtr.Zero && IsIconic(current));
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"                var action = _trayActivation.Activate(now, GetDoubleClickTime() / 1000d, _window.IsVisible, minimized);"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"                if (action.HasValue) _diagnostics?.BeginTrayAttempt($""clic icona accanto all’orologio; evento=0x{packet.Notification:X4}; azione={action}"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"                _diagnostics?.Record(""TRAY_DECISION"", $""evento=0x{packet.Notification:X4}; azione={action?.ToString() ?? ""duplicato ignorato""}; ridotta={minimized}"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,                else if (action == TrayActivation.Restore) RequestRestore();
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"                else if (action == TrayActivation.Restore) { _diagnostics?.Record(""RESTORE_SOURCE"", ""clic icona accanto all’orologio""); RequestRestore(); }"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,            else if (notification is 0x0205 or 0x007B)
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            else if (TrayCallbackRouter.IsContextMenu(packet))
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"                _diagnostics?.Record(""TRAY_MENU"", ""tasto destro; apertura menu"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,            else if (packet.Notification != 0x0200)
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"                _diagnostics?.Record(""TRAY_DECISION"", packet.Identified ? ""evento senza azione"" : ""ID/formato non corrispondente alla nostra icona"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,    }
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"    private void AllowCallback(uint message, string name)"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,    {
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        bool allowed = ChangeWindowMessageFilterEx(_hwnd, message, 1, IntPtr.Zero);"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        int error = allowed ? 0 : Marshal.GetLastWin32Error();
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        _diagnostics?.Record(""TRAY_FILTER"", $""{name}; messaggio=0x{message:X}; consentito={allowed}; erroreWin32={error}"");"
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"            if (Shell_NotifyIconW(1, ref existing)) return true; // NIM_MODIFY also detects a lost shell entry."
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            if (Shell_NotifyIconW(1, ref existing)) { _diagnostics?.Record(""TRAY_REGISTER"", ""icona esistente aggiornata""); return true; } // NIM_MODIFY also detects a lost shell entry."
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,        if (data.Icon == IntPtr.Zero) return false;
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        if (data.Icon == IntPtr.Zero) { _diagnostics?.Record(""TRAY_REGISTER"", ""icona nativa non disponibile""); return false; }"
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        _trayVersion4 = false;
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,"            _trayVersion4 = Shell_NotifyIconW(4, ref data); // Accept only one callback protocol for this icon."
+progetto/src/ProcessLens.App/TrayWindowController.cs,before,        }
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"            _trayVersion4 = Shell_NotifyIconW(4, ref data); // Decode both documented packet layouts; coalesce duplicate activation events."
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,        }
+progetto/src/ProcessLens.App/TrayWindowController.cs,after,"        _diagnostics?.Record(""TRAY_REGISTER"", $""aggiunta={_trayPresent}; versione4={_trayVersion4}; HWND=0x{_hwnd.ToInt64():X}; id=1"");"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,before,"    internal string Report => ""ProcessLens · diagnostica finestra R29"" + Environment.NewLine +"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,"    internal string Report => ""ProcessLens · diagnostica finestra e icona R30"" + Environment.NewLine +"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,before,"        ""Ultimi 256 eventi della sessione. UI_CHECK_QUEUED senza UI_CHECK: il dispatcher non ha ancora risposto. "" +"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,before,"        ""INPUT senza CLICK: nessun Click ricevuto dal pulsante. STATE e RIPRISTINO mostrano eventuali ritorni alla finestra. "" +"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,before,"        ""I log descrivono i passaggi osservati; non attribuiscono da soli la causa del problema."" + Environment.NewLine + Environment.NewLine + _journal.Snapshot();"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,"        ""Icona accanto all’orologio: TRAY_CALLBACK → TRAY_DECISION → stato finestra."" + Environment.NewLine +"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,"        ""Pulsante nella finestra: INPUT → CLICK → stato finestra."" + Environment.NewLine +"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,"        ""Ultimi 256 eventi. UI_CHECK_QUEUED senza UI_CHECK: controllo UI ancora in attesa. I log descrivono i passaggi, non provano da soli la causa."" + Environment.NewLine + Environment.NewLine + _journal.Snapshot();"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,before,"        Record(""SESSIONE"", $""PID={Environment.ProcessId}; R29; log locale; nessuna acquisizione processi/rete"");"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,"        Record(""SESSIONE"", $""PID={Environment.ProcessId}; R30; log locale; nessuna acquisizione processi/rete"");"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,    }
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,    internal void BeginTrayAttempt(string detail)
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,    {
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,"        Begin(""TRAY_INPUT"", detail);"
+progetto/src/ProcessLens.App/WindowActionDiagnostics.cs,after,"        Snapshot(""TRAY_BEFORE"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,before,"<Compile Include=""../../src/ProcessLens.App/WindowLifetimePolicy.cs"" Link=""WindowLifetimePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/ReadingPositionPolicy.cs"" Link=""ReadingPositionPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/WindowsProcessIconPolicy.cs"" Link=""WindowsProcessIconPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/IconPreferencePolicy.cs"" Link=""IconPreferencePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/DeferredDiagnosticWriter.cs"" Link=""DeferredDiagnosticWriter.cs""/><Compile Include=""../../src/ProcessLens.App/WindowDiagnosticJournal.cs"" Link=""WindowDiagnosticJournal.cs""/><Compile Include=""../../src/ProcessLens.App/NativeIconPreference.cs"" Link=""NativeIconPreference.cs""/></ItemGroup></Project>"
+progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,after,"<Compile Include=""../../src/ProcessLens.App/WindowLifetimePolicy.cs"" Link=""WindowLifetimePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/ReadingPositionPolicy.cs"" Link=""ReadingPositionPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/WindowsProcessIconPolicy.cs"" Link=""WindowsProcessIconPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/IconPreferencePolicy.cs"" Link=""IconPreferencePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/DeferredDiagnosticWriter.cs"" Link=""DeferredDiagnosticWriter.cs""/><Compile Include=""../../src/ProcessLens.App/WindowDiagnosticJournal.cs"" Link=""WindowDiagnosticJournal.cs""/><Compile Include=""../../src/ProcessLens.App/NativeIconPreference.cs"" Link=""NativeIconPreference.cs""/><Compile Include=""../../src/ProcessLens.App/TrayCallbackRouter.cs"" Link=""TrayCallbackRouter.cs""/></ItemGroup></Project>"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,// R30: documented Shell callback layouts; no actual Shell/window/input interaction.
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"static long PackedTray30(int notification,int iconId=1)=>((long)iconId<<16)|(uint)notification;"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"var packet30=TrayCallbackRouter.Decode(unchecked((int)0xFFF0FF80),PackedTray30(0x202),1);"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(packet30.Identified&&packet30.Notification==0x202&&packet30.IconId==1&&packet30.Format==""v4"",""R30 v4 decodes event and icon ID separately from coordinates"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(TrayCallbackRouter.IsActivation(packet30),""R30 ordinary left-button release activates the v4 tray icon"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"foreach(int event30 in new[]{0x202,0x203,0x400,0x401})"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,{
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Check(TrayCallbackRouter.IsActivation(TrayCallbackRouter.Decode(0,PackedTray30(event30),1)),""R30 packed activation accepted: ""+event30.ToString(""X""));"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Check(TrayCallbackRouter.IsActivation(TrayCallbackRouter.Decode(1,event30,1)),""R30 legacy-layout activation accepted independently of negotiated version: ""+event30.ToString(""X""));"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,}
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"foreach(int event30 in new[]{0x200,0x201,0x204,0x205,0x7B,0x404,0x406,0x407,0x207,0xFFFF})"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,{
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Check(!TrayCallbackRouter.IsActivation(TrayCallbackRouter.Decode(0,PackedTray30(event30),1)),""R30 hover/right/down/balloon/unknown cannot toggle: ""+event30.ToString(""X""));"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,}
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"foreach(int event30 in new[]{0x205,0x7B})"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Check(TrayCallbackRouter.IsContextMenu(TrayCallbackRouter.Decode(0,PackedTray30(event30),1))&&TrayCallbackRouter.IsContextMenu(TrayCallbackRouter.Decode(1,event30,1)),""R30 context menu accepted in both layouts: ""+event30.ToString(""X""));"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"var other30=TrayCallbackRouter.Decode(0,PackedTray30(0x202,2),1);"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(!other30.Identified&&!TrayCallbackRouter.IsActivation(other30),""R30 another packed icon cannot trigger a window action"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(!TrayCallbackRouter.Decode(2,0x202,1).Identified,""R30 another legacy icon cannot trigger a window action"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(!TrayCallbackRouter.Decode(1,(1L<<40)|PackedTray30(0x202),1).Identified,""R30 malformed high callback bits cannot identify this icon"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Check(!TrayCallbackRouter.Decode(-1,0x202,1).Identified,""R30 invalid legacy identity is rejected"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"var queue30=new Queue<Action>();var gate30=new TrayActivationGate();int minimizes30=0,restores30=0;bool reduced30=false;"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"using(var window30=new DeferredWindowActions(a=>queue30.Enqueue(a),()=>{minimizes30++;reduced30=true;},()=>{restores30++;reduced30=false;}))"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,{
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    void Callback30(long w,long l,double now)"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,    {
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"        var packet=TrayCallbackRouter.Decode(w,l,1);"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,        if(!TrayCallbackRouter.IsActivation(packet))return;
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"        var action=gate30.Activate(now,0.5,true,reduced30);"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,        if(action==TrayActivation.Minimize)window30.Minimize();
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,        else if(action==TrayActivation.Restore)window30.Restore();
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,    }
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Callback30(0,PackedTray30(0x202),10);Callback30(0,PackedTray30(0x400),10.01);"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Check(queue30.Count==1&&minimizes30==0,""R30 a v4 click defers one owned-window action until the native callback returns"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    queue30.Dequeue()();Callback30(0,PackedTray30(0x203),10.1);Callback30(0,PackedTray30(0x202),10.2);"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Check(reduced30&&minimizes30==1&&queue30.Count==0,""R30 select and double-click duplicates cannot restore immediately after minimizing"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Callback30(0,PackedTray30(0x400),11);Callback30(0,PackedTray30(0x202),11.01);queue30.Dequeue()();"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Check(!reduced30&&restores30==1,""R30 reversed select/up order restores exactly once on a later click"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Callback30(2,0x202,12);Callback30(0,PackedTray30(0x406),12.1);"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Check(queue30.Count==0,""R30 wrong icon and hover cannot consume the next legitimate click"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Callback30(1,0x202,12.2);queue30.Dequeue()();"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Check(reduced30&&minimizes30==2,""R30 legacy callback layout still toggles the same window after packed callbacks"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    window30.Dispose();Callback30(1,0x202,14);"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"    Check(queue30.Count==0,""R30 exit/disposal stops pending tray window work"");"
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,}
+progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs,after,"Console.WriteLine(""R30 notification-area routing and duplicate-callback regressions complete."");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,        var main=new MainWindow();var analyzer=new ProcessIntelligenceAnalyzer();var start=DateTime.UtcNow.AddMinutes(-2);
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        var main=new MainWindow(false);var analyzer=new ProcessIntelligenceAnalyzer();var start=DateTime.UtcNow.AddMinutes(-2);
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,    static void Until(Func<bool> condition)
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"    static void Until(Func<bool> condition,int timeoutMilliseconds=5000)"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,        while(!condition() && clock.Elapsed<TimeSpan.FromSeconds(5))
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        while(!condition() && clock.Elapsed<TimeSpan.FromMilliseconds(timeoutMilliseconds))
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"        Check(condition(),""owned window reaches expected native shell state within five seconds"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(condition(),""owned window reaches expected native shell state within the bounded fixture deadline"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,before,"        var main=new MainWindow(false){Title=""ProcessLens — prova finestra R29""};"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        var main=new MainWindow(false){Title=""ProcessLens — prova finestra R30""};"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        // Inject documented Shell callback packets into the real owned HWND/hook.
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        // This tests routing, not a physical Explorer click."
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        long lastTray30=0;
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        void PauseBetweenClicks30() {
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"            if(lastTray30!=0) Until(()=>Stopwatch.GetElapsedTime(lastTray30).TotalMilliseconds>GetDoubleClickTime()+80,checked((int)Math.Max(5000,GetDoubleClickTime()+1000)));"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,            lastTray30=Stopwatch.GetTimestamp();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        }
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        void Tray30(int code,bool packed=true,int icon=1) => SendMessageW(Handle(),0x8000+69,"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"            new IntPtr(packed?0:icon),new IntPtr(packed?((long)icon<<16)|(uint)code:code));"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        PauseBetweenClicks30();Tray30(0x202);Tray30(0x400);Until(()=>IsIconic(Handle()));Drain();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(IsIconic(Handle()),""R30 actual HWND v4 mouse release and select produce one minimize"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        PauseBetweenClicks30();Tray30(0x400);Tray30(0x202);Until(()=>!IsIconic(Handle()));Drain();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(main.IsVisible&&main.WindowState==WindowState.Normal,""R30 actual HWND later select/up restores once"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        PauseBetweenClicks30();Tray30(0x202,false);Until(()=>IsIconic(Handle()));Drain();"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(IsIconic(Handle()),""R30 actual HWND legacy-layout callback works after v4 packets"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,        PauseBetweenClicks30();Tray30(0x401);Until(()=>!IsIconic(Handle()));Drain();
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(main.IsVisible,""R30 actual HWND keyboard activation restores the owned window"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Tray30(0x202,true,2);Tray30(0x406);Drain();"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(!IsIconic(Handle()),""R30 actual HWND wrong icon and hover leave the window unchanged"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"        Check(main.WindowDiagnostics.Report.Contains(""TRAY_CALLBACK"")&&main.WindowDiagnostics.Report.Contains(""TRAY_DECISION"")&&main.WindowDiagnostics.Report.Contains(""duplicato ignorato""),""R30 actual callback hook records packets before filtering and duplicate decisions"");"
+progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs,after,"    [DllImport(""user32.dll"")]static extern uint GetDoubleClickTime();"
+supporto/avvia.ps1,before,    $receipt = Join-Path $Root 'supporto/build-r29.ok'
+supporto/avvia.ps1,after,    $receipt = Join-Path $Root 'supporto/build-r30.ok'
+supporto/avvia.ps1,before,        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R29-window-trace-native-icons') {
+supporto/avvia.ps1,after,        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R30-tray-click-routing') {
+supporto/avvia.ps1,before,    Write-Host 'Primo avvio R29: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
+supporto/avvia.ps1,after,    Write-Host 'Primo avvio R30: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
+supporto/avvia.ps1,before,    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r29.ok') -Value 'ProcessLens-R29-window-trace-native-icons' -Encoding ASCII
+supporto/avvia.ps1,after,    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r30.ok') -Value 'ProcessLens-R30-tray-click-routing' -Encoding ASCII

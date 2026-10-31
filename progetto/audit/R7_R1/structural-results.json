@@ -1,0 +1,102 @@
+[
+  {
+    "test": "protected-bytes",
+    "status": "PASS",
+    "detail": "45 file invariati byte per byte"
+  },
+  {
+    "test": "XML-well-formed",
+    "status": "PASS",
+    "detail": "30 XML; non compilazione XAML"
+  },
+  {
+    "test": "XAML-names GuardianDashboardView.xaml",
+    "status": "PASS",
+    "detail": "26 nomi univoci; non rendering"
+  },
+  {
+    "test": "XAML-names MainWindow.xaml",
+    "status": "PASS",
+    "detail": "122 nomi univoci; non rendering"
+  },
+  {
+    "test": "XAML-names MemoryDashboardView.xaml",
+    "status": "PASS",
+    "detail": "15 nomi univoci; non rendering"
+  },
+  {
+    "test": "XAML-names App.xaml",
+    "status": "PASS",
+    "detail": "0 nomi univoci; non rendering"
+  },
+  {
+    "test": "rule-contract role-signatures.json",
+    "status": "PASS",
+    "detail": "ID, punteggi, categorie, vincoli e predicati invariati"
+  },
+  {
+    "test": "rule-contract framework-signatures.json",
+    "status": "PASS",
+    "detail": "ID, punteggi, categorie, vincoli e predicati invariati"
+  },
+  {
+    "test": "model-contract ProcessSnapshot",
+    "status": "PASS",
+    "detail": "Dichiarazioni e campi pubblici invariati"
+  },
+  {
+    "test": "model-contract ProcessInsight",
+    "status": "PASS",
+    "detail": "Dichiarazioni e campi pubblici invariati"
+  },
+  {
+    "test": "model-contract ServiceSnapshot",
+    "status": "PASS",
+    "detail": "Dichiarazioni e campi pubblici invariati"
+  },
+  {
+    "test": "layout-constraints",
+    "status": "PASS",
+    "detail": "Titoli a capo e minimi nella terna; DPI NON ESEGUITO"
+  },
+  {
+    "test": "missing-CPU-presentation",
+    "status": "PASS",
+    "detail": "N/D rispettato anche nel rapporto tecnico"
+  },
+  {
+    "test": "missing-health-guard",
+    "status": "PASS",
+    "detail": "Guardia di sola presentazione; esecuzione .NET NON ESEGUITA"
+  },
+  {
+    "test": "no-launch-causality",
+    "status": "PASS",
+    "detail": "RoleClassifier: cause storiche inventate rimosse"
+  },
+  {
+    "test": "network-boundaries",
+    "status": "PASS",
+    "detail": "Verifica strutturale messaggi, non test reti Windows"
+  },
+  {
+    "test": "ETA-boundaries",
+    "status": "PASS",
+    "detail": "Fonte testuale e scenario aritmetico qualificati"
+  },
+  {
+    "test": "memory-endpoint-limits",
+    "status": "PASS",
+    "detail": "Saldo distinto da monotonia"
+  },
+  {
+    "test": "candidate-metadata",
+    "status": "PASS",
+    "detail": "Nessuna promozione stabile"
+  },
+  {
+    "test": "verification-no-actions",
+    "status": "PASS",
+    "detail": "La procedura non avvia GUI, target profiler, terminazioni o installazioni"
+  }
+]

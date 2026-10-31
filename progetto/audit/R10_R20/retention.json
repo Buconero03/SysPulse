@@ -1,0 +1,9 @@
+{
+  "source_trees": 1,
+  "current_release_zips": 1,
+  "previous_R19_baseline_retained": true,
+  "SDK_archive_in_payload_only": true,
+  "no_extracted_Windows_SDK_in_source": true,
+  "App_Guardian_MemoryAgent_profiler_native_collectors": "BYTE IDENTICAL R19",
+  "Windows_installation": "NOT EXECUTED"
+}

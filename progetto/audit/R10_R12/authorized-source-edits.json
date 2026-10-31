@@ -1,0 +1,54 @@
+{
+  "baseline_sha256": "b46c5acc89186d05b872b825471845c7ff8bccf53fb0c2de928feb591dca1104",
+  "scope": "R12 new network devices section, explicitly requested by the user",
+  "files": [
+    {
+      "file": "src/ProcessLens.App/CopyTestVisibility.cs",
+      "sha256_before": "f11f443673f76c1a75df4749ffdc71420db88838044f1303af95135e3ee44548",
+      "sha256_after": "74a0eb7e2a6ac82a8eab55c57a9aea0d806ebcda147ce0fc5db4f9ce7885e2b1",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    },
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml",
+      "sha256_before": "26aeaefc78b62a8561f13f70d1694ad675a0c659c544dec1538c255dee763f00",
+      "sha256_after": "7991cef9b21e3fd0733c3ea4ec74933185b2fd8857ca57b4c43f6b72af461978",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    },
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+      "sha256_before": "9194dd192a810606da9102c88ac0347f2422e3cf255d88db16ce6eee2e586982",
+      "sha256_after": "01060b40e4800bbf771e02e158f9b612f79afde7c81df5cd74d906ab7e47ad37",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    },
+    {
+      "file": "src/ProcessLens.App/NetworkDevicesView.xaml",
+      "sha256_before": null,
+      "sha256_after": "73076d1ced9cc836143e477480a8ca43be76788537b11b866b7fe7692fa98f19",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    },
+    {
+      "file": "src/ProcessLens.App/NetworkDevicesView.xaml.cs",
+      "sha256_before": null,
+      "sha256_after": "2f3df0250b11be262aa71d5b390c0f5d10a7e5439e722979d3533bcfa8d3dec5",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256_before": "c6b5c1fdb0330478382c36e0c831783caad3fcd0af55589086bea81d2487af7a",
+      "sha256_after": "3ce2dedb0f6cf84992b70ecb9d90f4f6fa462558677bca7f14c9b3bace7a121d",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    },
+    {
+      "file": "src/ProcessLens.Core/NetworkDevices.cs",
+      "sha256_before": null,
+      "sha256_after": "97a377d94542494dc1a9b0e603733ca60794ba60f2be32f91ab2728b567f7ebb",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsNetworkDevices.cs",
+      "sha256_before": null,
+      "sha256_after": "c41bf9c46d13399bbc5014d22a4e62e0f33b0d6988b699e2114133baf70e562b",
+      "scope": "User-authorized network feature: additive reader/models/view; UI navigation and test visibility only for existing sources"
+    }
+  ]
+}

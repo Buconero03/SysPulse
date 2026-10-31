@@ -1,0 +1,8 @@
+check,environment,status,scope
+Launch resolution fixtures,PowerShell 7.4.21 Linux,PASS,16 checks without starting apps or UAC
+Static project preflight,PowerShell 7.4.21 Linux,PASS,30 stages; 75 project scripts parsed
+Application and test retention,Byte comparison with original R20,PASS,Existing src and tests byte identical
+SDK and NuGet payload exclusion,ZIP file inspection,PASS,No bundled SDK or NuGet archives
+Full Windows launch and UAC,Windows,NOT EXECUTED,Verify on destination PC with completed R20 install
+Standalone application binary,Artifact inspection,NOT INCLUDED,Launcher reuses existing published or installed GUI
+Application RAM and startup duration,Windows,NOT MEASURED,No quantitative performance claim

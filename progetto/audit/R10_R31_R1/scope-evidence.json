@@ -1,0 +1,21 @@
+{
+  "baseline_sha256": "72659efa186e4cfe49b019f1502ecc80dddf6eeaf2cd0c8243c4a17b46586929",
+  "modified_files": [
+    "LEGGIMI.txt",
+    "progetto/build-dashboard.ps1",
+    "progetto/src/ProcessLens.App/ProcessLens.App.csproj",
+    "progetto/src/ProcessLens.App/WindowsProcessIconPolicy.cs",
+    "progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj",
+    "supporto/avvia.ps1"
+  ],
+  "new_files": [
+    "progetto/audit/tools/check_build_reference_r31r1.ps1",
+    "progetto/audit/tools/check_powershell_r31r1.py",
+    "progetto/audit/tools/package_build_reference_r31r1.py",
+    "progetto/audit/tools/test_launcher_r31r1.ps1",
+    "progetto/audit/tools/typecheck_wpf_sources_r31r1.py"
+  ],
+  "protected": "Core, Semantics, Windows native acquisition, Guardian, MemoryAgent, RAM monitor, profiler, UI, icon resolver, window/scrolling policies byte identical to R31. Only nullable icon-path guard, test reference, version, launcher and declared preflight changed",
+  "new_dependencies": 0,
+  "Windows_runtime_DPI_RAM": "NOT EXECUTED / NOT MEASURED"
+}

@@ -1,0 +1,12 @@
+  Determining projects to restore...
+  Restored /workspace/scratch/3c80859a1061/ProcessLens/r32/ProcessLens-Leggero/progetto/src/ProcessLens.Core/ProcessLens.Core.csproj (in 63 ms).
+  Restored /workspace/scratch/3c80859a1061/ProcessLens/r32/ProcessLens-Leggero/progetto/tests/ProcessLens.MemoryEfficiencyTests/ProcessLens.MemoryEfficiencyTests.csproj (in 27 ms).
+  ProcessLens.Core -> /workspace/scratch/3c80859a1061/ProcessLens/r32-test/native-MemoryEfficiencyTests/bin/ProcessLens.Core/release/ProcessLens.Core.dll
+  ProcessLens.MemoryEfficiencyTests -> /workspace/scratch/3c80859a1061/ProcessLens/r32-test/native-MemoryEfficiencyTests/bin/ProcessLens.MemoryEfficiencyTests/release/ProcessLens.MemoryEfficiencyTests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:05.45
+

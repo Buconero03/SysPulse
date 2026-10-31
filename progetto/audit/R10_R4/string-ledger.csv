@@ -1,0 +1,7 @@
+﻿before,after,scope,reason_limit
+No selected-process exit toast,Processo chiuso,In-window notice,Shown only for a confirmed Windows exit signal
+No small message,Il processo esempio.exe (PID 1234) si è chiuso.,Notice body,Executable and PID from verified instance; no cause inferred
+Modal successful result acknowledgement,Esito richiesta,Explicit termination result,Original native result retained; accepted request is not assumed exit
+No timed notice,Notice visible for 8 seconds,UI lifecycle,No focus move; not a Windows notification-center toast
+No deduplication,One notice for selection and request signals,Notice state,"PID plus creation timestamp, recent history bounded to 16"
+No automatic message when access unavailable,No fabricated confirmation,Observation limit,Access denied or unknown creation time cannot establish exit

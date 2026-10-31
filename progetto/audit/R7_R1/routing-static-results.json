@@ -1,0 +1,58 @@
+[
+  {
+    "question": "Ha porte aperte?",
+    "expected": true,
+    "actual": true,
+    "status": "PASS",
+    "engine": "Python re su pattern estratto; .NET NON ESEGUITO"
+  },
+  {
+    "question": "Ha una porta aperta?",
+    "expected": true,
+    "actual": true,
+    "status": "PASS",
+    "engine": "Python re su pattern estratto; .NET NON ESEGUITO"
+  },
+  {
+    "question": "Quali PORTE sono aperte?",
+    "expected": true,
+    "actual": true,
+    "status": "PASS",
+    "engine": "Python re su pattern estratto; .NET NON ESEGUITO"
+  },
+  {
+    "question": "Open port?",
+    "expected": true,
+    "actual": true,
+    "status": "PASS",
+    "engine": "Python re su pattern estratto; .NET NON ESEGUITO"
+  },
+  {
+    "question": "Open ports?",
+    "expected": true,
+    "actual": true,
+    "status": "PASS",
+    "engine": "Python re su pattern estratto; .NET NON ESEGUITO"
+  },
+  {
+    "question": "Il consumo di RAM comporta problemi?",
+    "expected": false,
+    "actual": false,
+    "status": "PASS",
+    "engine": "Python re su pattern estratto; .NET NON ESEGUITO"
+  },
+  {
+    "question": "Riporta il consumo di RAM",
+    "expected": false,
+    "actual": false,
+    "status": "PASS",
+    "engine": "Python re su pattern estratto; .NET NON ESEGUITO"
+  },
+  {
+    "question": "Supporta il confronto RAM?",
+    "expected": false,
+    "actual": false,
+    "status": "PASS",
+    "engine": "Python re su pattern estratto; .NET NON ESEGUITO"
+  }
+]

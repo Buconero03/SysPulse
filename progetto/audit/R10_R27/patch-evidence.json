@@ -1,0 +1,7 @@
+{
+  "git_apply_check": "PASS",
+  "actual_apply_and_byte_comparison": "PASS",
+  "delta_files": 20,
+  "patch_sha256": "0a0d333626d285b78621c3fc2b27b23733d7ec1b734bf6255a17e98da654cc37",
+  "qualification": "Current audit folder and recursive manifests excluded from diff only, included in final full ZIP"
+}

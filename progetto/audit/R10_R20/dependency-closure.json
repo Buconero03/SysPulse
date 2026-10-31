@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "package_count": 64,
+  "selection": "NuGet.Frameworks FrameworkReducer from SDK 8.0.426; nearest group union for net8.0 and net8.0-windows7.0",
+  "all_project_PackageReference_packages_present": true,
+  "all_selected_transitive_dependencies_present": true,
+  "all_archives_CRC_and_SHA256": "PASS",
+  "sdk_official_SHA512": "PASS",
+  "Windows_MSBuild_restore": "NOT EXECUTED"
+}

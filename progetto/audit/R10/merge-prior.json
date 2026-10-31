@@ -1,0 +1,201 @@
+{
+  "records": [
+    {
+      "file": "CHANGELOG_R8.md",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "CHANGELOG_R9.md",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "CORREZIONI_VISUALI_R9.md",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "OTTIMIZZAZIONE_RAM_R8.md",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "README.md",
+      "decision": "unchanged user file receives prior delivered changes"
+    },
+    {
+      "file": "SHA256SUMS_R8.txt",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "SHA256SUMS_R9.txt",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "VERSION.txt",
+      "decision": "unchanged user file receives prior delivered changes"
+    },
+    {
+      "file": "audit/R8/USER_R7_to_R8.patch",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R8/change-record.json",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R8/comparison-status.json",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R8/excluded-build-files.json",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R8/files-changed.csv",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R8/input-comparison.json",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R8/patch-replay-results.json",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R8/structural-results.json",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R8/test-matrix.csv",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R9/R8_to_R9.patch",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R9/change-matrix.csv",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R9/files-changed.csv",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R9/input.json",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R9/patch-replay-results.json",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R9/structural-results.json",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/R9/test-matrix.csv",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/tools/README_R8.md",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/tools/check_r8.py",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "audit/tools/check_r9.py",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "build-dashboard.ps1",
+      "decision": "unchanged user file receives prior delivered changes"
+    },
+    {
+      "file": "measure-processlens-memory.ps1",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "src/ProcessLens.App/BoundedCache.cs",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml",
+      "decision": "three-way merge, no textual conflict"
+    },
+    {
+      "file": "src/ProcessLens.App/MainWindow.xaml.cs",
+      "decision": "three-way merge, no textual conflict"
+    },
+    {
+      "file": "src/ProcessLens.App/MemoryObservationBuffer.cs",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessDisplayFormatter.cs",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessIconResolver.cs",
+      "decision": "unchanged user file receives prior delivered changes"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "decision": "unchanged user file receives prior delivered changes"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessNetworkPresentation.cs",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessRow.cs",
+      "decision": "unchanged user file receives prior delivered changes"
+    },
+    {
+      "file": "start-processlens-all.ps1",
+      "decision": "three-way merge, no textual conflict"
+    },
+    {
+      "file": "tests/ProcessLens.MemoryEfficiencyTests/ProcessLens.MemoryEfficiencyTests.csproj",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "tests/ProcessLens.MemoryEfficiencyTests/Program.cs",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "tests/ProcessLens.PresentationTests/ProcessLens.PresentationTests.csproj",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "tests/ProcessLens.PresentationTests/Program.cs",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "tests/check-guardian-dashboard.ps1",
+      "decision": "unchanged user file receives prior delivered changes"
+    },
+    {
+      "file": "tests/check-memory-dashboard.ps1",
+      "decision": "unchanged user file receives prior delivered changes"
+    },
+    {
+      "file": "tests/check-memory-efficiency-r8.ps1",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "tests/check-ui-format-r9.ps1",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "verify-candidate-r8.ps1",
+      "decision": "prior-only file retained"
+    },
+    {
+      "file": "verify-candidate-r9.ps1",
+      "decision": "prior-only file retained"
+    }
+  ],
+  "textual_conflicts": []
+}

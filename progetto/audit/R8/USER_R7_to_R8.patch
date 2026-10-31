@@ -1,0 +1,880 @@
+--- /dev/null
++++ b/CHANGELOG_R8.md
+@@ -0,0 +1,13 @@
++# R8 candidata — riduzione degli oggetti trattenuti
++
++Base: ZIP ProcessLens-v0.19.16-R7.zip fornito dall’utente; modifiche personalizzate mantenute.
++
++- Dashboard create al primo accesso e riutilizzate dopo la prima apertura.
++- Dettagli classificazione e tecnici creati solo su richiesta, rilasciati alla chiusura del pannello.
++- Cache limitate: 128 icone, 8 deep inspection, 16 cronologie servizi.
++- Storico RAM con campioni inline e materializzazione dei record solo sul trend richiesto.
++- Riciclo esplicito dei contenitori di processi e servizi.
++- Nome ProcessLens esplicito nell’apphost pubblicato.
++- Nuova suite MemoryEfficiencyTests, verificatore R8 e campionamento passivo prima/dopo.
++
++Core/Semantics, acquisizione Windows, Guardian, MemoryAgent e profiler invariati. Nessuna profilazione o riduzione forzata del working set. Build/test .NET/PowerShell/WPF e RAM R8 su Windows NON ESEGUITI qui. Nessun risparmio in MB dichiarato.
+--- /dev/null
++++ b/OTTIMIZZAZIONE_RAM_R8.md
+@@ -0,0 +1,96 @@
++# ProcessLens v0.19.16 R8 — candidata con ottimizzazioni memoria
++
++## Risultato e stato esatto
++
++La candidata applica ottimizzazioni al sorgente fornito dall’utente nello ZIP `ProcessLens-v0.19.16-R7.zip`. Il processo da 116,9 MB nella schermata è ProcessLens, come confermato dall’utente. Quella cifra è un’osservazione puntuale di Gestione attività: non è una baseline temporale e non permette di quantificare il risparmio della R8.
++
++**RAM R8 misurata su Windows: NON ESEGUITO. Risparmio in MB: NON DETERMINATO. Build, test .NET/PowerShell e visuale WPF: NON ESEGUITI qui.** Ambiente Linux senza dotnet/pwsh. Nessun profiler, installazione o intervento su processi reali eseguito.
++
++Sono forniti sorgenti modificati, test eseguibili, controlli strutturali, patch esatta e procedura di confronto passivo. Non si dichiara una release stabile né una riduzione di RAM già ottenuta sul PC.
++
++## Base e modifiche dell’utente
++
++Lo ZIP ricevuto contiene differenze in sette file rispetto alla precedente R7 R2: MainWindow.xaml/.cs, ProcessRow.cs, ProcessTerminology.cs, ProcessBehaviorExplainer.cs, ProcessQueryEngine.cs e TerminologyTests/Program.cs. Questa consegna usa quei file come base. Cinque restano byte per byte invariati; in MainWindow vengono modificati caricamento e generazione dei controlli, conservando testi, dimensioni e stile della base ricevuta. Non viene ripristinata la precedente revisione linguistica sopra le modifiche dell’utente.
++
++L’archivio originale è conservato. Dal nuovo pacchetto sono esclusi soltanto `bin`, `obj`, `publish` e risultati locali di build: eliminare copie su disco non riduce la RAM di un processo in esecuzione. La lista completa è nell’audit; nessun originale dell’utente è stato cancellato.
++
++## Interventi applicati
++
++| Punto | Prima | R8 | Conseguenza verificabile nel codice |
++|---|---|---|---|
++| Dashboard Guardian e Memoria | Due UserControl istanziati durante InitializeComponent, anche mai visitati | Host vuoti; creazione al primo ingresso; una sola istanza riutilizzata | Zero istanze di queste due viste all’avvio; prima apertura può richiedere più tempo. I servizi indipendenti non cambiano. |
++| Righe classificazione | Clear e nuova costruzione ad ogni ShowDetails, anche a pannello chiuso | Generazione su apertura; riuso con stesso PID/insight; rilascio su chiusura | Evita i controlli generati durante polling nascosto. Nessun dato di classificazione eliminato. |
++| Dettagli tecnici | Stringhe/evidenze composte anche con sezione chiusa | Composte con l’ultimo snapshot su apertura/aggiornamento della sezione aperta; controlli e testo derivati rilasciati su chiusura | L’audit originale si ricompone su richiesta, senza cambiare i dati strutturati. |
++| Cache icone | Dizionario senza limite | LRU massimo 128 voci | I percorsi non possono trattenere icone indefinitamente; un miss rilegge Shell. Stessa risoluzione, Freeze e DestroyIcon conservati. |
++| Cache deep inspection | Una voce per ogni PID esaminato ancora vivo | Massimo 8 | Ritorno a un PID evinto può richiedere una nuova lettura. Il collector non cambia. |
++| Cache cronologia servizi | Una voce per ogni servizio visitato; TTL di 2 minuti per il riuso, non eliminazione | Massimo 16 voci, TTL originale conservato | Numero di report trattenuti limitato; un miss legge nuovamente la cronologia. |
++| Storico RAM | Nuovo record MemoryObservation per ogni campione/PID globale | Campioni inline in coda di value tuple; record materializzati solo per il trend richiesto | Meno oggetti distinti trattenuti. Stessa finestra di 5 minuti, massimo 160, stessi timestamp/byte e N/D. |
++| Liste processi/servizi | Virtualizzazione predefinita senza riciclo esplicito | Virtualizzazione e Recycling espliciti | I contenitori visivi possono essere riutilizzati; i dati dei processi non sono nascosti/rimossi. |
++| Identità pubblicata | Impostazioni apphost implicite | UseAppHost=true, AssemblyTitle e Description ProcessLens | Il flusso pubblicato avvia ProcessLens.exe. Non si rinomina dotnet.exe e non si promette che il solo nome riduca memoria. |
++
++Questi interventi riducono oggetti creati/trattenuti o impongono limiti. **Non dimostrano da soli un valore inferiore del Private Working Set:** runtime, GC, WPF, cache native, pagine condivisibili, carico e sequenza di utilizzo influiscono sul contatore finale. Dopo aver visitato le dashboard, le relative istanze restano conservate per mantenere stato e filtri; il beneficio iniziale non si applica integralmente a quel momento.
++
++Non vengono forzati GC o svuotamenti del working set; nessuna funzionalità o acquisizione Windows è stata rimossa, nessuna soglia Guardian/MemoryAgent alterata. Core, Semantics, collector Windows, Guardian, MemoryAgent, profiler, reader e viste dashboard sono invariati rispetto all’allegato. Due controlli statici di navigazione sono aggiornati per i riferimenti ora null-safe, non il codice Guardian.
++
++## Test e limiti
++
++`ProcessLens.MemoryEfficiencyTests` verifica cache LRU sotto churn/concorrenza, confronto case-insensitive, aggiornamenti/rimozioni, retention a 160 campioni/5 minuti, limite temporale esatto, indipendenza dell’esportazione e parità del trend. Il confronto delle allocazioni gestite usa un carico sintetico di 1.000 PID con 20 campioni; il relativo vincolo sulle allocazioni è per x64, piattaforma pubblicata dal progetto. Quel confronto non misura la GUI WPF, gli oggetti nativi o RAM fisica.
++
++La suite nuova è collegata a `build-dashboard.ps1`; il verificatore R8 scopre tutti i progetti di test e tutti i controlli PowerShell. I test sintattici esistenti, la suite semantica dell’allegato e i controlli su navigazione/consenso restano necessari.
++
++I controlli Python eseguiti sono in `audit/R8/structural-results.json`. Coprono byte dei componenti esclusi, XML, nomi/handler, creazione differita, limiti cache, riciclo, conservazione dei sorgenti personalizzati, assenza di GC/trim introdotti e integrazione test. Non sono un compilatore C# o un renderer WPF. La patch è applicata a una copia della base ricevuta e i byte risultanti sono confrontati tramite SHA-256.
++
++## Compilazione Windows
++
++Estrarre il pacchetto in una sola radice. Sorgenti, audit, test, pubblicazione e misure restano sotto quella radice.
++
++```powershell
++dotnet run --project .\tests\ProcessLens.MemoryEfficiencyTests\ProcessLens.MemoryEfficiencyTests.csproj -c Release
++.\verify-candidate-r8.ps1
++```
++
++Con suite positiva, compilare/pubblicare e avviare l’eseguibile:
++
++```powershell
++.\build-dashboard.ps1
++.\run-release.ps1
++```
++
++Il manifest UAC del progetto è conservato. La GUI precedente va chiusa normalmente prima di avviare la nuova, altrimenti il controllo di singola istanza può riattivare quella già aperta. Non installare/riavviare Guardian o agenti per verificare questa candidata.
++
++## Confronto RAM prima/dopo
++
++Lo script `measure-processlens-memory.ps1` legge passivamente i contatori di un PID scelto. Non induce GC o profilazioni, non termina processi e non avvia la GUI. Il Private Working Set proviene da GetProcessMemoryInfo/EX2; se la lettura fallisce il valore resta vuoto con errore registrato. Working Set e commit hanno colonne distinte. La raccolta si interrompe se il processo termina o cambia istanza.
++
++1. Tenere la versione R7 fornita come riferimento ed eseguirla nelle condizioni abituali. Usare l’eseguibile pubblicato anche per R7, per confrontare la stessa modalità di esecuzione. Attendere 60 secondi prima di misurare.
++2. Dalla radice R8, leggere il PID della R7 e raccogliere 3 minuti senza cambiare schermata:
++
++```powershell
++.\measure-processlens-memory.ps1 -TargetPid 1234 -Label R7 -Scenario processes-idle
++```
++
++3. Chiudere la GUI R7 normalmente; avviare la R8, attendere 60 secondi e ripetere sostituendo il PID:
++
++```powershell
++.\measure-processlens-memory.ps1 -TargetPid 5678 -Label R8 -Scenario processes-idle
++```
++
++4. Ripetere a parità di sequenza dopo avere aperto Guardian e Memoria (`-Scenario dashboards-visited`), dopo molte selezioni di processi/servizi e dopo chiusura dei dettagli. Evitare compilazioni e carichi diversi durante il confronto. Ripetere almeno due sessioni se i risultati oscillano.
++
++**1234 e 5678 sono esempi, non PID rilevati.** Output in `verification-r8/`. Confrontare mediana e picco dello stesso contatore su intervalli equivalenti. Non sommare privato/totale/commit; non confrontare direttamente la sola cifra 116,9 MB dello screenshot con colonne dal significato diverso.
++
++| Scenario | R7 PWS mediana/picco | R8 PWS mediana/picco | Esito |
++|---|---|---|---|
++| Processi, nessuna dashboard visitata | NON MISURATO | NON MISURATO | PENDENTE |
++| Guardian e Memoria visitate | NON MISURATO | NON MISURATO | PENDENTE |
++| Churn selezioni/processi/servizi | NON MISURATO | NON MISURATO | PENDENTE |
++
++Per la verifica visuale controllare primo accesso e ritorno alle dashboard, filtri persistenti, grafici, apertura/chiusura dettagli, cambio PID a pannello aperto, ridimensionamento e DPI 100/125/150%. Controllare menu contestuali dopo lo scroll con riciclo, annullando eventuali dialoghi di terminazione/arresto. Nessuna operazione sui processi è necessaria per il test dei menu.
++
++## Riferimenti
++
++- Microsoft, [WPF Controls performance](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-controls): virtualizzazione e riciclo dei contenitori; la virtualizzazione UI non è rimozione dei dati.
++- Microsoft, [WPF Application Resources](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/optimizing-performance-application-resources): costo degli oggetti e risorse ripetuti.
++- Microsoft, [Publishing overview](https://learn.microsoft.com/en-us/dotnet/core/deploying/): apphost ed esecuzione tramite il proprio eseguibile.
++
++Le dimensioni del risparmio sono da misurare sul progetto, non dedotte da queste pagine.
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,12 @@
+-﻿# R7 R2 candidata — chiarimento origine multiprocessing
++﻿# R8 candidata — ottimizzazioni memoria
++
++Leggere prima `OTTIMIZZAZIONE_RAM_R8.md`. Questa copia parte dallo ZIP con le modifiche dell’utente. I controlli strutturali sono eseguiti; test .NET/PowerShell/WPF e riduzione effettiva della RAM su Windows restano NON ESEGUITI. Nessuna promozione stabile. Il manifest corrente è `SHA256SUMS_R8.txt`; gli audit e i manifesti R7 sono storici.
++
++Sorgenti, audit, test e risultati devono restare in questa unica radice.
++
++---
++
++# R7 R2 candidata — chiarimento origine multiprocessing
+ 
+ Leggere prima `HOTFIX_R7_R2.md`. La correzione delle porte R1 è conservata e i relativi test sono PASS nel log Windows fornito dall’utente. I test e le build R2 su Windows restano NON ESEGUITI qui.
+ 
+--- a/VERSION.txt
++++ b/VERSION.txt
+@@ -1 +1 @@
+-0.19.16 R7 R2 Candidate - Contextual Terminology Review; Windows validation pending
++0.19.16 R8 Candidate - Bounded UI Memory; Windows measurements pending
+--- a/build-dashboard.ps1
++++ b/build-dashboard.ps1
+@@ -10,6 +10,7 @@
+ & (Join-Path $PSScriptRoot 'tests\check-powershell-syntax.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-wpf-contextmenu.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-ui-readability.ps1')
++& (Join-Path $PSScriptRoot 'tests\check-memory-efficiency-r8.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-terminology-ui.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-detail-hierarchy-v01910.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-classification-language-v01911.ps1')
+@@ -35,6 +36,9 @@
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.BehaviorTests' -Project '.\tests\ProcessLens.BehaviorTests\ProcessLens.BehaviorTests.csproj' -Arguments @('run', '--project', '.\tests\ProcessLens.BehaviorTests\ProcessLens.BehaviorTests.csproj', '-c', 'Release')
+ Write-Host 'Test terminologia e confini tra regole e osservazioni...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.TerminologyTests' -Project '.\tests\ProcessLens.TerminologyTests\ProcessLens.TerminologyTests.csproj' -Arguments @('run', '--project', '.\tests\ProcessLens.TerminologyTests\ProcessLens.TerminologyTests.csproj', '-c', 'Release')
++
++Write-Host 'Test cache limitate e allocazioni dello storico (dati sintetici)...' -ForegroundColor Cyan
++Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.MemoryEfficiencyTests' -Project '.\tests\ProcessLens.MemoryEfficiencyTests\ProcessLens.MemoryEfficiencyTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.MemoryEfficiencyTests\ProcessLens.MemoryEfficiencyTests.csproj','-c','Release')
+ 
+ Write-Host 'Test policy scansione leggera e adattamento CPU/RAM...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.RefreshPolicyTests' -Project '.\tests\ProcessLens.RefreshPolicyTests\ProcessLens.RefreshPolicyTests.csproj' -Arguments @('run', '--project', '.\tests\ProcessLens.RefreshPolicyTests\ProcessLens.RefreshPolicyTests.csproj', '-c', 'Release')
+--- /dev/null
++++ b/measure-processlens-memory.ps1
+@@ -0,0 +1,70 @@
++# Passive counter sampling: no profiler, no GC, no process starts/stops, no working-set trimming.
++[CmdletBinding()]
++param(
++    [Parameter(Mandatory=$true)][ValidateRange(1,2147483647)][int]$TargetPid,
++    [Parameter(Mandatory=$true)][ValidateSet('R7','R8')][string]$Label,
++    [ValidateRange(10,1800)][int]$DurationSeconds = 180,
++    [ValidateRange(1,30)][int]$IntervalSeconds = 5,
++    [ValidatePattern('^[A-Za-z0-9_-]+$')][string]$Scenario = 'processes-idle'
++)
++$ErrorActionPreference = 'Stop'
++if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) { throw 'NON ESEGUITO: Windows richiesto.' }
++if (-not ('ProcessLensPassiveMemoryR8' -as [type])) {
++Add-Type -TypeDefinition @'
++using System;
++using System.Runtime.InteropServices;
++public static class ProcessLensPassiveMemoryR8 {
++    [StructLayout(LayoutKind.Sequential)]
++    public struct Counters {
++        public uint cb, PageFaultCount;
++        public UIntPtr PeakWorkingSetSize, WorkingSetSize, QuotaPeakPagedPoolUsage, QuotaPagedPoolUsage;
++        public UIntPtr QuotaPeakNonPagedPoolUsage, QuotaNonPagedPoolUsage, PagefileUsage, PeakPagefileUsage;
++        public UIntPtr PrivateUsage, PrivateWorkingSetSize;
++        public ulong SharedCommitUsage;
++    }
++    [DllImport("psapi.dll", SetLastError=true)]
++    [return: MarshalAs(UnmanagedType.Bool)]
++    public static extern bool GetProcessMemoryInfo(IntPtr process, ref Counters counters, uint size);
++}
++'@
++}
++$target = Get-Process -Id $TargetPid -ErrorAction Stop
++$started = $target.StartTime.ToUniversalTime()
++$version = 'N/D'
++try { $version = $target.MainModule.FileVersionInfo.ProductVersion } catch { }
++$directory = Join-Path $PSScriptRoot 'verification-r8'
++New-Item -ItemType Directory -Path $directory -Force | Out-Null
++$file = Join-Path $directory ($Label + '-' + $Scenario + '-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.csv')
++$rows = New-Object System.Collections.Generic.List[object]
++$watch = [Diagnostics.Stopwatch]::StartNew()
++try {
++    while ($watch.Elapsed.TotalSeconds -le $DurationSeconds) {
++        $target.Refresh()
++        if ($target.HasExited -or $target.StartTime.ToUniversalTime() -ne $started) { throw 'Istanza terminata/cambiata: raccolta interrotta.' }
++        $privateWs = $null; $nativeError = $null
++        $workingSet = $null; $commit = $null
++        try { $workingSet = [math]::Round($target.WorkingSet64 / 1MB, 3) } catch { }
++        try { $commit = [math]::Round($target.PrivateMemorySize64 / 1MB, 3) } catch { }
++        $native = New-Object ProcessLensPassiveMemoryR8+Counters
++        $native.cb = [Runtime.InteropServices.Marshal]::SizeOf($native)
++        try {
++            if ([ProcessLensPassiveMemoryR8]::GetProcessMemoryInfo($target.Handle, [ref]$native, $native.cb)) {
++                $privateWs = [math]::Round($native.PrivateWorkingSetSize.ToUInt64() / 1MB, 3)
++            } else { $nativeError = [Runtime.InteropServices.Marshal]::GetLastWin32Error() }
++        } catch { $nativeError = $_.Exception.GetType().Name }
++        $rows.Add([PSCustomObject]@{
++            Label=$Label; Scenario=$Scenario; Version=$version; PID=$TargetPid;
++            StartedUtc=$started.ToString('o'); SampleUtc=[DateTime]::UtcNow.ToString('o');
++            ElapsedSeconds=[math]::Round($watch.Elapsed.TotalSeconds,2);
++            PrivateWorkingSetMiB=$privateWs; WorkingSetMiB=$workingSet; PrivateCommitMiB=$commit;
++            NativeCounterError=$nativeError
++        })
++        Start-Sleep -Seconds $IntervalSeconds
++    }
++}
++finally {
++    $rows | Export-Csv -LiteralPath $file -NoTypeInformation -Encoding UTF8
++    $target.Dispose()
++    Write-Host ('Campioni salvati: ' + $file)
++}
++Write-Host 'Confrontare stesso scenario e intervallo: PrivateWorkingSetMiB, WorkingSetMiB e commit sono metriche diverse. N/D/vuoto non equivale a zero.'
+--- /dev/null
++++ b/src/ProcessLens.App/BoundedCache.cs
+@@ -0,0 +1,67 @@
++namespace ProcessLens.App;
++
++/// <summary>A small, thread-safe LRU cache. Eviction drops only cached references, never source data.</summary>
++internal sealed class BoundedCache<TKey, TValue> where TKey : notnull
++{
++    private readonly int _capacity;
++    private readonly object _gate = new();
++    private readonly Dictionary<TKey, LinkedListNode<(TKey Key, TValue Value)>> _entries;
++    private readonly LinkedList<(TKey Key, TValue Value)> _recent = new();
++
++    public BoundedCache(int capacity, IEqualityComparer<TKey>? comparer = null)
++    {
++        if (capacity <= 0) throw new ArgumentOutOfRangeException(nameof(capacity));
++        _capacity = capacity;
++        _entries = new Dictionary<TKey, LinkedListNode<(TKey Key, TValue Value)>>(comparer);
++    }
++
++    public int Count { get { lock (_gate) return _entries.Count; } }
++    public TKey[] Keys { get { lock (_gate) return _entries.Keys.ToArray(); } }
++
++    public bool TryGetValue(TKey key, out TValue value)
++    {
++        lock (_gate)
++        {
++            if (!_entries.TryGetValue(key, out var node)) { value = default!; return false; }
++            _recent.Remove(node);
++            _recent.AddFirst(node);
++            value = node.Value.Value;
++            return true;
++        }
++    }
++
++    public TValue this[TKey key]
++    {
++        set
++        {
++            lock (_gate)
++            {
++                if (_entries.TryGetValue(key, out var node))
++                {
++                    node.Value = (key, value);
++                    _recent.Remove(node);
++                    _recent.AddFirst(node);
++                    return;
++                }
++                if (_entries.Count == _capacity)
++                {
++                    var oldest = _recent.Last!;
++                    _entries.Remove(oldest.Value.Key);
++                    _recent.RemoveLast();
++                }
++                var added = _recent.AddFirst((key, value));
++                _entries.Add(key, added);
++            }
++        }
++    }
++
++    public bool Remove(TKey key)
++    {
++        lock (_gate)
++        {
++            if (!_entries.Remove(key, out var node)) return false;
++            _recent.Remove(node);
++            return true;
++        }
++    }
++}
+--- a/src/ProcessLens.App/MainWindow.xaml
++++ b/src/ProcessLens.App/MainWindow.xaml
+@@ -231,8 +231,8 @@
+             </StackPanel>
+         </Border>
+ 
+-        <local:GuardianDashboardView x:Name="GuardianDashboard" Grid.Row="2" Visibility="Collapsed"/>
+-        <local:MemoryDashboardView x:Name="MemoryDashboard" Grid.Row="2" Visibility="Collapsed"/>
++        <ContentControl x:Name="GuardianDashboardHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Row="2" Visibility="Collapsed"/>
++        <ContentControl x:Name="MemoryDashboardHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Row="2" Visibility="Collapsed"/>
+ 
+         <!-- Main area -->
+         <Grid x:Name="ProcessWorkspace" Grid.Row="2">
+@@ -277,6 +277,8 @@
+                               Background="Transparent"
+                               SelectionChanged="ProcessList_SelectionChanged"
+                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
++                              ScrollViewer.CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True"
++                              VirtualizingPanel.VirtualizationMode="Recycling"
+                               ItemContainerStyle="{StaticResource ProcessListItemStyle}">
+                         <ListView.ItemTemplate>
+                             <DataTemplate>
+@@ -584,7 +586,8 @@
+                             <StackPanel>
+                                 <TextBlock Text="ELEMENTI DI IDENTIFICAZIONE" Style="{StaticResource SectionLabel}"/>
+                                 <TextBlock x:Name="DetailDetectionBasisText" Text="-" FontSize="13" TextWrapping="Wrap" LineHeight="21"/>
+-                                <Expander Header="Come è stato riconosciuto" Margin="0,12,0,0" IsExpanded="False"
++                                <Expander x:Name="DetailIdentificationExpander" Expanded="DetailIdentification_Expanded"
++                                          Collapsed="DetailIdentification_Collapsed" Header="Come è stato riconosciuto" Margin="0,12,0,0" IsExpanded="False"
+                                           Padding="0,4">
+                                     <StackPanel Margin="0,10,0,0">
+                                         <TextBlock Text="Dati utilizzati per riconoscere il processo. Apri le sezioni per i dettagli."
+@@ -774,7 +777,7 @@
+                         <!-- v0.19.10: disclosure progressiva. Evita un unico muro di testo diagnostico. -->
+                         <Expander x:Name="DetailTechnicalSectionsExpander" Header="Dettagli tecnici e fonti"
+                                   IsExpanded="False" FontWeight="SemiBold" Margin="0,8,0,0"
+-                                  Expanded="DetailTechnicalSections_Expanded">
++                                  Expanded="DetailTechnicalSections_Expanded" Collapsed="DetailTechnicalSections_Collapsed">
+                             <StackPanel Margin="0,12,0,0">
+                                 <TextBlock Text="Apri solo la sezione che ti interessa. Le informazioni sono quelle raccolte da Windows e dal classificatore locale."
+                                            FontWeight="Normal" Foreground="#667085" TextWrapping="Wrap"
+@@ -898,6 +901,8 @@
+                     </Grid>
+                     <ListView x:Name="ServiceList" Grid.Row="1" BorderThickness="0" Background="Transparent"
+                               SelectionChanged="ServiceList_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
++                              ScrollViewer.CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True"
++                              VirtualizingPanel.VirtualizationMode="Recycling"
+                               ItemContainerStyle="{StaticResource ServiceListItemStyle}">
+                         <ListView.ItemTemplate>
+                             <DataTemplate>
+--- a/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -12,6 +12,11 @@
+ 
+ public partial class MainWindow : Window
+ {
++    private ProcessRow? _currentDetailRow;
++    private ProcessInsight? _renderedClassificationFactsInsight;
++    private int? _renderedClassificationFactsPid;
++    private GuardianDashboardView? GuardianDashboard;
++    private MemoryDashboardView? MemoryDashboard;
+     private ProcessInsight? _currentClassificationAuditInsight;
+     private ProcessInsight? _renderedClassificationAuditInsight;
+     private readonly WindowsProcessCollector _collector = new();
+@@ -25,11 +30,11 @@
+     private DateTime _lastSlowServiceLoggedUtc = DateTime.MinValue;
+     private List<ProcessRow> _allRows = new();
+     private readonly Dictionary<int, (string IdentityKey, ProcessInsight Insight)> _insightCache = new();
+-    private readonly Dictionary<int, (DateTime? StartTime, ProcessSnapshot Process, ProcessInsight Insight)> _deepCache = new();
++    private readonly BoundedCache<int, (DateTime? StartTime, ProcessSnapshot Process, ProcessInsight Insight)> _deepCache = new(8);
+     private readonly HashSet<int> _deepInspectionInProgress = new();
+     private readonly SemaphoreSlim _deepInspectionGate = new(1, 1);
+     private readonly Dictionary<int, Queue<(DateTime TimestampUtc, double Cpu)>> _cpuHistory = new();
+-    private readonly Dictionary<int, (DateTime StartTime, bool PrivateResident, Queue<MemoryObservation> Samples)> _memoryHistory = new();
++    private readonly Dictionary<int, (DateTime StartTime, bool PrivateResident, MemoryObservationBuffer Samples)> _memoryHistory = new();
+     private readonly Dictionary<int, ProcessProgressSample> _progressSamples = new();
+     private bool _queryBusy;
+     private CancellationTokenSource? _profilerSession;
+@@ -55,8 +60,8 @@
+     private bool _suppressServiceSelection;
+     private readonly WindowsServiceEventHistory _serviceEvents = new();
+     private readonly SemaphoreSlim _serviceEventsGate = new(1, 1);
+-    private readonly Dictionary<string, (DateTime CachedUtc, ServiceHistoryResult Result)> _serviceEventsCache =
+-        new(StringComparer.OrdinalIgnoreCase);
++    private readonly BoundedCache<string, (DateTime CachedUtc, ServiceHistoryResult Result)> _serviceEventsCache =
++        new(16, StringComparer.OrdinalIgnoreCase);
+     private WindowsServiceEventHistory.LiveWatcher? _serviceEventsWatcher;
+     private int _serviceEventsRequest;
+     private string? _serviceEventsLoading;
+@@ -118,8 +123,8 @@
+         Closed += (_, _) =>
+         {
+             _timer.Stop();
+-            GuardianDashboard.SetActive(false);
+-            MemoryDashboard.SetActive(false);
++            GuardianDashboard?.SetActive(false);
++            MemoryDashboard?.SetActive(false);
+             _profilerSession?.Cancel();
+             _serviceEventsWatcher?.Dispose();
+             _serviceEventsWatcher = null;
+@@ -620,17 +625,13 @@
+         DetailDetectionBasisText.Text = i.RoleConfidencePercent >= 60
+             ? "ProcessLens ha identificato una possibile funzione del processo. Apri i dettagli per sapere quali dati ha utilizzato."
+             : "Le informazioni disponibili non bastano a identificare la funzione di questo processo.";
+-        DetailClassificationFactsPanel.Children.Clear();
+-        foreach (var fact in ProcessDetailPresentation.ClassificationFacts(p, i))
+-            AddTechnicalFact(DetailClassificationFactsPanel, fact.Label, fact.Value);
++        _currentDetailRow = row;
++        RefreshClassificationFacts();
+         // Il rapporto grezzo rimane disponibile su richiesta, senza confondere i
+         // codici delle regole con le evidenze visibili nella spiegazione principale.
+-        DetailEvidenceTechnicalText.Text =
+-            i.DetectionBasis + "\n" +
+-            $"Punteggio euristico interno: {i.RoleConfidencePercent}/100 (non è una probabilità)\n" +
+-            string.Join("\n", i.Evidence);
++
+         _currentClassificationAuditInsight = i;
+-        if (DetailClassificationAuditExpander.IsExpanded)
++        if (DetailIdentificationExpander.IsExpanded && DetailClassificationAuditExpander.IsExpanded)
+             RefreshClassificationAuditGroups();
+         DetailWhyRunningText.Text = i.WhyRunning;
+         DetailCloseImpactText.Text = i.CloseImpact;
+@@ -680,6 +681,15 @@
+                 : "Interfaccia: nessuna finestra top-level visibile rilevata nelle letture disponibili.")
+             : "Interfaccia: verrà controllata nell'analisi approfondita.";
+ 
++        if (DetailTechnicalSectionsExpander.IsExpanded)
++            UpdateTechnicalDetails(row);
++    }
++
++    private void UpdateTechnicalDetails(ProcessRow row)
++    {
++        var p = row.Process;
++        var i = row.Insight;
++        var origin = ProcessOriginAnalyzer.Analyze(p);
+         string critical = p.IsCritical ? "SÌ - flag critico rilevato" : "Flag non rilevato; stato negativo non verificato";
+         string started = ProcessStartFormatter.FormatStart(p.StartTime);
+ 
+@@ -746,6 +756,36 @@
+             RefreshTechnicalDetailGroups();
+     }
+ 
++    private void DetailIdentification_Expanded(object sender, RoutedEventArgs e)
++    {
++        if (!ReferenceEquals(sender, e.OriginalSource)) return;
++        RefreshClassificationFacts();
++        RefreshClassificationAuditGroups();
++    }
++
++    private void DetailIdentification_Collapsed(object sender, RoutedEventArgs e)
++    {
++        if (!ReferenceEquals(sender, e.OriginalSource)) return;
++        DetailClassificationFactsPanel.Children.Clear();
++        DetailClassificationAuditPanel.Children.Clear();
++        DetailEvidenceTechnicalText.Text = string.Empty;
++        _renderedClassificationFactsInsight = null;
++        _renderedClassificationFactsPid = null;
++        _renderedClassificationAuditInsight = null;
++    }
++
++    private void RefreshClassificationFacts()
++    {
++        if (!DetailIdentificationExpander.IsExpanded || _currentDetailRow is not { } row) return;
++        if (_renderedClassificationFactsPid == row.Pid &&
++            ReferenceEquals(_renderedClassificationFactsInsight, row.Insight)) return;
++        DetailClassificationFactsPanel.Children.Clear();
++        foreach (var fact in ProcessDetailPresentation.ClassificationFacts(row.Process, row.Insight))
++            AddTechnicalFact(DetailClassificationFactsPanel, fact.Label, fact.Value);
++        _renderedClassificationFactsInsight = row.Insight;
++        _renderedClassificationFactsPid = row.Pid;
++    }
++
+     private void DetailClassificationAudit_Expanded(object sender, RoutedEventArgs e)
+     {
+         if (!ReferenceEquals(sender, e.OriginalSource)) return;
+@@ -754,11 +794,14 @@
+ 
+     private void RefreshClassificationAuditGroups()
+     {
+-        if (!DetailClassificationAuditExpander.IsExpanded ||
++        if (!DetailIdentificationExpander.IsExpanded || !DetailClassificationAuditExpander.IsExpanded ||
+             _currentClassificationAuditInsight is not { } insight ||
+             ReferenceEquals(insight, _renderedClassificationAuditInsight))
+             return;
+ 
++        DetailEvidenceTechnicalText.Text = insight.DetectionBasis + "\n" +
++            $"Punteggio euristico interno: {insight.RoleConfidencePercent}/100 (non è una probabilità)\n" +
++            string.Join("\n", insight.Evidence);
+         DetailClassificationAuditPanel.Children.Clear();
+         var facts = ProcessDetailPresentation.ClassificationAuditFacts(insight);
+         foreach (var group in new[]
+@@ -800,7 +843,21 @@
+     private void DetailTechnicalSections_Expanded(object sender, RoutedEventArgs e)
+     {
+         if (!ReferenceEquals(sender, e.OriginalSource)) return;
+-        RefreshTechnicalDetailGroups();
++        if (_currentDetailRow is { } row) UpdateTechnicalDetails(row);
++    }
++
++    private void DetailTechnicalSections_Collapsed(object sender, RoutedEventArgs e)
++    {
++        if (!ReferenceEquals(sender, e.OriginalSource)) return;
++        DetailIdentityFactsPanel.Children.Clear();
++        DetailResourceFactsPanel.Children.Clear();
++        DetailNetworkFactsPanel.Children.Clear();
++        DetailEvidenceGroupsPanel.Children.Clear();
++        DetailTechnicalContextText.Text = string.Empty;
++        DetailEvidenceText.Text = string.Empty;
++        DetailExecutableText.Text = string.Empty;
++        DetailCommandLineText.Text = string.Empty;
++        DetailFormattedCommandLineText.Text = string.Empty;
+     }
+ 
+     private void RefreshTechnicalDetailGroups()
+@@ -950,7 +1007,6 @@
+     private void TrackMemoryHistory(IReadOnlyList<ProcessSnapshot> snapshots)
+     {
+         DateTime now = DateTime.UtcNow;
+-        DateTime cutoff = now - TimeSpan.FromMinutes(5);
+         foreach (var p in snapshots)
+         {
+             // Do not merge histories for a recycled PID when StartTime is unknown.
+@@ -961,13 +1017,10 @@
+             if (!_memoryHistory.TryGetValue(p.Pid, out var state) ||
+                 state.StartTime != p.StartTime.Value || state.PrivateResident != privateResident)
+             {
+-                state = (p.StartTime.Value, privateResident, new Queue<MemoryObservation>());
++                state = (p.StartTime.Value, privateResident, new MemoryObservationBuffer());
+                 _memoryHistory[p.Pid] = state;
+             }
+-            state.Samples.Enqueue(new MemoryObservation(now, bytes));
+-            while (state.Samples.Count > 0 &&
+-                (state.Samples.Peek().TimestampUtc < cutoff || state.Samples.Count > 160))
+-                state.Samples.Dequeue();
++            state.Samples.Add(now, bytes);
+         }
+     }
+ 
+@@ -1555,6 +1608,10 @@
+ 
+     private void ClearDetails()
+     {
++        _currentDetailRow = null;
++        _renderedClassificationFactsInsight = null;
++        _renderedClassificationFactsPid = null;
++        DetailClassificationFactsPanel.Children.Clear();
+         DetailProcessIcon.Source = null;
+         DetailFriendlyNameText.Text = "Nessun processo selezionato";
+         DetailProcessIdentityText.Text = string.Empty;
+@@ -1685,10 +1742,20 @@
+         _servicesMode = services;
+         // Keep the services-mode gate independent from any high-load process interval.
+         _timer.Interval = MonitorRefreshPolicy.NormalProcessInterval;
+-        GuardianDashboard.Visibility = guardian ? Visibility.Visible : Visibility.Collapsed;
+-        GuardianDashboard.SetActive(guardian);
+-        MemoryDashboard.Visibility = memory ? Visibility.Visible : Visibility.Collapsed;
+-        MemoryDashboard.SetActive(memory);
++        if (guardian && GuardianDashboard is null)
++        {
++            GuardianDashboard = new GuardianDashboardView();
++            GuardianDashboardHost.Content = GuardianDashboard;
++        }
++        if (memory && MemoryDashboard is null)
++        {
++            MemoryDashboard = new MemoryDashboardView();
++            MemoryDashboardHost.Content = MemoryDashboard;
++        }
++        GuardianDashboardHost.Visibility = guardian ? Visibility.Visible : Visibility.Collapsed;
++        GuardianDashboard?.SetActive(guardian);
++        MemoryDashboardHost.Visibility = memory ? Visibility.Visible : Visibility.Collapsed;
++        MemoryDashboard?.SetActive(memory);
+         ProcessWorkspace.Visibility = (services || guardian || memory) ? Visibility.Collapsed : Visibility.Visible;
+         ServiceWorkspace.Visibility = services ? Visibility.Visible : Visibility.Collapsed;
+         ProcessFilters.Visibility = (services || guardian || memory) ? Visibility.Collapsed : Visibility.Visible;
+--- /dev/null
++++ b/src/ProcessLens.App/MemoryObservationBuffer.cs
+@@ -0,0 +1,27 @@
++using ProcessLens.Core;
++
++namespace ProcessLens.App;
++
++/// <summary>Stores samples inline; allocates public observation objects only for a requested trend.</summary>
++internal sealed class MemoryObservationBuffer
++{
++    private readonly Queue<(DateTime TimestampUtc, long Bytes)> _samples = new();
++    public int Count => _samples.Count;
++
++    public void Add(DateTime timestampUtc, long bytes)
++    {
++        _samples.Enqueue((timestampUtc, bytes));
++        DateTime cutoff = timestampUtc - TimeSpan.FromMinutes(5);
++        while (_samples.Count > 0 && (_samples.Peek().TimestampUtc < cutoff || _samples.Count > 160))
++            _samples.Dequeue();
++    }
++
++    public MemoryObservation[] ToArray()
++    {
++        var observations = new MemoryObservation[_samples.Count];
++        int index = 0;
++        foreach (var sample in _samples)
++            observations[index++] = new MemoryObservation(sample.TimestampUtc, sample.Bytes);
++        return observations;
++    }
++}
+--- a/src/ProcessLens.App/ProcessIconResolver.cs
++++ b/src/ProcessLens.App/ProcessIconResolver.cs
+@@ -1,5 +1,4 @@
+-﻿using System.Collections.Concurrent;
+-using System.Runtime.InteropServices;
++﻿using System.Runtime.InteropServices;
+ using System.Windows;
+ using System.Windows.Interop;
+ using System.Windows.Media;
+@@ -19,8 +18,8 @@
+     private const uint ShgfiLargeIcon = 0x000000000;
+     private const uint ShgfiUseFileAttributes = 0x000000010;
+ 
+-    private static readonly ConcurrentDictionary<string, ImageSource> Cache =
+-        new(StringComparer.OrdinalIgnoreCase);
++    private static readonly BoundedCache<string, ImageSource> Cache =
++        new(128, StringComparer.OrdinalIgnoreCase);
+ 
+     public static ImageSource? GetIcon(string? executablePath, string processName)
+     {
+@@ -33,7 +32,7 @@
+ 
+         var icon = Resolve(executablePath, processName);
+         if (icon is not null)
+-            Cache.TryAdd(key, icon);
++            Cache[key] = icon;
+ 
+         return icon;
+     }
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,9 +8,11 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R7-R2-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R8-memory-candidate</InformationalVersion>
++    <UseAppHost>true</UseAppHost>
++    <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+-    <Description>Windows process intelligence and Task Manager alternative</Description>
++    <Description>ProcessLens</Description>
+     <Company>ProcessLens</Company>
+     <ServerGarbageCollection>false</ServerGarbageCollection>
+     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+--- a/start-processlens-all.ps1
++++ b/start-processlens-all.ps1
+@@ -27,7 +27,7 @@
+ }
+ 
+ try {
+-    Write-Host 'ProcessLens v0.19.16 R7 R2 candidata - Avvio guidato in sequenza' -ForegroundColor Green
++    Write-Host 'ProcessLens v0.19.16 R8 candidata - Avvio guidato in sequenza' -ForegroundColor Green
+     Write-Host ('Modalita: ' + $Mode)
+     Write-Host ('Cartella: ' + $PSScriptRoot)
+     $isAdmin = Test-IsAdministrator
+--- /dev/null
++++ b/tests/ProcessLens.MemoryEfficiencyTests/ProcessLens.MemoryEfficiencyTests.csproj
+@@ -0,0 +1,11 @@
++<Project Sdk="Microsoft.NET.Sdk">
++  <PropertyGroup>
++    <OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework>
++    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
++  </PropertyGroup>
++  <ItemGroup>
++    <ProjectReference Include="../../src/ProcessLens.Core/ProcessLens.Core.csproj" />
++    <Compile Include="../../src/ProcessLens.App/BoundedCache.cs" Link="BoundedCache.cs" />
++    <Compile Include="../../src/ProcessLens.App/MemoryObservationBuffer.cs" Link="MemoryObservationBuffer.cs" />
++  </ItemGroup>
++</Project>
+--- /dev/null
++++ b/tests/ProcessLens.MemoryEfficiencyTests/Program.cs
+@@ -0,0 +1,88 @@
++using ProcessLens.App;
++using ProcessLens.Core;
++
++static void Check(bool passed, string name)
++{
++    if (!passed) throw new Exception("FAIL R8 " + name);
++    Console.WriteLine("PASS R8 " + name);
++}
++
++var cache = new BoundedCache<string, object>(2, StringComparer.OrdinalIgnoreCase);
++var first = new object(); var second = new object();
++cache["first"] = first; cache["second"] = second;
++Check(cache.TryGetValue("FIRST", out var same) && ReferenceEquals(same, first), "cache comparer and value identity");
++cache["third"] = new object();
++Check(cache.Count == 2 && !cache.TryGetValue("second", out _), "least recently used entry evicted");
++cache["first"] = second;
++Check(cache.Count == 2 && cache.TryGetValue("first", out same) && ReferenceEquals(same, second), "update replaces value without growing cache");
++Check(cache.Remove("FIRST") && !cache.Remove("missing") && cache.Count == 1, "removal unlinks cache entry");
++for (int n = 0; n < 10000; n++) cache[n.ToString()] = new object();
++Check(cache.Count == 2 && cache.Keys.Length == 2, "large churn cannot grow cache past capacity");
++var concurrent = new BoundedCache<int, object>(8);
++Parallel.For(0, 4000, n => { concurrent[n] = new object(); concurrent.TryGetValue(n, out _); });
++Check(concurrent.Count <= 8, "concurrent icon-style access remains bounded");
++
++var start = new DateTime(2026, 10, 15, 0, 0, 0, DateTimeKind.Utc);
++var buffer = new MemoryObservationBuffer();
++for (int n = 0; n < 200; n++) buffer.Add(start.AddSeconds(n), n);
++var exported = buffer.ToArray();
++Check(buffer.Count == 160 && exported[0].Bytes == 40 && exported[^1].Bytes == 199, "sample count retention matches R7");
++buffer.Add(start.AddSeconds(499), 499);
++exported = buffer.ToArray();
++Check(exported.Length == 2 && exported[0].Bytes == 199 && exported[1].Bytes == 499, "five minute retention includes exact cutoff");
++exported[0] = new MemoryObservation(start, -1);
++Check(buffer.ToArray()[0].Bytes == 199, "export does not mutate retained samples");
++var baseline = new List<MemoryObservation>();
++var optimized = new MemoryObservationBuffer();
++for (int n = 0; n < 220; n++)
++{
++    var timestamp = start.AddSeconds(n * 7);
++    baseline.Add(new MemoryObservation(timestamp, n * 1048576L));
++    baseline.RemoveAll(o => o.TimestampUtc < timestamp.AddMinutes(-5));
++    if (baseline.Count > 160) baseline.RemoveRange(0, baseline.Count - 160);
++    optimized.Add(timestamp, n * 1048576L);
++}
++Check(baseline.SequenceEqual(optimized.ToArray()), "all exported timestamp and byte values match original retention");
++Check(MemoryTrendAnalyzer.Analyze("RAM privata residente", baseline) ==
++      MemoryTrendAnalyzer.Analyze("RAM privata residente", optimized.ToArray()), "trend output is unchanged");
++
++// Synthetic allocation evidence, never a measurement of WPF/physical RAM or the user's target process.
++static void OriginalPolling()
++{
++    var histories = new List<Queue<MemoryObservation>>();
++    var time = new DateTime(2026, 10, 15, 0, 0, 0, DateTimeKind.Utc);
++    for (int p = 0; p < 1000; p++)
++    {
++        var history = new Queue<MemoryObservation>();
++        for (int n = 0; n < 20; n++) history.Enqueue(new MemoryObservation(time.AddSeconds(n * 15), n));
++        histories.Add(history);
++    }
++    GC.KeepAlive(histories);
++}
++static void OptimizedPolling()
++{
++    var histories = new List<MemoryObservationBuffer>();
++    var time = new DateTime(2026, 10, 15, 0, 0, 0, DateTimeKind.Utc);
++    for (int p = 0; p < 1000; p++)
++    {
++        var history = new MemoryObservationBuffer();
++        for (int n = 0; n < 20; n++) history.Add(time.AddSeconds(n * 15), n);
++        histories.Add(history);
++    }
++    GC.KeepAlive(histories);
++}
++static long Measure(Action operation)
++{
++    long before = GC.GetAllocatedBytesForCurrentThread();
++    operation();
++    return GC.GetAllocatedBytesForCurrentThread() - before;
++}
++OriginalPolling(); OptimizedPolling(); // JIT warmup, no forced collection or working-set manipulation.
++long originalBytes = Measure(OriginalPolling);
++long optimizedBytes = Measure(OptimizedPolling);
++Console.WriteLine($"SYNTHETIC_ALLOCATIONS original_bytes={originalBytes} optimized_bytes={optimizedBytes} processes=1000 samples=20");
++if (IntPtr.Size == 8)
++    Check(optimizedBytes < originalBytes, "synthetic x64 global polling allocates fewer managed bytes (not a RAM claim)");
++else
++    Console.WriteLine("INFO R8 allocation comparison recorded; relative allocation assertion is scoped to Windows x64 deployment.");
++Console.WriteLine("R8 memory efficiency tests passed; Windows GUI RAM must be measured separately.");
+--- a/tests/check-guardian-dashboard.ps1
++++ b/tests/check-guardian-dashboard.ps1
+@@ -16,7 +16,7 @@
+ $viewLogic = [IO.File]::ReadAllText($code)
+ $readLogic = [IO.File]::ReadAllText($reader)
+ $lineageLogic = [IO.File]::ReadAllText($lineage)
+-foreach ($token in @('NavGuardianButton_Click','GuardianDashboardView','GuardianDashboard.SetActive(guardian)')) {
++foreach ($token in @('NavGuardianButton_Click','GuardianDashboardView','GuardianDashboard?.SetActive(guardian)')) {
+     if (-not ($mainText.Contains($token) -or $mainLogic.Contains($token))) { throw "Dashboard navigation token missing: $token" }
+ }
+ foreach ($name in @('EventsTable','TopProcessesTable','ParentsTable','ResourcesTable','DiagnosticsTable','ActivityTrendList','LineagePidBox','LineageAncestorsTable','LineageChildrenTable')) {
+--- a/tests/check-memory-dashboard.ps1
++++ b/tests/check-memory-dashboard.ps1
+@@ -6,8 +6,8 @@
+ $m = Get-Content -Path (Join-Path $base 'src\ProcessLens.App\MainWindow.xaml') -Raw
+ $agent = Get-Content -Path (Join-Path $base 'src\ProcessLens.MemoryAgent\Program.cs') -Raw
+ $memory = Get-Content -Path (Join-Path $base 'src\ProcessLens.Core\MemoryAlertPolicy.cs') -Raw
+-if ($c -notmatch 'NavMemoryButton_Click' -or $c -notmatch 'MemoryDashboard.SetActive' -or
+-    $m -notmatch 'MemoryDashboardView' -or $m -notmatch 'NavMemoryButton' -or
++if ($c -notmatch 'NavMemoryButton_Click' -or $c -notmatch 'MemoryDashboard\?\.SetActive' -or
++    $m -notmatch 'MemoryDashboardHost' -or $m -notmatch 'NavMemoryButton' -or
+     $memory -notmatch 'usedPercent < ResetPercent' -or $memory -notmatch 'usedPercent >= HighPercent' -or
+     $agent -notmatch 'ShowBalloonTip' -or $agent -notmatch 'Interval = 10_000') {
+     throw 'Preflight memory dashboard/agent fallito.'
+--- /dev/null
++++ b/tests/check-memory-efficiency-r8.ps1
+@@ -0,0 +1,19 @@
++$ErrorActionPreference = 'Stop'
++$root = Split-Path -Parent $PSScriptRoot
++$ui = Get-Content -LiteralPath (Join-Path $root 'src\ProcessLens.App\MainWindow.xaml.cs') -Raw -Encoding UTF8
++[xml]$view = Get-Content -LiteralPath (Join-Path $root 'src\ProcessLens.App\MainWindow.xaml') -Raw -Encoding UTF8
++foreach ($name in @('GuardianDashboardHost','MemoryDashboardHost')) {
++    if (-not $view.SelectSingleNode("//*[@*[local-name()='Name']='$name' and local-name()='ContentControl']")) { throw ('Missing lazy dashboard host: ' + $name) }
++}
++if ($view.SelectNodes("//*[local-name()='GuardianDashboardView' or local-name()='MemoryDashboardView']").Count -ne 0) { throw 'Dashboard is still eagerly constructed in XAML.' }
++foreach ($token in @('guardian && GuardianDashboard is null','memory && MemoryDashboard is null','GuardianDashboard?.SetActive(guardian)','MemoryDashboard?.SetActive(memory)',
++    'DetailIdentification_Expanded','DetailIdentification_Collapsed','DetailTechnicalSections_Collapsed','_currentDetailRow = null;',
++    'MemoryObservationBuffer Samples','state.Samples.Add(now, bytes)')) {
++    if (-not $ui.Contains($token)) { throw ('Missing memory/lifecycle guard: ' + $token) }
++}
++foreach ($name in @('ProcessList','ServiceList')) {
++    $node = $view.SelectSingleNode("//*[@*[local-name()='Name']='$name']")
++    if ($node.GetAttribute('VirtualizingPanel.VirtualizationMode') -ne 'Recycling' -or
++        $node.GetAttribute('ScrollViewer.CanContentScroll') -ne 'True') { throw ('Missing recycling: ' + $name) }
++}
++Write-Host 'PASS R8: lazy dashboard hosts, on-demand details, sample buffer, recycling and lifecycle guards.'
+--- /dev/null
++++ b/verify-candidate-r8.ps1
+@@ -0,0 +1,67 @@
++# Verification only: no GUI launch, service installation, capture or process termination.
++[CmdletBinding()]
++param()
++$ErrorActionPreference = 'Stop'
++if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) {
++    throw 'NON ESEGUITO: questa procedura richiede Windows.'
++}
++if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
++    throw 'NON ESEGUITO: SDK .NET non trovato. Nessuna installazione automatica.'
++}
++$root = $PSScriptRoot
++$results = Join-Path $root 'verification-r8'
++New-Item -ItemType Directory -Path $results -Force | Out-Null
++$records = New-Object System.Collections.Generic.List[object]
++$failures = 0
++Push-Location $root
++try {
++    & dotnet --info | Out-File (Join-Path $results 'dotnet-info.txt') -Encoding utf8
++    if ($LASTEXITCODE -ne 0) { throw 'dotnet --info non riuscito.' }
++    foreach ($script in Get-ChildItem (Join-Path $root 'tests') -Filter 'check-*.ps1' | Sort-Object Name) {
++        $status = 'PASS'
++        try { & $script.FullName *> (Join-Path $results ($script.BaseName + '.log')) }
++        catch { $status = 'FAIL'; $failures++; $_ | Out-File (Join-Path $results ($script.BaseName + '.log')) -Append -Encoding utf8 }
++        $records.Add([PSCustomObject]@{ Kind='PowerShell'; Name=$script.Name; Status=$status; ExitCode=$null })
++    }
++    foreach ($project in Get-ChildItem (Join-Path $root 'tests') -Filter '*.csproj' -Recurse | Sort-Object FullName) {
++        # Fixture is compiled only. Running it would create a target process for profiling.
++        $verb = if ($project.BaseName -eq 'ProcessLens.ProfilerFixture') { 'build' } else { 'run' }
++        $arguments = if ($verb -eq 'run') { @('run','--project',$project.FullName,'-c','Release') }
++            else { @('build',$project.FullName,'-c','Release','--nologo') }
++        & dotnet @arguments *> (Join-Path $results ($project.BaseName + '.log'))
++        $exitCode = $LASTEXITCODE
++        $status = if ($exitCode -eq 0) { 'PASS' } else { $failures++; 'FAIL' }
++        $records.Add([PSCustomObject]@{ Kind='dotnet'; Name=$project.BaseName; Status=$status; ExitCode=$exitCode })
++    }
++    foreach ($project in Get-ChildItem (Join-Path $root 'src') -Filter '*.csproj' -Recurse | Sort-Object FullName) {
++        & dotnet build $project.FullName -c Release --nologo *> (Join-Path $results ('build-' + $project.BaseName + '.log'))
++        $exitCode = $LASTEXITCODE
++        $status = if ($exitCode -eq 0) { 'PASS' } else { $failures++; 'FAIL' }
++        $records.Add([PSCustomObject]@{ Kind='build'; Name=$project.BaseName; Status=$status; ExitCode=$exitCode })
++    }
++    # Run the same semantic regression suite with copied knowledge omitted, to check C# fallbacks.
++    $semanticTests = Join-Path $root 'tests\ProcessLens.TerminologyTests\bin\Release\net8.0'
++    $knowledge = Join-Path $semanticTests 'knowledge'
++    $disabled = Join-Path $semanticTests 'knowledge.disabled-r7'
++    if (Test-Path $disabled) { throw 'Backup knowledge gia presente; risolvere prima di rieseguire.' }
++    if (Test-Path $knowledge) {
++        Move-Item -LiteralPath $knowledge -Destination $disabled
++        try {
++            & dotnet (Join-Path $semanticTests 'ProcessLens.TerminologyTests.dll') *> (Join-Path $results 'terminology-without-knowledge.log')
++            $exitCode = $LASTEXITCODE
++            $status = if ($exitCode -eq 0) { 'PASS' } else { $failures++; 'FAIL' }
++            $records.Add([PSCustomObject]@{ Kind='fallback'; Name='TerminologyWithoutKnowledge'; Status=$status; ExitCode=$exitCode })
++        }
++        finally { Move-Item -LiteralPath $disabled -Destination $knowledge }
++    }
++    else {
++        $records.Add([PSCustomObject]@{ Kind='fallback'; Name='TerminologyWithoutKnowledge'; Status='NON ESEGUITO'; ExitCode=$null })
++        $failures++
++    }
++}
++finally {
++    $records | Export-Csv (Join-Path $results 'test-results.csv') -NoTypeInformation -Encoding UTF8
++    Pop-Location
++}
++if ($failures -gt 0) { throw ($failures.ToString() + ' verifiche fallite o non eseguite. Consultare verification-r8. Candidata non promossa.') }
++Write-Host 'Suite e build superate. Verifica visuale WPF e scenari Windows ancora da completare; candidata non promossa.'

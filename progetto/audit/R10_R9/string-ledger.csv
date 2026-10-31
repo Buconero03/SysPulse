@@ -1,0 +1,3 @@
+﻿before,after,scope,reason_limit
+ClipboardText.Copy(_selfResourceReport),"ClipboardText.Copy(this, _selfResourceReport)",Copia risorse GUI handler,Owner required by unchanged method signature
+R10 R8 GUI informational version,R10 R9 clipboard-fix candidate,Assembly metadata,Distinguishes corrected candidate; meter unchanged

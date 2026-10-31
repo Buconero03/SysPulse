@@ -1,0 +1,2 @@
+id,status,source,finding,qualification
+R6-ASYNC-01,APERTA,MainWindow.xaml.cs AuditStep and query result publication,AuditStep has no selection gate and ShowQueryResult follows an await without a repeated selection check,Source risk identified; Windows reproduction and delayed-task regression NON ESEGUITO

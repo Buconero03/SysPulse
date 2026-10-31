@@ -1,0 +1,34 @@
+{
+  "baseline_sha256": "6331971ce39d46cf3653abfec31d08b2d74fc0b50cec3d8f8e1cd6113564f5b5",
+  "modified_files": [
+    "LEGGIMI.txt",
+    "progetto/build-dashboard.ps1",
+    "progetto/src/ProcessLens.App/MainWindow.xaml",
+    "progetto/src/ProcessLens.App/MainWindow.xaml.cs",
+    "progetto/src/ProcessLens.App/ProcessLens.App.csproj",
+    "progetto/src/ProcessLens.App/ProcessRow.cs",
+    "progetto/src/ProcessLens.App/TrayWindowController.cs",
+    "progetto/src/ProcessLens.App/WindowActionDiagnostics.cs",
+    "progetto/src/ProcessLens.App/WindowsComponentContext.cs",
+    "progetto/src/ProcessLens.Core/WindowsComponentCatalog.cs",
+    "progetto/src/ProcessLens.Semantics/RoleClassifier.cs",
+    "progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj",
+    "progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs",
+    "progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs",
+    "progetto/tests/ProcessLens.WindowsComponentTests/Program.cs",
+    "supporto/avvia.ps1"
+  ],
+  "new_files": [
+    "progetto/audit/tools/check_powershell_r31.py",
+    "progetto/audit/tools/check_search_hosts_r31.ps1",
+    "progetto/audit/tools/mutate_search_hosts_r31.py",
+    "progetto/audit/tools/package_search_hosts_r31.py",
+    "progetto/audit/tools/run_process_groups_r31.py",
+    "progetto/audit/tools/test_launcher_r31.ps1",
+    "progetto/audit/tools/typecheck_wpf_sources_r31.py",
+    "progetto/src/ProcessLens.Core/WindowsHostReference.cs"
+  ],
+  "protected": "Native acquisition, Guardian, MemoryAgent, profiler, RAM monitor, icon retrieval, scrolling and lifetime policies byte identical to R30; Core/Semantics changes restricted to the declared reference catalog and two role cases",
+  "new_dependencies": 0,
+  "Windows_runtime_DPI_RAM": "NOT EXECUTED / NOT MEASURED"
+}

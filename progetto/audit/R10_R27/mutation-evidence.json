@@ -1,0 +1,20 @@
+[
+  {
+    "mutation": "name-only-windows-icon",
+    "expected_failure": "R27 icon classification: unknown path does not promote a name",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/WindowsProcessIconPolicy.cs",
+    "production_sha256": "150dada73b9d85036e4c7cbd2520a52c704021581c1cb3f30fc9754dc3aa8571",
+    "test_sha256": "2cbd8b2e31e19b7b3c1b6f2a90fa5ad9045cd767c6c1fc59819d2fbf818d8f60"
+  },
+  {
+    "mutation": "all-microsoft-apps-are-os",
+    "expected_failure": "R27 icon classification: Microsoft app metadata is not an OS component",
+    "expected_runtime_failure_observed": true,
+    "status": "PASS",
+    "production_file": "src/ProcessLens.App/WindowsProcessIconPolicy.cs",
+    "production_sha256": "150dada73b9d85036e4c7cbd2520a52c704021581c1cb3f30fc9754dc3aa8571",
+    "test_sha256": "2cbd8b2e31e19b7b3c1b6f2a90fa5ad9045cd767c6c1fc59819d2fbf818d8f60"
+  }
+]

@@ -1,0 +1,8 @@
+test,kind,status
+66 structural checks,Python source and XML,PASS
+7 clipboard regressions including delivered R8 defect,Python source only,PASS
+R8 to R9 exact patch,git apply and SHA256,PASS
+All .NET builds and tests,dotnet,NON ESEGUITO
+PowerShell scripts,Windows,NON ESEGUITO
+WPF copy action and real clipboard,Windows,NON ESEGUITO
+RAM and CPU measurement,Windows,NON MISURATO

@@ -1,0 +1,567 @@
+diff --git a/CORREZIONE_CONTROLLO_POWERSHELL_R18_R2.md b/CORREZIONE_CONTROLLO_POWERSHELL_R18_R2.md
+new file mode 100644
+index 0000000..9ab8099
+--- /dev/null
++++ b/CORREZIONE_CONTROLLO_POWERSHELL_R18_R2.md
+@@ -0,0 +1,38 @@
++# ProcessLens v0.19.16 — candidata R18 R2
++
++Corretto il blocco `FAIL R18 R1 must retain native theme without showing windows.` del controllo `tests/check-copy-layout-r18r1.ps1`.
++
++In PowerShell `-match` ignora le maiuscole: il controllo precedente scambiava `template=` nella stringa diagnostica C# per un'assegnazione alla proprietà `Template`. Il vecchio script riproduce il problema anche senza avviare WPF.
++
++Il controllo aggiornato esclude stringhe e commenti, usa il confronto sensibile alle maiuscole e distingue `Template = ...` da `Template == ...`. Tredici casi interni verificano stringhe, commenti, uguaglianze e modifiche vietate. Restano tutte le verifiche originali su Dispatcher, limiti, altezza, righe, ritorno a capo e copia del testo.
++
++## Verifiche eseguite
++
++- PowerShell 7.4.21 su Linux: riprodotto il fallimento del vecchio script; il nuovo passa sullo stesso sorgente WPF.
++- Eseguiti tutti i 30 controlli statici nell'ordine di `build-dashboard.ps1`, inclusa la sintassi dei 69 script: PASS.
++- Eseguite otto varianti del sorgente: accettate le diagnostiche legittime; respinte assegnazioni al template, apertura di finestre e rimozione delle verifiche originali.
++- Rieseguite 260 verifiche Python su sorgenti, regressioni e corrispondenza delle prove conservate: PASS.
++- Verificata l'identità dei sorgenti per le precedenti 332 asserzioni portabili e i sei controlli tipi C#: prove conservate, non rieseguite in questa revisione.
++
++Il codice C# operativo, XAML, test C# e sequenza di compilazione sono identici alla R18 R1. Cambiano lo script di controllo e l'identificativo della candidata nel progetto App. Gli strumenti di audit riconoscono i soli hash di questa revisione.
++
++**Non eseguiti qui:** Windows PowerShell 5.1, compilazione completa Windows, caricamento XAML/BAML, esecuzione WPF, cattura di rete reale e misurazione RAM. Il superamento dei controlli statici non dimostra il superamento dei successivi test WPF.
++
++## Verifica su Windows
++
++Estrarre lo ZIP in una nuova cartella. Aprire PowerShell nella cartella `ProcessLens-v0.19.16-R10` ed eseguire:
++
++```powershell
++.\build-dashboard.ps1
++```
++
++Il log atteso per il controllo corretto include:
++
++```text
++PASS R18 R2 source guard: 13 regression cases; original false positive reproduced.
++PASS R18 R1 source: bounded native Dispatcher layout; original height, wrap and selection assertions retained.
++```
++
++La pipeline prosegue con gli altri controlli e test previsti. Non avvia catture reali, non cambia criteri di rete e non modifica Guardian.
++
++Diff, registro delle modifiche, prove d'esecuzione e matrice dei test: `audit/R10_R18_R2/`. Manifest completo: `SHA256SUMS_R10.txt`.
+diff --git a/README.md b/README.md
+index 684ea5d..3824c4a 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,5 @@
++> **Candidata R18 R2:** corretto il falso positivo PowerShell su `template=` nel messaggio diagnostico. Tutti i 30 controlli statici eseguiti con PowerShell 7.4; WPF e build completa da verificare su Windows. Leggere `CORREZIONE_CONTROLLO_POWERSHELL_R18_R2.md`.
++
+ > **Candidata R18 R1:** corretto il test multilinea WPF per attendere la formattazione differita sul Dispatcher. Asserzioni originali conservate; codice operativo e XAML identici alla R18. Controllo tipi C# passato; esecuzione WPF da confermare su Windows. Leggere `CORREZIONE_LAYOUT_WPF_R18_R1.md`.
+ 
+ > **Candidata R18:** corretti gli esiti rete poco leggibili. Aggiunta cattura IPv4 nativa Winsock indipendente dalle API PktMon; diagnosi copiata e conservata dopo il cambio scheda; audit disabilitato evidenziato con istruzioni manuali. 332 asserzioni portabili PASS; cattura reale e WPF da verificare su Windows. Leggere `RETE_CORREZIONI_R18.md`.
+diff --git a/audit/tools/check_copy_layout_r18r1.py b/audit/tools/check_copy_layout_r18r1.py
+index 17e3fe6..14180c7 100644
+--- a/audit/tools/check_copy_layout_r18r1.py
++++ b/audit/tools/check_copy_layout_r18r1.py
+@@ -3,6 +3,7 @@ import argparse,hashlib,json,re,zipfile
+ from pathlib import Path
+ import xml.etree.ElementTree as ET
+ from check_wpf_test_context_r14r3 import checks
++from ux_writing_rules import approved_feature
+ 
+ def violations(s):
+  bad=[]
+@@ -31,9 +32,9 @@ def main():
+  def check(label,ok):rows.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/mutation/type-check correlation; not WPF execution'});print(rows[-1]['status'],label)
+  ledger=json.loads((audit/'authorized-source-edits.json').read_text())['files'];allowed={x['file'] for x in ledger};test='tests/ProcessLens.CopyUiTests/Program.cs';app='src/ProcessLens.App/ProcessLens.App.csproj';s=(r/test).read_text();before=old[test].decode('utf-8-sig')
+  check('all R18 files retained',all((r/n).is_file() for n in old))
+- check('exact four-file source/test/pipeline ledger',allowed=={test,app,'build-dashboard.ps1','tests/check-copy-layout-r18r1.ps1'} and all(sha((r/x['file']).read_bytes())==x['sha256_after'] and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
++ check('exact four-file source/test/pipeline ledger',allowed=={test,app,'build-dashboard.ps1','tests/check-copy-layout-r18r1.ps1'} and all((sha((r/x['file']).read_bytes())==x['sha256_after'] or approved_feature(r,x['file'],'R10_R18_R2')) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
+  check('all production C# and XAML retained byte for byte',all((r/n).read_bytes()==b for n,b in old.items() if n.startswith('src/') and n.endswith(('.cs','.xaml'))))
+- check('only production project identity changed',(r/app).read_bytes()==old[app].replace(b'R18-network-recovery-candidate',b'R18-R1-wpf-layout-candidate'))
++ check('only production project identity changed',((r/app).read_bytes()==old[app].replace(b'R18-network-recovery-candidate',b'R18-R1-wpf-layout-candidate') or approved_feature(r,app,'R10_R18_R2')))
+  changed={f.relative_to(r).as_posix() for f in r.rglob('*') if f.is_file() and (f.relative_to(r).as_posix().startswith('src/') or f.relative_to(r).as_posix().startswith('tests/') and f.suffix in {'.cs','.csproj'}) and old.get(f.relative_to(r).as_posix())!=f.read_bytes()}
+  check('no other production or C# test changes',changed=={test,app})
+  check('every existing Check assertion retained',all(c in checks(s) for c in checks(before)))
+diff --git a/audit/tools/check_device_catalog_r14r1.py b/audit/tools/check_device_catalog_r14r1.py
+index d993788..837046a 100644
+--- a/audit/tools/check_device_catalog_r14r1.py
++++ b/audit/tools/check_device_catalog_r14r1.py
+@@ -22,15 +22,15 @@ def main():
+     after='ex is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or ArgumentException'
+     check('production catalog delta is exactly one explicit exception alternative',
+         old[core].count(before.encode())==1 and (root/core).read_bytes()==old[core].replace(before.encode(),after.encode(),1))
+-    check('App project delta changes only candidate identity',(root/app).read_bytes()==old[app].replace(b'R14-system-processes-candidate',b'R14-R1-device-catalog-fix-candidate') or any(approved_feature(root,app,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1')))
++    check('App project delta changes only candidate identity',(root/app).read_bytes()==old[app].replace(b'R14-system-processes-candidate',b'R14-R1-device-catalog-fix-candidate') or any(approved_feature(root,app,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')))
+     changed={n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}
+-    check('catalog fix retained with only exact authorized R14 R2/R3 and R15 UI delta',changed - {n for n in changed if any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))} == {core,app} - {n for n in (core,app) if any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))})
+-    check('R14 sources and prior C# tests retained outside exact authorized R14 R2/R3 and R15 delta',all((root/n).read_bytes()==data or any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1')) for n,data in old.items() if (n.startswith('src/') and n not in {core,app}) or (n.startswith('tests/') and n.endswith('.cs') and n!=test)))
++    check('catalog fix retained with only exact authorized R14 R2/R3 and R15 UI delta',changed - {n for n in changed if any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))} == {core,app} - {n for n in (core,app) if any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))})
++    check('R14 sources and prior C# tests retained outside exact authorized R14 R2/R3 and R15 delta',all((root/n).read_bytes()==data or any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')) for n,data in old.items() if (n.startswith('src/') and n not in {core,app}) or (n.startswith('tests/') and n.endswith('.cs') and n!=test)))
+     check('current network guards pass',not network_violations(files))
+     t=files[test]
+     check('real file tests retain oversized schema null duplicate boundary and overwrite checks',all(s in t for s in ['MaximumBytes + 1','null device list','null device entry','duplicate identities','too many devices','empty JSON','exact byte limit','File.ReadAllBytes(path).SequenceEqual(bytes)','store.Save(known) == loaded.Error','it-IT','en-US']))
+     ledger=json.loads((root/'audit/R10_R14_R1/authorized-source-edits.json').read_text())['files']
+-    check('catalog fix hashes exact or exact authorized R14 R2/R3 or R15 version update',len(ledger)==2 and all(sha((root/r['file']).read_bytes())==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1')) for r in ledger))
++    check('catalog fix hashes exact or exact authorized R14 R2/R3 or R15 version update',len(ledger)==2 and all(sha((root/r['file']).read_bytes())==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')) for r in ledger))
+     evidence=json.loads((root/'audit/R10_R14_R1/runtime-evidence.json').read_text())
+     check('retained compiled source hashes match current source',all(sha((root/n).read_bytes())==digest for n,digest in evidence['source_hashes'].items()))
+     d=root/'audit/R10_R14_R1'
+diff --git a/audit/tools/check_native_capture_r17.py b/audit/tools/check_native_capture_r17.py
+index 7905a6c..4ebde45 100644
+--- a/audit/tools/check_native_capture_r17.py
++++ b/audit/tools/check_native_capture_r17.py
+@@ -35,10 +35,10 @@ def main():
+  rows=[]
+  def check(label,ok):rows.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML/mutation or portable evidence correlation; not Windows runtime'});print(rows[-1]['status'],label)
+  ledger=json.loads((audit/'authorized-source-edits.json').read_text())['files'];allowed={x['file'] for x in ledger}
+- check('exact R16 baseline and R17 source/test ledger',all((sha((r/x['file']).read_bytes())==x['sha256_after'] or any(approved_feature(r,x['file'],revision181) for revision181 in ('R10_R18','R10_R18_R1'))) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
++ check('exact R16 baseline and R17 source/test ledger',all((sha((r/x['file']).read_bytes())==x['sha256_after'] or any(approved_feature(r,x['file'],revision181) for revision181 in ('R10_R18','R10_R18_R1','R10_R18_R2'))) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
+  check('all prior files retained',all((r/n).is_file() for n in old))
+- check('no source or C# test outside authorized delta',all(n in allowed or any(approved_feature(r,n,revision181) for revision181 in ('R10_R18','R10_R18_R1')) for n in {f.relative_to(r).as_posix() for f in r.rglob('*') if f.is_file()} if (n.startswith('src/') or n.startswith('tests/') and n.endswith(('.cs','.csproj'))) and old.get(n)!=(r/n).read_bytes()))
+- check('Guardian MemoryAgent profiler and all other baseline collectors retained byte for byte',all((r/n).read_bytes()==b or any(approved_feature(r,n,revision181) for revision181 in ('R10_R18','R10_R18_R1')) for n,b in old.items() if n.startswith('src/') and n not in allowed))
++ check('no source or C# test outside authorized delta',all(n in allowed or any(approved_feature(r,n,revision181) for revision181 in ('R10_R18','R10_R18_R1','R10_R18_R2')) for n in {f.relative_to(r).as_posix() for f in r.rglob('*') if f.is_file()} if (n.startswith('src/') or n.startswith('tests/') and n.endswith(('.cs','.csproj'))) and old.get(n)!=(r/n).read_bytes()))
++ check('Guardian MemoryAgent profiler and all other baseline collectors retained byte for byte',all((r/n).read_bytes()==b or any(approved_feature(r,n,revision181) for revision181 in ('R10_R18','R10_R18_R1','R10_R18_R2')) for n,b in old.items() if n.startswith('src/') and n not in allowed))
+  check('legacy external capture source and fixtures retained byte for byte',all((r/n).read_bytes()==old[n] for n in ['src/ProcessLens.Windows/WiresharkTools.cs','src/ProcessLens.Core/PacketCaptureEvidence.cs','src/ProcessLens.App/NetworkCaptureView.xaml','src/ProcessLens.App/NetworkCaptureView.xaml.cs','tests/ProcessLens.PacketCaptureTests/Program.cs']))
+  files={f.relative_to(r).as_posix():f.read_text(encoding='utf-8-sig') for f in r.rglob('*') if f.suffix in {'.cs','.xaml','.ps1'}}
+  check('all native source guards',not violations(files))
+@@ -59,8 +59,8 @@ def main():
+  prior_stages=[line for line in old['build-dashboard.ps1'].decode('utf-8-sig').splitlines() if line.startswith('Invoke-CheckedDotnet ')]
+  check('all prior Windows build and test stages retained verbatim and in order',all(line in build for line in prior_stages) and [build.index(line) for line in prior_stages]==sorted(build.index(line) for line in prior_stages))
+  typecheck=json.loads((audit/'wpf-typecheck-evidence.json').read_text())
+- check('real C# type checking with explicit field stubs matches current sources and all six assemblies',len(typecheck['assemblies'])==6 and all(row['status']=='PASS' for row in typecheck['assemblies']) and all(sha((r/n).read_bytes())==h or any(approved_feature(r,n,revision181) for revision181 in ('R10_R18','R10_R18_R1')) for n,h in typecheck['inputs'].items()))
+- evidence=json.loads((audit/'runtime-evidence.json').read_text());check('portable evidence matches all current compiled inputs',all(sha((r/n).read_bytes())==h or any(approved_feature(r,n,revision181) for revision181 in ('R10_R18','R10_R18_R1')) for n,h in evidence['source_hashes'].items()))
++ check('real C# type checking with explicit field stubs matches current sources and all six assemblies',len(typecheck['assemblies'])==6 and all(row['status']=='PASS' for row in typecheck['assemblies']) and all(sha((r/n).read_bytes())==h or any(approved_feature(r,n,revision181) for revision181 in ('R10_R18','R10_R18_R1','R10_R18_R2')) for n,h in typecheck['inputs'].items()))
++ evidence=json.loads((audit/'runtime-evidence.json').read_text());check('portable evidence matches all current compiled inputs',all(sha((r/n).read_bytes())==h or any(approved_feature(r,n,revision181) for revision181 in ('R10_R18','R10_R18_R1','R10_R18_R2')) for n,h in evidence['source_hashes'].items()))
+  for suite,count in [('NativeCaptureTests',75),('NativeNetworkTests',40),('WindowsComponentTests',58),('SystemProcessTests',22),('NetworkDeviceTests',81)]:
+   name='ProcessLens.'+suite;item=next(t for t in evidence['outcomes'] if t['suite']==name);log=(audit/(name+'-run.log')).read_text()
+   check('executed portable '+suite,item['status']=='PASS' and item['assertions']==count and sum(l.startswith('PASS ') for l in log.splitlines())==count and (audit/(name+'-build.log')).read_text()=='')
+@@ -82,6 +82,6 @@ def main():
+   probe=dict(files);assert before in probe[path];probe[path]=probe[path].replace(before,after);check('reject '+label,bool(violations(probe)))
+  for p in [*r.rglob('*.xaml'),*r.rglob('*.csproj')]:ET.parse(p)
+  check('all project and XAML XML parse',True)
+- syntax=json.loads((audit/'syntax-evidence.json').read_text());check('current edited C# syntax corresponds to exact source bytes',syntax['status']=='PASS' and all(sha((r/n).read_bytes())==h or any(approved_feature(r,n,revision181) for revision181 in ('R10_R18','R10_R18_R1')) for n,h in syntax['source_hashes'].items()))
++ syntax=json.loads((audit/'syntax-evidence.json').read_text());check('current edited C# syntax corresponds to exact source bytes',syntax['status']=='PASS' and all(sha((r/n).read_bytes())==h or any(approved_feature(r,n,revision181) for revision181 in ('R10_R18','R10_R18_R1','R10_R18_R2')) for n,h in syntax['source_hashes'].items()))
+  a.output.write_text(json.dumps(rows,indent=2)+'\n');raise SystemExit(0 if all(row['status']=='PASS' for row in rows) else 1)
+ if __name__=='__main__':main()
+diff --git a/audit/tools/check_native_network_r16.py b/audit/tools/check_native_network_r16.py
+index bf3148b..5c832e7 100644
+--- a/audit/tools/check_native_network_r16.py
++++ b/audit/tools/check_native_network_r16.py
+@@ -43,10 +43,10 @@ def main():
+     def check(label,ok):rows.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML/mutation and portable evidence correlation only'});print(rows[-1]['status'],label)
+     files={f.relative_to(r).as_posix():f.read_text(encoding='utf-8-sig') for f in r.rglob('*') if f.suffix in {'.cs','.xaml','.ps1'}}
+     ledger=json.loads((r/'audit/R10_R16/authorized-source-edits.json').read_text())['files'];allowed={x['file'] for x in ledger}
+-    check('exact source and C# test ledger before and after hashes',all((sha((r/x['file']).read_bytes())==x['sha256_after'] or any(approved_feature(r,x['file'],revision18) for revision18 in ('R10_R17','R10_R18','R10_R18_R1'))) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
++    check('exact source and C# test ledger before and after hashes',all((sha((r/x['file']).read_bytes())==x['sha256_after'] or any(approved_feature(r,x['file'],revision18) for revision18 in ('R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
+     check('existing R15 files retained',all((r/n).is_file() for n in old))
+-    check('no production or C# test change outside native feature manifest',all(n in allowed or any(approved_feature(r,n,revision18) for revision18 in ('R10_R17','R10_R18','R10_R18_R1')) for n in {f.relative_to(r).as_posix() for f in r.rglob('*') if f.is_file()} if (n.startswith('src/') or n.startswith('tests/') and n.endswith(('.cs','.csproj'))) and old.get(n)!=(r/n).read_bytes()))
+-    check('existing native collectors semantics Guardian profiler and RAM monitor unchanged',all((r/n).read_bytes()==b or any(approved_feature(r,n,revision18) for revision18 in ('R10_R17','R10_R18','R10_R18_R1')) for n,b in old.items() if n.startswith('src/') and n not in allowed))
++    check('no production or C# test change outside native feature manifest',all(n in allowed or any(approved_feature(r,n,revision18) for revision18 in ('R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')) for n in {f.relative_to(r).as_posix() for f in r.rglob('*') if f.is_file()} if (n.startswith('src/') or n.startswith('tests/') and n.endswith(('.cs','.csproj'))) and old.get(n)!=(r/n).read_bytes()))
++    check('existing native collectors semantics Guardian profiler and RAM monitor unchanged',all((r/n).read_bytes()==b or any(approved_feature(r,n,revision18) for revision18 in ('R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')) for n,b in old.items() if n.startswith('src/') and n not in allowed))
+     check('all native security evidence guards pass',not violations(files))
+     check('cache and Wireshark safety guards retained',not cache_guards(files) and not packet_guards(files))
+     x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
+@@ -59,7 +59,7 @@ def main():
+     check('event table copied read-only and virtualized',all(e.get('IsReadOnly')=='True' and e.get(local+'GridCopySupport.Enabled')=='True' and e.get('VirtualizingPanel.VirtualizationMode')=='Recycling' for e in view.iter(w+'DataGrid')))
+     check('report selectable and wraps; action buttons have no fixed height',all(e.get('TextWrapping')=='Wrap' for e in view.iter(local+'SelectableText')) and all(e.get('Style')=='{StaticResource NativeAction}' and 'Height' not in e.attrib for e in view.iter(w+'Button')))
+     ui=files['tests/ProcessLens.NetworkUiTests/Program.cs'];before=old['tests/ProcessLens.NetworkUiTests/Program.cs'].decode('utf-8-sig')
+-    check('every previous network UI assertion preserved with dispatcher context',valid_context(ui) and (all(c in checks(ui) for c in checks(before)) or any(approved_feature(r,'tests/ProcessLens.NetworkUiTests/Program.cs',revision18) for revision18 in ('R10_R17','R10_R18','R10_R18_R1'))))
++    check('every previous network UI assertion preserved with dispatcher context',valid_context(ui) and (all(c in checks(ui) for c in checks(before)) or any(approved_feature(r,'tests/ProcessLens.NetworkUiTests/Program.cs',revision18) for revision18 in ('R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))))
+     check('new UI regressions cover lazy acquisition results copying coalescing errors and late work',all(t in ui for t in ['new NativeNetworkEvidenceView(nativeSource)','nativeSource.Calls == 0','nativeSource.Calls == 2','nativeView.SetActive(false)','fixture access denied','R16 native tab constructs','PID può essere stato riutilizzato']))
+     check('all clipboard calls retain owner and text',not any(invalid_calls(p.read_text()) for p in (r/'src/ProcessLens.App').rglob('*.cs')))
+     check('Windows build includes native source gate and independent portable suite','check-native-network-r16.ps1' in files['build-dashboard.ps1'] and 'Tests.ProcessLens.NativeNetworkTests' in files['build-dashboard.ps1'])
+@@ -82,6 +82,6 @@ def main():
+     for p in [*r.rglob('*.xaml'),*r.rglob('*.csproj')]:ET.parse(p)
+     check('all XAML and project XML parse',True)
+     syntax=json.loads((r/'audit/R10_R16/syntax-evidence.json').read_text())
+-    check('current edited C# syntax evidence matches exact sources',syntax['status']=='PASS' and all(sha((r/n).read_bytes())==h or any(approved_feature(r,n,revision18) for revision18 in ('R10_R17','R10_R18','R10_R18_R1')) for n,h in syntax['source_hashes'].items()))
++    check('current edited C# syntax evidence matches exact sources',syntax['status']=='PASS' and all(sha((r/n).read_bytes())==h or any(approved_feature(r,n,revision18) for revision18 in ('R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')) for n,h in syntax['source_hashes'].items()))
+     a.output.write_text(json.dumps(rows,indent=2)+'\n');raise SystemExit(0 if all(row['status']=='PASS' for row in rows) else 1)
+ if __name__=='__main__':main()
+diff --git a/audit/tools/check_network_recovery_r18.py b/audit/tools/check_network_recovery_r18.py
+index 47d8d3a..021bbf2 100644
+--- a/audit/tools/check_network_recovery_r18.py
++++ b/audit/tools/check_network_recovery_r18.py
+@@ -44,10 +44,10 @@ def main():
+  rows=[]
+  def check(label,ok):rows.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML/mutation or portable evidence correlation; not Windows runtime'});print(rows[-1]['status'],label)
+  ledger=json.loads((audit/'authorized-source-edits.json').read_text())['files'];allowed={x['file'] for x in ledger}
+- check('exact R17 baseline and R18 source/test ledger',all((sha((r/x['file']).read_bytes())==x['sha256_after'] or approved_feature(r,x['file'],'R10_R18_R1')) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
++ check('exact R17 baseline and R18 source/test ledger',all((sha((r/x['file']).read_bytes())==x['sha256_after'] or (approved_feature(r,x['file'],'R10_R18_R1') or approved_feature(r,x['file'],'R10_R18_R2'))) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
+  check('all prior files retained',all((r/n).is_file() for n in old))
+- check('no source or C# test outside authorized delta',all(n in allowed or approved_feature(r,n,'R10_R18_R1') for n in {f.relative_to(r).as_posix() for f in r.rglob('*') if f.is_file()} if (n.startswith('src/') or n.startswith('tests/') and n.endswith(('.cs','.csproj'))) and old.get(n)!=(r/n).read_bytes()))
+- check('Guardian MemoryAgent profiler and all other baseline collectors retained byte for byte',all((r/n).read_bytes()==b or approved_feature(r,n,'R10_R18_R1') for n,b in old.items() if n.startswith('src/') and n not in allowed))
++ check('no source or C# test outside authorized delta',all(n in allowed or (approved_feature(r,n,'R10_R18_R1') or approved_feature(r,n,'R10_R18_R2')) for n in {f.relative_to(r).as_posix() for f in r.rglob('*') if f.is_file()} if (n.startswith('src/') or n.startswith('tests/') and n.endswith(('.cs','.csproj'))) and old.get(n)!=(r/n).read_bytes()))
++ check('Guardian MemoryAgent profiler and all other baseline collectors retained byte for byte',all((r/n).read_bytes()==b or (approved_feature(r,n,'R10_R18_R1') or approved_feature(r,n,'R10_R18_R2')) for n,b in old.items() if n.startswith('src/') and n not in allowed))
+  check('legacy external capture source and fixtures retained byte for byte',all((r/n).read_bytes()==old[n] for n in ['src/ProcessLens.Windows/WiresharkTools.cs','src/ProcessLens.Core/PacketCaptureEvidence.cs','src/ProcessLens.App/NetworkCaptureView.xaml','src/ProcessLens.App/NetworkCaptureView.xaml.cs','tests/ProcessLens.PacketCaptureTests/Program.cs']))
+  files={f.relative_to(r).as_posix():f.read_text(encoding='utf-8-sig') for f in r.rglob('*') if f.suffix in {'.cs','.xaml','.ps1'}}
+  check('all native source guards',not violations(files))
+@@ -68,7 +68,7 @@ def main():
+  prior_stages=[line for line in old['build-dashboard.ps1'].decode('utf-8-sig').splitlines() if line.startswith('Invoke-CheckedDotnet ')]
+  check('all prior Windows build and test stages retained verbatim and in order',all(line in build for line in prior_stages) and [build.index(line) for line in prior_stages]==sorted(build.index(line) for line in prior_stages))
+  typecheck=json.loads((audit/'wpf-typecheck-evidence.json').read_text())
+- check('real C# type checking with explicit field stubs matches current sources and all six assemblies',len(typecheck['assemblies'])==6 and all(row['status']=='PASS' for row in typecheck['assemblies']) and all(sha((r/n).read_bytes())==h or approved_feature(r,n,'R10_R18_R1') for n,h in typecheck['inputs'].items()))
++ check('real C# type checking with explicit field stubs matches current sources and all six assemblies',len(typecheck['assemblies'])==6 and all(row['status']=='PASS' for row in typecheck['assemblies']) and all(sha((r/n).read_bytes())==h or (approved_feature(r,n,'R10_R18_R1') or approved_feature(r,n,'R10_R18_R2')) for n,h in typecheck['inputs'].items()))
+  evidence=json.loads((audit/'runtime-evidence.json').read_text());check('portable evidence matches all current compiled inputs',all(sha((r/n).read_bytes())==h for n,h in evidence['source_hashes'].items()))
+  for suite,count in [('CompatibleCaptureTests',56),('NativeCaptureTests',75),('NativeNetworkTests',40),('WindowsComponentTests',58),('SystemProcessTests',22),('NetworkDeviceTests',81)]:
+   name='ProcessLens.'+suite;item=next(t for t in evidence['outcomes'] if t['suite']==name);log=(audit/(name+'-run.log')).read_text()
+diff --git a/audit/tools/check_network_tab_r14r2.py b/audit/tools/check_network_tab_r14r2.py
+index 9036081..a604153 100644
+--- a/audit/tools/check_network_tab_r14r2.py
++++ b/audit/tools/check_network_tab_r14r2.py
+@@ -28,13 +28,13 @@ def main():
+     view='src/ProcessLens.App/NetworkDevicesView.xaml';app='src/ProcessLens.App/ProcessLens.App.csproj';test='tests/ProcessLens.NetworkUiTests/Program.cs'
+     before=b'<TabControl x:Name="NetworkTabs" SelectionChanged="NetworkTabs_Changed">'
+     after=b'<TabControl x:Name="NetworkTabs" SelectedIndex="0" SelectionChanged="NetworkTabs_Changed">'
+-    check('initial tab delta retained or exact authorized R16 third tab',(old[view].count(before)==1 and (root/view).read_bytes()==old[view].replace(before,after,1)) or any(approved_feature(root,view,revision17) for revision17 in ('R10_R16','R10_R17','R10_R18','R10_R18_R1')))
++    check('initial tab delta retained or exact authorized R16 third tab',(old[view].count(before)==1 and (root/view).read_bytes()==old[view].replace(before,after,1)) or any(approved_feature(root,view,revision17) for revision17 in ('R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')))
+     check('R2 production delta plus exact authorized R15/R16 presentation',
+-          {n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}- {n for n in old if n.startswith('src/') and any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))} == {view,app} - {n for n in (view,app) if any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))})
+-    check('production C# retained outside exact authorized R15/R16 presentation',all((root/n).read_bytes()==data or any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1')) for n,data in old.items() if n.startswith('src/') and n.endswith('.cs')))
++          {n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}- {n for n in old if n.startswith('src/') and any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))} == {view,app} - {n for n in (view,app) if any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))})
++    check('production C# retained outside exact authorized R15/R16 presentation',all((root/n).read_bytes()==data or any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')) for n,data in old.items() if n.startswith('src/') and n.endswith('.cs')))
+     check('network UI fixture retained outside exact authorized R3/R15/R16 changes',
+-          {n for n,data in old.items() if n.startswith('tests/') and n.endswith('.cs') and (root/n).read_bytes()!=data and not any(approved_feature(root,n,rev) for rev in ('R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))}=={test} - {n for n in (test,) if any(approved_feature(root,n,revision) for revision in ('R10_R14_R3','R10_R16','R10_R17','R10_R18','R10_R18_R1'))})
+-    check('candidate version delta exact',(root/app).read_bytes()==old[app].replace(b'R14-R1-device-catalog-fix-candidate',b'R14-R2-network-tab-init-candidate') or any(approved_feature(root,app,rev) for rev in ('R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1')))
++          {n for n,data in old.items() if n.startswith('tests/') and n.endswith('.cs') and (root/n).read_bytes()!=data and not any(approved_feature(root,n,rev) for rev in ('R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))}=={test} - {n for n in (test,) if any(approved_feature(root,n,revision) for revision in ('R10_R14_R3','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))})
++    check('candidate version delta exact',(root/app).read_bytes()==old[app].replace(b'R14-R1-device-catalog-fix-candidate',b'R14-R2-network-tab-init-candidate') or any(approved_feature(root,app,rev) for rev in ('R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')))
+     tree=ET.parse(root/view).getroot();check('actual XAML explicitly selects cache before Loaded',valid_initial_tab(tree))
+     check('the same XML guard rejects original R1 initialization',not valid_initial_tab(ET.fromstring(old[view])))
+     for label,value in [('missing selection',None),('no selected tab','-1'),('capture tab selected','1')]:
+@@ -55,7 +55,7 @@ def main():
+     gate=files['tests/check-network-devices-r12.ps1']
+     check('standard Windows source gate requires explicit initial tab',"$tabs.GetAttribute('SelectedIndex') -ne '0'" in gate)
+     approved=json.loads((root/'audit/R10_R14_R2/authorized-source-edits.json').read_text())['files']
+-    check('R2 delta hashes retained or superseded by exact authorized R3/R15/R16 hashes',len(approved)==3 and all((sha((root/r['file']).read_bytes())==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))) for r in approved))
++    check('R2 delta hashes retained or superseded by exact authorized R3/R15/R16 hashes',len(approved)==3 and all((sha((root/r['file']).read_bytes())==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))) for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]:ET.parse(f)
+     check('all project and XAML XML parse',True)
+     reported=(root/'audit/R10_R14_R2/reported-windows-build.log').read_text()
+diff --git a/audit/tools/check_packet_capture_r13.py b/audit/tools/check_packet_capture_r13.py
+index 4b9c1b7..7e45fa6 100644
+--- a/audit/tools/check_packet_capture_r13.py
++++ b/audit/tools/check_packet_capture_r13.py
+@@ -55,11 +55,11 @@ def main():
+     check('packet integration satisfies all source guards',not violations(files))
+     allowed={'src/ProcessLens.App/NetworkDevicesView.xaml','src/ProcessLens.App/NetworkDevicesView.xaml.cs','src/ProcessLens.App/ProcessLens.App.csproj'}
+     check('R13 changes plus exact authorized R14 and R15 source integration since R12',
+-          {rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel] and not any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))}==allowed - {rel for rel in allowed if any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))})
++          {rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel] and not any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))}==allowed - {rel for rel in allowed if any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))})
+     check('existing sources exact to R12 outside R13 and exact authorized R14 and R15 integration',
+-          all((root/rel).read_bytes()==data or any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1')) for rel,data in old.items() if rel.startswith('src/') and rel not in allowed))
++          all((root/rel).read_bytes()==data or any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')) for rel,data in old.items() if rel.startswith('src/') and rel not in allowed))
+     approved=json.loads((root/'audit/R10_R13/authorized-source-edits.json').read_text())['files']
+-    check('R13 source hashes retained or superseded by exact authorized R14 and R15 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],revision) for revision in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1')) for r in approved))
++    check('R13 source hashes retained or superseded by exact authorized R14 and R15 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],revision) for revision in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')) for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]:ET.parse(f)
+     check('all XAML and project XML parse',True)
+     view=ET.parse(root/'src/ProcessLens.App/NetworkCaptureView.xaml').getroot();x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
+diff --git a/audit/tools/check_source_guard_r18r2.py b/audit/tools/check_source_guard_r18r2.py
+new file mode 100644
+index 0000000..bfa52b0
+--- /dev/null
++++ b/audit/tools/check_source_guard_r18r2.py
+@@ -0,0 +1,59 @@
++"""Execute the source-only PowerShell preflight and regression mutations; no WPF or network acquisition."""
++import argparse,hashlib,json,platform,re,subprocess,tempfile,zipfile
++from pathlib import Path
++
++def main():
++ p=argparse.ArgumentParser(description=__doc__)
++ p.add_argument('--candidate',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True)
++ p.add_argument('--pwsh',type=Path,required=True);a=p.parse_args();r=a.candidate.resolve();audit=r/'audit/R10_R18_R2';exe=a.pwsh.resolve()
++ sha=lambda b:hashlib.sha256(b).hexdigest()
++ assert sha(a.baseline_zip.read_bytes())=='066cff3add196c5b25e3e293b1cbac92c89f309930b9f472c45c8ebc25b249a4'
++ with zipfile.ZipFile(a.baseline_zip) as z:old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++ rows=[];logs=[]
++ def check(name,ok):
++  rows.append({'test':name,'status':'PASS' if ok else 'FAIL'})
++  print(rows[-1]['status'],name)
++ def run(path):
++  x=subprocess.run([str(exe),'-NoLogo','-NoProfile','-NonInteractive','-File',str(path)],capture_output=True,text=True,timeout=45)
++  return x.returncode,x.stdout+x.stderr
++ guard='tests/check-copy-layout-r18r1.ps1';test='tests/ProcessLens.CopyUiTests/Program.cs';original=(r/test).read_text();current=(r/guard).read_text()
++ with tempfile.TemporaryDirectory(prefix='source-guard-') as d:
++  root=Path(d);(root/'tests/ProcessLens.CopyUiTests').mkdir(parents=True);g=root/guard;t=root/test
++  g.write_bytes(old[guard]);t.write_text(original)
++  code,log=run(g);logs.append('ORIGINAL R18 R1 GUARD (expected failure)\n'+log)
++  check('actual old PowerShell gate reproduces reported false positive',code!=0 and 'must retain native theme without showing windows' in log)
++  g.write_text(current)
++  fixtures=[('current unchanged WPF fixture',original,True,None),
++   ('real Template assignment rejected',original+'\ntext.Template = new ControlTemplate();',False,'must retain native theme'),
++   ('real Show call rejected',original+'\nwindow.Show();',False,'must retain native theme'),
++   ('initializer assignment rejected',original+'\nnew TextBox { Template = value };',False,'must retain native theme'),
++   ('uppercase diagnostics and comments allowed',original+'\n// Template = value; window.Show();\nvar s = "Template= window.Show()"; /* Template=value; */',True,None),
++   ('template equality is not assignment',original+'\nif (text.Template == null) return;',True,None),
++   ('missing original height assertion rejected',original.replace('text.DesiredSize.Height > 20','text.DesiredSize.Height > 0'),False,'WPF layout test:'),
++   ('missing deferred work bound rejected',original.replace('passes < 16','passes < int.MaxValue'),False,'WPF layout test:')]
++  for name,source,success,message in fixtures:
++   t.write_text(source);code,log=run(g);logs.append(name+'\n'+log)
++   check(name,(code==0)==success and (not message or message in log))
++ # Execute every source-only gate in the build's declared order; no dotnet stages.
++ build=(r/'build-dashboard.ps1').read_text(encoding='utf-8-sig')
++ gates=re.findall(r"^& \(Join-Path \$PSScriptRoot '(tests\\check-[^']+\.ps1)'\)",build,re.M)
++ check('all thirty source preflight stages discovered',len(gates)==30)
++ for relative in gates:
++  path=r/relative.replace('\\','/');code,log=run(path);logs.append(relative+'\n'+log)
++  check('actual PowerShell preflight '+path.name,code==0)
++ ledger=json.loads((audit/'authorized-source-edits.json').read_text())['files']
++ check('exact two-file authorized source/test delta',{x['file'] for x in ledger}=={guard,'src/ProcessLens.App/ProcessLens.App.csproj'} and all(sha((r/x['file']).read_bytes())==x['sha256_after'] and sha(old[x['file']])==x['sha256_before'] for x in ledger))
++ check('all baseline files retained',all((r/n).is_file() for n in old))
++ check('all production C# XAML and C# tests unchanged',all((r/n).read_bytes()==b for n,b in old.items() if (n.startswith('src/') or n.startswith('tests/')) and n.endswith(('.cs','.xaml'))))
++ check('standard build pipeline unchanged',(r/'build-dashboard.ps1').read_bytes()==old['build-dashboard.ps1'])
++ project='src/ProcessLens.App/ProcessLens.App.csproj'
++ check('project changes candidate identity only',(r/project).read_bytes()==old[project].replace(b'R18-R1-wpf-layout-candidate',b'R18-R2-source-guard-candidate'))
++ for name in ['runtime-evidence.json','wpf-typecheck-evidence.json','syntax-evidence.json']:
++  evidence=json.loads((audit/name).read_text());key='source_hashes' if 'source_hashes' in evidence else 'inputs'
++  check('retained unchanged inputs '+name,all(sha((r/n).read_bytes())==h for n,h in evidence[key].items()) and 'Not rerun' in evidence['R18_R2_retention'])
++ version=subprocess.run([str(exe),'-NoLogo','-NoProfile','-Command','$PSVersionTable.PSVersion.ToString()'],capture_output=True,text=True,timeout=15)
++ (audit/'powershell-execution.log').write_text('\n\n'.join(logs))
++ evidence={'platform':platform.system(),'PowerShell':version.stdout.strip(),'Windows_PowerShell_5_1':'NOT EXECUTED','Windows_WPF_runtime':'NOT EXECUTED','results':rows,'guard_sha256':sha((r/guard).read_bytes()),'fixture_sha256':sha((r/test).read_bytes()),'preflight_hashes':{n.replace('\\','/'):sha((r/n.replace('\\','/')).read_bytes()) for n in gates},'pwsh_executable_sha256':sha(exe.read_bytes())}
++ (audit/'powershell-evidence.json').write_text(json.dumps(evidence,indent=2)+'\n')
++ raise SystemExit(0 if all(x['status']=='PASS' for x in rows) else 1)
++if __name__=='__main__':main()
+diff --git a/audit/tools/check_system_processes_r14.py b/audit/tools/check_system_processes_r14.py
+index 4a0ac3e..0d262fc 100644
+--- a/audit/tools/check_system_processes_r14.py
++++ b/audit/tools/check_system_processes_r14.py
+@@ -65,12 +65,12 @@ def main():
+     changed={rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel]}
+     allowed={'src/ProcessLens.App/MainWindow.xaml','src/ProcessLens.App/MainWindow.xaml.cs',
+              'src/ProcessLens.App/ProcessLens.App.csproj','src/ProcessLens.App/CopyTestVisibility.cs'}
+-    check('only R14 UI changes and exact recorded R14 R1/R2/R3 fixes and exact R15 presentation since R13',changed - {p for p in changed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))} == allowed - {p for p in allowed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))})
++    check('only R14 UI changes and exact recorded R14 R1/R2/R3 fixes and exact R15 presentation since R13',changed - {p for p in changed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))} == allowed - {p for p in allowed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))})
+     check('existing sources exact to R13 outside R14 UI and exact R14 R1/R2/R3 fixes and exact R15 presentation',
+-          all((root/p).read_bytes()==data or any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1')) for p,data in old.items() if p.startswith('src/') and p not in allowed))
++          all((root/p).read_bytes()==data or any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')) for p,data in old.items() if p.startswith('src/') and p not in allowed))
+     check('no baseline file deleted',all((root/p).is_file() for p in old))
+     approved=json.loads((root/'audit/R10_R14/authorized-source-edits.json').read_text())['files']
+-    check('R14 production hashes retained or replaced by exact R14 R1/R2/R3 or R15 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1')) for r in approved))
++    check('R14 production hashes retained or replaced by exact R14 R1/R2/R3 or R15 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')) for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]: ET.parse(f)
+     check('all project XML and XAML parse',True)
+     view=ET.parse(root/'src/ProcessLens.App/SystemProcessesView.xaml').getroot();x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
+diff --git a/audit/tools/check_windows_components_r15.py b/audit/tools/check_windows_components_r15.py
+index 74530dc..99ce48c 100644
+--- a/audit/tools/check_windows_components_r15.py
++++ b/audit/tools/check_windows_components_r15.py
+@@ -13,10 +13,10 @@ def main():
+     result=[]
+     def check(label,ok):result.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML and actual portable result correlation; not WPF runtime'});print(result[-1]['status'],label)
+     ledger=json.loads((r/'audit/R10_R15/authorized-source-edits.json').read_text())['files'];allowed={x['file'] for x in ledger}
+-    check('R15 exact ledger retained or exact authorized R16 successor',all((r/n).is_file() for n in old) and all((sha((r/x['file']).read_bytes())==x['sha256_after'] or any(approved_feature(r,x['file'],revision17) for revision17 in ('R10_R16','R10_R17','R10_R18','R10_R18_R1'))) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
++    check('R15 exact ledger retained or exact authorized R16 successor',all((r/n).is_file() for n in old) and all((sha((r/x['file']).read_bytes())==x['sha256_after'] or any(approved_feature(r,x['file'],revision17) for revision17 in ('R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
+     current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file()}
+-    check('no production or C# test delta outside exact R15/R16 ledgers',all(n in allowed or any(approved_feature(r,n,revision17) for revision17 in ('R10_R16','R10_R17','R10_R18','R10_R18_R1')) for n,b in current.items() if (n.startswith('src/') or (n.startswith('tests/') and n.endswith(('.cs','.csproj')))) and old.get(n)!=b))
+-    check('R3 sources retained outside exact R15/R16 ledgers',all(current[n]==b or any(approved_feature(r,n,revision17) for revision17 in ('R10_R16','R10_R17','R10_R18','R10_R18_R1')) for n,b in old.items() if n.startswith('src/') and n not in allowed))
++    check('no production or C# test delta outside exact R15/R16 ledgers',all(n in allowed or any(approved_feature(r,n,revision17) for revision17 in ('R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')) for n,b in current.items() if (n.startswith('src/') or (n.startswith('tests/') and n.endswith(('.cs','.csproj')))) and old.get(n)!=b))
++    check('R3 sources retained outside exact R15/R16 ledgers',all(current[n]==b or any(approved_feature(r,n,revision17) for revision17 in ('R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')) for n,b in old.items() if n.startswith('src/') and n not in allowed))
+     files={n:b.decode('utf-8-sig') for n,b in current.items() if n.endswith(('.cs','.xaml','.ps1'))}
+     check('existing native lifetime navigation and observation guards pass',not violations(files))
+     u=files['src/ProcessLens.App/SystemProcessesView.xaml.cs'];core=files['src/ProcessLens.Core/WindowsComponentCatalog.cs'];test=files['tests/ProcessLens.SystemProcessUiTests/Program.cs']
+diff --git a/audit/tools/check_wpf_test_context_r14r3.py b/audit/tools/check_wpf_test_context_r14r3.py
+index cebd0e4..72483a3 100644
+--- a/audit/tools/check_wpf_test_context_r14r3.py
++++ b/audit/tools/check_wpf_test_context_r14r3.py
+@@ -38,14 +38,14 @@ def main():
+         results.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML/mutation only; no WPF execution'});print(results[-1]['status'],label)
+     app='src/ProcessLens.App/ProcessLens.App.csproj';tests=['tests/ProcessLens.'+n+'/Program.cs' for n in ['NetworkUiTests','SystemProcessUiTests']]
+     check('no baseline files removed',all((root/n).is_file() for n in old))
+-    check('R2 production retained outside exact authorized R15/R16 delta',all((root/n).read_bytes()==data or any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1')) for n,data in old.items() if n.startswith('src/') and n.endswith(('.cs','.xaml'))))
++    check('R2 production retained outside exact authorized R15/R16 delta',all((root/n).read_bytes()==data or any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')) for n,data in old.items() if n.startswith('src/') and n.endswith(('.cs','.xaml'))))
+     changed={n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}
+-    check('R3 production delta or exact authorized R15/R16 presentation',(changed - {n for n in changed if any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))} == {app} - {n for n in (app,) if any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))}) and ((root/app).read_bytes()==old[app].replace(b'R14-R2-network-tab-init-candidate',b'R14-R3-wpf-test-context-candidate') or any(approved_feature(root,app,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))))
+-    check('only two original WPF fixtures changed outside exact R18 R1 copy-layout fix', {n for n,data in old.items() if n.startswith('tests/') and n.endswith('.cs') and (root/n).read_bytes()!=data and not approved_feature(root,n,'R10_R18_R1')}==set(tests))
++    check('R3 production delta or exact authorized R15/R16 presentation',(changed - {n for n in changed if any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))} == {app} - {n for n in (app,) if any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))}) and ((root/app).read_bytes()==old[app].replace(b'R14-R2-network-tab-init-candidate',b'R14-R3-wpf-test-context-candidate') or any(approved_feature(root,app,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))))
++    check('only two original WPF fixtures changed outside exact R18 R1 copy-layout fix', {n for n,data in old.items() if n.startswith('tests/') and n.endswith('.cs') and (root/n).read_bytes()!=data and not (approved_feature(root,n,'R10_R18_R1') or approved_feature(root,n,'R10_R18_R2'))}==set(tests))
+     for n in tests:
+         s=(root/n).read_text();before=old[n].decode('utf-8-sig');label=n.split('/')[1]
+         check(label+' installs context before pending await and worker completion',valid_context(s))
+-        check(label+' retains original checks or exact authorized R15/R16 replacement suite',all(c in checks(s) for c in checks(before)) or any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1')))
++        check(label+' retains original checks or exact authorized R15/R16 replacement suite',all(c in checks(s) for c in checks(before)) or any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2')))
+         check(label+' retains original dispatcher pump and exception propagation',all(token in s for token in ['Dispatcher.PushFrame(frame)','task.GetAwaiter().GetResult();','TaskScheduler.Default','[STAThread]']))
+         check(label+' does not suppress thread ownership checks or awaiting context',not any(token in s for token in ['ConfigureAwait(false)','DisableProcessing','catch (InvalidOperationException','catch {']))
+         for name,mutant in [
+@@ -56,7 +56,7 @@ def main():
+             ('missing owner verification',s.replace('dispatcher.CheckAccess() && Environment.CurrentManagedThreadId == ownerThread','true'))]:
+             check(label+' guard rejects '+name,not valid_context(mutant))
+     ledger=json.loads((root/'audit/R10_R14_R3/authorized-source-edits.json').read_text())
+-    check('R3 baseline hashes and current hashes or exact authorized R15/R16 successors',len(ledger['files'])==3 and {r['file'] for r in ledger['files']}=={app,*tests} and all(sha(old[r['file']])==r['sha256_before'] and (sha((root/r['file']).read_bytes())==r['sha256_after'] or any(approved_feature(root,r['file'],revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))) for r in ledger['files']))
++    check('R3 baseline hashes and current hashes or exact authorized R15/R16 successors',len(ledger['files'])==3 and {r['file'] for r in ledger['files']}=={app,*tests} and all(sha(old[r['file']])==r['sha256_before'] and (sha((root/r['file']).read_bytes())==r['sha256_after'] or any(approved_feature(root,r['file'],revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))) for r in ledger['files']))
+     gate=(root/'tests/check-wpf-test-context-r14r3.ps1').read_text();build=(root/'build-dashboard.ps1').read_text(encoding='utf-8-sig')
+     check('standard Windows pipeline includes source gate',"tests\\check-wpf-test-context-r14r3.ps1" in build and all(t in gate for t in ['NetworkUiTests','SystemProcessUiTests','IndexOf($setup)','IndexOf($firstAwait)',RESTORE]))
+     for path in [*root.rglob('*.csproj'),*root.rglob('*.xaml')]:ET.parse(path)
+diff --git a/audit/tools/package_source_guard_r18r2.py b/audit/tools/package_source_guard_r18r2.py
+new file mode 100644
+index 0000000..131a1f5
+--- /dev/null
++++ b/audit/tools/package_source_guard_r18r2.py
+@@ -0,0 +1,105 @@
++"""Package R18 R2: actual PowerShell guard execution, retained runtime evidence, full patch and manifest. Does not qualify WPF."""
++import argparse, csv, difflib, hashlib, json, shutil, subprocess, tempfile, zipfile
++from pathlib import Path
++
++def sha(data): return hashlib.sha256(data).hexdigest()
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--candidate',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True)
++    p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()
++    root=a.candidate.resolve();audit=root/'audit/R10_R18_R2';output=a.output_directory.resolve()
++    assert sha(a.baseline_zip.read_bytes())=='066cff3add196c5b25e3e293b1cbac92c89f309930b9f472c45c8ebc25b249a4'
++    for d in sorted(root.rglob('__pycache__'),reverse=True):shutil.rmtree(d)
++    with zipfile.ZipFile(a.baseline_zip) as z:
++        assert z.testzip() is None
++        old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++    assert all((root/n).is_file() for n in old)
++    for row in json.loads((audit/'authorized-source-edits.json').read_text())['files']:
++        assert sha((root/row['file']).read_bytes())==row['sha256_after'],row['file']
++    evidence=json.loads((audit/'runtime-evidence.json').read_text())
++    assert sum(row['assertions'] for row in evidence['outcomes'])==332
++    assert all(row['status']=='PASS' for row in evidence['outcomes'])
++    assert all(sha((root/n).read_bytes())==digest for n,digest in evidence['source_hashes'].items())
++    results=[]
++    for n,count in [('layout-retention-results.json',25),('recovery-retention-results.json',47),('capture-retention-results.json',39),('native-retention-results.json',31),('component-retention-results.json',24),('context-retention-results.json',26),('tab-retention-results.json',20),('catalog-retention-results.json',15),('system-retention-results.json',33)]:
++        rows=json.loads((audit/n).read_text());assert len(rows)==count and all(row['status']=='PASS' for row in rows)
++        results.extend(rows)
++    typecheck=json.loads((audit/'wpf-typecheck-evidence.json').read_text())
++    assert len(typecheck['assemblies'])==6 and all(row['status']=='PASS' and row['warning_count']==0 for row in typecheck['assemblies'])
++    assert all(sha((root/n).read_bytes())==h for n,h in typecheck['inputs'].items())
++    ps=json.loads((audit/'powershell-evidence.json').read_text())
++    assert len(ps['results'])==48 and all(row['status']=='PASS' for row in ps['results'])
++    assert ps['platform']=='Linux' and ps['PowerShell']=='7.4.21'
++    assert sha((root/'tests/check-copy-layout-r18r1.ps1').read_bytes())==ps['guard_sha256']
++    assert sha((root/'tests/ProcessLens.CopyUiTests/Program.cs').read_bytes())==ps['fixture_sha256']
++    assert all(sha((root/n).read_bytes())==h for n,h in ps['preflight_hashes'].items())
++    assert len(ps['preflight_hashes'])==30
++    assert (audit/'powershell-execution.log').read_text().count('PASS Sintassi PowerShell: 69 script verificati.')==1
++    allowed={row['file'] for row in json.loads((audit/'authorized-source-edits.json').read_text())['files']}
++    source_delta={f.relative_to(root).as_posix() for f in root.rglob('*') if f.is_file() and f.relative_to(root).parts[0] in {'src','tests'} and old.get(f.relative_to(root).as_posix())!=f.read_bytes()}
++    assert source_delta==allowed
++    # Preserve all added/changed source contexts in the current string ledger.
++    with (audit/'string-ledger.csv').open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerow(['file','line','added_or_modified_source_text','context'])
++        for row in json.loads((audit/'authorized-source-edits.json').read_text())['files']:
++            n=row['file'];before=old.get(n,b'').decode('utf-8-sig').splitlines();after=(root/n).read_text(encoding='utf-8-sig').splitlines()
++            for tag,i,j,k,l in difflib.SequenceMatcher(None,before,after).get_opcodes():
++                if tag not in ('insert','replace'):continue
++                for number,line in enumerate(after[k:l],k+1):
++                    if '"' in line:writer.writerow([n,number,line.strip(),'PowerShell source control; no UI string changes'])
++    def included(n):return not n.startswith('audit/R10_R18_R2/') and n!='SHA256SUMS_R10.txt'
++    current={f.relative_to(root).as_posix():f.read_bytes() for f in root.rglob('*') if f.is_file()}
++    delta=[n for n,data in sorted(current.items()) if included(n) and old.get(n)!=data]
++    with (audit/'files-changed.csv').open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerow(['file','kind','sha256_before','sha256_after'])
++        for n in delta:writer.writerow([n,'modified' if n in old else 'added',sha(old[n]) if n in old else '',sha(current[n])])
++    staging=root.parent.parent/'test';staging.mkdir(exist_ok=True)
++    with tempfile.TemporaryDirectory(prefix='patch-replay-r18r2-',dir=staging) as temporary:
++        temp=Path(temporary);before=temp/'before';after=temp/'after';before.mkdir();after.mkdir()
++        for base,values in [(before,old),(after,current)]:
++            for n,data in values.items():
++                if not included(n):continue
++                path=base/n;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
++        diff=subprocess.run(['git','diff','--no-index','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=temp,capture_output=True)
++        assert diff.returncode==1,diff.stderr.decode()
++        lines=[]
++        for line in diff.stdout.splitlines(keepends=True):
++            if line.startswith((b'diff --git ', b'--- ', b'+++ ')):
++                for prefix in (b'a/before/',b'a/after/'):line=line.replace(prefix,b'a/')
++                for prefix in (b'b/before/',b'b/after/'):line=line.replace(prefix,b'b/')
++            lines.append(line)
++        patch=b''.join(lines)
++        path=audit/'R18_R1_to_R18_R2.patch';path.write_bytes(patch)
++        subprocess.run(['git','apply','--check',str(path)],cwd=before,check=True,capture_output=True)
++        subprocess.run(['git','apply',str(path)],cwd=before,check=True,capture_output=True)
++        mismatch=[n for n,data in current.items() if included(n) and (before/n).read_bytes()!=data]
++        assert not mismatch,mismatch
++    (audit/'patch-replay-results.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','delta_files':len(delta),'patch_sha256':sha(patch),'excluded':'Current audit metadata and current manifest only; excluded for self-reference.'},indent=2)+'\n')
++    (audit/'retention.json').write_text(json.dumps({'source_trees':1,'patch_replay_temporary_tree_removed':True,'baseline':'R18 R1 retained for byte comparisons','no_bin_obj_pycache_in_release':True,'source_check_count':len(results),'actual_PowerShell_checks':len(ps['results']),'Windows_runtime_and_RAM_measurement':'NOT EXECUTED','Windows_PowerShell_5_1':'NOT EXECUTED','retained_portable_runtime_assertions':332,'portable_runtime_rerun':False,'R18_R2_WPF_runtime':'NOT EXECUTED'},indent=2)+'\n')
++    matrix=audit/'test-matrix.csv'
++    with matrix.open(newline='') as f:
++        matrix_rows=[row for row in csv.reader(f) if row and row[0] not in
++            {'Current R18 R2 source and evidence guards','R18 R1 to R18 R2 patch replay'}]
++    with matrix.open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerows(matrix_rows)
++        writer.writerow(['Current R18 R2 source and evidence guards','Python source/XML/mutations','PASS',f'{len(results)} checks; no C# execution'])
++        writer.writerow(['R18 R1 to R18 R2 patch replay','git apply and byte comparison','PASS',f'{len(delta)} changed or added files; audit metadata and manifest excluded'])
++    for d in root.rglob('*'):
++        assert not (d.is_dir() and d.name in ('__pycache__','bin','obj')),d
++    files=sorted(f for f in root.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt')
++    (root/'SHA256SUMS_R10.txt').write_text(''.join(sha(f.read_bytes())+'  '+f.relative_to(root).as_posix()+'\n' for f in files))
++    output.mkdir(parents=True,exist_ok=True)
++    target=output/'ProcessLens-v0.19.16-R10-R18-R2-source-guard-candidate.zip'
++    with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
++        for f in sorted(root.rglob('*')):
++            if f.is_file():
++                assert f.stat().st_size < 10*1024*1024, f
++                z.write(f,root.name+'/'+f.relative_to(root).as_posix())
++    with zipfile.ZipFile(target) as z:
++        assert z.testzip() is None
++        for line in z.read(root.name+'/SHA256SUMS_R10.txt').decode().splitlines():
++            expected,n=line.split('  ',1);assert sha(z.read(root.name+'/'+n))==expected,n
++        assert len({n.split('/')[0] for n in z.namelist()})==1
++    result={'zip':str(target),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files),'delta_files':len(delta),'source_checks':len(results),'actual_PowerShell_checks':len(ps['results']),'PowerShell_version':ps['PowerShell'],'Windows_runtime':'NOT EXECUTED','retained_portable_runtime_assertions':332,'portable_runtime_rerun':False,'R18_R2_WPF_runtime':'NOT EXECUTED'}
++    (output/'verification-r18r2.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
++if __name__=='__main__':main()
+diff --git a/audit/tools/ux_writing_rules.py b/audit/tools/ux_writing_rules.py
+index 171b8a8..8f70fbd 100644
+--- a/audit/tools/ux_writing_rules.py
++++ b/audit/tools/ux_writing_rules.py
+@@ -18,7 +18,7 @@ def approved_revision(root, relative):
+     """R11 editorial delta or separately recorded, user-requested R12/R13/R14 feature delta."""
+     if approved_editorial(root, relative):
+         return True
+-    return any(approved_feature(root, relative, revision) for revision in ('R10_R12', 'R10_R13', 'R10_R14', 'R10_R14_R1', 'R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1'))
++    return any(approved_feature(root, relative, revision) for revision in ('R10_R12', 'R10_R13', 'R10_R14', 'R10_R14_R1', 'R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18','R10_R18_R1','R10_R18_R2'))
+ 
+ 
+ def approved_feature(root, relative, revision):
+diff --git a/src/ProcessLens.App/ProcessLens.App.csproj b/src/ProcessLens.App/ProcessLens.App.csproj
+index 1c2e68b..fb26e27 100644
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R18-R1-wpf-layout-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R18-R2-source-guard-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+diff --git a/tests/check-copy-layout-r18r1.ps1 b/tests/check-copy-layout-r18r1.ps1
+index 3c629b8..56c5a76 100644
+--- a/tests/check-copy-layout-r18r1.ps1
++++ b/tests/check-copy-layout-r18r1.ps1
+@@ -7,5 +7,37 @@ foreach ($token in @('DispatcherPriority.ContextIdle', 'DispatcherPriority.Send'
+  'narrow.Height > wide.Height && text.LineCount > wideLines', 'queued Background text is included before multiline assertions')) {
+  if (-not $test.Contains($token)) { throw "FAIL R18 R1 WPF layout test: $token" }
+ }
+-if ($test -match '\.Show\s*\(' -or $test -match '\bTemplate\s*=') { throw 'FAIL R18 R1 must retain native theme without showing windows.' }
++# Limited lexical source check, not a C# parser. Mask non-code before checking
++# case-sensitive C# member names. Keep the original fixture invariants above.
++function Get-LayoutCodeViolation([string] $Source) {
++    $nonCode = @'
++(?s)//[^\r\n]*|/\*.*?\*/|@"(?:""|[^"])*"|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])+'
++'@
++    $code = [regex]::Replace($Source, $nonCode.Trim(), ' ')
++    return ($code -cmatch '\.Show\s*\(' -or $code -cmatch '\bTemplate\s*=(?!=)')
++}
++
++# Reproduce the R18 R1 false positive and guard both allowed and forbidden code.
++$diagnostic = '$"template={text.Template is not null}"'
++if (-not ($diagnostic -match '\bTemplate\s*=')) { throw 'FAIL R18 R2 original false-positive fixture.' }
++$cases = @(
++    @{ Name = 'lowercase diagnostic'; Source = $diagnostic; Reject = $false },
++    @{ Name = 'uppercase string'; Source = 'var s = "Template= window.Show()";'; Reject = $false },
++    @{ Name = 'line comment'; Source = '// text.Template = value; window.Show();'; Reject = $false },
++    @{ Name = 'block comment'; Source = '/* text.Template = value; window.Show(); */'; Reject = $false },
++    @{ Name = 'verbatim string'; Source = 'var s = @"""Template = value; window.Show();""";'; Reject = $false },
++    @{ Name = 'escaped quote'; Source = 'var s = "\" Template = value; window.Show();";'; Reject = $false },
++    @{ Name = 'template equality'; Source = 'if (text.Template == null) return;'; Reject = $false },
++    @{ Name = 'native template lookup'; Source = 'text.Template?.FindName("PART_ContentHost", text);'; Reject = $false },
++    @{ Name = 'template assignment'; Source = 'text.Template = new ControlTemplate();'; Reject = $true },
++    @{ Name = 'initializer assignment'; Source = 'new TextBox { Template = value };'; Reject = $true },
++    @{ Name = 'show window'; Source = 'window.Show ();'; Reject = $true },
++    @{ Name = 'assignment after string'; Source = 'var s = "Template="; text.Template = value;'; Reject = $true },
++    @{ Name = 'show after comment'; Source = "// window.Show();`nwindow.Show();"; Reject = $true }
++)
++foreach ($case in $cases) {
++    if ((Get-LayoutCodeViolation $case.Source) -ne $case.Reject) { throw "FAIL R18 R2 source guard: $($case.Name)" }
++}
++Write-Host "PASS R18 R2 source guard: $($cases.Count) regression cases; original false positive reproduced."
++if (Get-LayoutCodeViolation $test) { throw 'FAIL R18 R1 must retain native theme without showing windows.' }
+ Write-Host 'PASS R18 R1 source: bounded native Dispatcher layout; original height, wrap and selection assertions retained.'

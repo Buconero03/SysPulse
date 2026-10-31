@@ -1,0 +1,753 @@
+file,side,changed_line
+LEGGIMI.txt,before,ProcessLens R33 — icone dei processi
+LEGGIMI.txt,after,"ProcessLens R34 — rete, spiegazioni e log"
+LEGGIMI.txt,before,Chiudi la versione precedente con Esci. Estrai in una cartella nuova.
+LEGGIMI.txt,before,Apri ProcessLens-Leggero e fai doppio clic su AVVIA_PROCESSLENS.cmd.
+LEGGIMI.txt,before,Esplora file puo mostrare soltanto AVVIA_PROCESSLENS.
+LEGGIMI.txt,after,Chiudi la precedente versione con Esci. Estrai tutto in una cartella nuova.
+LEGGIMI.txt,after,Apri ProcessLens-Leggero e avvia AVVIA_PROCESSLENS.cmd.
+LEGGIMI.txt,after,Il primo avvio esegue test e compilazione con lo SDK .NET 8 gia presente.
+LEGGIMI.txt,after,"Nessun download o installazione automatica di SDK, driver o servizi."
+LEGGIMI.txt,before,ICONE
+LEGGIMI.txt,before,Le icone originali degli eseguibili restano prioritarie.
+LEGGIMI.txt,before,"Quando mancano: simboli ProcessLens per 99 nomi di eseguibile, tra cui Bash, Git, Python, Node e numerosi componenti Windows."
+LEGGIMI.txt,before,"Per gli altri nomi: distintivi grafici stabili, senza riquadri con iniziali."
+LEGGIMI.txt,before,Il tooltip distingue l'icona originale dal simbolo o dal distintivo generato.
+LEGGIMI.txt,before,Un gruppo chiamato Git non eredita piu automaticamente l'immagine di Bash.
+LEGGIMI.txt,before,L'immagine del gruppo non modifica l'identita o l'appartenenza dei PID.
+LEGGIMI.txt,after,RETE
+LEGGIMI.txt,after,Dispositivi osservati: Aggiorna elenco legge la cache Windows IPv4/IPv6.
+LEGGIMI.txt,after,"Il riepilogo distingue voci con MAC, voci raggiungibili di recente e nomi salvati."
+LEGGIMI.txt,after,"Elenco mai letto, rilasciato, vuoto e non disponibile hanno messaggi distinti."
+LEGGIMI.txt,after,"Dopo un cambio di scheda, l'ora della vecchia lettura non resta come dato corrente."
+LEGGIMI.txt,before,FINESTRA
+LEGGIMI.txt,before,La gestione funzionante della R32 R2 e invariata.
+LEGGIMI.txt,before,Nascondi accanto all'orologio: nasconde la finestra; clic sull'icona: riapre.
+LEGGIMI.txt,before,Trattino e X: riduzione nella barra delle applicazioni. Esci: chiusura effettiva.
+LEGGIMI.txt,after,"Traffico e Wi-Fi: elenca le sorgenti, scegli una sorgente, poi cattura per 20 s."
+LEGGIMI.txt,after,Leggi reti Wi-Fi legge separatamente la cache radio. Seleziona una riga per la spiegazione.
+LEGGIMI.txt,after,"La cattura IP locale richiede amministratore; la lettura Wi-Fi dipende da scheda, driver, servizi e autorizzazioni Windows."
+LEGGIMI.txt,after,
+LEGGIMI.txt,after,"Eventi e blocchi: scegli ultimi 15 minuti o ultima ora, poi Leggi eventi Windows."
+LEGGIMI.txt,after,"Legge gli eventi Security 5157, 5155, 5159 e 4625 tipi 3/10."
+LEGGIMI.txt,after,Includi scarti di pacchetti aggiunge la lettura dei 5152 gia registrati.
+LEGGIMI.txt,after,"Per ogni evento: significato, dati originali essenziali e verifiche utili."
+LEGGIMI.txt,after,"Le letture restano limitate a 256 record, 3 secondi di enumerazione e 1 Mi caratteri XML."
+LEGGIMI.txt,after,I criteri di audit e il firewall non vengono modificati. I comandi facoltativi sono nella guida.
+LEGGIMI.txt,after,
+LEGGIMI.txt,after,LOG
+LEGGIMI.txt,after,"Apri Log delle operazioni di rete - sessione, in fondo alla sezione Rete."
+LEGGIMI.txt,after,"Riporta fonte, fase, esito, durata, conteggi, copertura ed errori; e copiabile."
+LEGGIMI.txt,after,Conserva 128 righe con messaggi limitati a 1200 caratteri. Nessuna scrittura automatica su disco.
+LEGGIMI.txt,after,I rapporti completi restano copiabili nelle rispettive schede.
+LEGGIMI.txt,after,
+LEGGIMI.txt,after,COPERTURA
+LEGGIMI.txt,after,"Le viste descrivono quello che Windows restituisce al PC, non tutti i client del router."
+LEGGIMI.txt,after,Piu categorie leggibili non garantiscono eventi presenti: dipendono dall'audit e dai registri disponibili.
+LEGGIMI.txt,after,Non viene superato il limite hardware/driver del Wi-Fi; nessuna modalita monitor aggiunta.
+LEGGIMI.txt,after,Non e un rilevatore certo di intrusioni o di ascolto passivo.
+LEGGIMI.txt,before,"308 controlli C# eseguiti, inclusa la lettura delle risorse nella pubblicazione single-file Linux: PASS."
+LEGGIMI.txt,before,43 controlli PowerShell e 17 prove del launcher: PASS.
+LEGGIMI.txt,before,9 assembly WindowsDesktop verificati come C# con campi XAML simulati: PASS.
+LEGGIMI.txt,before,Aspetto e comportamento WPF da verificare su Windows; RAM non misurata.
+LEGGIMI.txt,before,"Nessun SDK, runtime, driver o dipendenza esterna aggiunti allo ZIP."
+LEGGIMI.txt,before,Dettagli: progetto/audit/R10_R33/REVIEW.md.
+LEGGIMI.txt,after,"341 asserzioni eseguite su dati sintetici e API simulate, senza acquisizioni reali."
+LEGGIMI.txt,after,44 controlli statici PowerShell e 17 prove del launcher superati.
+LEGGIMI.txt,after,9 assembly WindowsDesktop controllati come C# con campi XAML simulati.
+LEGGIMI.txt,after,"BAML, interfaccia WPF, DPI, acquisizione reale e RAM restano da verificare su Windows."
+LEGGIMI.txt,after,"Icone, tray, processi, contatori CPU/RAM e Guardian conservano il codice della R33 R1."
+LEGGIMI.txt,after,Dettagli e prova Windows: progetto/audit/R10_R34/REVIEW.md.
+progetto/audit/tools/check_network_clarity_r34.ps1,after,$ErrorActionPreference='Stop'
+progetto/audit/tools/check_network_clarity_r34.ps1,after,$root=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+progetto/audit/tools/check_network_clarity_r34.ps1,after,function Source([string]$name) { Get-Content (Join-Path $root $name) -Raw -Encoding UTF8 }
+progetto/audit/tools/check_network_clarity_r34.ps1,after,$devices=Source 'src/ProcessLens.App/NetworkDevicesView.xaml.cs'
+progetto/audit/tools/check_network_clarity_r34.ps1,after,$events=Source 'src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs'
+progetto/audit/tools/check_network_clarity_r34.ps1,after,$capture=Source 'src/ProcessLens.App/NativeCaptureView.xaml.cs'
+progetto/audit/tools/check_network_clarity_r34.ps1,after,$native=Source 'src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs'
+progetto/audit/tools/check_network_clarity_r34.ps1,after,$presentation=Source 'src/ProcessLens.Core/NetworkReadPresentation.cs'
+progetto/audit/tools/check_network_clarity_r34.ps1,after,"foreach($token in @('ResetCacheView','Nessuna lettura corrente','NetworkEmptyBorder.Visibility','NetworkReadPresentation.DeviceCounts','NetworkJournalText.Text = _journal.Report')) {"
+progetto/audit/tools/check_network_clarity_r34.ps1,after, if(-not $devices.Contains($token)){throw ('FAIL R34 cache state/log: '+$token)}
+progetto/audit/tools/check_network_clarity_r34.ps1,after,}
+progetto/audit/tools/check_network_clarity_r34.ps1,after,"foreach($token in @('INativeNetworkEvidenceQuerySource','NativeEventWindowBox','NativePacketDropsBox','NetworkReadPresentation.EventCounts','NativeEventEmptyBorder.Visibility')) {"
+progetto/audit/tools/check_network_clarity_r34.ps1,after, if(-not $events.Contains($token)){throw ('FAIL R34 event controls: '+$token)}
+progetto/audit/tools/check_network_clarity_r34.ps1,after,}
+progetto/audit/tools/check_network_clarity_r34.ps1,after,"foreach($token in @('EventID=5155','EventID=5159','options.IncludePacketDrops ? "" or EventID=5152""','ScannedEvents = scanned','MalformedEvents = malformed','MaximumTotalXmlChars - chars')) {"
+progetto/audit/tools/check_network_clarity_r34.ps1,after, if(-not $native.Contains($token)){throw ('FAIL R34 native scope/budget: '+$token)}
+progetto/audit/tools/check_network_clarity_r34.ps1,after,}
+progetto/audit/tools/check_network_clarity_r34.ps1,after,"foreach($token in @('Capacity = 128','MaximumMessageChars = 1200','_entries.Dequeue()','ToUniversalTime():O','char.IsControl(c)','DeviceEmpty','PacketDetails','WifiDetails')) {"
+progetto/audit/tools/check_network_clarity_r34.ps1,after, if(-not $presentation.Contains($token)){throw ('FAIL R34 presentation/log boundary: '+$token)}
+progetto/audit/tools/check_network_clarity_r34.ps1,after,}
+progetto/audit/tools/check_network_clarity_r34.ps1,after,"foreach($token in @('NetworkReadPresentation.PacketDetails','NetworkReadPresentation.WifiDetails','_journal.Add(operationName, ""ESITO""','_operation?.Cancel()')) {"
+progetto/audit/tools/check_network_clarity_r34.ps1,after, if(-not $capture.Contains($token)){throw ('FAIL R34 capture explanations/lifecycle: '+$token)}
+progetto/audit/tools/check_network_clarity_r34.ps1,after,}
+progetto/audit/tools/check_network_clarity_r34.ps1,after,"foreach($forbidden in @('DispatcherTimer','AuditSetSystemPolicy(','EvtSubscribe(','new Ping(','Dns.Get','WlanScan(','Process.Start(')) {"
+progetto/audit/tools/check_network_clarity_r34.ps1,after, if(($devices+$events+$capture+$native+$presentation).Contains($forbidden)){throw ('FAIL R34 unexpected background/probe/policy action: '+$forbidden)}
+progetto/audit/tools/check_network_clarity_r34.ps1,after,}
+progetto/audit/tools/check_network_clarity_r34.ps1,after,"foreach($name in @('NetworkDevicesView','NativeNetworkEvidenceView','NativeCaptureView')) {"
+progetto/audit/tools/check_network_clarity_r34.ps1,after, [xml]$x=Source ('src/ProcessLens.App/'+$name+'.xaml')
+progetto/audit/tools/check_network_clarity_r34.ps1,after," $names=@($x.SelectNodes('//*[@*[local-name()=""Name""]]') | ForEach-Object { $_.GetAttribute('Name','http://schemas.microsoft.com/winfx/2006/xaml') })"
+progetto/audit/tools/check_network_clarity_r34.ps1,after, if(@($names|Select-Object -Unique).Count -ne $names.Count){throw ('FAIL R34 duplicate XAML name: '+$name)}
+progetto/audit/tools/check_network_clarity_r34.ps1,after," foreach($grid in $x.SelectNodes('//*[local-name()=""DataGrid""]')) {"
+progetto/audit/tools/check_network_clarity_r34.ps1,after,  if($grid.GetAttribute('IsReadOnly') -ne 'True' -or $grid.GetAttribute('EnableRowVirtualization') -ne 'True'){throw ('FAIL R34 table mutability/virtualization: '+$name)}
+progetto/audit/tools/check_network_clarity_r34.ps1,after, }
+progetto/audit/tools/check_network_clarity_r34.ps1,after,}
+progetto/audit/tools/check_network_clarity_r34.ps1,after,"Write-Host 'PASS R34 network: explicit empty/freshness states, bounded session log, explained observations, optional bounded packet-drop read and manual lifecycle. WPF runtime remains Windows-only.'"
+progetto/audit/tools/check_powershell_r34.py,after,"""""""Run PowerShell source preflight and isolated launcher fixtures, never a build or installation."""""""
+progetto/audit/tools/check_powershell_r34.py,after,"import argparse,json,hashlib,subprocess"
+progetto/audit/tools/check_powershell_r34.py,after,from pathlib import Path
+progetto/audit/tools/check_powershell_r34.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--shell',type=Path,required=True);p.add_argument('--pwsh',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/check_powershell_r34.py,after,r=a.project.resolve();shell=a.shell.resolve();audit=r/'audit/R10_R34';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/check_powershell_r34.py,after,"# Same 30 authorized baseline source stages, plus the R24 wiring gate."
+progetto/audit/tools/check_powershell_r34.py,after,"stages=[x['file'] for x in json.loads((r/'audit/R10_R23_R1/powershell-evidence.json').read_text())['stages']]+['audit/tools/check_live_metrics_r24.ps1','audit/tools/check_process_groups_r25.ps1','audit/tools/check_scroll_minimize_r26.ps1','audit/tools/check_windows_icons_r27.ps1','audit/tools/check_window_controls_r28.ps1','audit/tools/check_window_diagnostics_r29.ps1','audit/tools/check_tray_callbacks_r30.ps1','audit/tools/check_search_hosts_r31.ps1','audit/tools/check_build_reference_r31r1.ps1','audit/tools/check_notification_area_r32.ps1','audit/tools/check_wpf_path_r32r1.ps1','audit/tools/check_embedded_icon_r32r2.ps1','audit/tools/check_process_symbols_r33.ps1','audit/tools/check_network_clarity_r34.ps1'];results=[];logs=[]"
+progetto/audit/tools/check_powershell_r34.py,after,for n in stages:
+progetto/audit/tools/check_powershell_r34.py,after," x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(r/n)],cwd=r,capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;logs.append(n+'\n'+log)"
+progetto/audit/tools/check_powershell_r34.py,after, if x.returncode:(audit/'preflight.log').write_text('\n'.join(logs));raise SystemExit(log)
+progetto/audit/tools/check_powershell_r34.py,after," results.append({'file':n,'sha256':sha((r/n).read_bytes()),'status':'PASS'})"
+progetto/audit/tools/check_powershell_r34.py,after,(audit/'preflight.log').write_text('\n'.join(logs))
+progetto/audit/tools/check_powershell_r34.py,after,fixture=r/'audit/tools/test_launcher_r34.ps1';launcher=shell/'supporto/avvia.ps1'
+progetto/audit/tools/check_powershell_r34.py,after,"x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(fixture),'-Launcher',str(launcher)],capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;(audit/'launcher-fixture.log').write_text(log)"
+progetto/audit/tools/check_powershell_r34.py,after,if x.returncode:raise SystemExit(log)
+progetto/audit/tools/check_powershell_r34.py,after,"count=sum(line.startswith('PASS R34 launcher:') for line in log.splitlines());assert count==17,count"
+progetto/audit/tools/check_powershell_r34.py,after,"(audit/'powershell-evidence.json').write_text(json.dumps({'PowerShell':'7.4.21 Linux; no Windows runtime execution','stages':results,'launcher_fixture_checks':count,'launcher_sha256':sha(launcher.read_bytes()),'fixture_sha256':sha(fixture.read_bytes())},indent=2)+'\n');print('PASS',len(results),'source stages;',count,'launcher checks')"
+progetto/audit/tools/test_launcher_r34.ps1,after,param([string] $Launcher)
+progetto/audit/tools/test_launcher_r34.ps1,after,$ErrorActionPreference = 'Stop'
+progetto/audit/tools/test_launcher_r34.ps1,after,. $Launcher -FunctionsOnly
+progetto/audit/tools/test_launcher_r34.ps1,after,$count = 0
+progetto/audit/tools/test_launcher_r34.ps1,after,"function Check([bool] $Ok, [string] $Label) {"
+progetto/audit/tools/test_launcher_r34.ps1,after,    if (-not $Ok) { throw ('FAIL R34 launcher: ' + $Label) }
+progetto/audit/tools/test_launcher_r34.ps1,after,    Write-Host ('PASS R34 launcher: ' + $Label); $script:count++
+progetto/audit/tools/test_launcher_r34.ps1,after,}
+progetto/audit/tools/test_launcher_r34.ps1,after,function Touch([string] $Path) {
+progetto/audit/tools/test_launcher_r34.ps1,after,    New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
+progetto/audit/tools/test_launcher_r34.ps1,after,    Set-Content -LiteralPath $Path -Value 'fixture only' -Encoding ASCII
+progetto/audit/tools/test_launcher_r34.ps1,after,}
+progetto/audit/tools/test_launcher_r34.ps1,after,"function Make-Runtime([string] $Path, [string] $Version='8.0.32') {"
+progetto/audit/tools/test_launcher_r34.ps1,after,    Touch (Join-Path $Path 'dotnet.exe')
+progetto/audit/tools/test_launcher_r34.ps1,after,    New-Item -ItemType Directory -Path (Join-Path $Path 'shared/Microsoft.NETCore.App/8.0.32') -Force | Out-Null
+progetto/audit/tools/test_launcher_r34.ps1,after,    New-Item -ItemType Directory -Path (Join-Path $Path ('shared/Microsoft.WindowsDesktop.App/' + $Version)) -Force | Out-Null
+progetto/audit/tools/test_launcher_r34.ps1,after,}
+progetto/audit/tools/test_launcher_r34.ps1,after,$temporary = Join-Path ([IO.Path]::GetTempPath()) ('processlens-r23-' + [Guid]::NewGuid().ToString('N'))
+progetto/audit/tools/test_launcher_r34.ps1,after,$saved = @{}
+progetto/audit/tools/test_launcher_r34.ps1,after,"foreach ($name in @('PATH','DOTNET_ROOT','DOTNET_ROOT_X64','NUGET_PACKAGES')) { $saved[$name] = [Environment]::GetEnvironmentVariable($name) }"
+progetto/audit/tools/test_launcher_r34.ps1,after,try {
+progetto/audit/tools/test_launcher_r34.ps1,after,    $root = Join-Path $temporary 'bundle with space'; $profile = Join-Path $temporary 'profile with space'
+progetto/audit/tools/test_launcher_r34.ps1,after,"    New-Item -ItemType Directory -Path $root,$profile,(Join-Path $root 'supporto') -Force | Out-Null"
+progetto/audit/tools/test_launcher_r34.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'empty package has no runnable GUI'
+progetto/audit/tools/test_launcher_r34.ps1,after,    $installed = Join-Path $profile 'Programs/ProcessLens/R20'
+progetto/audit/tools/test_launcher_r34.ps1,after,    Touch (Join-Path $installed 'app/win-x64/ProcessLens.exe'); Touch (Join-Path $installed 'start-installed.ps1')
+progetto/audit/tools/test_launcher_r34.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'completed old installation cannot silently substitute its old GUI'
+progetto/audit/tools/test_launcher_r34.ps1,after,    $exe = Join-Path $root 'progetto/publish/win-x64/ProcessLens.exe'; Touch $exe
+progetto/audit/tools/test_launcher_r34.ps1,after,    $receipt = Join-Path $root 'supporto/build-r34.ok'
+progetto/audit/tools/test_launcher_r34.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'publication without successful R31 receipt is not accepted'
+progetto/audit/tools/test_launcher_r34.ps1,after,    Set-Content -LiteralPath $receipt -Value 'older version'
+progetto/audit/tools/test_launcher_r34.ps1,after,    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'receipt for another revision is rejected'
+progetto/audit/tools/test_launcher_r34.ps1,after,    Remove-Item -LiteralPath $receipt
+progetto/audit/tools/test_launcher_r34.ps1,after,    $sdk = Join-Path $installed 'dotnet'; Make-Runtime $sdk
+progetto/audit/tools/test_launcher_r34.ps1,after,"    New-Item -ItemType Directory -Path (Join-Path $sdk 'sdk/8.0.426'),(Join-Path $installed 'packages') -Force | Out-Null"
+progetto/audit/tools/test_launcher_r34.ps1,after,"    # Stub only the compiler entry point and project build script; no dotnet, app or service is launched."
+progetto/audit/tools/test_launcher_r34.ps1,after,    function global:dotnet { throw 'fixture must not launch a real compiler' }
+progetto/audit/tools/test_launcher_r34.ps1,after,    $build = Join-Path $root 'progetto/build-dashboard.ps1'
+progetto/audit/tools/test_launcher_r34.ps1,after,"    Set-Content -LiteralPath $build -Value 'throw ""synthetic failed tests""'"
+progetto/audit/tools/test_launcher_r34.ps1,after,    $failed = $false
+progetto/audit/tools/test_launcher_r34.ps1,after,    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('synthetic failed tests') }
+progetto/audit/tools/test_launcher_r34.ps1,after,    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'failed tests cannot issue a build receipt or launch a stale publication'
+progetto/audit/tools/test_launcher_r34.ps1,after,    Check ($env:NUGET_PACKAGES -eq (Join-Path $installed 'packages')) 'completed R20 cache reused without copying packages into ZIP'
+progetto/audit/tools/test_launcher_r34.ps1,after,    [xml]$config = Get-Content -LiteralPath (Join-Path $root 'progetto/NuGet.Config') -Raw
+progetto/audit/tools/test_launcher_r34.ps1,after,    Check ($config.configuration.packageSources.clear -ne $null -and -not $config.configuration.packageSources.add) 'R20 cache build has no configured network feed'
+progetto/audit/tools/test_launcher_r34.ps1,after,    Remove-Item -LiteralPath $exe
+progetto/audit/tools/test_launcher_r34.ps1,after,    Set-Content -LiteralPath $build -Value '# fixture successful script but no executable'
+progetto/audit/tools/test_launcher_r34.ps1,after,    $failed = $false
+progetto/audit/tools/test_launcher_r34.ps1,after,    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('senza eseguibile') }
+progetto/audit/tools/test_launcher_r34.ps1,after,    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'missing executable after build remains an error'
+progetto/audit/tools/test_launcher_r34.ps1,after,"    Set-Content -LiteralPath $build -Value 'New-Item -ItemType Directory -Path ""publish/win-x64"" -Force | Out-Null; Set-Content -LiteralPath ""publish/win-x64/ProcessLens.exe"" -Value ""fixture""'"
+progetto/audit/tools/test_launcher_r34.ps1,after,    Invoke-ProcessLensBuild $root $profile
+progetto/audit/tools/test_launcher_r34.ps1,after,    $target = Resolve-ProcessLensLaunch $root $profile
+progetto/audit/tools/test_launcher_r34.ps1,after,    Check ($target.Kind -eq 'Exe' -and $target.Entry -eq $exe -and $target.Runtime -eq $sdk) 'successful owned build resolves new publication with existing private runtime'
+progetto/audit/tools/test_launcher_r34.ps1,after,"    Set-Content -LiteralPath $build -Value 'throw ""fast path must not rebuild""'"
+progetto/audit/tools/test_launcher_r34.ps1,after,    Check ((Resolve-ProcessLensLaunch $root $profile).Entry -eq $exe) 'subsequent resolution needs no build or SDK command'
+progetto/audit/tools/test_launcher_r34.ps1,after,    $incomplete = Join-Path $temporary 'incomplete'; Touch (Join-Path $incomplete 'dotnet.exe')
+progetto/audit/tools/test_launcher_r34.ps1,after,    Check (-not (Test-DesktopRuntime8 $incomplete)) 'missing desktop runtime is not accepted'
+progetto/audit/tools/test_launcher_r34.ps1,after,    Make-Runtime $incomplete '9.0.1'
+progetto/audit/tools/test_launcher_r34.ps1,after,    Check (-not (Test-DesktopRuntime8 $incomplete)) 'wrong desktop runtime major is not accepted'
+progetto/audit/tools/test_launcher_r34.ps1,after,"    Check ((Quote-LaunchArgument 'C:\Program Files\ProcessLens\ProcessLens.exe') -eq '""C:\Program Files\ProcessLens\ProcessLens.exe""') 'paths with spaces remain one UAC argument'"
+progetto/audit/tools/test_launcher_r34.ps1,after,"    foreach ($bad in @('C:\bad""path', ""C:\bad`npath"")) {"
+progetto/audit/tools/test_launcher_r34.ps1,after,        $failed = $false; try { Quote-LaunchArgument $bad | Out-Null } catch { $failed = $true }
+progetto/audit/tools/test_launcher_r34.ps1,after,        Check $failed 'quotes and newlines cannot create extra launch arguments'
+progetto/audit/tools/test_launcher_r34.ps1,after,    }
+progetto/audit/tools/test_launcher_r34.ps1,after,    $tokens = $null; $errors = $null
+progetto/audit/tools/test_launcher_r34.ps1,after,"    $ast = [System.Management.Automation.Language.Parser]::ParseFile($Launcher,[ref]$tokens,[ref]$errors)"
+progetto/audit/tools/test_launcher_r34.ps1,after,    Check ($errors.Count -eq 0) 'real PowerShell parser accepts complete launcher'
+progetto/audit/tools/test_launcher_r34.ps1,after,"    $commands = @($ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] },$true) | ForEach-Object { $_.GetCommandName() })"
+progetto/audit/tools/test_launcher_r34.ps1,after,"    Check (@($commands | Where-Object { $_ -in @('Expand-Archive','Invoke-WebRequest','Install-Package','Install-Module','Set-Service','Start-Service','Stop-Service','Stop-Process') }).Count -eq 0) 'launcher installs no dependencies and changes no services or running processes'"
+progetto/audit/tools/test_launcher_r34.ps1,after,"    Write-Host ('R34 launcher fixture complete: ' + $count + ' checks; synthetic files only, no Windows app or UAC.')"
+progetto/audit/tools/test_launcher_r34.ps1,after,} finally {
+progetto/audit/tools/test_launcher_r34.ps1,after,    Remove-Item function:global:dotnet -ErrorAction SilentlyContinue
+progetto/audit/tools/test_launcher_r34.ps1,after,"    foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name,$saved[$name]) }"
+progetto/audit/tools/test_launcher_r34.ps1,after,    if (Test-Path -LiteralPath $temporary) { Remove-Item -LiteralPath $temporary -Recurse -Force }
+progetto/audit/tools/test_launcher_r34.ps1,after,}
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"""""""Type-check real C# against WindowsDesktop reference assemblies with explicit generated-field stubs."
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"This is NOT WPF markup compilation, BAML, MSBuild, or runtime validation. Stubs live outside the deliverable."
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,""""""""
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"import argparse,hashlib,json,subprocess,xml.etree.ElementTree as ET"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,from pathlib import Path
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();out=work/'typecheck';out.mkdir(exist_ok=True);audit=r/'audit/R10_R34';sha=lambda b:hashlib.sha256(b).hexdigest()
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,base={p.name:p for p in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll')};desktop=list((work/'wpf-ref').glob('*.dll'))
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,assert len(desktop)>20
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,for f in desktop:base[f.name]=f
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,refs=list(base.values());event=sdk/'packs/Microsoft.AspNetCore.App.Ref/8.0.32/ref/net8.0/System.Diagnostics.EventLog.dll';sqlite=work/'Microsoft.Data.Sqlite.dll'
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"globals=out/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,wpf_usings=[x['Identity'] for x in json.loads((audit/'msbuild-wpf-usings.json').read_text())['Items']['Using']]
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"assert set(wpf_usings)=={'System','System.Collections.Generic','System.Linq','System.Threading','System.Threading.Tasks'}, 'Unexpected evaluated WPF implicit usings'"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,wpf_globals=out/'WpfGlobalUsings.cs';wpf_globals.write_text(''.join('global using '+s+';\n' for s in wpf_usings))
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,x='{http://schemas.microsoft.com/winfx/2006/xaml}';stubs=[];inputs={}
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,for path in (r/'src/ProcessLens.App').glob('*.xaml'):
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after, tree=ET.parse(path).getroot();cls=tree.get(x+'Class');assert cls
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after, fields=[]
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after, for e in tree.iter():
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,  name=e.get(x+'Name')
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,  if not name:continue
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"  tag=e.tag.split('}',1)[1]"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,  if e.tag.startswith('{clr-namespace:ProcessLens.App}'):typ='ProcessLens.App.'+tag
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,  elif tag=='Polyline':typ='System.Windows.Shapes.Polyline'
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,  else:typ='System.Windows.Controls.'+tag
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,  fields.append('internal '+typ+' '+name+' = null!;')
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after," ns,short=cls.rsplit('.',1);stubs.append('namespace '+ns+' { public partial class '+short+' { '+ ' '.join(fields)+' private void InitializeComponent() {} } }')"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after, inputs[path.relative_to(r).as_posix()]=sha(path.read_bytes())
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,stub=out/'MarkupFieldStubs.cs';stub.write_text('\n'.join(stubs));results=[]
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"def compile(name,sources,extra=(),library=True):"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after, for f in sources:
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,  if f.is_relative_to(r):inputs[f.relative_to(r).as_posix()]=sha(f.read_bytes())
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after," args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(out/(name+'.dll'))]"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after, args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after," args+=['-resource:'+str(r/'src/ProcessLens.App/Assets/ProcessLens.ico')+',ProcessLens.AppIcon','-resource:'+str(r/'src/ProcessLens.App/Assets/ProcessSymbols.json')+',ProcessLens.ProcessSymbols'] if name=='ProcessLens' else []"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after," args+=['-r:'+str(f) for f in [*refs,event,*extra]]+[str(wpf_globals if name == 'ProcessLens' or name.endswith('UiTests') else globals)]+[str(f) for f in sources]"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after," result=subprocess.run(args,capture_output=True,text=True);log=result.stdout+result.stderr;(audit/(name+'-typecheck.log')).write_text(log)"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after," print(name, 'PASS' if result.returncode==0 else 'FAIL');results.append({'assembly':name,'status':'PASS' if result.returncode==0 else 'FAIL','warning_count':log.count('warning CS')})"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after, if result.returncode:raise SystemExit(log)
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,core=work/'runtime/ProcessLens.Core.dll';assert core.is_file()
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"compile('ProcessLens.Windows',sorted((r/'src/ProcessLens.Windows').glob('*.cs')),[core])"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),[core])"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"extra=[core,out/'ProcessLens.Windows.dll',out/'ProcessLens.Semantics.dll',sqlite]"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"compile('ProcessLens',sorted((r/'src/ProcessLens.App').rglob('*.cs'))+[stub],extra)"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"for name in ['NetworkUiTests','CopyUiTests','SystemProcessUiTests','NewTaskUiTests','LiveMetricsUiTests','ProcessGroupsUiTests']:"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after," compile('ProcessLens.'+name,[r/'tests'/('ProcessLens.'+name)/'Program.cs'],extra+[out/'ProcessLens.dll'],False)"
+progetto/audit/tools/typecheck_wpf_sources_r34.py,after,"(audit/'wpf-typecheck-evidence.json').write_text(json.dumps({'qualification':'C# type checking with generated-field stubs only; NOT actual WPF markup compilation or runtime','evaluated_wpf_implicit_usings':wpf_usings,'assemblies':results,'inputs':inputs,'stub_sha256':sha(stub.read_bytes()),'reference_hashes':{f.name:sha(f.read_bytes()) for f in [*desktop,event,sqlite]}},indent=2)+'\n')"
+progetto/build-dashboard.ps1,after,& (Join-Path $PSScriptRoot 'audit\tools\check_network_clarity_r34.ps1')
+progetto/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv,after,"PLT-R34-001,Rete,Dispositivi sulla rete,Dispositivi osservati,Voci della cache Windows raggruppate per MAC e scheda,Nel riepilogo cache,GetIpNetTable2 e stato lettura,Tutti i client connessi; rete sicura,MS-IPHELPER,https://learn.microsoft.com/en-us/windows/win32/api/netioapi/nf-netioapi-getipnettable2,sintesi,alta,R34"
+progetto/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv,after,"PLT-R34-002,Rete,Segnali Windows,Eventi e blocchi,Eventi Security compatibili nel campione selezionato,Lettura manuale,ID evento e stato audit,Intruso rilevato; totale tentativi,MS-WFP,https://learn.microsoft.com/en-us/windows/win32/fwp/auditing-and-logging,sintesi,alta,R34"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"   <Setter Property=""Background"" Value=""#F8FAFC""/><Setter Property=""Foreground"" Value=""#1F2937""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"   <Setter Property=""BorderBrush"" Value=""#CBD5E1""/><Setter Property=""BorderThickness"" Value=""1""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,before,"  <Grid.RowDefinitions><RowDefinition Height=""Auto""/><RowDefinition Height=""*"" MinHeight=""100""/><RowDefinition Height=""Auto""/></Grid.RowDefinitions>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,before,  <StackPanel>
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,before,"   <TextBlock Text=""Cattura Windows / Wi-Fi"" FontSize=""21"" FontWeight=""SemiBold""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,before,"   <local:SelectableText Text=""API Windows integrate. Non servono Wireshark, TShark o Npcap. La cattura IP locale richiede amministratore. PktMon è disponibile solo se Windows espone le sue API; Wi-Fi usa una lettura separata."" TextWrapping=""Wrap"" Margin=""0,6,0,9""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"  <Grid.RowDefinitions><RowDefinition Height=""Auto""/><RowDefinition Height=""2*"" MinHeight=""100""/><RowDefinition Height=""7""/><RowDefinition Height=""*"" MinHeight=""95""/></Grid.RowDefinitions>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"  <ScrollViewer MaxHeight=""220"" VerticalScrollBarVisibility=""Auto""><StackPanel>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"   <TextBlock Text=""Traffico del PC e reti Wi-Fi"" FontSize=""21"" FontWeight=""SemiBold""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"   <local:SelectableText Text=""Traffico: elenca le sorgenti, scegline una e cattura per 20 s. Wi-Fi: leggi separatamente le reti radio nella cache Windows. Non servono programmi aggiuntivi."" TextWrapping=""Wrap"" Margin=""0,6,0,9""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,before,"    <Button x:Name=""DiscoverNativeCaptureButton"" Content=""Elenca sorgenti Windows"" Style=""{StaticResource CaptureAction}"" Click=""Discover_Click""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"    <Button x:Name=""DiscoverNativeCaptureButton"" Background=""#175CD3"" Foreground=""White"" BorderBrush=""#175CD3"" Content=""1. Elenca sorgenti"" Style=""{StaticResource CaptureAction}"" Click=""Discover_Click""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,before,"    <Button x:Name=""StartNativeCaptureButton"" Content=""Cattura per 20 s"" Style=""{StaticResource CaptureAction}"" Click=""Capture_Click"" IsEnabled=""False""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"    <Button x:Name=""StartNativeCaptureButton"" Content=""2. Cattura per 20 s"" Style=""{StaticResource CaptureAction}"" Click=""Capture_Click"" IsEnabled=""False""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,before,"   <local:SelectableText x:Name=""NativeCaptureStatusText"" Text=""Scegli Elenca sorgenti Windows oppure Leggi reti Wi-Fi. Nessuna raccolta automatica."" TextWrapping=""Wrap"" Margin=""0,0,0,8""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"   <Border Background=""#EFF6FF"" BorderBrush=""#BFDBFE"" BorderThickness=""1"" CornerRadius=""7"" Padding=""10,8"" Margin=""0,4,0,8""><local:SelectableText x:Name=""NativeCaptureStatusText"" Text=""Scegli Elenca sorgenti Windows oppure Leggi reti Wi-Fi. Nessuna raccolta automatica."" TextWrapping=""Wrap"" Margin=""0,0,0,8""/></Border>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,before,  </StackPanel>
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,  </StackPanel></ScrollViewer>
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,before,"    <DataGrid x:Name=""NativePacketsTable"" IsReadOnly=""True"" AutoGenerateColumns=""False"" CanUserAddRows=""False"" CanUserDeleteRows=""False"" EnableRowVirtualization=""True"" EnableColumnVirtualization=""True"" VirtualizingPanel.VirtualizationMode=""Recycling"" local:GridCopySupport.Enabled=""True"" MinRowHeight=""34"">"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"    <DataGrid x:Name=""NativePacketsTable"" IsReadOnly=""True"" AutoGenerateColumns=""False"" CanUserAddRows=""False"" CanUserDeleteRows=""False"" EnableRowVirtualization=""True"" EnableColumnVirtualization=""True"" VirtualizingPanel.VirtualizationMode=""Recycling"" local:GridCopySupport.Enabled=""True"" MinRowHeight=""34"" SelectionMode=""Single"" SelectionUnit=""FullRow"" SelectionChanged=""Observation_Changed"">"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,before,"    <DataGrid x:Name=""WifiBssTable"" IsReadOnly=""True"" AutoGenerateColumns=""False"" CanUserAddRows=""False"" CanUserDeleteRows=""False"" EnableRowVirtualization=""True"" EnableColumnVirtualization=""True"" VirtualizingPanel.VirtualizationMode=""Recycling"" local:GridCopySupport.Enabled=""True"" MinRowHeight=""34"">"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"    <DataGrid x:Name=""WifiBssTable"" IsReadOnly=""True"" AutoGenerateColumns=""False"" CanUserAddRows=""False"" CanUserDeleteRows=""False"" EnableRowVirtualization=""True"" EnableColumnVirtualization=""True"" VirtualizingPanel.VirtualizationMode=""Recycling"" local:GridCopySupport.Enabled=""True"" MinRowHeight=""34"" SelectionMode=""Single"" SelectionUnit=""FullRow"" SelectionChanged=""Observation_Changed"">"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,before,"  <ScrollViewer Grid.Row=""2"" MaxHeight=""130"" VerticalScrollBarVisibility=""Auto"" Margin=""0,9,0,0"">"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,before,"   <local:SelectableText x:Name=""NativeCaptureNoteText"" Text=""Le righe e il rapporto possono essere copiati. Nessun file di cattura viene creato automaticamente."" TextWrapping=""Wrap""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,before,  </ScrollViewer>
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"  <GridSplitter Grid.Row=""2"" Height=""5"" HorizontalAlignment=""Stretch"" ResizeDirection=""Rows"" Background=""#D8E2EE""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"  <ScrollViewer Grid.Row=""3"" VerticalScrollBarVisibility=""Auto"" Margin=""0,9,0,0""><StackPanel>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"   <local:SelectableText x:Name=""NativeCaptureSelectionText"" Text=""Seleziona una riga per leggere i dati e il loro significato."" TextWrapping=""Wrap""/>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,"   <Expander Header=""Esito della raccolta, errori e copertura"" IsExpanded=""True"" Margin=""0,10,0,0""><local:SelectableText x:Name=""NativeCaptureNoteText"" Text=""Nessuna raccolta eseguita. Nessun file di cattura viene creato automaticamente."" TextWrapping=""Wrap"" Margin=""0,6,0,0""/></Expander>"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml,after,  </StackPanel></ScrollViewer>
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,    private readonly NetworkActivityJournal _journal;
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,before,    internal NativeCaptureView(INativeCaptureClient client) { _client = client; InitializeComponent(); UpdateButtons(); }
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"    internal NativeCaptureView(INativeCaptureClient client, NetworkActivityJournal? journal = null) { _client = client; _journal = journal ?? new(); InitializeComponent(); UpdateButtons(); }"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,before,"    { _report = """"; NativePacketsTable.ItemsSource = null; WifiBssTable.ItemsSource = null; NativeCaptureNoteText.Text = """"; }"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"    { _report = """"; NativePacketsTable.ItemsSource = null; WifiBssTable.ItemsSource = null; NativeCaptureNoteText.Text = """"; NativeCaptureSelectionText.Text = ""Seleziona una riga per leggere i dati e il loro significato.""; }"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"        string operationName = action == 0 ? ""Sorgenti Windows"" : action == 1 ? ""Cattura locale"" : ""Cache radio Wi-Fi"";"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,        var started = System.Diagnostics.Stopwatch.StartNew();
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"        _journal.Add(operationName, ""INIZIO"", action == 1 ? ""Sorgente: "" + selected!.Name + ""; massimo 20 s, 2048 osservazioni, 128 byte campionati."" :"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"            action == 0 ? ""Enumerazione manuale delle sorgenti; nessuna cattura avviata."" : ""Lettura cache BSS; nessuna scansione forzata o modalità monitor."");"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,before,                if (!_active || generation != _generation || operation.IsCancellationRequested) return;
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"                if (!_active || generation != _generation || operation.IsCancellationRequested) { _journal.Add(operationName, ""SCARTO"", ""Risultato tardivo o annullato non pubblicato.""); return; }"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,before,                NativeCaptureNoteText.Text = result.Note;
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"                _report = ""SORGENTI DI CATTURA WINDOWS\n"" + NativeCaptureStatusText.Text + ""\n"" + result.Note + ""\n"" + string.Join(""\n"", result.Sources.Select(s => s.Name));"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"                NativeCaptureNoteText.Text = result.Note + ""\nIP locale: richiede amministratore e copre IPv4 del PC. PktMon: solo se le API sono esposte da Windows. Selezionare una sorgente non avvia una cattura."";"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,before,                if (!_active || generation != _generation) return;
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"                if (!_active || generation != _generation) { _journal.Add(operationName, ""SCARTO"", ""Risultato tardivo non pubblicato.""); return; }"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,before,"                NativeCaptureStatusText.Text = result.Available ? $""{result.Rows.Count} osservazioni · "" + (result.Partial ? ""cattura parziale"" : ""raccolta terminata"") : ""Cattura non disponibile · conteggio N/D"";"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"                NativeCaptureStatusText.Text = result.Available ? $""{result.Rows.Count} osservazioni (non connessioni uniche) · "" + (result.Partial ? ""cattura parziale"" : ""raccolta terminata"") : ""Cattura non disponibile · conteggio N/D"";"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,before,                if (!_active || generation != _generation || operation.IsCancellationRequested) return;
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"                if (!_active || generation != _generation || operation.IsCancellationRequested) { _journal.Add(operationName, ""SCARTO"", ""Risultato tardivo o annullato non pubblicato.""); return; }"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,before,"                NativeCaptureStatusText.Text = result.Available ? $""{result.Rows.Count} voci BSS nella cache radio"" + (result.Partial ? "" · lettura parziale"" : """") : ""Wi-Fi non disponibile · voci N/D"";"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"                NativeCaptureStatusText.Text = result.Available ? $""{result.Rows.Count} voci radio nella cache (non client Wi-Fi)"" + (result.Partial ? "" · lettura parziale"" : """") : ""Wi-Fi non disponibile · voci N/D"";"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"            _journal.Add(operationName, ""ESITO"", NativeCaptureStatusText.Text + $"" · {started.Elapsed.TotalMilliseconds:0} ms. "" + NativeCaptureNoteText.Text);"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,before,"        { if (_active && generation == _generation) { NativeCaptureStatusText.Text = ""Lettura interrotta.""; RememberDiagnostics(); } }"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"        { _journal.Add(operationName, ""ANNULLAMENTO"", ""Richiesta interrotta; eventuali risultati non pubblicati sono esclusi.""); if (_active && generation == _generation) { NativeCaptureStatusText.Text = ""Lettura interrotta.""; RememberDiagnostics(); } }"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,before,"        { if (_active && generation == _generation) { NativeCaptureStatusText.Text = ""Operazione non disponibile · conteggio N/D""; NativeCaptureNoteText.Text = ex.Message; RememberDiagnostics(); } }"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"        { if (_active && generation == _generation) { NativeCaptureStatusText.Text = ""Operazione non disponibile · conteggio N/D""; NativeCaptureNoteText.Text = ex.Message; _journal.Add(operationName, ""ERRORE"", ex.Message); RememberDiagnostics(); } }"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"    private void Observation_Changed(object sender, SelectionChangedEventArgs e)"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,    {
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,        if (NativeCaptureSelectionText is null) return;
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,        NativeCaptureSelectionText.Text = (sender as DataGrid)?.SelectedItem switch {
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"            NativePacketRow packet => NetworkReadPresentation.PacketDetails(packet),"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"            WifiBssRow wifi => NetworkReadPresentation.WifiDetails(wifi),"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,"            _ => ""Seleziona una riga per leggere i dati e il loro significato."" };"
+progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs,after,    }
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"   <Setter Property=""Background"" Value=""#F8FAFC""/><Setter Property=""Foreground"" Value=""#1F2937""/>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"   <Setter Property=""BorderBrush"" Value=""#CBD5E1""/><Setter Property=""BorderThickness"" Value=""1""/>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,before,"  <Grid.RowDefinitions><RowDefinition Height=""Auto""/><RowDefinition Height=""*"" MinHeight=""90""/><RowDefinition Height=""Auto""/></Grid.RowDefinitions>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,before,  <StackPanel>
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,before,"   <TextBlock Text=""Segnali di rete · API Windows"" FontSize=""21"" FontWeight=""SemiBold""/>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,before,"   <local:SelectableText Text=""Blocchi di connessione e accessi di rete falliti registrati su questo PC negli ultimi 15 minuti. Lettura manuale, senza programmi aggiuntivi."" TextWrapping=""Wrap"" Margin=""0,5,0,8""/>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"  <Grid.RowDefinitions><RowDefinition Height=""Auto""/><RowDefinition Height=""2*"" MinHeight=""100""/><RowDefinition Height=""7""/><RowDefinition Height=""*"" MinHeight=""95""/></Grid.RowDefinitions>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"  <ScrollViewer MaxHeight=""220"" VerticalScrollBarVisibility=""Auto""><StackPanel>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"   <TextBlock Text=""Eventi e blocchi registrati sul PC"" FontSize=""21"" FontWeight=""SemiBold""/>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"   <local:SelectableText Text=""Leggi il registro Security, poi seleziona una riga: sotto trovi significato, dati registrati e verifiche utili."" TextWrapping=""Wrap"" Margin=""0,5,0,8""/>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"   <WrapPanel Margin=""0,0,0,6""><TextBlock Text=""Intervallo:"" VerticalAlignment=""Center"" Margin=""0,0,8,0""/>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"    <ComboBox x:Name=""NativeEventWindowBox"" SelectedIndex=""0"" MinWidth=""150"" Margin=""0,0,12,0""><ComboBoxItem Content=""Ultimi 15 minuti""/><ComboBoxItem Content=""Ultima ora""/></ComboBox>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"    <CheckBox x:Name=""NativePacketDropsBox"" Content=""Includi scarti di pacchetti (5152)"" VerticalAlignment=""Center"" ToolTip=""Legge gli scarti già registrati. Non abilita l'audit e non crea nuovi eventi.""/></WrapPanel>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,before,"    <Button x:Name=""ReadNativeNetworkButton"" Content=""Leggi eventi Windows"" Style=""{StaticResource NativeAction}"" Click=""Read_Click""/>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"    <Button x:Name=""ReadNativeNetworkButton"" Background=""#175CD3"" Foreground=""White"" BorderBrush=""#175CD3"" Content=""Leggi eventi Windows"" Style=""{StaticResource NativeAction}"" Click=""Read_Click""/>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,before,"   <local:SelectableText x:Name=""NativeNetworkStatusText"" Text=""Nessuna lettura eseguita."" TextWrapping=""Wrap"" Margin=""0,0,0,7""/>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,before,"   <Expander Header=""Raccolta eventi e limiti"" IsExpanded=""True"" Margin=""0,0,0,8"">"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"   <Border Background=""#EFF6FF"" BorderBrush=""#BFDBFE"" BorderThickness=""1"" CornerRadius=""7"" Padding=""10,8"" Margin=""0,4,0,8""><local:SelectableText x:Name=""NativeNetworkStatusText"" Text=""Nessuna lettura eseguita."" TextWrapping=""Wrap"" Margin=""0,0,0,7""/></Border>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"   <local:SelectableText x:Name=""NativeEventCountsText"" Text=""Conteggi N/D · nessuna lettura"" TextWrapping=""Wrap"" Margin=""0,0,0,8""/>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"   <Expander Header=""Fonti, copertura e motivo degli eventuali dati mancanti"" IsExpanded=""False"" Margin=""0,0,0,8"">"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,before,  </StackPanel>
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,before,"  <DataGrid x:Name=""NativeNetworkEventsTable"" Grid.Row=""1"" IsReadOnly=""True"" AutoGenerateColumns=""False"" CanUserAddRows=""False"" CanUserDeleteRows=""False"""
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,  </StackPanel></ScrollViewer>
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"  <Grid Grid.Row=""1""><DataGrid x:Name=""NativeNetworkEventsTable"" IsReadOnly=""True"" AutoGenerateColumns=""False"" CanUserAddRows=""False"" CanUserDeleteRows=""False"""
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"    <DataGridTextColumn Header=""ID"" Binding=""{Binding EventId}"" Width=""60"" ElementStyle=""{StaticResource NativeCell}""/>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,before,"  <ScrollViewer Grid.Row=""2"" MaxHeight=""160"" VerticalScrollBarVisibility=""Auto"" Margin=""0,9,0,0"">"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"   <Border x:Name=""NativeEventEmptyBorder"" Background=""#F8FAFC"" Margin=""0,36,0,0"" Padding=""20"" IsHitTestVisible=""False""><local:SelectableText x:Name=""NativeEventEmptyText"" Text=""Nessuna lettura eseguita. Premi Leggi eventi Windows."" TextWrapping=""Wrap"" HorizontalAlignment=""Center"" VerticalAlignment=""Center"" MaxWidth=""540""/></Border>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,  </Grid>
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"  <GridSplitter Grid.Row=""2"" Height=""5"" HorizontalAlignment=""Stretch"" Background=""#D8E2EE"" ResizeDirection=""Rows""/>"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml,after,"  <ScrollViewer Grid.Row=""3"" VerticalScrollBarVisibility=""Auto"" Margin=""0,9,0,0"">"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,    private readonly NetworkActivityJournal _journal;
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,before,    internal NativeNetworkEvidenceView(INativeNetworkEvidenceSource source)
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,before,    { _source = source; InitializeComponent(); UpdateButtons(); }
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"    internal NativeNetworkEvidenceView(INativeNetworkEvidenceSource source, NetworkActivityJournal? journal = null)"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,    { _source = source; _journal = journal ?? new(); InitializeComponent(); NativeNetworkSetupText.Text = NetworkEvidenceStatus.Setup; UpdateButtons(); }
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"            NativeEventCountsText.Text = ""Conteggi N/D · campione precedente rilasciato"";"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"            NativeEventEmptyText.Text = ""Campione da rileggere. Premi Leggi eventi Windows.""; NativeEventEmptyBorder.Visibility = Visibility.Visible;"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"        NativeEventCountsText.Text = ""Conteggi in attesa""; NativeEventEmptyText.Text = ""Lettura del registro Security in corso…"";"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,        NativeEventEmptyBorder.Visibility = Visibility.Visible;
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"        var options = new NetworkEventReadOptions(NativeEventWindowBox.SelectedIndex == 1 ? 60 : 15, NativePacketDropsBox.IsChecked == true);"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"        _journal.Add(""Security"", ""INIZIO"", $""Ultimi {options.Minutes} min · scarti5152={options.IncludePacketDrops} · massimo 256 record; budget enumerazione 3 s / 1 Mi caratteri XML."");"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,        var started = System.Diagnostics.Stopwatch.StartNew();
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,before,"            var result = await Task.Run(() => _source.Capture(operation.Token), operation.Token);"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,before,            if (!_active || generation != _generation || operation.IsCancellationRequested) return;
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"            var result = await Task.Run(() => _source is INativeNetworkEvidenceQuerySource query ? query.Capture(options, operation.Token) : _source.Capture(operation.Token), operation.Token);"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"            if (!_active || generation != _generation || operation.IsCancellationRequested) { _journal.Add(""Security"", ""SCARTO"", ""Risultato tardivo o annullato non pubblicato dopo il cambio di scheda.""); return; }"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,            NativeEventCountsText.Text = NetworkReadPresentation.EventCounts(result);
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"            NativeEventEmptyText.Text = !result.Available ? ""Registro non disponibile. Conteggi N/D: consulta Fonti e log."" :"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"                ""Nessun evento compatibile trovato. Controlla intervallo e audit in Fonti; non è un verdetto sulla sicurezza."";"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,            NativeEventEmptyBorder.Visibility = result.Events.Count == 0 || !result.Available ? Visibility.Visible : Visibility.Collapsed;
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"            _journal.Add(""Security"", ""ESITO"", $""Disponibile={result.Available} · parziale={result.Partial} · esaminati={result.ScannedEvents} · mostrati={result.Events.Count} · XML non interpretabili={result.MalformedEvents} · {started.Elapsed.TotalMilliseconds:0} ms. "" + result.Note);"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"            foreach (var audit in result.Audit) _journal.Add(""Audit Windows"", ""COPERTURA"", audit.Text);"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,before,"                string.Join(""\n"", result.Audit.Select(a => a.Text)) + ""\n"" + result.Note;"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"                string.Join(""\n"", result.Audit.Select(a => a.Text)) + ""\n"" + result.Note +"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"                $""\nIntervallo UTC: {result.SinceUtc:O} → {result.CapturedUtc:O}\nRecord esaminati: {result.ScannedEvents}; XML non interpretabili: {result.MalformedEvents}; caratteri XML: {result.XmlCharacters}."";"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,before,        catch (OperationCanceledException) { }
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"        catch (OperationCanceledException) { _journal.Add(""Security"", ""ANNULLAMENTO"", ""Lettura interrotta; nessun nuovo risultato pubblicato.""); }"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,before,"            { NativeNetworkStatusText.Text = ""Lettura non disponibile · conteggi N/D""; NativeNetworkCoverageText.Text = ex.Message; }"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,"            { NativeNetworkStatusText.Text = ""Lettura non disponibile · conteggi N/D""; NativeNetworkCoverageText.Text = ex.Message; NativeEventEmptyText.Text = ""Lettura non riuscita. Consulta Fonti e log.""; NativeEventCountsText.Text = ""Conteggi N/D""; _journal.Add(""Security"", ""ERRORE"", ex.Message); }"
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,before,    { ReadNativeNetworkButton.IsEnabled = _active && !_busy; CopyNativeNetworkButton.IsEnabled = _active && !_busy && _snapshot is not null; }
+progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,after,    { NativeEventWindowBox.IsEnabled = NativePacketDropsBox.IsEnabled = _active && !_busy && _source is INativeNetworkEvidenceQuerySource; ReadNativeNetworkButton.IsEnabled = _active && !_busy; CopyNativeNetworkButton.IsEnabled = _active && !_busy && _snapshot is not null; }
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"   <Setter Property=""Background"" Value=""#F8FAFC""/><Setter Property=""Foreground"" Value=""#1F2937""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"   <Setter Property=""BorderBrush"" Value=""#CBD5E1""/><Setter Property=""BorderThickness"" Value=""1""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,before,"  <TabControl x:Name=""NetworkTabs"" SelectedIndex=""0"" SelectionChanged=""NetworkTabs_Changed"">"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,before,"   <TabItem Header=""Dispositivi nella cache"">"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,  <Grid>
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"   <Grid.RowDefinitions><RowDefinition Height=""Auto""/><RowDefinition Height=""*"" MinHeight=""180""/><RowDefinition Height=""Auto""/></Grid.RowDefinitions>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"   <StackPanel Margin=""0,0,0,12""><TextBlock Text=""Rete"" FontSize=""23"" FontWeight=""SemiBold""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"    <local:SelectableText Text=""Dispositivi osservati, traffico del PC ed eventi Windows: ogni scheda indica la propria fonte e copertura."" TextWrapping=""Wrap"" Foreground=""#64748B"" Margin=""0,4,0,0""/></StackPanel>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"  <TabControl Background=""White"" BorderBrush=""#D8E2EE"" Grid.Row=""1"" x:Name=""NetworkTabs"" SelectedIndex=""0"" SelectionChanged=""NetworkTabs_Changed"">"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"   <TabItem Header=""Dispositivi osservati"" Padding=""14,8"">"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,before,"    <TextBlock Text=""Dispositivi sulla rete"" FontSize=""22"" FontWeight=""SemiBold"" TextWrapping=""Wrap""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,before,"    <local:SelectableText Text=""Elenco dalla cache di Windows: può essere incompleto. Aggiornamento solo su richiesta."" TextWrapping=""Wrap"" Foreground=""#64748B""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"    <TextBlock Text=""Dispositivi osservati da Windows"" FontSize=""22"" FontWeight=""SemiBold"" TextWrapping=""Wrap""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"    <local:SelectableText Text=""1. Leggi la cache  →  2. Seleziona una voce  →  3. Assegna un nome, se la riconosci."" TextWrapping=""Wrap"" Foreground=""#64748B""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,before,"    <Button x:Name=""RefreshNetworkButton"" Content=""Aggiorna elenco"" Style=""{StaticResource NetworkAction}"" Click=""RefreshNetwork_Click""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,before,"    <Button x:Name=""CopyNetworkButton"" Content=""Copia elenco"" IsEnabled=""False"" Style=""{StaticResource NetworkAction}"" Click=""CopyNetwork_Click""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"    <Button x:Name=""RefreshNetworkButton"" Background=""#175CD3"" Foreground=""White"" BorderBrush=""#175CD3"" Content=""Aggiorna elenco"" Style=""{StaticResource NetworkAction}"" Click=""RefreshNetwork_Click""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"    <Button x:Name=""CopyNetworkButton"" Content=""Copia rapporto"" IsEnabled=""False"" Style=""{StaticResource NetworkAction}"" Click=""CopyNetwork_Click""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"     <local:SelectableText x:Name=""NetworkCountsText"" Text=""Voci con MAC: N/D · nessuna lettura"" TextWrapping=""Wrap"" Margin=""0,6,0,0""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,before,"     <DataGridTextColumn Header=""Presenza"" Binding=""{Binding Presence, Mode=OneWay}"" Width=""195"" ElementStyle=""{StaticResource NetworkCell}""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"     <DataGridTextColumn Header=""Stato nella cache"" Binding=""{Binding Presence, Mode=OneWay}"" Width=""195"" ElementStyle=""{StaticResource NetworkCell}""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"   <Border x:Name=""NetworkEmptyBorder"" Grid.Row=""3"" Background=""#F8FAFC"" BorderBrush=""#CBD5E1"" BorderThickness=""1"" Padding=""24"" IsHitTestVisible=""False"" Margin=""0,38,0,0"">"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"    <local:SelectableText x:Name=""NetworkEmptyText"" Text=""Nessuna lettura eseguita. Premi Aggiorna elenco."" TextWrapping=""Wrap"" HorizontalAlignment=""Center"" VerticalAlignment=""Center"" MaxWidth=""540"" Foreground=""#475569""/>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,   </Border>
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,before,"     <Button x:Name=""RecognizeNetworkButton"" Content=""È un mio dispositivo / Salva nome"" IsEnabled=""False"""
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"     <Button x:Name=""RecognizeNetworkButton"" Content=""Riconosco questo dispositivo / Salva nome"" IsEnabled=""False"""
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,before,"   <Expander Grid.Row=""5"" Header=""Come leggere l’elenco"" Margin=""0,6,0,0"">"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"   <Expander Grid.Row=""5"" Header=""Fonte, copertura e dettagli della lettura"" Margin=""0,6,0,0"">"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,before,"   <TabItem Header=""Cattura Windows / Wi-Fi""><ContentControl x:Name=""NetworkCaptureHost"" HorizontalContentAlignment=""Stretch"" VerticalContentAlignment=""Stretch""/></TabItem>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,before,"   <TabItem Header=""Segnali Windows""><ContentControl x:Name=""NativeNetworkHost"" HorizontalContentAlignment=""Stretch"" VerticalContentAlignment=""Stretch""/></TabItem>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"   <TabItem Header=""Traffico e Wi-Fi"" Padding=""14,8""><ContentControl x:Name=""NetworkCaptureHost"" HorizontalContentAlignment=""Stretch"" VerticalContentAlignment=""Stretch""/></TabItem>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"   <TabItem Header=""Eventi e blocchi"" Padding=""14,8""><ContentControl x:Name=""NativeNetworkHost"" HorizontalContentAlignment=""Stretch"" VerticalContentAlignment=""Stretch""/></TabItem>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"   <Expander Grid.Row=""2"" Header=""Log delle operazioni di rete · sessione"" Margin=""0,12,0,0""><StackPanel>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"    <WrapPanel><Button Content=""Copia log di sessione"" Style=""{StaticResource NetworkAction}"" Click=""CopyJournal_Click""/><TextBlock Text=""Ultime 128 righe · nessuna scrittura su disco"" VerticalAlignment=""Center"" Foreground=""#64748B""/></WrapPanel>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,"    <ScrollViewer VerticalScrollBarVisibility=""Auto"" MaxHeight=""120""><local:SelectableText x:Name=""NetworkJournalText"" Text=""Nessuna operazione eseguita."" TextWrapping=""Wrap"" FontFamily=""Consolas"" FontSize=""12""/></ScrollViewer>"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,   </StackPanel></Expander>
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml,after,  </Grid>
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,    private readonly NetworkActivityJournal _journal = new();
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,        _journal.Changed += () => NetworkJournalText.Text = _journal.Report;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,        NetworkEmptyText.Text = NetworkReadPresentation.DeviceEmpty(null);
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,    }
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,    private void ResetCacheView(string reason)
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,    {
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,        _current = false; _snapshot = null; _view = null;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        _catalog = new(Array.Empty<DeviceRecognition>(), """"); NetworkDevicesTable.ItemsSource = null;"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        NetworkIndicatorText.Text = ""Elenco da aggiornare""; NetworkIndicatorBorder.BorderBrush = Brushes.SlateGray;"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        NetworkSummaryText.Text = reason; NetworkUpdatedText.Text = ""Nessuna lettura corrente"";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        NetworkCountsText.Text = ""Voci con MAC: N/D · risultati precedenti rilasciati""; NetworkNoticeText.Text = """";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        NetworkDetailsText.Text = ""I risultati precedenti sono stati rilasciati. La prossima lettura avviene solo su richiesta."";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        NetworkEmptyText.Text = NetworkReadPresentation.DeviceEmpty(null, true); NetworkEmptyBorder.Visibility = Visibility.Visible;"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,            _current = false;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,            _snapshot = null; _view = null;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,"            _catalog = new(Array.Empty<DeviceRecognition>(), """");"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,            NetworkDevicesTable.ItemsSource = null;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,"            NetworkIndicatorText.Text = ""Elenco da aggiornare"";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,            NetworkIndicatorBorder.BorderBrush = Brushes.SlateGray;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,"            NetworkSummaryText.Text = ""Premi Aggiorna elenco."";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,"            NetworkUpdatedText.Text = ""Elenco non aggiornato"";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,"            NetworkNoticeText.Text = """";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,"            NetworkDetailsText.Text = ""Le righe sono state rilasciate dopo la chiusura della sezione."";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"            ResetCacheView(""Premi Aggiorna elenco alla riapertura."");"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"            _journal.Add(""Cache Windows"", ""RILASCIO"", ""Sezione chiusa; tabelle rilasciate e lettura precedente invalidata."");"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,            _generation++; _current = false; _snapshot = null; _view = null;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,"            _catalog = new(Array.Empty<DeviceRecognition>(), """"); NetworkDevicesTable.ItemsSource = null;"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,"            NetworkIndicatorText.Text = ""Elenco da aggiornare"";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,"            NetworkSummaryText.Text = NetworkTabs.SelectedIndex == 1 ? ""Aggiorna la cache dopo le operazioni sulla scheda Wi-Fi."" : ""Premi Aggiorna elenco quando torni alla cache."";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"            _generation++; ResetCacheView(""Premi Aggiorna elenco quando torni ai dispositivi osservati."");"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,            _captureView = new NativeCaptureView();
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"            _captureView = new NativeCaptureView(new WindowsCompatibleCapture(), _journal);"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,            _nativeView = new NativeNetworkEvidenceView();
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"            _nativeView = new NativeNetworkEvidenceView(new WindowsNativeNetworkEvidence(), _journal);"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,        _current = false;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,        _current = false; _snapshot = null; _view = null;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,"        NetworkNoticeText.Text = """";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        NetworkNoticeText.Text = """"; NetworkUpdatedText.Text = ""Lettura in corso""; NetworkCountsText.Text = ""Conteggi in attesa"";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        NetworkDevicesTable.ItemsSource = null; NetworkEmptyText.Text = ""Lettura della cache Windows in corso…"";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,        NetworkEmptyBorder.Visibility = Visibility.Visible;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        _journal.Add(""Cache Windows"", ""INIZIO"", ""Lettura manuale IPv4/ARP e IPv6/ND; limite 4096 voci. Nessun probe o scansione."");"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,        var started = System.Diagnostics.Stopwatch.StartNew();
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,            if (!_active || generation != _generation) return;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"            if (!_active || generation != _generation) { _journal.Add(""Cache Windows"", ""SCARTO"", ""Risultato tardivo non pubblicato dopo il cambio scheda.""); return; }"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"            _journal.Add(""Cache Windows"", ""ESITO"", $""Disponibile={_snapshot.Available} · parziale={_snapshot.Partial} · schede={_snapshot.Interfaces} · voci grezze={_snapshot.Neighbors.Count} · righe={_view!.Rows.Count} · {started.Elapsed.TotalMilliseconds:0} ms. "" + _snapshot.Note);"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"            if (!_catalog.Available) _journal.Add(""Nomi locali"", ""ERRORE"", _catalog.Error);"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,"            if (added > 0) NetworkNoticeText.Text = added == 1 ? ""Nuovo dispositivo rilevato sulla rete."" : $""{added} nuovi dispositivi rilevati sulla rete."";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"            if (added > 0) NetworkNoticeText.Text = added == 1 ? ""Nuova voce con MAC osservata rispetto alle letture di questa sessione."" : $""{added} nuove voci con MAC osservate in questa sessione."";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,        NetworkSummaryText.Text = _view.Summary;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,"        NetworkUpdatedText.Text = ""Cache letta: "" + _snapshot.CapturedUtc.ToLocalTime().ToString(""g"");"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        NetworkSummaryText.Text = !_snapshot.Available ? ""Lettura non riuscita: consulta i dettagli della lettura e il log."" : _snapshot.Partial ? ""Cache letta solo in parte. Consulta i dettagli della lettura."" : ""Cache locale IPv4/IPv6: le voci possono essere vecchie e non rappresentano tutti i client del router."";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        NetworkUpdatedText.Text = (_snapshot.Available ? ""Cache letta: "" : ""Tentativo non riuscito: "") + _snapshot.CapturedUtc.ToLocalTime().ToString(""g"");"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        NetworkCountsText.Text = NetworkReadPresentation.DeviceCounts(_snapshot, _view);"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,        NetworkEmptyText.Text = NetworkReadPresentation.DeviceEmpty(_snapshot);
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,        NetworkEmptyBorder.Visibility = _view.Rows.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        if (_snapshot is null) { NetworkCountsText.Text = ""Voci con MAC: N/D · lettura non riuscita"";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"            NetworkUpdatedText.Text = ""Nessuna lettura corrente""; NetworkEmptyText.Text = ""Lettura non riuscita. Consulta il motivo nel riepilogo e nel log."";"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,            NetworkDetailsText.Text = text; }
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"        _journal.Add(""Cache Windows"", ""ERRORE"", text);"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,        CopyNetworkButton.IsEnabled = _active && !_busy && _view?.Rows.Count > 0;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,        CopyNetworkButton.IsEnabled = _active && !_busy && _snapshot is not null;
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"            _journal.Add(""Nomi locali"", forget ? ""RIMOZIONE"" : ""SALVATAGGIO"", ""Etichetta aggiornata nel catalogo locale; non è una verifica dell’identità."");"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"    private void CopyJournal_Click(object sender, RoutedEventArgs e) => ClipboardText.Copy(this, _journal.Report);"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,before,"            ""\n"" + NetworkIndicatorText.Text + ""\n"" + NetworkNoticeText.Text + ""\n\n"" + GridCopySupport.CaptureTable(NetworkDevicesTable, false) +"
+progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs,after,"            ""\n"" + NetworkCountsText.Text + ""\n"" + NetworkIndicatorText.Text + ""\n"" + NetworkNoticeText.Text + ""\n\n"" + GridCopySupport.CaptureTable(NetworkDevicesTable, false) +"
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,before,    <InformationalVersion>0.19.16-R10-R33-process-symbols-candidate</InformationalVersion>
+progetto/src/ProcessLens.App/ProcessLens.App.csproj,after,    <InformationalVersion>0.19.16-R10-R34-network-clarity-candidate</InformationalVersion>
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,"    public string Details => $""[Security:{RecordId?.ToString(CultureInfo.InvariantCulture) ?? ""N/D""}] Evento {EventId}\n"" +"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,"        $""Ora UTC: {Utc:O}\n{Event}\nSorgente: {SourceAddress} · porta {SourcePort}\n"" +"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,"        $""Destinazione: {DestinationAddress} · porta {DestinationPort}\nDirezione: {Direction} · protocollo: {Protocol}\n"" +"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,"        $""PID riportato all'epoca: {PidText} · programma riportato: {Application}\nStato riportato: {Status}\n"" +"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,    public string Meaning => EventId switch {
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        5157 => ""Windows Filtering Platform ha bloccato una connessione. La riga non misura dati trasferiti."","
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        5155 => ""Windows Filtering Platform ha impedito al programma di mettersi in ascolto su una porta locale. Non prova una richiesta remota."","
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        5159 => ""Windows Filtering Platform ha negato l'associazione del programma a una porta locale (bind). Non indica una connessione remota."","
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        5152 => ""Windows Filtering Platform ha scartato un pacchetto. Più righe possono appartenere alla stessa connessione; non sono altrettanti dispositivi."","
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        4625 => ""Windows ha registrato un accesso di rete o remoto fallito. Non è un accesso riuscito."","
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        _ => ""Significato non disponibile per questo ID."" };"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"    public string FilterId { get; init; } = ""N/D"";"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"    public string LayerId { get; init; } = ""N/D"";"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"    public string Details => $""SIGNIFICATO\n{Meaning}\n\nDATI REGISTRATI\n"" +"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        $""[Security:{RecordId?.ToString(CultureInfo.InvariantCulture) ?? ""N/D""}] Evento {EventId} · {Event}\nOra UTC: {Utc:O}\n"" +"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        (EventId is 5155 or 5159 ? $""Indirizzo locale: {SourceAddress} · porta locale: {SourcePort}\n"" :"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"            $""Sorgente: {SourceAddress} · porta {SourcePort}\nDestinazione: {DestinationAddress} · porta {DestinationPort}\n"") +"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        $""Direzione: {Direction} · protocollo: {Protocol}\nPID riportato all'epoca: {PidText} · programma riportato: {Application}\n"" +"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        $""Stato riportato: {Status}\nFiltro WFP riportato: {FilterId} · livello WFP: {LayerId}\n\nCOME VERIFICARE\n"" +"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        ""Confronta ora, programma e indirizzi con l'operazione che stavi eseguendo. Un ID filtro storico non identifica necessariamente la regola attuale.\n"" +"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,"    bool Partial, IReadOnlyList<NetworkAuditSetting> Audit, IReadOnlyList<NativeNetworkEvent> Events, string Note);"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"    bool Partial, IReadOnlyList<NetworkAuditSetting> Audit, IReadOnlyList<NativeNetworkEvent> Events, string Note)"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,{
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,    public NetworkEventReadOptions Options { get; init; } = new();
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,    public int ScannedEvents { get; init; }
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,    public int MalformedEvents { get; init; }
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,    public int XmlCharacters { get; init; }
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,}
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"public sealed record NetworkEventReadOptions(int Minutes = 15, bool IncludePacketDrops = false)"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,{
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,    public void Validate() { if (Minutes is not (15 or 60)) throw new ArgumentOutOfRangeException(nameof(Minutes)); }
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,}
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,public interface INativeNetworkEvidenceQuerySource : INativeNetworkEvidenceSource
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,{
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"    NativeNetworkSnapshot Capture(NetworkEventReadOptions options, CancellationToken cancellationToken);"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,}
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,        if (id is not (5157 or 4625)) return null;
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,        if (id is not (5157 or 5155 or 5159 or 5152 or 4625)) return null;
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,"        string source = Address(Get(id == 5157 ? ""SourceAddress"" : ""IpAddress""));"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,"        string direction = id == 4625 ? ""Accesso alla macchina"" : Get(""Direction"") switch {"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        string source = Address(Get(id == 4625 ? ""IpAddress"" : ""SourceAddress""));"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        string direction = id == 4625 ? ""Accesso alla macchina"" : id is 5155 or 5159 ? ""Operazione locale"" : Get(""Direction"") switch {"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,"            id == 5157 ? ""Connessione bloccata da WFP"" : logon == ""10"" ? ""Accesso interattivo remoto fallito"" : ""Accesso di rete fallito"","
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,"            source, Port(Get(id == 5157 ? ""SourcePort"" : ""IpPort"")),"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,"            id == 5157 ? Address(Get(""DestAddress"")) : ""Questo PC"", id == 5157 ? Port(Get(""DestPort"")) : ""N/D"","
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,"            direction, protocol, Pid(Get(id == 5157 ? ""ProcessID"" : ""ProcessId"")),"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,"            Basename(Get(id == 5157 ? ""Application"" : ""ProcessName"")), id == 4625 ? Clean(Get(""Status""), 32) : ""Blocco registrato"");"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"            id switch { 5157 => ""Connessione bloccata da WFP"", 5155 => ""Ascolto su porta locale bloccato"", 5159 => ""Bind su porta locale bloccato"","
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"                5152 => ""Pacchetto scartato da WFP"", _ => logon == ""10"" ? ""Accesso interattivo remoto fallito"" : ""Accesso di rete fallito"" },"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"            source, Port(Get(id == 4625 ? ""IpPort"" : ""SourcePort"")),"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"            id is 5155 or 5159 ? ""N/D"" : id == 4625 ? ""Questo PC"" : Address(Get(""DestAddress"")),"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"            id is 5157 or 5152 ? Port(Get(""DestPort"")) : ""N/D"", direction, protocol,"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"            Pid(Get(id == 5157 ? ""ProcessID"" : ""ProcessId"")), Basename(Get(id == 4625 ? ""ProcessName"" : ""Application"")),"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"            id == 4625 ? Clean(Get(""Status""), 32) : ""Blocco registrato"")"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"            { FilterId = Clean(Get(""FilterRTID""), 32), LayerId = Clean(Get(""LayerRTID""), 32) };"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,before,        return new string(value.Take(cap).Select(c => char.IsControl(c) || char.GetUnicodeCategory(c) == UnicodeCategory.Format ? ' ' : c).ToArray());
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,        return new string(value.Take(cap).Select(c => char.IsControl(c) || char.GetUnicodeCategory(c) is UnicodeCategory.Format or UnicodeCategory.LineSeparator or UnicodeCategory.ParagraphSeparator ? ' ' : c).ToArray());
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        ""\n"" + NetworkReadPresentation.EventCounts(s) +"
+progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs,after,"        $""\nRecord esaminati: {s.ScannedEvents} · non interpretabili: {s.MalformedEvents} · caratteri XML: {s.XmlCharacters}"" +"
+progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs,after,"    public const string PacketDropGuid = ""{0CCE9225-69AE-11D9-BED3-505054503030}"";"
+progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs,after,"        ""\nLETTURA ESTESA · 5152\nL'opzione legge gli scarti già registrati, senza abilitare la registrazione. Verifica il criterio con:\n"" +"
+progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs,after,"        ""auditpol /get /subcategory:\"""" + PacketDropGuid + ""\""\n"" +"
+progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs,after,"        ""Se vuoi registrare i futuri scarti, puoi abilitarlo manualmente con /set e /failure:enable sulla stessa sottocategoria. "" +"
+progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs,after,"        ""Gli eventi per pacchetto possono essere numerosi. Conserva il criterio precedente per ripristinarlo.\n"" +"
+progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs,before,"        string counts = $""{s.Events.Count} eventi trovati negli ultimi 15 min"" + (s.Partial ? "" · lettura parziale"" : """");"
+progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs,after,"        string counts = $""{s.Events.Count} eventi trovati negli ultimi {s.Options.Minutes} min"" + (s.Partial ? "" · lettura parziale"" : """");"
+progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs,before,"        if (s.Audit.Count < 2 || s.Audit.Any(a => a.FailuresEnabled is null)) return ""Copertura non verificata · "" + counts;"
+progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs,before,"        return s.Events.Count == 0 ? ""Nessun evento trovato negli ultimi 15 min"" + (s.Partial ? "" · lettura parziale"" : """") : counts;"
+progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs,after,"        if (s.Audit.Count < (s.Options.IncludePacketDrops ? 3 : 2) || s.Audit.Any(a => a.FailuresEnabled is null)) return ""Copertura non verificata · "" + counts;"
+progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs,after,"        return s.Events.Count == 0 ? $""Nessun evento trovato negli ultimi {s.Options.Minutes} min"" + (s.Partial ? "" · lettura parziale"" : """") : counts;"
+progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs,before,"        if (s.Audit.Count < 2 || s.Audit.Any(a => a.FailuresEnabled is null)) return ""Non è stato possibile verificare tutti i criteri di audit. I dettagli indicano quali letture mancano."";"
+progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs,after,"        if (s.Audit.Count < (s.Options.IncludePacketDrops ? 3 : 2) || s.Audit.Any(a => a.FailuresEnabled is null)) return ""Non è stato possibile verificare tutti i criteri di audit. I dettagli indicano quali letture mancano."";"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,using System.Globalization;
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,namespace ProcessLens.Core;
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"// UI-owned session diagnostics. No disk writer, timer or acquisition."
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,public sealed class NetworkActivityJournal
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,{
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"    public const int Capacity = 128, MaximumMessageChars = 1200;"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,    private readonly Queue<string> _entries = new();
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,    private readonly Func<DateTimeOffset> _utc;
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"    private long _sequence, _discarded;"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,    public event Action? Changed;
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,    public NetworkActivityJournal(Func<DateTimeOffset>? utc = null) => _utc = utc ?? (() => DateTimeOffset.UtcNow);
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,    public int Count => _entries.Count;
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,    public long Discarded => _discarded;
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"    public void Add(string source, string stage, string message)"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,    {
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,        if (_entries.Count == Capacity) { _entries.Dequeue(); _discarded++; }
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        _entries.Enqueue($""[{_utc().ToUniversalTime():O}] [{Clean(source, 60)}] #{++_sequence} {Clean(stage, 40)}: {Clean(message, MaximumMessageChars)}"");"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,        Changed?.Invoke();
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,    }
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"    private static string Clean(string text, int limit) => new(text.Take(limit).Select(c => char.IsControl(c) ||"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,        char.GetUnicodeCategory(c) is UnicodeCategory.Format or UnicodeCategory.LineSeparator or UnicodeCategory.ParagraphSeparator ? ' ' : c).ToArray());
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"    public string Report => $""LOG RETE · SESSIONE LOCALE\n{Count} righe conservate · {_discarded} righe precedenti rilasciate\n"" +"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        ""Orari UTC. Il log descrive le operazioni di ProcessLens, non tutti gli eventi della rete. Messaggi limitati a 1200 caratteri; i dettagli completi della lettura sono nelle rispettive schede. Nessun file scritto automaticamente.\n\n"" + string.Join(""\n"", _entries);"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,}
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,public static class NetworkReadPresentation
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,{
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"    public static string DeviceEmpty(NetworkDeviceSnapshot? snapshot, bool invalidated = false) => snapshot is null"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        ? invalidated ? ""Elenco da rileggere\nPremi Aggiorna elenco. I risultati precedenti sono stati rilasciati cambiando scheda."" : ""Nessuna lettura eseguita\nPremi Aggiorna elenco per leggere la cache locale di Windows."""
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        : !snapshot.Available ? ""Lettura non riuscita\nConsulta il motivo nel riepilogo e nel log. Il numero di dispositivi è N/D."""
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        : ""Nessuna voce utilizzabile nella cache\nWindows non ha restituito indirizzi compatibili con questa vista. Non significa che la rete sia vuota."";"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"    public static string DeviceCounts(NetworkDeviceSnapshot s, NetworkDeviceView view) => !s.Available"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        ? ""Voci con MAC: N/D · schede: N/D · nomi salvati: N/D"""
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        : $""Voci con MAC: {view.Rows.Count(r => r.Mac != ""N/D"")} · raggiungibili di recente: {view.Rows.Count(r => r.Presence == ""Raggiungibile di recente"")} · riconosciute da te: {view.Rows.Count(r => r.Recognized)} · schede lette: {s.Interfaces}\n"" +"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"            ""Raggruppamento per MAC e scheda: non è il totale dei client connessi al router."";"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"    public static string EventCounts(NativeNetworkSnapshot s) => !s.Available ? ""Eventi: N/D · registro non accessibile"" :"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        $""Connessioni bloccate: {s.Events.Count(e => e.EventId == 5157)} · porte locali bloccate: {s.Events.Count(e => e.EventId is 5155 or 5159)}\n"" +"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        $""Accessi falliti: {s.Events.Count(e => e.EventId == 4625)} · pacchetti scartati: {(s.Options.IncludePacketDrops ? s.Events.Count(e => e.EventId == 5152).ToString(CultureInfo.CurrentCulture) : ""non richiesti"")}\n"" +"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        ""Conteggi del campione, non di tutti i tentativi sulla rete."";"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,    public static string PacketDetails(NativePacketRow row) =>
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        $""OSSERVAZIONE DI TRAFFICO\nOra locale riportata: {row.Time}\nProtocollo: {row.Protocol}\nDa: {row.Source}\nA: {row.Destination}\nDirezione riportata: {row.Direction}\n"" +"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        $""Byte campionati: {row.Bytes} · componente: {row.ComponentText} · codice scarto: {row.DropReasonText}\n\n"" +"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        ""COME LEGGERLA\nÈ traffico visibile al PC. I byte sono la porzione campionata, non il consumo totale della connessione. Il componente non è un PID.\n"" +"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        ""Lo stesso pacchetto può comparire più volte. Il codice di scarto grezzo non identifica da solo una regola firewall. Nessun contenuto applicativo viene mostrato."";"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,    public static string WifiDetails(WifiBssRow row) =>
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        $""RETE RADIO NELLA CACHE WINDOWS\nSSID: {row.Ssid}\nBSSID: {row.Bssid}\nScheda: {row.Adapter}\nRSSI: {row.Rssi} dBm · frequenza: {row.Frequency}\nTipo: {row.BssType}\n\n"" +"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        ""COME LEGGERLA\nSSID è il nome annunciato; BSSID identifica la voce radio osservata. La stessa rete può avere più BSSID. RSSI descrive il segnale rilevato, non una velocità.\n"" +"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,"        ""L'ora di lettura non è l'ora di rilevamento radio. Non è l'elenco dei client Wi-Fi e non identifica un hotspot telefonico."";"
+progetto/src/ProcessLens.Core/NetworkReadPresentation.cs,after,}
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,public sealed class WindowsNativeNetworkEvidence : INativeNetworkEvidenceSource
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,public sealed class WindowsNativeNetworkEvidence : INativeNetworkEvidenceQuerySource
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,"    internal static string QueryText(DateTime since, DateTime until) =>"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,"        ""*[System[Provider[@Name='Microsoft-Windows-Security-Auditing'] and (EventID=5157 or EventID=4625) and "" +"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,"        $""TimeCreated[@SystemTime >= '{since:O}' and @SystemTime <= '{until:O}']]]"";"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"    internal static readonly Guid PacketDropAudit = new(""0cce9225-69ae-11d9-bed3-505054503030"");"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"    internal static string QueryText(DateTime since, DateTime until) => QueryText(since, until, new());"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"    internal static string QueryText(DateTime since, DateTime until, NetworkEventReadOptions options)"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,    {
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,        options.Validate();
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"        string ids = ""EventID=5157 or EventID=5155 or EventID=5159"" + (options.IncludePacketDrops ? "" or EventID=5152"" : """");"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"        return ""*[System[Provider[@Name='Microsoft-Windows-Security-Auditing'] and "" +"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"            $""TimeCreated[@SystemTime >= '{since:O}' and @SystemTime <= '{until:O}']] and "" +"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"            ""(System[("" + ids + "")] or (System[EventID=4625] and EventData[Data[@Name='LogonType']='3' or Data[@Name='LogonType']='10']))]"";"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,    }
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,    public NativeNetworkSnapshot Capture(CancellationToken cancellationToken)
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"    public NativeNetworkSnapshot Capture(CancellationToken cancellationToken) => Capture(new(), cancellationToken);"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"    public NativeNetworkSnapshot Capture(NetworkEventReadOptions options, CancellationToken cancellationToken)"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,"        DateTime until = DateTime.UtcNow, since = until - NativeNetworkEvidence.Window;"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,        options.Validate();
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"        DateTime until = DateTime.UtcNow, since = until - TimeSpan.FromMinutes(options.Minutes);"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,"        string note = ""Fonte: Windows Event Log API · Security locale · eventi 5157 e 4625 tipi 3/10. "" +"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"        string note = ""Fonte: Windows Event Log API · Security locale · 5157/5155/5159 e 4625 tipi 3/10"" + (options.IncludePacketDrops ? "", più 5152. "" : "". "") +"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"        int chars = 0, scanned = 0, malformed = 0;"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,"            audit.Add(_api.ReadAudit(ConnectionAudit, ""Blocchi connessione / WFP""));"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"            audit.Add(_api.ReadAudit(ConnectionAudit, ""Connessioni e porte locali / WFP""));"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,"            query = _api.Query(QueryText(since, until));"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"            if (options.IncludePacketDrops) audit.Add(_api.ReadAudit(PacketDropAudit, ""Pacchetti scartati / WFP""));"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,            cancellationToken.ThrowIfCancellationRequested();
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"            query = _api.Query(QueryText(since, until, options));"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,"            int chars = 0, scanned = 0, malformed = 0;"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,            for (; scanned < NativeNetworkEvidence.MaximumEvents && watch.Elapsed < TimeSpan.FromSeconds(3); scanned++)
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,            while (scanned < NativeNetworkEvidence.MaximumEvents && watch.Elapsed < TimeSpan.FromSeconds(3))
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,                available = true;
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,                available = true; scanned++;
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,                        if (item is not null && (!item.RecordId.HasValue || seen.Add(item.RecordId.Value))) rows.Add(item);
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,                        if (item is not null && (options.IncludePacketDrops || item.EventId != 5152) && (!item.RecordId.HasValue || seen.Add(item.RecordId.Value))) rows.Add(item);
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,before,"        return new(until, since, available, partial, audit, rows, note);"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"        return new(until, since, available, partial, audit, rows.OrderByDescending(e => e.Utc).ThenByDescending(e => e.RecordId).ToArray(), note)"
+progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,after,"            { Options = options, ScannedEvents = scanned, MalformedEvents = malformed, XmlCharacters = chars };"
+progetto/tests/ProcessLens.NativeNetworkTests/Program.cs,after,        R34NetworkReadChecks.Run();
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,using System.Globalization;
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,using System.Xml;
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,using System.Xml.Linq;
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,using ProcessLens.Core;
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,using ProcessLens.Windows;
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,internal static class R34NetworkReadChecks
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,{
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"    static readonly DateTime End = new(2026, 10, 27, 12, 0, 0, DateTimeKind.Utc);"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"    static readonly XNamespace Ns = ""http://schemas.microsoft.com/win/2004/08/events/event"";"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"    static void Check(bool ok, string label) { if (!ok) throw new Exception(""FAIL R34 network: "" + label); Console.WriteLine(""PASS R34 network: "" + label); }"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"    static string Xml(int id, params (string Key, string Value)[] fields) => new XElement(Ns+""Event"","
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        new XElement(Ns+""System"", new XElement(Ns+""Provider"", new XAttribute(""Name"", ""Microsoft-Windows-Security-Auditing"")),"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            new XElement(Ns+""EventID"", id), new XElement(Ns+""EventRecordID"", 70),"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            new XElement(Ns+""TimeCreated"", new XAttribute(""SystemTime"", End.AddMinutes(-1).ToString(""O"")))),"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        new XElement(Ns+""EventData"", fields.Select(f => new XElement(Ns+""Data"", new XAttribute(""Name"", f.Key), f.Value))))"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,        .ToString(SaveOptions.DisableFormatting);
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"    static NativeNetworkEvent Decode(string xml) => NativeNetworkEvidence.Decode(xml, End.AddMinutes(-15), End)!;"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,    public static void Run()
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,    {
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        foreach (string culture in new[] { ""it-IT"", ""en-US"" })"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,        {
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(culture);
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            foreach (int id in new[] { 5155, 5159 })"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,            {
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                var e = Decode(Xml(id, (""ProcessId"", ""0x64""), (""Application"", @""C:\private\listener.exe""),"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                    (""SourceAddress"", ""0.0.0.0""), (""SourcePort"", ""5555""), (""Protocol"", ""6""), (""FilterRTID"", ""812""), (""LayerRTID"", ""40"")));"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                Check(e.Pid == 100 && e.Application == ""listener.exe"" && e.SourceAddress == ""0.0.0.0"" && e.SourcePort == ""5555"" &&"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                    e.Direction == ""Operazione locale"" && e.DestinationAddress == ""N/D"" && e.DestinationPort == ""N/D"", $""{id} exact SDK fields, local endpoint and no invented remote peer [{culture}]"");"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                Check(e.FilterId == ""812"" && e.LayerId == ""40"" && e.Details.Contains(""SIGNIFICATO"") && e.Details.Contains(""DATI REGISTRATI"") &&"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                    e.Details.Contains(""COME VERIFICARE"") && !e.Details.Contains(@""C:\private""), $""{id} separates interpretation, original values and follow-up [{culture}]"");"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,            }
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            var packet = Decode(Xml(5152, (""ProcessId"", ""42""), (""Direction"", ""%%14592""), (""SourceAddress"", ""198.51.100.5""),"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                (""SourcePort"", ""53""), (""DestAddress"", ""192.0.2.1""), (""DestPort"", ""55000""), (""Protocol"", ""17"")));"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            Check(packet.Pid == 42 && packet.Protocol == ""UDP"" && packet.DestinationPort == ""55000"" && packet.Meaning.Contains(""stessa connessione""), ""packet drops do not count unique devices or connections "" + culture);"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            var sample = new NativeNetworkSnapshot(End, End.AddHours(-1), true, false, [], [packet], ""fixture"")"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                { Options = new(60, true), ScannedEvents = 2, XmlCharacters = 1500 };"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            Check(NetworkEvidenceStatus.Summary(sample).Contains(""60 min"") && NetworkReadPresentation.EventCounts(sample).Contains(""pacchetti scartati: 1"") &&"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                NativeNetworkEvidence.Report(sample).Contains(""Record esaminati: 2""), ""actual interval and event-family counts retained "" + culture);"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            Check(NetworkReadPresentation.EventCounts(sample with { Available = false }).Contains(""N/D"") &&"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                NetworkReadPresentation.EventCounts(sample with { Options = new() }).Contains(""non richiesti""), ""missing versus unrequested counters distinct "" + culture);"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,            var log = new NetworkActivityJournal(() => new DateTimeOffset(End)); int changed = 0; log.Changed += () => changed++;
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            log.Add(""Test\nsource"", ""ERRORE"", ""44,0 MiB\n[FAKE]\u2028entry"");"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            Check(log.Report.Contains(""2026-10-27T12:00:00.0000000+00:00"") && log.Report.Contains(""44,0 MiB [FAKE] entry"") && !log.Report.Contains(""\n[FAKE]""),"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                ""invariant UTC and input cannot forge log lines "" + culture);"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            for (int i=0; i<200; i++) log.Add(""Test"", ""ESITO"", new string('x',5000));"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            Check(log.Count == 128 && log.Discarded == 73 && changed == 201 && log.Report.Length < 180000 && !log.Report.Contains(new string('x',1201)),"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                ""bounded log history and messages with accurate discarded count "" + culture);"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            Check(NetworkReadPresentation.DeviceEmpty(null).Contains(""Nessuna lettura"") && NetworkReadPresentation.DeviceEmpty(null, true).Contains(""rileggere""), ""initial and invalidated cache distinct "" + culture);"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            var fail = new NetworkDeviceSnapshot(End, false, true, ""denied"", 0, []);"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            Check(NetworkReadPresentation.DeviceCounts(fail, NetworkDeviceRules.Present(fail,new([],""""))).Contains(""Voci con MAC: N/D"") &&"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                NetworkReadPresentation.DeviceEmpty(fail).Contains(""N/D""), ""failed device read cannot become zero devices "" + culture);"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            Check(NetworkReadPresentation.DeviceEmpty(fail with { Available=true }).Contains(""Non significa che la rete sia vuota""), ""successful empty cache does not assert empty network "" + culture);"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            Check(NetworkReadPresentation.PacketDetails(new(""12:00:00"",""TCP"",""192.0.2.1:8"",""192.0.2.2:9"",""In"",128,1,0)).Contains(""non è un PID"") &&"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                NetworkReadPresentation.WifiDetails(new(""fixture"",""SSID"",""02-11-22-33-44-55"",-60,2412000,""Punto di accesso"")).Contains(""non è l'ora di rilevamento""),"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"                ""packet bytes ownership and radio cache age explained "" + culture);"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            var unsafeId = Decode(Xml(5159,(""FilterRTID"",""12\u2028FAKE""),(""LayerRTID"",""40\nFORGED"")));"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            Check(!unsafeId.FilterId.Contains('\u2028') && !unsafeId.LayerId.Contains('\n'), ""technical fields cannot forge detail paragraphs "" + culture);"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,        }
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,        var narrowApi=new Fake(); var narrow=new WindowsNativeNetworkEvidence(narrowApi).Capture(default);
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        Check(narrow.Audit.Count==2 && !narrowApi.QueryText.Contains(""5152"") && narrowApi.QueryText.Contains(""5155"") && narrowApi.QueryText.Contains(""5159""), ""default expands port failures without high-volume packet events"");"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        var wideApi=new Fake();var wide=new WindowsNativeNetworkEvidence(wideApi).Capture(new(60,true),default);"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        Check(wide.Audit.Count==3 && wideApi.QueryText.Contains(""EventID=5152"") && wide.SinceUtc==wide.CapturedUtc.AddHours(-1), ""explicit extended query uses packet-drop audit and exact 60-minute interval"");"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        Check(wideApi.Categories.Contains(WindowsNativeNetworkEvidence.PacketDropAudit) && narrow.ScannedEvents==0 && narrow.XmlCharacters==0,"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            ""only requested audit categories read and empty enumeration diagnostics retained"");"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        foreach(int invalid in new[]{-1,0,16,61,int.MaxValue}) {"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            var api=new Fake();try { new WindowsNativeNetworkEvidence(api).Capture(new(invalid),default);throw new Exception(""invalid options accepted""); }"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            catch(ArgumentOutOfRangeException){Check(api.Queries==0 && api.Categories.Count==0,""invalid interval rejected before native API: ""+invalid);}"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,        }
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,        // Standard XPath cannot reproduce Event Log's timestamp comparisons. Test the category/type part independently;
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,        // exact timestamp bounds remain covered by the original decoder tests and query text assertions.
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        string query=System.Text.RegularExpressions.Regex.Replace(WindowsNativeNetworkEvidence.QueryText(End.AddMinutes(-15),End,new()),@"" and TimeCreated\[[^\]]+\]"", """");"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        bool Match(string xml){var doc=new XmlDocument();doc.LoadXml(xml.Replace("" xmlns=\""""+Ns+""\"""",""""));return doc.SelectSingleNode(query)!=null;}"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,        Check(Match(Xml(5155)) && Match(Xml(5159)) && Match(Xml(5157)) && !Match(Xml(5152)) &&
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            Match(Xml(4625,(""LogonType"",""3""))) && Match(Xml(4625,(""LogonType"",""10""))) && !Match(Xml(4625,(""LogonType"",""2""))),"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"            ""independent XPath category/type selection; native EvtQuery still requires Windows"");"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,    }
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,    sealed class Fake : INetworkEvidenceApi
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,    {
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        public string QueryText=""""; public int Queries; public List<Guid> Categories=[];"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        public NetworkAuditSetting ReadAudit(Guid id,string name){Categories.Add(id);return new(name,true,"""");}"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,        public IntPtr Query(string query){Queries++;QueryText=query;return new(1);}
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        public bool Next(IntPtr query,out IntPtr record,out int error){record=IntPtr.Zero;error=259;return false;}"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,"        public string Render(IntPtr record)=>throw new Exception(""not expected"");"
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,        public void Close(IntPtr handle){}
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,    }
+progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs,after,}
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"            Check(((Border)view.FindName(""NetworkEmptyBorder"")).Visibility == Visibility.Collapsed &&"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"                ((SelectableText)view.FindName(""NetworkCountsText"")).Text.Contains(""Voci con MAC: 1"") &&"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"                ((SelectableText)view.FindName(""NetworkJournalText"")).Text.Contains(""ESITO""), ""R34 successful device read has counts and a session log"");"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,before,"            Check(notice.Text == ""Nuovo dispositivo rilevato sulla rete."", ""new unknown MAC produces the inline notice"");"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"            Check(notice.Text == ""Nuova voce con MAC osservata rispetto alle letture di questa sessione."", ""new unknown MAC produces the inline notice"");"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,            nativePackets.SelectedIndex = 0;
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"            Check(((SelectableText)nativeCapture.FindName(""NativeCaptureSelectionText"")).Text.Contains(""Byte campionati""), ""R34 packet selection explains the observation"");"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,            wifiGrid.SelectedIndex = 0;
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"            Check(((SelectableText)nativeCapture.FindName(""NativeCaptureSelectionText"")).Text.Contains(""RSSI""), ""R34 Wi-Fi selection explains radio cache"");"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"            Check(((SelectableText)tabView.FindName(""NetworkUpdatedText"")).Text == ""Nessuna lettura corrente"" &&"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"                ((Border)tabView.FindName(""NetworkEmptyBorder"")).Visibility == Visibility.Visible,"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"                ""R34 invalidated cache cannot retain an old timestamp or unexplained empty grid"");"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"            Check(((SelectableText)nativeView.FindName(""NativeEventCountsText"")).Text.Contains(""Connessioni bloccate: 1"") &&"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"                ((Border)nativeView.FindName(""NativeEventEmptyBorder"")).Visibility == Visibility.Collapsed, ""R34 events have per-family counts and clear empty states"");"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"            ((ComboBox)nativeView.FindName(""NativeEventWindowBox"")).SelectedIndex = 1;"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"            ((CheckBox)nativeView.FindName(""NativePacketDropsBox"")).IsChecked = true;"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,            nativeView.SetActive(true); Complete(nativeView.RefreshAsync());
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"            Check(nativeSource.LastOptions is { Minutes: 60, IncludePacketDrops: true }, ""R34 actual UI passes selected interval and packet-drop opt-in to its source"");"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,before,"    private sealed class NativeFixture : INativeNetworkEvidenceSource, IDisposable"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"    private sealed class NativeFixture : INativeNetworkEvidenceQuerySource, IDisposable"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,        public NetworkEventReadOptions? LastOptions;
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"        public NativeNetworkSnapshot Capture(NetworkEventReadOptions options, CancellationToken cancellationToken)"
+progetto/tests/ProcessLens.NetworkUiTests/Program.cs,after,"        { LastOptions = options; return Capture(cancellationToken) with { Options = options, SinceUtc = Snapshot.CapturedUtc.AddMinutes(-options.Minutes) }; }"
+supporto/avvia.ps1,before,    $receipt = Join-Path $Root 'supporto/build-r33.ok'
+supporto/avvia.ps1,after,    $receipt = Join-Path $Root 'supporto/build-r34.ok'
+supporto/avvia.ps1,before,        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R33-process-symbols') {
+supporto/avvia.ps1,after,        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R34-network-clarity') {
+supporto/avvia.ps1,before,    Write-Host 'Primo avvio R32: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
+supporto/avvia.ps1,after,    Write-Host 'Primo avvio R34: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
+supporto/avvia.ps1,before,    if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { throw 'Compilazione senza eseguibile R23. Avvio interrotto.' }
+supporto/avvia.ps1,before,    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r33.ok') -Value 'ProcessLens-R33-process-symbols' -Encoding ASCII
+supporto/avvia.ps1,after,    if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { throw 'Compilazione senza eseguibile R34. Avvio interrotto.' }
+supporto/avvia.ps1,after,    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r34.ok') -Value 'ProcessLens-R34-network-clarity' -Encoding ASCII

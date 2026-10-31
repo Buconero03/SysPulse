@@ -1,0 +1,605 @@
+﻿file,line_before,line_after,before,after,scope
+src/ProcessLens.App/CopyTestVisibility.cs,4,4,,"[assembly: InternalsVisibleTo(""ProcessLens.NetworkUiTests"")]","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml,217,217,,"                    <Button x:Name=""NavNetworkButton"" Content=""Rete"" Style=""{StaticResource FilterButtonStyle}"" Click=""NavNetworkButton_Click""/>","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml,272,273,,"
+        <ContentControl x:Name=""NetworkDevicesHost"" HorizontalContentAlignment=""Stretch"" VerticalContentAlignment=""Stretch"" Grid.Row=""2"" Visibility=""Collapsed""/>","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,22,22,,    private NetworkDevicesView? NetworkDevices;,"R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,86,87,,    private bool _networkMode;,"R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,125,127,                else if (!_guardianMode && !_memoryMode) await RefreshAsync();,                else if (!_guardianMode && !_memoryMode && !_networkMode) await RefreshAsync();,"R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,168,170,,            NetworkDevices?.SetActive(false);,"R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,233,236,            if (!_servicesMode && !_guardianMode && !_memoryMode),            if (!_servicesMode && !_guardianMode && !_memoryMode && !_networkMode),"R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,268,271,,        NetworkDevices?.SetActive(active && _networkMode);,"R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,285,289,        int[] pids = (!_servicesMode && !_guardianMode && !_memoryMode ? _allRows.Select(r => r.Pid) : Enumerable.Empty<int>()),        int[] pids = (!_servicesMode && !_guardianMode && !_memoryMode && !_networkMode ? _allRows.Select(r => r.Pid) : Enumerable.Empty<int>()),"R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,303,307,"            if (_sortMode == ""CPU"" && !_servicesMode && !_guardianMode && !_memoryMode && ProcessList.ItemsSource is not null)","            if (_sortMode == ""CPU"" && !_servicesMode && !_guardianMode && !_memoryMode && !_networkMode && ProcessList.ItemsSource is not null)","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,607,611,        if (_guardianMode || _memoryMode) return;,        if (_guardianMode || _memoryMode || _networkMode) return;,"R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,2050,2054,,"        bool network = mode == ""network"";
+        _networkMode = network;","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,2067,2073,,"        if (network && NetworkDevices is null)
+        {
+            NetworkDevices = new NetworkDevicesView();
+            NetworkDevicesHost.Content = NetworkDevices;
+        }
+        NetworkDevicesHost.Visibility = network ? Visibility.Visible : Visibility.Collapsed;
+        NetworkDevices?.SetActive(network && IsVisible && WindowState != WindowState.Minimized);","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,2071,2084,        ProcessWorkspace.Visibility = (services || guardian || memory) ? Visibility.Collapsed : Visibility.Visible;,        ProcessWorkspace.Visibility = (services || guardian || memory || network) ? Visibility.Collapsed : Visibility.Visible;,"R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,2073,2086,        ProcessFilters.Visibility = (services || guardian || memory) ? Visibility.Collapsed : Visibility.Visible;,        ProcessFilters.Visibility = (services || guardian || memory || network) ? Visibility.Collapsed : Visibility.Visible;,"R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,2075,2088,"        if (guardian || memory) SearchBox.Clear();
+        SearchBox.IsEnabled = !(guardian || memory);","        if (guardian || memory || network) SearchBox.Clear();
+        SearchBox.IsEnabled = !(guardian || memory || network);","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,2080,2093,"        NavProcessesButton.Background = (!services && !guardian && !memory) ? new SolidColorBrush(Color.FromRgb(225,236,252)) : Brushes.White;","        NavProcessesButton.Background = (!services && !guardian && !memory && !network) ? new SolidColorBrush(Color.FromRgb(225,236,252)) : Brushes.White;","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,2083,2096,,"        NavNetworkButton.Background = network ? new SolidColorBrush(Color.FromRgb(225,236,252)) : Brushes.White;","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,2094,2108,"            if (!guardian && !memory) ApplyFilter(_selectedPid, preserveScroll: true);","            if (!guardian && !memory && !network) ApplyFilter(_selectedPid, preserveScroll: true);","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/MainWindow.xaml.cs,2097,2111,,"
+    private void NavNetworkButton_Click(object sender, RoutedEventArgs e) => SetWorkspaceMode(""network"");","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/NetworkDevicesView.xaml,1,1,,"<UserControl x:Class=""ProcessLens.App.NetworkDevicesView""
+ xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+ xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
+ xmlns:local=""clr-namespace:ProcessLens.App"">
+ <UserControl.Resources>
+  <Style x:Key=""NetworkAction"" TargetType=""Button"">
+   <Setter Property=""MinHeight"" Value=""36""/><Setter Property=""Padding"" Value=""12,8""/>
+   <Setter Property=""Margin"" Value=""0,0,8,6""/>
+   <Setter Property=""ContentTemplate""><Setter.Value><DataTemplate>
+    <TextBlock Text=""{Binding}"" TextWrapping=""Wrap"" TextAlignment=""Center""/>
+   </DataTemplate></Setter.Value></Setter>
+  </Style>
+  <Style x:Key=""NetworkCell"" TargetType=""TextBlock"">
+   <Setter Property=""TextWrapping"" Value=""Wrap""/>
+   <Setter Property=""Margin"" Value=""6,5""/><Setter Property=""VerticalAlignment"" Value=""Center""/>
+  </Style>
+ </UserControl.Resources>
+ <Border Background=""White"" BorderBrush=""#E2E5E9"" BorderThickness=""1"" CornerRadius=""12"" Padding=""16"">
+  <Grid>
+   <Grid.RowDefinitions>
+    <RowDefinition Height=""Auto""/><RowDefinition Height=""Auto""/><RowDefinition Height=""Auto""/>
+    <RowDefinition Height=""*"" MinHeight=""100""/><RowDefinition Height=""Auto""/><RowDefinition Height=""Auto""/>
+   </Grid.RowDefinitions>
+   <StackPanel Margin=""0,0,0,10"">
+    <TextBlock Text=""Dispositivi sulla rete"" FontSize=""22"" FontWeight=""SemiBold"" TextWrapping=""Wrap""/>
+    <local:SelectableText Text=""Elenco dalla cache di Windows: può essere incompleto. Aggiornamento solo su richiesta."" TextWrapping=""Wrap"" Foreground=""#64748B""/>
+   </StackPanel>
+   <WrapPanel Grid.Row=""1"">
+    <Button x:Name=""RefreshNetworkButton"" Content=""Aggiorna elenco"" Style=""{StaticResource NetworkAction}"" Click=""RefreshNetwork_Click""/>
+    <Button x:Name=""CopyNetworkButton"" Content=""Copia elenco"" IsEnabled=""False"" Style=""{StaticResource NetworkAction}"" Click=""CopyNetwork_Click""/>
+    <local:SelectableText x:Name=""NetworkUpdatedText"" Text=""Elenco non aggiornato"" TextWrapping=""Wrap"" VerticalAlignment=""Center"" Margin=""0,0,0,6""/>
+   </WrapPanel>
+   <Border x:Name=""NetworkIndicatorBorder"" Grid.Row=""2"" Background=""#F1F5F9"" BorderBrush=""#64748B"" BorderThickness=""2,0,0,0"" Padding=""12,8"" Margin=""0,4,0,10"">
+    <StackPanel>
+     <local:SelectableText x:Name=""NetworkIndicatorText"" Text=""Controllo non ancora eseguito"" FontWeight=""SemiBold"" TextWrapping=""Wrap""/>
+     <local:SelectableText x:Name=""NetworkSummaryText"" Text=""Premi Aggiorna elenco."" TextWrapping=""Wrap""/>
+     <local:SelectableText x:Name=""NetworkNoticeText"" Text="""" TextWrapping=""Wrap"" Foreground=""#92400E""/>
+    </StackPanel>
+   </Border>
+   <DataGrid x:Name=""NetworkDevicesTable"" Grid.Row=""3"" AutoGenerateColumns=""False"" IsReadOnly=""True""
+     CanUserAddRows=""False"" CanUserDeleteRows=""False"" EnableRowVirtualization=""True"" EnableColumnVirtualization=""True""
+     VirtualizingPanel.VirtualizationMode=""Recycling"" SelectionMode=""Single"" SelectionUnit=""FullRow""
+     local:GridCopySupport.Enabled=""True"" HeadersVisibility=""Column"" MinRowHeight=""36""
+     SelectionChanged=""NetworkSelection_Changed"" ScrollViewer.HorizontalScrollBarVisibility=""Auto"">
+    <DataGrid.Columns>
+     <DataGridTextColumn Header=""Nome scelto"" Binding=""{Binding Name, Mode=OneWay}"" Width=""160"" ElementStyle=""{StaticResource NetworkCell}""/>
+     <DataGridTextColumn Header=""IP nella cache"" Binding=""{Binding Addresses, Mode=OneWay}"" Width=""210"" ElementStyle=""{StaticResource NetworkCell}""/>
+     <DataGridTextColumn Header=""MAC"" Binding=""{Binding Mac, Mode=OneWay}"" Width=""155"" ElementStyle=""{StaticResource NetworkCell}""/>
+     <DataGridTextColumn Header=""Presenza"" Binding=""{Binding Presence, Mode=OneWay}"" Width=""195"" ElementStyle=""{StaticResource NetworkCell}""/>
+     <DataGridTextColumn Header=""Riconoscimento"" Binding=""{Binding Recognition, Mode=OneWay}"" Width=""180"" ElementStyle=""{StaticResource NetworkCell}""/>
+     <DataGridTextColumn Header=""Scheda"" Binding=""{Binding InterfaceName, Mode=OneWay}"" Width=""140"" ElementStyle=""{StaticResource NetworkCell}""/>
+    </DataGrid.Columns>
+   </DataGrid>
+   <StackPanel Grid.Row=""4"" Margin=""0,12,0,0"">
+    <local:SelectableText x:Name=""NetworkSelectionText"" Text=""Seleziona un dispositivo per riconoscerlo."" TextWrapping=""Wrap"" Margin=""0,0,0,6""/>
+    <WrapPanel>
+     <TextBlock Text=""Nome scelto:"" VerticalAlignment=""Center"" Margin=""0,0,8,6""/>
+     <TextBox x:Name=""NetworkNameBox"" MaxLength=""80"" MinWidth=""150"" Width=""190"" Margin=""0,0,8,6""
+       VerticalContentAlignment=""Center"" ToolTip=""Nome assegnato da te, per esempio Telefono di casa.""/>
+     <Button x:Name=""RecognizeNetworkButton"" Content=""È un mio dispositivo / Salva nome"" IsEnabled=""False""
+       Style=""{StaticResource NetworkAction}"" Click=""RecognizeNetwork_Click""/>
+     <Button x:Name=""ForgetNetworkButton"" Content=""Rimuovi riconoscimento"" IsEnabled=""False""
+       Style=""{StaticResource NetworkAction}"" Click=""ForgetNetwork_Click""/>
+    </WrapPanel>
+   </StackPanel>
+   <Expander Grid.Row=""5"" Header=""Come leggere l’elenco"" Margin=""0,6,0,0"">
+    <ScrollViewer VerticalScrollBarVisibility=""Auto"" MaxHeight=""160"">
+     <StackPanel Margin=""0,8,0,0"">
+      <local:SelectableText Text=""Fonte: Windows GetIpNetTable2 · IPv4/ARP e IPv6/ND. L’elenco può essere incompleto e contenere voci vecchie. Una voce non prova che il dispositivo sia collegato adesso.""
+        TextWrapping=""Wrap"" Margin=""0,0,0,6""/>
+      <local:SelectableText Text=""Raggruppamento per MAC e scheda: un dispositivo può comparire più volte. Riconosciuto da te è una tua etichetta, non una verifica dell’identità. MAC e impronta della rete possono cambiare o essere imitati.""
+        TextWrapping=""Wrap"" Margin=""0,0,0,6""/>
+      <local:SelectableText Text=""Verde: tutte le voci rilevate con MAC sono riconosciute. Giallo: ci sono voci da riconoscere. Grigio: dati incompleti o riconoscimento non disponibile. Questi stati non certificano la sicurezza della rete.""
+        TextWrapping=""Wrap"" Margin=""0,0,0,6""/>
+      <local:SelectableText x:Name=""NetworkDetailsText"" Text=""Nessuna lettura eseguita."" TextWrapping=""Wrap""/>
+     </StackPanel>
+    </ScrollViewer>
+   </Expander>
+  </Grid>
+ </Border>
+</UserControl>","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/NetworkDevicesView.xaml.cs,1,1,,"using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.IO;
+using ProcessLens.Core;
+using ProcessLens.Windows;
+
+namespace ProcessLens.App;
+
+public partial class NetworkDevicesView : UserControl
+{
+    private readonly INetworkDeviceSource _source;
+    private readonly DeviceRecognitionStore _store;
+    private readonly NetworkDeviceTracker _tracker = new();
+    private RecognitionCatalog _catalog = new(Array.Empty<DeviceRecognition>(), """");
+    private NetworkDeviceSnapshot? _snapshot;
+    private NetworkDeviceView? _view;
+    private bool _active, _busy, _current;
+    private int _generation;
+    public NetworkDevicesView() : this(new WindowsNetworkDevices(), new DeviceRecognitionStore(Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ""ProcessLens"", ""network-devices.json""))) { }
+    internal NetworkDevicesView(INetworkDeviceSource source, DeviceRecognitionStore store)
+    {
+        _source = source; _store = store;
+        InitializeComponent(); // No capture, file read or timer during construction.
+        UpdateButtons();
+    }
+
+    public void SetActive(bool active)
+    {
+        if (_active == active) return;
+        _active = active;
+        if (!active)
+        {
+            _generation++;
+            _current = false;
+            _snapshot = null; _view = null;
+            _catalog = new(Array.Empty<DeviceRecognition>(), """");
+            NetworkDevicesTable.ItemsSource = null;
+            NetworkIndicatorText.Text = ""Elenco da aggiornare"";
+            NetworkIndicatorBorder.BorderBrush = Brushes.SlateGray;
+            NetworkSummaryText.Text = ""Premi Aggiorna elenco."";
+            NetworkUpdatedText.Text = ""Elenco non aggiornato"";
+            NetworkNoticeText.Text = """";
+            NetworkDetailsText.Text = ""Le righe sono state rilasciate dopo la chiusura della sezione."";
+            if (_busy) ShowProblem(""Sezione chiusa durante l’operazione. Premi Aggiorna elenco alla riapertura."");
+        }
+        UpdateButtons();
+    }
+
+    private async void RefreshNetwork_Click(object sender, RoutedEventArgs e) => await RefreshAsync();
+    internal async Task RefreshAsync()
+    {
+        if (!_active || _busy) return;
+        _busy = true; int generation = ++_generation;
+        _current = false;
+        UpdateButtons();
+        NetworkIndicatorText.Text = ""Aggiornamento in corso…"";
+        NetworkIndicatorBorder.BorderBrush = Brushes.SlateGray;
+        NetworkNoticeText.Text = """";
+        try
+        {
+            var result = await Task.Run(() => (Snapshot: _source.Capture(), Catalog: _store.Load()));
+            if (!_active || generation != _generation) return;
+            _snapshot = result.Snapshot; _catalog = result.Catalog;
+            _current = _snapshot.Available && !_snapshot.Partial && _snapshot.Neighbors.Count <= 4096;
+            Render();
+            int added = _tracker.Observe(_snapshot, _view!);
+            if (added > 0) NetworkNoticeText.Text = added == 1 ? ""Nuovo dispositivo rilevato sulla rete."" : $""{added} nuovi dispositivi rilevati sulla rete."";
+        }
+        catch (Exception ex) { if (_active && generation == _generation) ShowProblem(""Controllo non riuscito: "" + ex.Message); }
+        finally { _busy = false; UpdateButtons(); }
+    }
+
+    private void Render()
+    {
+        if (_snapshot is null) return;
+        string? selectedKey = (NetworkDevicesTable.SelectedItem as NetworkDeviceRow)?.Key;
+        _view = NetworkDeviceRules.Present(_snapshot, _catalog);
+        NetworkIndicatorText.Text = _view.Indicator;
+        NetworkIndicatorBorder.BorderBrush = (Brush)new BrushConverter().ConvertFromString(_view.Color)!;
+        NetworkSummaryText.Text = _view.Summary;
+        NetworkUpdatedText.Text = ""Cache letta: "" + _snapshot.CapturedUtc.ToLocalTime().ToString(""g"");
+        NetworkDetailsText.Text = ""Schede Ethernet/Wi-Fi attive: "" + _snapshot.Interfaces + ""\n"" + _view.Note +
+            ""\nRiconoscimenti salvati solo su questo PC. Se il gateway non ha un MAC leggibile, il riconoscimento è disabilitato."";
+        NetworkDevicesTable.ItemsSource = _view.Rows;
+        NetworkDevicesTable.SelectedItem = _view.Rows.FirstOrDefault(r => r.Key == selectedKey);
+        UpdateButtons();
+    }
+
+    private void ShowProblem(string text)
+    {
+        _current = false;
+        NetworkIndicatorText.Text = ""Controllo non disponibile"";
+        NetworkIndicatorBorder.BorderBrush = Brushes.SlateGray;
+        NetworkNoticeText.Text = text;
+    }
+
+    private void NetworkSelection_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (NetworkNameBox is null) return; // XAML can raise selection before all named elements exist.
+        var row = NetworkDevicesTable.SelectedItem as NetworkDeviceRow;
+        NetworkNameBox.Text = row?.Recognized == true ? row.Name : """";
+        NetworkSelectionText.Text = row is null ? ""Seleziona un dispositivo per riconoscerlo."" :
+            row.Mac + "" · "" + row.InterfaceName + (row.Gateway ? "" · gateway configurato"" : """") + ""\n"" + row.Presence;
+        UpdateButtons();
+    }
+    private void UpdateButtons()
+    {
+        if (RefreshNetworkButton is null || RecognizeNetworkButton is null) return;
+        var row = NetworkDevicesTable.SelectedItem as NetworkDeviceRow;
+        RefreshNetworkButton.IsEnabled = _active && !_busy;
+        CopyNetworkButton.IsEnabled = _active && !_busy && _view?.Rows.Count > 0;
+        RecognizeNetworkButton.IsEnabled = _active && !_busy && _current && row?.CanRecognize == true && _catalog.Available;
+        ForgetNetworkButton.IsEnabled = _active && !_busy && _current && row?.Recognized == true && _catalog.Available;
+        NetworkNameBox.IsEnabled = RecognizeNetworkButton.IsEnabled;
+    }
+    private async void RecognizeNetwork_Click(object sender, RoutedEventArgs e) => await SaveSelectionAsync(false);
+    private async void ForgetNetwork_Click(object sender, RoutedEventArgs e) => await SaveSelectionAsync(true);
+    internal async Task SaveSelectionAsync(bool forget)
+    {
+        if (!_active || _busy || !_current || !_catalog.Available || NetworkDevicesTable.SelectedItem is not NetworkDeviceRow { CanRecognize: true } row) return;
+        string name = NetworkNameBox.Text.Trim();
+        if (name.Length == 0) name = ""Dispositivo riconosciuto"";
+        var devices = _catalog.Devices.Where(d => NetworkDeviceRules.RecognitionKey(d.NetworkKey, d.Mac) !=
+            NetworkDeviceRules.RecognitionKey(row.NetworkKey, row.Mac)).ToList();
+        if (!forget) devices.Add(new(row.NetworkKey, row.Mac, name));
+        var updated = new RecognitionCatalog(devices, """");
+        _busy = true; int generation = _generation; UpdateButtons();
+        try
+        {
+            string error = await Task.Run(() => _store.Save(updated));
+            if (!_active || generation != _generation) return;
+            if (error.Length > 0) { ShowProblem(error); return; }
+            _catalog = updated; Render();
+            NetworkNoticeText.Text = forget ? ""Riconoscimento rimosso."" : ""Riconoscimento salvato su questo PC."";
+        }
+        catch (Exception ex) { if (_active && generation == _generation) ShowProblem(""Salvataggio non riuscito: "" + ex.Message); }
+        finally { _busy = false; UpdateButtons(); }
+    }
+    private void CopyNetwork_Click(object sender, RoutedEventArgs e)
+    {
+        if (_view is null || _busy) return;
+        ClipboardText.Copy(this, ""DISPOSITIVI SULLA RETE\n"" + NetworkUpdatedText.Text + ""\n"" + _view.Summary +
+            ""\n"" + NetworkIndicatorText.Text + ""\n"" + NetworkNoticeText.Text + ""\n\n"" + GridCopySupport.CaptureTable(NetworkDevicesTable, false) +
+            ""\n\nFonte: cache Windows IPv4/ARP e IPv6/ND. Elenco parziale; presenza e sicurezza della rete non certificate.\n"" + _view.Note);
+    }
+}","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.App/ProcessLens.App.csproj,11,11,    <InformationalVersion>0.19.16-R10-R11-R2-ux-writing-candidate</InformationalVersion>,    <InformationalVersion>0.19.16-R10-R12-network-devices-candidate</InformationalVersion>,"R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.Core/NetworkDevices.cs,1,1,,"using System.Net;
+using System.Net.Sockets;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+
+namespace ProcessLens.Core;
+
+// Windows NL_NEIGHBOR_STATE values. Reachable means recently confirmed, not live traffic.
+public enum NeighborState { Unreachable, Incomplete, Probe, Delay, Stale, Reachable, Permanent }
+public sealed record NetworkNeighbor(string InterfaceId, string InterfaceName, string NetworkKey,
+    string Address, string Mac, NeighborState State, bool IsGateway);
+public sealed record NetworkDeviceSnapshot(DateTime CapturedUtc, bool Available, bool Partial,
+    string Note, int Interfaces, IReadOnlyList<NetworkNeighbor> Neighbors);
+public interface INetworkDeviceSource { NetworkDeviceSnapshot Capture(); }
+public sealed record DeviceRecognition(string NetworkKey, string Mac, string Name);
+public sealed record RecognitionCatalog(IReadOnlyList<DeviceRecognition> Devices, string Error)
+{
+    public bool Available => Error.Length == 0;
+}
+public sealed record NetworkDeviceRow(string Key, string NetworkKey, string InterfaceId,
+    string InterfaceName, string Name, string Addresses, string Mac, string Presence,
+    string Recognition, bool Recognized, bool CanRecognize, bool Gateway);
+public sealed record NetworkDeviceView(IReadOnlyList<NetworkDeviceRow> Rows, string Summary,
+    string Indicator, string Color, string Note);
+
+public static class NetworkDeviceRules
+{
+    public static string NormalizeMac(string value)
+    {
+        string compact = value.Replace(""-"", """", StringComparison.Ordinal).Replace("":"", """", StringComparison.Ordinal);
+        if (compact.Length != 12 || compact.Any(c => !Uri.IsHexDigit(c))) return """";
+        byte[] bytes = Convert.FromHexString(compact);
+        if (bytes.All(b => b == 0) || (bytes[0] & 1) != 0) return """"; // no unresolved, multicast or broadcast MACs
+        return string.Join(""-"", bytes.Select(b => b.ToString(""X2"")));
+    }
+
+    public static bool IsUnicastAddress(string value)
+    {
+        if (!IPAddress.TryParse(value, out var ip) || IPAddress.IsLoopback(ip)) return false;
+        byte[] bytes = ip.GetAddressBytes();
+        return ip.AddressFamily == AddressFamily.InterNetwork
+            ? bytes[0] is > 0 and < 224 && !bytes.All(b => b == 255)
+            : ip.AddressFamily == AddressFamily.InterNetworkV6 && !ip.IsIPv6Multicast && bytes.Any(b => b != 0);
+    }
+
+    // Local grouping hint only: not authentication of a router, network or device.
+    public static string NetworkKey(string adapterId, IEnumerable<(string Address, string Mac)> gateways)
+    {
+        var values = gateways.OrderBy(g => g.Address, StringComparer.Ordinal).ToArray();
+        if (string.IsNullOrWhiteSpace(adapterId) || values.Length == 0 ||
+            values.Any(g => !IsUnicastAddress(g.Address) || NormalizeMac(g.Mac).Length == 0)) return """";
+        // IPv6 scope IDs are interface indexes and may change after reconnecting.
+        var canonical = values.Select(g => new IPAddress(IPAddress.Parse(g.Address).GetAddressBytes()) + ""="" + NormalizeMac(g.Mac));
+        string source = adapterId + ""\n"" + string.Join(""\n"", canonical.OrderBy(g => g, StringComparer.Ordinal));
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(source)));
+    }
+
+    public static bool ValidKey(string key) => key.Length == 64 && key.All(Uri.IsHexDigit);
+    public static string RecognitionKey(string networkKey, string mac) => networkKey + ""/"" + NormalizeMac(mac);
+
+    public static NetworkDeviceView Present(NetworkDeviceSnapshot capture, RecognitionCatalog catalog)
+    {
+        if (!capture.Available)
+            return new(Array.Empty<NetworkDeviceRow>(), ""Dispositivi: N/D"", ""Controllo non disponibile"", ""#64748B"", capture.Note);
+        var candidates = capture.Neighbors.Where(n => IsUnicastAddress(n.Address)).Take(4096).ToArray();
+        var known = catalog.Devices.Where(d => ValidKey(d.NetworkKey) && NormalizeMac(d.Mac).Length > 0)
+            .GroupBy(d => RecognitionKey(d.NetworkKey, d.Mac), StringComparer.Ordinal)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.Ordinal);
+        var rows = candidates.GroupBy(n => n.InterfaceId + ""/"" + n.NetworkKey + ""/"" +
+            (NormalizeMac(n.Mac) is { Length: > 0 } mac ? mac : ""IP="" + n.Address), StringComparer.Ordinal)
+            .Select(group =>
+            {
+                var n = group.First(); string mac = NormalizeMac(n.Mac);
+                bool eligible = mac.Length > 0 && ValidKey(n.NetworkKey) && catalog.Available;
+                DeviceRecognition? recognition = null;
+                bool recognized = eligible && known.TryGetValue(RecognitionKey(n.NetworkKey, mac), out recognition);
+                string presence = group.Any(x => x.State == NeighborState.Reachable) ? ""Raggiungibile di recente"" :
+                    group.All(x => x.State == NeighborState.Unreachable) ? ""Non raggiungibile"" :
+                    group.Any(x => x.State == NeighborState.Permanent) ? ""Voce statica · presenza non confermata"" :
+                    ""In cache · presenza non confermata"";
+                return new NetworkDeviceRow(group.Key, n.NetworkKey, n.InterfaceId, n.InterfaceName,
+                    recognized ? recognition!.Name : ""Nome non disponibile"",
+                    string.Join("", "", group.Select(x => x.Address).Distinct().OrderBy(x => x, StringComparer.Ordinal)),
+                    mac.Length > 0 ? mac : ""N/D"", presence,
+                    recognized ? ""Riconosciuto da te"" : eligible ? ""Da riconoscere"" : ""Riconoscimento non disponibile"",
+                    recognized, eligible, group.Any(x => x.IsGateway));
+            }).OrderBy(r => r.Recognized).ThenBy(r => r.InterfaceName).ThenBy(r => r.Mac).ToArray();
+        int devices = rows.Count(r => r.Mac != ""N/D""), unknown = rows.Count(r => r.CanRecognize && !r.Recognized);
+        bool limited = capture.Partial || capture.Neighbors.Count > 4096 || !catalog.Available ||
+            rows.Any(r => !r.CanRecognize) || devices == 0;
+        bool recognitionComplete = catalog.Available && rows.Where(r => r.Mac != ""N/D"").All(r => r.CanRecognize);
+        string summary = (devices == 1 ? ""1 dispositivo rilevato"" : $""{devices} dispositivi rilevati"") +
+            (recognitionComplete ? $"" · {unknown} da riconoscere"" : "" · riconoscimento incompleto"");
+        int unresolved = rows.Count(r => r.Mac == ""N/D"");
+        if (unresolved > 0) summary += unresolved == 1 ? "" · 1 indirizzo senza MAC"" : $"" · {unresolved} indirizzi senza MAC"";
+        string note = string.Join(""\n"", new[] { capture.Note, catalog.Error }.Where(s => s.Length > 0));
+        return new(rows, summary, limited ? ""Dati incompleti"" : unknown > 0 ? ""Dispositivi da riconoscere"" :
+            ""Tutti i dispositivi rilevati riconosciuti"", limited ? ""#64748B"" : unknown > 0 ? ""#A16207"" : ""#047857"", note);
+    }
+}
+
+// Per-session novelty only. First complete observation of each scope is the baseline.
+public sealed class NetworkDeviceTracker
+{
+    private readonly Dictionary<string, HashSet<string>> _seen = new(StringComparer.Ordinal);
+    private readonly Queue<string> _order = new();
+    public int Observe(NetworkDeviceSnapshot snapshot, NetworkDeviceView view)
+    {
+        if (!snapshot.Available || snapshot.Partial || snapshot.Neighbors.Count > 4096) return 0;
+        int added = 0;
+        foreach (var group in view.Rows.Where(r => NetworkDeviceRules.ValidKey(r.NetworkKey) && r.Mac != ""N/D"")
+                     .GroupBy(r => r.NetworkKey, StringComparer.Ordinal))
+        {
+            var current = group.Select(r => r.Mac).ToHashSet(StringComparer.Ordinal);
+            if (current.Count > 1024) continue;
+            if (!_seen.TryGetValue(group.Key, out var seen))
+            {
+                if (_seen.Count == 16) _seen.Remove(_order.Dequeue());
+                _order.Enqueue(group.Key); _seen[group.Key] = current;
+                continue;
+            }
+            // Reset a bounded baseline rather than re-alerting evicted addresses.
+            if (seen.Count + current.Count > 1024) { _seen[group.Key] = current; continue; }
+            foreach (var row in group)
+                if (seen.Add(row.Mac) && !row.Recognized && row.CanRecognize) added++;
+        }
+        return added;
+    }
+}
+
+// User labels only, scoped by a local network fingerprint + MAC. Never a security allowlist.
+public sealed class DeviceRecognitionStore
+{
+    public const int MaximumDevices = 512;
+    public const int MaximumBytes = 524288;
+    private readonly string _path;
+    public DeviceRecognitionStore(string path) => _path = path;
+    public RecognitionCatalog Load()
+    {
+        try
+        {
+            using var stream = File.OpenRead(_path);
+            if (stream.Length > MaximumBytes) throw new InvalidDataException(""File troppo grande."");
+            var document = JsonSerializer.Deserialize<StoredCatalog>(stream);
+            if (document is null || document.Version != 1 || document.Devices is null ||
+                document.Devices.Length > MaximumDevices || document.Devices.Any(d => !Valid(d)) ||
+                document.Devices.Select(d => NetworkDeviceRules.RecognitionKey(d.NetworkKey, d.Mac)).Distinct().Count() != document.Devices.Length)
+                throw new InvalidDataException(""Formato non valido."");
+            return new(document.Devices, """");
+        }
+        catch (FileNotFoundException) { return new(Array.Empty<DeviceRecognition>(), """"); }
+        catch (DirectoryNotFoundException) { return new(Array.Empty<DeviceRecognition>(), """"); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or ArgumentException)
+        { return new(Array.Empty<DeviceRecognition>(), ""Riconoscimenti non disponibili: "" + ex.Message); }
+    }
+
+    public string Save(RecognitionCatalog catalog)
+    {
+        if (!catalog.Available) return catalog.Error;
+        var existing = Load();
+        if (!existing.Available) return existing.Error; // Never overwrite an unreadable/corrupt catalog.
+        if (catalog.Devices.Count > MaximumDevices || catalog.Devices.Any(d => !Valid(d)) ||
+            catalog.Devices.Select(d => NetworkDeviceRules.RecognitionKey(d.NetworkKey, d.Mac)).Distinct().Count() != catalog.Devices.Count)
+            return ""Limite o formato dei riconoscimenti non valido."";
+        string temporary = _path + "".tmp-"" + Guid.NewGuid().ToString(""N"");
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_path))!);
+            string json = JsonSerializer.Serialize(new StoredCatalog(1, catalog.Devices.ToArray()));
+            if (Encoding.UTF8.GetByteCount(json) > MaximumBytes) return ""Riconoscimenti troppo grandi per il salvataggio."";
+            File.WriteAllText(temporary, json);
+            File.Move(temporary, _path, true);
+            return """";
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
+        { return ""Salvataggio non riuscito: "" + ex.Message; }
+        finally { try { File.Delete(temporary); } catch (IOException) { } catch (UnauthorizedAccessException) { } }
+    }
+    private static bool Valid(DeviceRecognition? d) => d is not null && d.NetworkKey is not null &&
+        d.Mac is not null && d.Name is not null && NetworkDeviceRules.ValidKey(d.NetworkKey) &&
+        NetworkDeviceRules.NormalizeMac(d.Mac) == d.Mac && d.Name.Length is > 0 and <= 80 && !d.Name.Any(char.IsControl);
+    private sealed record StoredCatalog(int Version, DeviceRecognition[] Devices);
+}","R12 complete changed source context, not a count of distinct strings"
+src/ProcessLens.Windows/WindowsNetworkDevices.cs,1,1,,"using System.ComponentModel;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Runtime.InteropServices;
+using ProcessLens.Core;
+
+namespace ProcessLens.Windows;
+
+// Passive local cache reader. No probes, name lookups, packet capture or shell process.
+public sealed class WindowsNetworkDevices : INetworkDeviceSource
+{
+    private const int MaximumRows = 4096;
+    [DllImport(""iphlpapi.dll"", ExactSpelling = true)]
+    private static extern uint GetIpNetTable2(ushort family, out IntPtr table);
+    [DllImport(""iphlpapi.dll"", ExactSpelling = true)]
+    private static extern void FreeMibTable(IntPtr table);
+
+    [StructLayout(LayoutKind.Explicit, Size = 28)]
+    internal struct NativeAddress
+    {
+        [FieldOffset(0)] public ushort Family;
+        [FieldOffset(4)] public uint V4;
+        [FieldOffset(8)] public uint V6A;
+        [FieldOffset(12)] public uint V6B;
+        [FieldOffset(16)] public uint V6C;
+        [FieldOffset(20)] public uint V6D;
+        [FieldOffset(24)] public uint Scope;
+        public IPAddress? ToAddress()
+        {
+            if (Family == 2) return new IPAddress(BitConverter.GetBytes(V4));
+            if (Family != 23) return null;
+            byte[] bytes = new byte[16];
+            BitConverter.GetBytes(V6A).CopyTo(bytes, 0);
+            BitConverter.GetBytes(V6B).CopyTo(bytes, 4);
+            BitConverter.GetBytes(V6C).CopyTo(bytes, 8);
+            BitConverter.GetBytes(V6D).CopyTo(bytes, 12);
+            return new IPAddress(bytes, Scope);
+        }
+    }
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct NativeRow
+    {
+        public NativeAddress Address;
+        public uint InterfaceIndex;
+        public ulong InterfaceLuid;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)] public byte[] PhysicalAddress;
+        public uint PhysicalAddressLength;
+        public uint State;
+        public byte Flags;
+        public uint ReachabilityTime;
+    }
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct NativeHeader { public uint Count; public NativeRow First; }
+    internal sealed record RawNeighbor(uint Index, IPAddress Address, string Mac, NeighborState State, bool Router);
+
+    internal static IReadOnlyList<RawNeighbor> ReadTable(IntPtr table, out bool truncated)
+    {
+        truncated = false;
+        if (table == IntPtr.Zero) return Array.Empty<RawNeighbor>();
+        uint count = unchecked((uint)Marshal.ReadInt32(table));
+        truncated = count > MaximumRows;
+        int offset = Marshal.OffsetOf<NativeHeader>(nameof(NativeHeader.First)).ToInt32();
+        int stride = Marshal.SizeOf<NativeRow>();
+        var rows = new List<RawNeighbor>();
+        for (int i = 0; i < Math.Min(count, (uint)MaximumRows); i++)
+        {
+            var row = Marshal.PtrToStructure<NativeRow>(IntPtr.Add(table, checked(offset + i * stride)));
+            var ip = row.Address.ToAddress();
+            if (ip is null || row.State > (uint)NeighborState.Permanent) { truncated = true; continue; }
+            string mac = row.PhysicalAddressLength == 6
+                ? string.Join(""-"", row.PhysicalAddress.Take(6).Select(b => b.ToString(""X2""))) : """";
+            // An explicit unreachable flag must not become recently reachable.
+            var state = (row.Flags & 2) != 0 ? NeighborState.Unreachable : (NeighborState)row.State;
+            rows.Add(new(row.InterfaceIndex, ip, NetworkDeviceRules.NormalizeMac(mac), state, (row.Flags & 1) != 0));
+        }
+        return rows;
+    }
+
+    private sealed record Adapter(string Id, string Name, uint[] Indices, IPAddress[] Local, IPAddress[] Broadcast,
+        IPAddress[] Gateways)
+    {
+        public string Signature => Id + ""|"" + string.Join("","", Indices) + ""|"" +
+            string.Join("","", Local.Select(x => x.ToString()).Order()) + ""|"" + string.Join("","", Gateways.Select(x => x.ToString()).Order());
+    }
+    private static List<Adapter> Adapters(out bool partial, out string note)
+    {
+        partial = false;
+        var errors = new List<string>();
+        var result = new List<Adapter>();
+        foreach (var nic in NetworkInterface.GetAllNetworkInterfaces())
+        {
+            if (nic.OperationalStatus != OperationalStatus.Up ||
+                nic.NetworkInterfaceType is not (NetworkInterfaceType.Ethernet or NetworkInterfaceType.Wireless80211)) continue;
+            try
+            {
+                var p = nic.GetIPProperties();
+                var indices = new List<uint>();
+                if (nic.Supports(NetworkInterfaceComponent.IPv4)) indices.Add((uint)p.GetIPv4Properties().Index);
+                if (nic.Supports(NetworkInterfaceComponent.IPv6)) indices.Add((uint)p.GetIPv6Properties().Index);
+                var broadcast = new List<IPAddress>();
+                foreach (var u in p.UnicastAddresses.Where(u => u.Address.AddressFamily == AddressFamily.InterNetwork && u.PrefixLength < 31))
+                {
+                    byte[] a = u.Address.GetAddressBytes(), mask = u.IPv4Mask.GetAddressBytes();
+                    broadcast.Add(new IPAddress(a.Select((v, i) => (byte)(v | (byte)~mask[i])).ToArray()));
+                }
+                result.Add(new(nic.Id, nic.Name, indices.Distinct().ToArray(),
+                    p.UnicastAddresses.Select(u => u.Address).ToArray(), broadcast.ToArray(),
+                    p.GatewayAddresses.Select(g => g.Address).Where(g => NetworkDeviceRules.IsUnicastAddress(g.ToString())).ToArray()));
+            }
+            catch (NetworkInformationException ex) { partial = true; errors.Add(nic.Name + "": "" + ex.Message); }
+        }
+        note = string.Join(""\n"", errors.Take(8));
+        if (errors.Count > 8) note += $""\nAltre schede con errore: {errors.Count - 8}."";
+        return result;
+    }
+
+    private static bool SameAddress(IPAddress a, IPAddress b) => a.GetAddressBytes().SequenceEqual(b.GetAddressBytes());
+    public NetworkDeviceSnapshot Capture()
+    {
+        IntPtr table = IntPtr.Zero;
+        try
+        {
+            if (!OperatingSystem.IsWindows()) return new(DateTime.UtcNow, false, false, ""Lettura disponibile solo su Windows."", 0, Array.Empty<NetworkNeighbor>());
+            var adapters = Adapters(out bool partial, out string adapterNote);
+            uint error = GetIpNetTable2(0, out table); // AF_UNSPEC: IPv4 + IPv6
+            if (error is not (0 or 1168)) throw new Win32Exception((int)error);
+            var native = ReadTable(table, out bool truncated);
+            var after = Adapters(out bool afterPartial, out string afterNote);
+            bool changed = !adapters.Select(a => a.Signature).Order().SequenceEqual(after.Select(a => a.Signature).Order());
+            partial |= afterPartial || truncated || changed;
+            var neighbors = new List<NetworkNeighbor>();
+            foreach (var adapter in adapters)
+            {
+                var rows = native.Where(n => adapter.Indices.Contains(n.Index)).ToArray();
+                string scope = changed ? """" : NetworkDeviceRules.NetworkKey(adapter.Id, adapter.Gateways.Select(g =>
+                {
+                    var match = rows.FirstOrDefault(n => SameAddress(n.Address, g) && n.State is not (NeighborState.Incomplete or NeighborState.Unreachable));
+                    return (g.ToString(), match?.Mac ?? """");
+                }));
+                foreach (var n in rows)
+                {
+                    if (!NetworkDeviceRules.IsUnicastAddress(n.Address.ToString()) || adapter.Local.Any(a => SameAddress(a, n.Address)) ||
+                        adapter.Broadcast.Any(a => SameAddress(a, n.Address))) continue;
+                    neighbors.Add(new(adapter.Id, adapter.Name, scope, n.Address.ToString(), n.Mac, n.State,
+                        adapter.Gateways.Any(g => SameAddress(g, n.Address))));
+                }
+            }
+            string note = adapters.Count == 0 ? (partial ? ""Schede Ethernet/Wi-Fi: lettura incompleta."" : ""Nessuna scheda Ethernet o Wi-Fi attiva."") :
+                partial ? ""Lettura parziale: elenco limitato, scheda non leggibile o rete cambiata durante il controllo."" : """";
+            note = string.Join(""\n"", new[] { note, adapterNote, afterNote }.Where(n => n.Length > 0).Distinct());
+            return new(DateTime.UtcNow, true, partial, note, adapters.Count, neighbors);
+        }
+        catch (Exception ex) when (ex is Win32Exception or NetworkInformationException or DllNotFoundException or EntryPointNotFoundException)
+        { return new(DateTime.UtcNow, false, false, ""Lettura rete non riuscita: "" + ex.Message, 0, Array.Empty<NetworkNeighbor>()); }
+        finally { if (table != IntPtr.Zero) FreeMibTable(table); }
+    }
+}","R12 complete changed source context, not a count of distinct strings"

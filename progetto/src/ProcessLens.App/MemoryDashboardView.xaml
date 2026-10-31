@@ -1,0 +1,292 @@
+<UserControl x:Class="ProcessLens.App.MemoryDashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ProcessLens.App"
+             Background="#F5F6F8">
+    <UserControl.Resources>
+        <Style x:Key="MemoryMetricLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#475569"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style x:Key="SelectableMemoryMetricLabel" TargetType="local:SelectableText">
+            <Setter Property="Foreground" Value="#475569"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style x:Key="MemoryGridCell" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="8,4"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+        </Style>
+        <Style x:Key="MemoryNumericCell" TargetType="TextBlock" BasedOn="{StaticResource MemoryGridCell}">
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style x:Key="MemoryModeButton" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#334155"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="11,5"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style x:Key="MemoryCategoryCard" TargetType="Button">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                    <ContentPresenter HorizontalAlignment="Stretch"/>
+                </Border>
+            </ControlTemplate></Setter.Value></Setter>
+        </Style>
+        <!-- Indicatore personalizzato: il colore viene da Foreground,
+             quindi il valore e il livello di uso comunicano lo stesso stato. -->
+        <Style x:Key="PhysicalMemoryProgress" TargetType="ProgressBar">
+            <Setter Property="Background" Value="#E2E8F0"/>
+            <Setter Property="Foreground" Value="#047857"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid x:Name="PART_Track" ClipToBounds="True">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="6"/>
+                            <Border x:Name="PART_Indicator" Background="{TemplateBinding Foreground}"
+                                    CornerRadius="6" HorizontalAlignment="Left"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="0,0,0,6">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 1. Stato attuale + Censimento e Suddivisione per Macro-Categorie -->
+        <Border Grid.Row="0" Background="White" BorderBrush="#E2E5E9"
+                BorderThickness="1" CornerRadius="12" Padding="15,13" Margin="0,0,0,8">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Analizzatore Memoria RAM Fisica e Suddivisione per Categorie" FontSize="19" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button Grid.Column="1" Content="Aggiorna analisi RAM" Click="RefreshMemory_Click"
+                            Padding="13,6" Margin="12,0,0,0" FontWeight="SemiBold"
+                            Background="#EFF6FF" BorderBrush="#93C5FD" Foreground="#1E40AF"
+                            ToolTip="Rileggi tutti i processi del PC, ricalcola le categorie e aggiorna la classifica"/>
+                </Grid>
+                <Border x:Name="PressureBadge" Background="#E2E8F0" CornerRadius="7"
+                        HorizontalAlignment="Left" Padding="9,4" Margin="0,7,0,6">
+                    <local:SelectableText x:Name="PressureText" Text="Lettura in corso" FontSize="12" FontWeight="SemiBold"
+                               Foreground="#334155"/>
+                </Border>
+                <Grid Margin="0,1,0,9">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#F8FAFC" CornerRadius="8" Padding="11,7">
+                        <StackPanel>
+                            <TextBlock Text="RAM utilizzata" Style="{StaticResource MemoryMetricLabel}"/>
+                            <local:SelectableText x:Name="UsageText" Text="--%" FontSize="24" FontWeight="Bold" Foreground="#334155"/>
+                            <local:SelectableText x:Name="UsedText" Text="Dati non ancora disponibili" Foreground="#64748B" FontSize="11.5" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="2" Background="#F8FAFC" CornerRadius="8" Padding="11,7">
+                        <StackPanel>
+                            <TextBlock Text="RAM disponibile" Style="{StaticResource MemoryMetricLabel}"/>
+                            <local:SelectableText x:Name="AvailableText" Text="-- GiB" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A"/>
+                            <local:SelectableText Text="Memoria fisica libera subito utilizzabile" Foreground="#64748B" FontSize="11.5" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="4" Background="#F8FAFC" CornerRadius="8" Padding="11,7">
+                        <StackPanel>
+                            <local:SelectableText Text="RAM fisica totale" Style="{StaticResource SelectableMemoryMetricLabel}" TextWrapping="Wrap"/>
+                            <local:SelectableText x:Name="TotalText" Text="-- GiB" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A"/>
+                            <local:SelectableText x:Name="CommitSummaryText" Text="Totale fisico rilevato da Windows" Foreground="#64748B" FontSize="11.5" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                <ProgressBar x:Name="MemoryBar" Style="{StaticResource PhysicalMemoryProgress}"
+                             Minimum="0" Maximum="100" Value="0"/>
+                <local:SelectableText x:Name="PressureExplanation" Text="Attendo i dati di Windows."
+                           Foreground="#475569" FontSize="11.5" TextWrapping="Wrap" Margin="0,6,0,0"/>
+
+                <!-- Suddivisione esatta per Macro-Categorie (basata su RAM privata esclusiva, senza doppi conteggi) -->
+                <TextBlock Text="COME È SUDDIVISA LA RAM IN USO (PER MACRO-CATEGORIA)"
+                           FontSize="11" FontWeight="SemiBold" Foreground="#475569" Margin="0,10,0,5"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="1.15*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="CategoryAppsCard" Style="{StaticResource MemoryCategoryCard}" Tag="Applicazioni" Click="CategoryFilterButton_Click" Grid.Column="0" Background="#F0F7FF" BorderBrush="#BFDBFE" BorderThickness="1" Padding="9,6">
+                        <StackPanel>
+                            <TextBlock Text="Applicazioni e Browser →" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#1E40AF"/>
+                            <local:SelectableText x:Name="CatAppsValueText" Text="-- MiB" FontSize="15" FontWeight="Bold" Foreground="#1E3A8A" Margin="0,2,0,1"/>
+                            <local:SelectableText x:Name="CatAppsMetaText" Text="--% RAM · -- processi" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="CategoryDevCard" Style="{StaticResource MemoryCategoryCard}" Tag="Sviluppo" Click="CategoryFilterButton_Click" Grid.Column="2" Background="#F5F3FF" BorderBrush="#DDD6FE" BorderThickness="1" Padding="9,6">
+                        <StackPanel>
+                            <TextBlock Text="Sviluppo e Runtime →" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#5B21B6"/>
+                            <local:SelectableText x:Name="CatDevValueText" Text="-- MiB" FontSize="15" FontWeight="Bold" Foreground="#4C1D95" Margin="0,2,0,1"/>
+                            <local:SelectableText x:Name="CatDevMetaText" Text="--% RAM · -- processi" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="CategoryWinCard" Style="{StaticResource MemoryCategoryCard}" Tag="Windows" Click="CategoryFilterButton_Click" Grid.Column="4" Background="#ECFEFF" BorderBrush="#A5F3FC" BorderThickness="1" Padding="9,6">
+                        <StackPanel>
+                            <TextBlock Text="Sistema Windows →" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#0E7490"/>
+                            <local:SelectableText x:Name="CatWinValueText" Text="-- MiB" FontSize="15" FontWeight="Bold" Foreground="#155E75" Margin="0,2,0,1"/>
+                            <local:SelectableText x:Name="CatWinMetaText" Text="--% RAM · -- processi" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="CategoryServicesCard" Style="{StaticResource MemoryCategoryCard}" Tag="Secondario" Click="CategoryFilterButton_Click" Grid.Column="6" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" Padding="9,6">
+                        <StackPanel>
+                            <TextBlock Text="Servizi e Secondari →" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#334155"/>
+                            <local:SelectableText x:Name="CatBgValueText" Text="-- MiB" FontSize="15" FontWeight="Bold" Foreground="#1E293B" Margin="0,2,0,1"/>
+                            <local:SelectableText x:Name="CatBgMetaText" Text="--% RAM · -- processi" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="CategoryResidualCard" Style="{StaticResource MemoryCategoryCard}" Tag="RESIDUAL" Click="ResidualCategory_Click" Grid.Column="8" Background="#FFFBEB" BorderBrush="#FDE68A" BorderThickness="1" Padding="9,6"
+                            ToolTip="Apri i limiti del residuo: questo calcolo non identifica Kernel, driver o DLL specifiche">
+                        <StackPanel>
+                            <TextBlock Text="Memoria non attribuita ai PID →" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#92400E"/>
+                            <local:SelectableText x:Name="CatKernelValueText" Text="-- GiB" FontSize="15" FontWeight="Bold" Foreground="#78350F" Margin="0,2,0,1"/>
+                            <local:SelectableText x:Name="CatKernelMetaText" Text="--% RAM fisica" FontSize="10.5" Foreground="#78350F" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+                <Expander x:Name="ResidualCategoryDetails" Header="Che cosa rappresenta la memoria non attribuita" IsExpanded="False" Margin="0,8,0,0">
+                    <local:SelectableText Text="È la differenza fra RAM fisica in uso e Working Set privato raccolta dai processi. Può comprendere memoria condivisa, componenti di sistema e dati mancanti: questo valore non identifica né misura separatamente Kernel, driver o DLL. Non esiste qui un elenco di processi cui attribuire esattamente il residuo."
+                                          TextWrapping="Wrap" Margin="8"/>
+                </Expander>
+                <local:SelectableText x:Name="RefreshStatus" Text="Lettura Windows in corso"
+                           Foreground="#64748B" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+
+        <!-- 2. Avvisi automatici compatti -->
+        <Border Grid.Row="1" Background="#EFF6FF" BorderBrush="#BFDBFE"
+                BorderThickness="1" CornerRadius="10" Padding="12,7" Margin="0,0,0,8">
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <WrapPanel VerticalAlignment="Center">
+                    <TextBlock Text="Avvisi automatici RAM: " FontWeight="SemiBold" FontSize="12.5" Foreground="#1E3A8A"/>
+                    <local:SelectableText x:Name="AgentStatus" Text="Verifica configurazione agente..."
+                               FontWeight="SemiBold" Foreground="#1D4ED8" FontSize="12.5" Margin="0,0,8,0"/>
+                    <local:SelectableText x:Name="AgentExplanation" Text="Avviso al raggiungimento dell'85%; nuovo avviso solo dopo il ritorno sotto l'80%."
+                               Foreground="#475569" FontSize="11.5"/>
+                </WrapPanel>
+                <TextBlock Grid.Column="1" Text="Soglia 85% / 80%" Foreground="#1E40AF"
+                           FontWeight="SemiBold" FontSize="11.5" VerticalAlignment="Center"
+                           Margin="12,0,0,0" ToolTip="Soglia primo avviso / soglia di riarmo, non valori della RAM attuale"/>
+            </Grid>
+        </Border>
+
+        <!-- 3. Tabella interattiva: Raggruppamento per Programma (Multi-processo) oppure per Singolo PID + Filtri Categoria -->
+        <Border Grid.Row="2" Background="White" BorderBrush="#E2E5E9"
+                BorderThickness="1" CornerRadius="12" Padding="14,11" MinHeight="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <local:SelectableText x:Name="TableHeaderTitleText" Text="Chi consuma più RAM (Programmi raggruppati e Processi)" FontSize="16" FontWeight="SemiBold"/>
+                        <local:SelectableText x:Name="TopProcessesCaption" Text="Processi raggruppati per programma e ordinati per RAM privata esclusiva."
+                                   Foreground="#64748B" FontSize="11.5" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                    <Button x:Name="InspectSelectedMemoryButton" Grid.Column="1"
+                            Content="Ispeziona anatomia RAM del selezionato →"
+                            Click="InspectSelectedMemory_Click"
+                            Padding="12,6" FontWeight="SemiBold" FontSize="12"
+                            Background="#E0F2FE" BorderBrush="#7DD3FC" Foreground="#0369A1"
+                            VerticalAlignment="Center" Cursor="Hand"
+                            ToolTip="Apre la scheda del processo selezionato ed esegue subito l'analisi anatomica completa della sua RAM (VirtualQueryEx + Working Set + Albero)"/>
+                </Grid>
+
+                <!-- Selettore modalità vista e filtro categoria -->
+                <WrapPanel Grid.Row="1" Margin="0,0,0,8" VerticalAlignment="Center">
+                    <TextBlock Text="Vista:" FontSize="12" FontWeight="SemiBold" Foreground="#475569" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <Button x:Name="ModeGroupedButton" Content="Per Programma (Multi-processo uniti)"
+                            Style="{StaticResource MemoryModeButton}" Click="ModeGroupedButton_Click"
+                            ToolTip="Unisce tutti i processi dello stesso programma (es. tutte le schede di Chrome/Edge) sommando solo la RAM privata esclusiva"/>
+                    <Button x:Name="ModeSinglePidButton" Content="Per Singolo Processo (PID)"
+                            Style="{StaticResource MemoryModeButton}" Click="ModeSinglePidButton_Click"
+                            ToolTip="Mostra ogni singolo PID separatamente con RAM privata, RAM condivisa, Working Set e Commit"/>
+
+                    <TextBlock Text="  Categoria:" FontSize="12" FontWeight="SemiBold" Foreground="#475569" VerticalAlignment="Center" Margin="10,0,6,0"/>
+                    <Button x:Name="CatFilterAllButton" Content="Tutte" Tag="ALL"
+                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
+                    <Button x:Name="CatFilterAppsButton" Content="Applicazioni" Tag="Applicazioni"
+                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
+                    <Button x:Name="CatFilterDevButton" Content="Sviluppo" Tag="Sviluppo"
+                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
+                    <Button x:Name="CatFilterWinButton" Content="Windows" Tag="Windows"
+                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
+                    <Button x:Name="CatFilterBgButton" Content="Servizi" Tag="Secondario"
+                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
+                </WrapPanel>
+
+                <DataGrid local:GridCopySupport.Enabled="True" Grid.Row="2" x:Name="TopMemoryProcesses" AutoGenerateColumns="False" IsReadOnly="True"
+                          SelectionMode="Single" SelectionUnit="FullRow" CanUserAddRows="False" CanUserDeleteRows="False"
+                          CanUserSortColumns="False" EnableRowVirtualization="True" EnableColumnVirtualization="True"
+                          HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E2E8F0"
+                          AlternatingRowBackground="#F8FAFC" RowBackground="White" RowHeight="30"
+                          ColumnHeaderHeight="30" BorderThickness="0" FontSize="12"
+                          MouseDoubleClick="TopMemoryProcesses_MouseDoubleClick"
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Programma / Processo" Binding="{Binding Name}" Width="2.1*"
+                                            ElementStyle="{StaticResource MemoryGridCell}"/>
+                        <DataGridTextColumn Header="Categoria" Binding="{Binding CategoryLabel}" Width="110"
+                                            ElementStyle="{StaticResource MemoryGridCell}"/>
+                        <DataGridTextColumn Header="Istanze / PID" Binding="{Binding InstancesOrPid}" Width="125"
+                                            ElementStyle="{StaticResource MemoryGridCell}"/>
+                        <DataGridTextColumn Header="RAM privata (MiB)" Binding="{Binding PrivateWorkingSetMiB}" Width="135"
+                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
+                        <DataGridTextColumn Header="Condivisa (MiB)" Binding="{Binding SharedWorkingSetMiB}" Width="120"
+                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
+                        <DataGridTextColumn Header="RAM totale (MiB)" Binding="{Binding WorkingSetMiB}" Width="130"
+                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
+                        <DataGridTextColumn Header="Commit privato (MiB)" Binding="{Binding CommitMiB}" Width="140"
+                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
+                        <DataGridTextColumn Header="Quota RAM PC" Binding="{Binding SystemShare}" Width="105"
+                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <local:SelectableText Grid.Row="3" Text="RAM privata: memoria fisica esclusiva del processo o gruppo (sommabile senza doppi conteggi). Condivisa: DLL di sistema/runtime in comune con altri programmi. Doppio clic: dettagli dei servizi SCM associati, oppure del processo. Il pulsante Ispeziona avvia l’analisi RAM. Le categorie sono classificazioni, non prove di un servizio SCM."
+                           Foreground="#64748B" FontSize="11" TextWrapping="Wrap" Margin="0,7,0,0"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

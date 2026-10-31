@@ -1,0 +1,41 @@
+PASS native network: 5157 fields decoded by name in both address families it-IT
+PASS native network: reported historical identity and UTC retained without image directory it-IT
+PASS native network: 4625 remote logon is failure rather than successful access or invented RDP port it-IT
+PASS native network: private account and image directory omitted; old PID and attribution limits explicit it-IT
+PASS native network: interactive local and service logon failures do not become network events it-IT
+PASS native network: network logon with missing source and PID remains unavailable it-IT
+PASS native network: failed acquisition has unavailable counters and original reason it-IT
+PASS native network: 5157 fields decoded by name in both address families en-US
+PASS native network: reported historical identity and UTC retained without image directory en-US
+PASS native network: 4625 remote logon is failure rather than successful access or invented RDP port en-US
+PASS native network: private account and image directory omitted; old PID and attribution limits explicit en-US
+PASS native network: interactive local and service logon failures do not become network events en-US
+PASS native network: network logon with missing source and PID remains unavailable en-US
+PASS native network: failed acquisition has unavailable counters and original reason en-US
+PASS native network: outbound blocks retain their direction instead of inventing an incoming attacker
+PASS native network: invalid address port protocol and oversized PID stay unavailable
+PASS native network: exact 15-minute bounds retain endpoints and exclude stale or future records
+PASS native network: wrong provider rejected
+PASS native network: wrong namespace rejected
+PASS native network: invalid event ID rejected
+PASS native network: invalid event timestamp rejected
+PASS native network: duplicate named fields rejected
+PASS native network: DTD and external entities rejected without IO
+PASS native network: oversized XML rejected before parsing
+PASS native network: event data cannot inject visual log lines
+PASS native network: audit structure matches independent Windows SDK offsets 0 16 20 and stride 36
+PASS native network: audit failure flag handles disabled success-only combined and invalid masks
+PASS native network: audit categories are published WFP connection and Logon GUIDs
+PASS native network: normal empty query closes its handle and reports no sampled events rather than a safe verdict
+PASS native network: native query stays on one owner thread with absolute bounds and no per-packet logging
+PASS native network: record IDs deduplicate repeated records and every owned event handle closes
+PASS native network: denied channel preserves unavailable state and audit observations
+PASS native network: first read failure is unavailable rather than a successful empty log
+PASS native network: mid-query error preserves prior events its reason and all handle cleanup
+PASS native network: malformed event cannot become a complete empty acquisition
+PASS native network: fixed event budget bounds retained history and closes the last event and query
+PASS native network: aggregate XML text budget stops before retaining or parsing unbounded event payloads
+PASS native network: render failure releases owned event and query handles
+PASS native network: cancellation propagates and releases owned handles
+PASS native network: disabled and unknown audit configuration remain distinct
+Native network evidence tests complete; owned fake API only, no live query, capture, setting or firewall change.

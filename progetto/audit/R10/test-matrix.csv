@@ -1,0 +1,68 @@
+﻿test,kind,status,reason
+check_r10.py,source/markup,PASS,66 checks; not compilation or runtime tests
+USER_CURRENT_to_R10.patch,actual git apply + SHA256,PASS,188 exact output files
+ProcessLens.BehaviorTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.CopyTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.CopyUiTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.CpuTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.DiagnosticsTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.GuardianDashboardTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.GuardianStorageTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.GuardianTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.MemoryAlertTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.MemoryEfficiencyTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.MemoryTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.OriginTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.PresentationTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.ProfilerFixture,dotnet-build-only,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.ProfilerTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.RamMonitorTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.RefreshPolicyTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.ServiceHistoryTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.ServiceStopTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.ServiceTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.TerminationTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+ProcessLens.TerminologyTests,dotnet-run,NON ESEGUITO,Linux senza SDK .NET; CopyUiTests richiede WPF/Windows
+check-classification-hierarchy-v01914.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-classification-language-v01911.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-copy-ui-r10.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-detail-hierarchy-v01910.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-diagnostics-v01913.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-elevation.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-etw-startup-order.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-guardian-dashboard.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-memory-dashboard.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-memory-efficiency-r8.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-memory-measurement-audit.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-memory-ui-v0195.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-powershell-syntax.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-profiler-fixture-v01912.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-profiler-isolation.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-structured-queries.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-terminology-ui.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-ui-format-r9.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-ui-readability.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-windows-allocation-inspector.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+check-wpf-contextmenu.ps1,PowerShell,NON ESEGUITO,PowerShell non disponibile
+ProcessLens.App,build,NON ESEGUITO,SDK .NET non disponibile; WPF richiede Windows
+ProcessLens.Core,build,NON ESEGUITO,SDK .NET non disponibile; WPF richiede Windows
+ProcessLens.Guardian.Core,build,NON ESEGUITO,SDK .NET non disponibile; WPF richiede Windows
+ProcessLens.Guardian.Service,build,NON ESEGUITO,SDK .NET non disponibile; WPF richiede Windows
+ProcessLens.MemoryAgent,build,NON ESEGUITO,SDK .NET non disponibile; WPF richiede Windows
+ProcessLens.Profiler,build,NON ESEGUITO,SDK .NET non disponibile; WPF richiede Windows
+ProcessLens.RamMonitor,build,NON ESEGUITO,SDK .NET non disponibile; WPF richiede Windows
+ProcessLens.Semantics,build,NON ESEGUITO,SDK .NET non disponibile; WPF richiede Windows
+ProcessLens.Windows,build,NON ESEGUITO,SDK .NET non disponibile; WPF richiede Windows
+WPF visuale 1180x800 DIP 100%,manual,NON ESEGUITO,"Selezione, wrapping, focus, scorrimento e pulsanti"
+WPF visuale 950x680 DIP 100%,manual,NON ESEGUITO,"Selezione, wrapping, focus, scorrimento e pulsanti"
+WPF visuale 1180x800 DIP 125%,manual,NON ESEGUITO,"Selezione, wrapping, focus, scorrimento e pulsanti"
+WPF visuale 950x680 DIP 125%,manual,NON ESEGUITO,"Selezione, wrapping, focus, scorrimento e pulsanti"
+WPF visuale 1180x800 DIP 150%,manual,NON ESEGUITO,"Selezione, wrapping, focus, scorrimento e pulsanti"
+WPF visuale 950x680 DIP 150%,manual,NON ESEGUITO,"Selezione, wrapping, focus, scorrimento e pulsanti"
+WPF visuale 1180x800 DIP 200%,manual,NON ESEGUITO,"Selezione, wrapping, focus, scorrimento e pulsanti"
+WPF visuale 950x680 DIP 200%,manual,NON ESEGUITO,"Selezione, wrapping, focus, scorrimento e pulsanti"
+Copia reale blocco/rapporto Unicode e sezioni chiuse,manual Windows,NON ESEGUITO,I test di sorgente non verificano il comportamento GUI reale
+Copia reale tabella con refresh e filtro,manual Windows,NON ESEGUITO,I test di sorgente non verificano il comportamento GUI reale
+Navigazione dashboard -> PID e dettagli differiti,manual Windows,NON ESEGUITO,I test di sorgente non verificano il comportamento GUI reale
+RAM R10 rispetto alle candidate precedenti,measurement,NON MISURATO,Nessun risparmio o costo in MB misurato
+R10 R9 clipboard invocation regressions,Python source only,PASS,7 source checks including rejection of delivered R8 defect; no compilation or real clipboard

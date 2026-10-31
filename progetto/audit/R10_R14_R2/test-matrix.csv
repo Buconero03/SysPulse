@@ -1,0 +1,10 @@
+test,kind,status,details
+R14 R1 NetworkDeviceTests,user Windows log,PASS REPORTED,Complete suite in attached log; previous registry fix confirmed
+R14 R1 PacketCaptureTests,user Windows log,PASS REPORTED,Complete parser and owned-child suite in attached log; no live capture
+R14 R1 NetworkUiTests,user Windows log,FAIL REPORTED,First refresh compound assertion; patch targets missing explicit initial tab
+R14 R2 NetworkUiTests,WPF runtime,NON ESEGUITO,Updated tests supplied; requires Windows
+R14 R2 standard build-dashboard.ps1,PowerShell/WPF,NON ESEGUITO,Linux host; full Windows pipeline required
+Cross MSBuild attempt,Linux cross compilation,BLOCKED BEFORE COMPILATION,Host ProcessName information unavailable; not a project compiler error
+Existing 81 network + 22 portable system assertions,R14 R1 retained .NET evidence,HISTORICAL PASS,Compiled source hashes unchanged; not rerun as part of UI-only R2
+Current R14 R2 source and evidence guards,Python source/XML/mutations,PASS,68 checks; no C# execution
+R14 R1 to R14 R2 patch replay,git apply and byte comparison,PASS,12 changed or added files; audit metadata and manifest excluded

@@ -1,0 +1,27 @@
+{
+  "baseline_sha256": "4cb332965fb2e8fec37056547d0202e7448edd7fecf16eb738f9bb99683d04a7",
+  "modified_files": [
+    "LEGGIMI.txt",
+    "progetto/build-dashboard.ps1",
+    "progetto/src/ProcessLens.App/ProcessLens.App.csproj",
+    "progetto/src/ProcessLens.App/TrayWindowController.cs",
+    "progetto/src/ProcessLens.App/WindowActionDiagnostics.cs",
+    "progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj",
+    "progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs",
+    "progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs",
+    "supporto/avvia.ps1"
+  ],
+  "new_files": [
+    "progetto/audit/tools/check_powershell_r30.py",
+    "progetto/audit/tools/check_tray_callbacks_r30.ps1",
+    "progetto/audit/tools/mutate_tray_callbacks_r30.py",
+    "progetto/audit/tools/package_tray_callbacks_r30.py",
+    "progetto/audit/tools/run_process_groups_r30.py",
+    "progetto/audit/tools/test_launcher_r30.ps1",
+    "progetto/audit/tools/typecheck_wpf_sources_r30.py",
+    "progetto/src/ProcessLens.App/TrayCallbackRouter.cs"
+  ],
+  "protected": "All Core, Semantics, native acquisition, Guardian, MemoryAgent, profiler, RAM monitor, native icon retrieval, MainWindow layout/logic, scrolling and lifetime pure policies BYTE IDENTICAL TO R29",
+  "new_dependencies": 0,
+  "Windows_runtime_DPI_RAM": "NOT EXECUTED / NOT MEASURED"
+}

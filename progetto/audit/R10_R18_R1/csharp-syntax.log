@@ -1,0 +1,2 @@
+PASS C# syntax: /workspace/scratch/3c80859a1061/ProcessLens/source/ProcessLens-v0.19.16-R10/tests/ProcessLens.CopyUiTests/Program.cs
+Syntax parsing only; no WPF type checking or markup compilation.

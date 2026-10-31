@@ -1,0 +1,92 @@
+{
+  "host": "Linux",
+  "SDK": "8.0.426",
+  "projects": [
+    {
+      "project": "NativeNetworkTests",
+      "exit_code": 0,
+      "assertions": 77,
+      "assembly_sha256": "9ee63c5f972f3cb88c6cc8fb2a20b64dbc5d694e285d3984f0ec7761898c609a"
+    },
+    {
+      "project": "NetworkDeviceTests",
+      "exit_code": 0,
+      "assertions": 81,
+      "assembly_sha256": "0761392e4dee7774150adae236ae09e6891de8c5b4b87101cfe6f3b1cccebacf"
+    },
+    {
+      "project": "NativeCaptureTests",
+      "exit_code": 0,
+      "assertions": 75,
+      "assembly_sha256": "36c26e013210fe04f3278bd4df55c46b1d9b3e4a10f921c239f2cd16ebcadb6e"
+    },
+    {
+      "project": "CompatibleCaptureTests",
+      "exit_code": 0,
+      "assertions": 56,
+      "assembly_sha256": "7ce09c8592f7fc88a51f9f5506ecd810c755172fdf6bfe37655d803e97a5f040"
+    },
+    {
+      "project": "CopyTests",
+      "exit_code": 0,
+      "assertions": 52,
+      "assembly_sha256": "0799e22ca0fef6ae870862f89af83687f0ddc990f2aef45b40d3f795b5bcdd97"
+    }
+  ],
+  "assertions": 341,
+  "inputs": {
+    "src/ProcessLens.Core/NativeNetworkEvidence.cs": "af4d7fb232c53c3cdd3d2ecddde39b4cf6d4e7c1419d5193b26fda6c74aa79be",
+    "src/ProcessLens.Core/ProcessDetailPresentation.cs": "5c8d8f916052132619ac59564e265d6c1ffc4e51224106eaf0d2b7d46c48e4d0",
+    "src/ProcessLens.Core/MonitorRefreshPolicy.cs": "9b1459ff8b520a9f7b11e7693892328d11ebcdc450c0b472e476d18c809e773e",
+    "src/ProcessLens.Core/ServiceExplanation.cs": "164db2905285666120080e1914b46262c036397ede97f79bf8311ee6c2ce3edb",
+    "src/ProcessLens.Core/ProcessStartFormatter.cs": "4068618b0106fb54db58cd535aa6105693ad59d3bb883fe785de34c5cb175f00",
+    "src/ProcessLens.Core/NetworkEvidenceStatus.cs": "1c282fa3b2b66112cc3b7aa343ba99c1206acd387c4b824763f7367d13fe94ff",
+    "src/ProcessLens.Core/ProcessMemoryGuide.cs": "02a42a8afd5df279c77ba32853e04859849d87a2d6a285805fc0b1ae0960a3f9",
+    "src/ProcessLens.Core/CpuTelemetry.cs": "1987a4ed41d82d4a7429acd4e989109868fe23ea57f0e3d9e6c5e82845492632",
+    "src/ProcessLens.Core/ProcessGrouping.cs": "d7884fcc697c34e68960849158d51cf691cf24e95a4ed23be963241129a023e2",
+    "src/ProcessLens.Core/ServiceHistoryInterpretation.cs": "fb16d2e11c7fedc5261e0a2310ed81b56c6395e5787c86bbb1c9c0afd912af49",
+    "src/ProcessLens.Core/LiveCpuSample.cs": "74d457df49f46b0265d93037a20244bac58286e6dfcc416958df5f6191e11b7f",
+    "src/ProcessLens.Core/NetworkReadPresentation.cs": "280c9d1a296ac5aa6eab3fb12f4194e629362319533fc63099081844c248570a",
+    "src/ProcessLens.Core/MemoryEvidence.cs": "9c2a6de103ec99cbc2b1f282df712f747198ed0ba6d906e7ffd5588a20ba971f",
+    "src/ProcessLens.Core/ProcessNetworkEvidence.cs": "bb8c92085eb94473c1c910923f45b9b40476bb37d5322aa7be8297144a91d62f",
+    "src/ProcessLens.Core/StructuredDiagnostics.cs": "8e3485364fd3d7b54eea9d5cdcead89d1e38a6536b4bd515ee3a34679a2cfb97",
+    "src/ProcessLens.Core/WindowsAllocationEvidence.cs": "e518ec5bf4c796cf47feca7c1fd34ab2f7971452010c0463fc4b67553e505007",
+    "src/ProcessLens.Core/WindowsHostReference.cs": "ca1e9a0d6a312f8ff3f3f0a1901b3bb4c45f9167c66bc6554f32e795de54f34b",
+    "src/ProcessLens.Core/ProfilerModels.cs": "38726f167628b68cbb770fcbffa742de1248048d8d33a0d4928a5495ee8b0e88",
+    "src/ProcessLens.Core/ProcessSnapshot.cs": "91035f619d983df7458a7fa0641b394889c6865bf7c78eb884b9b793a5546db8",
+    "src/ProcessLens.Core/IProcessCollector.cs": "b168f6ef3f987fc670df6954680c3cf01879b9343bbf73cfab200572d0c8a58c",
+    "src/ProcessLens.Core/ServiceStopPolicy.cs": "630f48af8eda29fcc4e662a3e80cac66c989ec96eaa6088cd18d752703c1c2cb",
+    "src/ProcessLens.Core/SystemProcessCatalog.cs": "b3319ba30ededba3c499fe662b452e33b7379054eda22d846b246ab35af27c94",
+    "src/ProcessLens.Core/BoundedMetadataCache.cs": "f1ceeb055898633d849f05696ab6d7392893c76cb211aef3ea2edf7067622a26",
+    "src/ProcessLens.Core/LiveMemorySample.cs": "b3a965d538c9410c64f70de05208090fb95f81c810b791183af9cbdb57c3642b",
+    "src/ProcessLens.Core/MemoryDashboardPresentation.cs": "f7f75eb6361abf02a61177e52f5a888e9f0fb4d9c7908e56183e4a61c41581cf",
+    "src/ProcessLens.Core/IDeepProcessInspector.cs": "2e792aa2f0b6cde1371a2f93ca23f889f71b30de8f39f073679d41e195a83357",
+    "src/ProcessLens.Core/ProcessLens.Core.csproj": "12985a174dc55d6f519f2205bf7b35d0123d6d7dfa7fe3fe34f2f3028ba30604",
+    "src/ProcessLens.Core/CpuMath.cs": "9d3435cfadafe2d75099b32f5ff26728f02460db02e1f906ed871906a8e52893",
+    "src/ProcessLens.Core/NetworkDevices.cs": "cc0dcd2290dc16060768cdd46ac13230ffcd9b9e76556a2dbb118a75ab56ec0e",
+    "src/ProcessLens.Core/ServiceSnapshot.cs": "6d419628760dd22b94bf748e9272038084ab9406f94ee8ca91a0fbf7b4d84688",
+    "src/ProcessLens.Core/ProcessTerminationPolicy.cs": "1da8106a6793191de1672db2c58b8eb7afb6a5d03ecc74e19826b39809ce2fa3",
+    "src/ProcessLens.Core/NewTaskLaunch.cs": "5dd1fbac7267502c4613d839a1ddfede49db227458b29049d80071f20eaeb71e",
+    "src/ProcessLens.Core/IProcessAnalyzer.cs": "431e979f777f7ca0903934de2e9b83a9eea5b12147c5730914f405fca76ae347",
+    "src/ProcessLens.Core/ProcessTerminology.cs": "2a4932a5ff4127b1f7c391e8a6b0726c628c939d394545c34c0c287aeec5d570",
+    "src/ProcessLens.Core/NativeCaptureEvidence.cs": "11a5c654668a04569d99a43277466eeb6b63cbb6354a371bd70531fdb6d850a3",
+    "src/ProcessLens.Core/MemoryAlertPolicy.cs": "fee877a7c5ecff567728aee4533bb9e50e6bf35ceb4755c0c8b6e65c88df4cec",
+    "src/ProcessLens.Core/PacketCaptureEvidence.cs": "0da4633e63212c88813fc9c1b67fc9c1daca78ce1de958fb348160e71733f57c",
+    "src/ProcessLens.Core/ServiceHistoryEvent.cs": "a4b84a0cf7d07fd9e62a5dba7f8b2b983293c4dfe466783deb2ff291b11b294a",
+    "src/ProcessLens.Core/ProcessInsight.cs": "0608e873850f9012d72310f1e0fb8894babffd89e97eb941921dad92b7536239",
+    "src/ProcessLens.Core/WindowsComponentCatalog.cs": "04846b5ae6f723f2f81c4f546fb468ce75b9d7bcaa40d5e7938d4a583598fd8c",
+    "tests/ProcessLens.NativeNetworkTests/Program.cs": "c37f712d77496811d31373c8914e8444b8f92aa8de2025eb48386c5f0edc5445",
+    "tests/ProcessLens.NativeNetworkTests/ProcessLens.NativeNetworkTests.csproj": "d438a2c2429cad5ff244049cf871d7e28e82b5138307ccda375b4187ad5655da",
+    "tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs": "42806486d147a753a751f1418ad8a42056e32d1c460b1537b64c150aeea204d5",
+    "tests/ProcessLens.NetworkDeviceTests/Program.cs": "1d95d2bd04af4445ed89fae3152fa45ae26095ec8918ef849743143aef724cee",
+    "tests/ProcessLens.NetworkDeviceTests/ProcessLens.NetworkDeviceTests.csproj": "33ae83ae4260e18570cebbba3146961ff1cd71252cc61c6ef4da37b7c5bc73a1",
+    "tests/ProcessLens.NativeCaptureTests/Program.cs": "5251c2f9c22520a4bd6e0b0b9214efc8ac3e4ff08fa0728aa6b5ae1205906aea",
+    "tests/ProcessLens.NativeCaptureTests/ProcessLens.NativeCaptureTests.csproj": "bc91025fd84026a9a0f5b71a60013408ceb6597a785be0915ce323e68ade432e",
+    "tests/ProcessLens.CompatibleCaptureTests/Program.cs": "542738e102bbb9f422590ae52a44fcbfae0bbe539b0b5e9bdaf3eef0992d0401",
+    "tests/ProcessLens.CompatibleCaptureTests/ProcessLens.CompatibleCaptureTests.csproj": "d1b522f4bf060336ebb52877f32b1647099e700dc5526b1f657b699e19289788",
+    "tests/ProcessLens.CopyTests/Program.cs": "ec7ae81d5f64d2a3f1a6152f35dafe3681741cf8a47af856257c90ba0196ef76",
+    "tests/ProcessLens.CopyTests/ProcessLens.CopyTests.csproj": "6b2f8bd46a327fcf45d0557e3a7b071adc5b1d564fadb617f7dae98c42786c21",
+    "src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs": "e428a2aa71bda22e3cb3cc8363ffdfe73a7616639dd34d96acf0db6d932cd933"
+  },
+  "qualification": "Actual SDK/MSBuild test projects; simulated APIs only. No Windows live acquisition or WPF runtime. Historical R33 icon tests not rerun."
+}

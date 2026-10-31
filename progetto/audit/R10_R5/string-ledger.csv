@@ -1,0 +1,8 @@
+﻿before,after,scope,reason_limit
+No notification-area icon,ProcessLens — clic per riaprire,Tray tooltip,Shared system icon; placement chosen by Windows
+X closes GUI,X hides GUI in tray,Window lifecycle,Canceled Closing event; explicit Exit retained
+No tray restore command,Apri ProcessLens,Tray menu,"Same existing window, previous normal/maximized state"
+No tray exit command,Esci da ProcessLens,Tray menu,Explicit GUI shutdown; external components unchanged
+MainWindowHandle lookup only,Acknowledged restore message plus legacy fallback,Second launch,Hidden window supported; timeout is not activation success
+No tray unavailable route,Minimize to taskbar if icon cannot be created,Window lifecycle,Never hide the only restore route
+Active dashboard may keep polling while hidden,Dashboard GUI polling pauses while hidden/minimized,GUI activity,External service and agent unaffected

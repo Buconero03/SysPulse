@@ -1,0 +1,8 @@
+{
+  "patch_R7_to_R1_git_apply_check": "PASS",
+  "patch_R7_to_R1_exact_files": 7,
+  "protected_files_unchanged_from_R7": 42,
+  "R6_current_source_patch_files": 32,
+  "dotnet_R1": "NON ESEGUITO",
+  "WPF_R1": "NON ESEGUITO"
+}

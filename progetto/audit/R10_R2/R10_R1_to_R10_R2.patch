@@ -1,0 +1,186 @@
+--- a/CHANGELOG_R10.md
++++ b/CHANGELOG_R10.md
+@@ -1,3 +1,9 @@
++# R10 R2 — inizializzazione del test di layout WPF
++
++Leggere `HOTFIX_R10_R2.md`. Corretto il ciclo di inizializzazione del controllo isolato nella suite CopyUiTests; verifiche esplicite di template nativo, altezza, righe, wrapping e selezione. Nessun controllo disabilitato. Sorgenti applicativi C# e XAML invariati rispetto a R1. La nuova suite .NET/WPF e PowerShell resta **NON ESEGUITA** in questo ambiente. Manifest corrente: `SHA256SUMS_R10.txt`, rigenerato per R2. I risultati Windows del log utente si riferiscono alla R1.
++
++---
++
+ # R10 R1 candidata — correzione controllo pulsanti
+ 
+ Stile comune applicato al pulsante Analizza RAM ora. Controllo R9 invariato nei vincoli, con diagnostica puntuale e regressioni negative; regola aggiunta ai controlli portabili. Vedere `HOTFIX_R10_R1.md`. Build/test .NET/PowerShell e verifica WPF: NON ESEGUITO.
+--- /dev/null
++++ b/HOTFIX_R10_R2.md
+@@ -0,0 +1,44 @@
++# ProcessLens v0.19.16 R10 R2 — layout del controllo nel test WPF
++
++Il log Windows ricevuto il 17 ottobre 2026 mostra un'asserzione fallita in `ProcessLens.CopyUiTests`: `multiline output measures at finite height`. Le sei verifiche precedenti di sola lettura, copia Unicode e selezione sono PASS. Anche CopyTests e PresentationTests risultano completati; le porzioni di BehaviorTests e TerminologyTests presenti nel log terminano con successo. Il log inizia a metà suite e non dimostra l'esecuzione delle fasi omesse. Le fasi successive al blocco non sono state eseguite; il launcher riporta Guardian non modificato.
++
++È un errore a runtime nel test, non un errore del compilatore, anche se il wrapper lo classifica genericamente come PL-BUILD-5002. Il vecchio test istanziava un controllo WPF isolato e lo misurava senza inizializzarlo tramite XAML, un albero visuale o `BeginInit`/`EndInit`. Il log non registrava né template né altezza effettiva: non permette di dimostrare retroattivamente il valore misurato.
++
++La correzione segue il ciclo documentato da Microsoft per elementi fuori da un albero: `BeginInit`, proprietà, `EndInit`, quindi misura, disposizione e aggiornamento layout. Nessun template artificiale o stile di test sostituisce il tema nativo.
++
++Prima: un'unica misura senza inizializzazione e un messaggio privo dei valori ottenuti.
++
++Dopo:
++
++- Inizializzazione esplicita del solo controllo isolato della suite.
++- Verifica che il template nativo contenga `PART_ContentHost`.
++- Conservata l'asserzione originale: altezza finita e maggiore di 20 DIP.
++- Verifica di layout valido e almeno tre righe reali.
++- Confronto a 210 e 70 DIP: restringendo il campo devono aumentare righe e altezza.
++- Verifica che layout e wrapping preservino testo, selezione e copia Unicode.
++- Diagnostica con stato di inizializzazione, presenza del template e dimensioni effettive.
++
++I test usano il destinatario fittizio della copia. Non mostrano finestre e non avviano monitor, acquisizioni o profiler. I sorgenti applicativi C# e XAML restano identici alla R1; cambia soltanto il programma della suite WPF, oltre a versione, documentazione e controlli di sorgente. Le criticità RAM già documentate restano aperte. Nessuna riduzione di memoria misurata.
++
++Verifiche eseguite qui: controlli strutturali Python/XML, confronto esatto con la R1, applicazione reale delle patch, integrità ZIP e manifest SHA-256. **NON ESEGUITO:** nuova suite CopyUiTests, altre suite .NET, PowerShell, build/pubblicazione WPF, verifica visuale e DPI. Il risultato della correzione richiede la nuova esecuzione Windows; i controlli di sorgente non la sostituiscono.
++
++Estrarre in una cartella nuova, poi nella radice contenente `src` e `tests`:
++
++```powershell
++.\build-dashboard.ps1
++```
++
++Se la sequenza termina con successo:
++
++```powershell
++.\run-release.ps1
++```
++
++Il testo `┬á` visibile nel log dei test numerici è compatibile con una decodifica console errata dello spazio non separabile; i confronti di formato sono PASS. Questo log non dimostra un difetto della stringa WPF. Nessuna conversione dei dati o modifica del formato delle unità viene introdotta in questo hotfix.
++
++Audit corrente: `audit/R10_R2/`; audit delle revisioni precedenti conservati come storici. Manifest corrente `SHA256SUMS_R10.txt`.
++
++Fonti primarie:
++
++- https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/initialization-for-object-elements-not-in-an-object-tree
++- https://learn.microsoft.com/en-us/dotnet/api/system.windows.frameworkelement.applytemplate?view=windowsdesktop-8.0
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,10 @@
+-﻿# R10 R1 — correzione del blocco nel controllo pulsanti
++﻿# R10 R2 — inizializzazione del test di layout WPF
++
++Leggere `HOTFIX_R10_R2.md`. Corretto il ciclo di inizializzazione del controllo isolato nella suite CopyUiTests; verifiche esplicite di template nativo, altezza, righe, wrapping e selezione. Nessun controllo disabilitato. Sorgenti applicativi C# e XAML invariati rispetto a R1. La nuova suite .NET/WPF e PowerShell resta **NON ESEGUITA** in questo ambiente. Manifest corrente: `SHA256SUMS_R10.txt`, rigenerato per R2. I risultati Windows del log utente si riferiscono alla R1.
++
++---
++
++# R10 R1 — correzione del blocco nel controllo pulsanti
+ 
+ Leggere `HOTFIX_R10_R1.md`. Il pulsante Analizza RAM ora usa ora lo stile comune richiesto dal controllo R9. Il controllo resta rigoroso e indica il nome del pulsante in errore; aggiunte regressioni per stile mancante, sconosciuto e altezza fissa. Build/test .NET e PowerShell, verifica WPF e DPI: **NON ESEGUITO** qui. Le funzioni e i limiti della R10 descritti sotto restano validi. Manifest corrente: `SHA256SUMS_R10.txt` rigenerato per R1.
+ 
+--- a/VERSION.txt
++++ b/VERSION.txt
+@@ -1 +1 @@
+-0.19.16-R10-R1-copy-review-candidate
++0.19.16-R10-R2-copy-review-candidate
+--- a/audit/tools/check_r10.py
++++ b/audit/tools/check_r10.py
+@@ -67,5 +67,19 @@
+ check('test suites wired',all(t in build for t in ['ProcessLens.CopyTests','ProcessLens.CopyUiTests','ProcessLens.MemoryEfficiencyTests','ProcessLens.PresentationTests','check-copy-ui-r10.ps1']),'New and prior executable regressions connected to dashboard build')
+ test=(b/'tests/ProcessLens.CopyUiTests/Program.cs').read_text()
+ check('UI tests use fake clipboard and no shown monitor','new SelectableText(value => copied = value)' in test and 'new MainWindow()' in test and not re.search(r'\.(?:Show|Run|SetActive)\(',test),'Real XAML and command routing tested on Windows; NOT EXECUTED here')
++check('standalone WPF test initialization precedes layout',
++    test.index('text.BeginInit();') < test.index('text.Text =') < test.index('text.EndInit();') < test.index('Size wide = LayoutOutput(text, 210);'),
++    'Explicit BeginInit/EndInit for a control outside the object tree; source check only')
++check('WPF layout assertion retained with native template',
++    all(t in test for t in ['text.Template?.FindName("PART_ContentHost", text)',
++        'double.IsFinite(text.DesiredSize.Height) && text.DesiredSize.Height > 20',
++        'text.Arrange(', 'text.UpdateLayout();', 'text.IsMeasureValid && text.IsArrangeValid && text.LineCount >= 3']) and
++    not re.search(r'\bTemplate\s*=', test),
++    'No synthetic template or weakened height assertion; actual Windows execution still required')
++check('WPF wrapping and selection regressions supplied',
++    all(t in test for t in ['Size narrow = LayoutOutput(text, 70);',
++        'narrow.Height > wide.Height && text.LineCount > wideLines',
++        'layout and wrapping preserve original text and selection', 'copy selection remains exact after layout']),
++    'Runtime assertions provided, not executed here')
+ output=a.output or b/'audit/R10/structural-results.json';output.parent.mkdir(parents=True,exist_ok=True);output.write_text(json.dumps(results,ensure_ascii=False,indent=2)+'\n')
+ raise SystemExit(0 if all(r['status']=='PASS' for r in results) else 1)
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R1-copy-review-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R2-copy-review-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+--- a/start-processlens-all.ps1
++++ b/start-processlens-all.ps1
+@@ -27,7 +27,7 @@
+ }
+ 
+ try {
+-    Write-Host 'ProcessLens v0.19.16 R10 R1 candidata - Avvio guidato in sequenza' -ForegroundColor Green
++    Write-Host 'ProcessLens v0.19.16 R10 R2 candidata - Avvio guidato in sequenza' -ForegroundColor Green
+     Write-Host ('Modalita: ' + $Mode)
+     Write-Host ('Cartella: ' + $PSScriptRoot)
+     $isAdmin = Test-IsAdministrator
+--- a/tests/ProcessLens.CopyUiTests/Program.cs
++++ b/tests/ProcessLens.CopyUiTests/Program.cs
+@@ -13,16 +13,37 @@
+         Console.WriteLine("PASS copy UI: " + label);
+     }
+ 
++    private static Size LayoutOutput(SelectableText text, double width)
++    {
++        text.Width = width;
++        text.Measure(new Size(width, double.PositiveInfinity));
++        string state = FormattableString.Invariant(
++            $"initialized={text.IsInitialized}, template={text.Template is not null}, desired={text.DesiredSize.Width:F2}x{text.DesiredSize.Height:F2}");
++        Check(text.IsInitialized && text.Template?.FindName("PART_ContentHost", text) is FrameworkElement,
++            "native text template is initialized; " + state);
++        // Keep the original finite-height assertion; an absent template must fail, not be masked.
++        Check(double.IsFinite(text.DesiredSize.Height) && text.DesiredSize.Height > 20,
++            "multiline output measures at finite height; " + state);
++        text.Arrange(new Rect(new Point(), text.DesiredSize));
++        text.UpdateLayout();
++        Check(text.IsMeasureValid && text.IsArrangeValid && text.LineCount >= 3,
++            "multiline output has arranged text lines; " + state);
++        return text.DesiredSize;
++    }
++
+     [STAThread]
+     public static void Main()
+     {
+         _ = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+         string copied = "";
+-        var text = new SelectableText(value => copied = value)
+-        {
+-            Text = "VirtualQueryEx\r\nAPI: perché 🧪\r\nN/D non equivale a zero.",
+-            Width = 210, FontSize = 13
+-        };
++        var text = new SelectableText(value => copied = value);
++        // Standalone WPF controls have no parent/XAML loader to complete initialization.
++        // EndInit resolves the native theme before Measure; no synthetic template is supplied.
++        text.BeginInit();
++        text.Text = "VirtualQueryEx\r\nAPI: perché 🧪\r\nN/D non equivale a zero.";
++        text.Width = 210;
++        text.FontSize = 13;
++        text.EndInit();
+         text.IsReadOnly = false;
+         Check(text.IsReadOnly && !text.IsUndoEnabled, "output stays read-only and has no undo history");
+         Check(!ApplicationCommands.Copy.CanExecute(null, text), "copy selection disabled when nothing selected");
+@@ -34,8 +55,16 @@
+         SelectableText.CopyAllCommand.Execute(null, text);
+         Check(copied == text.Text, "Copy all returns whole block without changing selection");
+         Check(text.SelectionStart == begin && text.SelectionLength == "perché 🧪".Length, "copy does not rewrite selection");
+-        text.Measure(new Size(210, double.PositiveInfinity));
+-        Check(double.IsFinite(text.DesiredSize.Height) && text.DesiredSize.Height > 20, "multiline output measures at finite height");
++        Size wide = LayoutOutput(text, 210);
++        int wideLines = text.LineCount;
++        Size narrow = LayoutOutput(text, 70);
++        Check(narrow.Height > wide.Height && text.LineCount > wideLines,
++            "narrow output wraps into more lines and grows vertically");
++        Check(text.Text == "VirtualQueryEx\r\nAPI: perché 🧪\r\nN/D non equivale a zero." &&
++            text.SelectionStart == begin && text.SelectionLength == "perché 🧪".Length,
++            "layout and wrapping preserve original text and selection");
++        ApplicationCommands.Copy.Execute(null, text);
++        Check(copied == "perché 🧪", "copy selection remains exact after layout");
+ 
+         var saved = CultureInfo.CurrentCulture;
+         try

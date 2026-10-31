@@ -1,0 +1,44 @@
+[
+  {
+    "previous_path": "global.json",
+    "archive_path": "audit/R10_R21/r20-original/global.json",
+    "sha256": "07b7c7dd361891336f9688143f7b3ad55021e9594afc66f64145411c8be7570e",
+    "reason": "R20 offline installer retired or exact SDK pin removed from active light project"
+  },
+  {
+    "previous_path": "INSTALLA_PROCESSLENS.cmd",
+    "archive_path": "audit/R10_R21/r20-original/INSTALLA_PROCESSLENS.cmd",
+    "sha256": "b1387fb461e1704a4c8225fd7112edfa939badeab7dc16199a176034dfa5d776",
+    "reason": "R20 offline installer retired or exact SDK pin removed from active light project"
+  },
+  {
+    "previous_path": "AVVIA_PROCESSLENS.cmd",
+    "archive_path": "audit/R10_R21/r20-original/AVVIA_PROCESSLENS.cmd",
+    "sha256": "206e90e45203003062f60ae8bdfc075d700553cc834ad55d3c0be4800d616067",
+    "reason": "R20 offline installer retired or exact SDK pin removed from active light project"
+  },
+  {
+    "previous_path": "setup/install-offline.ps1",
+    "archive_path": "audit/R10_R21/r20-original/setup/install-offline.ps1",
+    "sha256": "acdf2b67dd7a7cb1996d9e47f8fa51fc06a64a9598a06f93e9101cf4d2cee41e",
+    "reason": "R20 offline installer retired or exact SDK pin removed from active light project"
+  },
+  {
+    "previous_path": "setup/offline-common.ps1",
+    "archive_path": "audit/R10_R21/r20-original/setup/offline-common.ps1",
+    "sha256": "e4fe06cace520192dc072669c9a5d491e3566abb8d61458a9ef7b71d1a50bb3d",
+    "reason": "R20 offline installer retired or exact SDK pin removed from active light project"
+  },
+  {
+    "previous_path": "setup/start-installed.ps1",
+    "archive_path": "audit/R10_R21/r20-original/setup/start-installed.ps1",
+    "sha256": "829640319d2d69626b902ba7eee35489188f6b3aa347119a52f4b4a79ee0fb92",
+    "reason": "R20 offline installer retired or exact SDK pin removed from active light project"
+  },
+  {
+    "previous_path": "setup/bundle-manifest.json",
+    "archive_path": "audit/R10_R21/r20-original/setup/bundle-manifest.json",
+    "sha256": "44cff12742c3ca9264094568f5ca5d2c7fc47ae6e218a9877f95b8535977e9cf",
+    "reason": "R20 offline installer retired or exact SDK pin removed from active light project"
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "baseline_sha256": "eefa97864d7b0dc22d22a3aec08707a4bf7a968004fb4cc25b9ef1f11843a090",
+  "modified": [
+    "LEGGIMI.txt",
+    "progetto/build-dashboard.ps1",
+    "progetto/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv",
+    "progetto/src/ProcessLens.App/NativeCaptureView.xaml",
+    "progetto/src/ProcessLens.App/NativeCaptureView.xaml.cs",
+    "progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml",
+    "progetto/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs",
+    "progetto/src/ProcessLens.App/NetworkDevicesView.xaml",
+    "progetto/src/ProcessLens.App/NetworkDevicesView.xaml.cs",
+    "progetto/src/ProcessLens.App/ProcessLens.App.csproj",
+    "progetto/src/ProcessLens.Core/NativeNetworkEvidence.cs",
+    "progetto/src/ProcessLens.Core/NetworkEvidenceStatus.cs",
+    "progetto/src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs",
+    "progetto/tests/ProcessLens.NativeNetworkTests/Program.cs",
+    "progetto/tests/ProcessLens.NetworkUiTests/Program.cs",
+    "supporto/avvia.ps1"
+  ],
+  "added_outside_current_audit": [
+    "progetto/audit/tools/check_network_clarity_r34.ps1",
+    "progetto/audit/tools/check_powershell_r34.py",
+    "progetto/audit/tools/test_launcher_r34.ps1",
+    "progetto/audit/tools/typecheck_wpf_sources_r34.py",
+    "progetto/src/ProcessLens.Core/NetworkReadPresentation.cs",
+    "progetto/tests/ProcessLens.NativeNetworkTests/R34NetworkReadChecks.cs"
+  ],
+  "protected": "All other application sources byte-identical: main window/tray, icons, scrolling, process grouping, acquisition, CPU/RAM, Guardian and external dependencies.",
+  "new_dependencies": 0,
+  "Windows_WPF_DPI_RAM_live_acquisition": "NOT EXECUTED / NOT MEASURED"
+}

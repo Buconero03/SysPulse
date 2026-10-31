@@ -1,0 +1,9 @@
+{
+  "git_apply_check": "PASS",
+  "actual_git_apply": "PASS",
+  "exact_changed_files": 8,
+  "application_source_markup_and_assets_exact_files": 89,
+  "CSharp_application_files_changed": 0,
+  "CSharp_test_files_changed": 1,
+  "scope": "Production metadata, test, docs and source guards. Historical/current audit and manifest excluded for self reference."
+}

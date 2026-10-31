@@ -1,0 +1,17 @@
+[
+  "publish-release.ps1",
+  "run-release.ps1",
+  "src/ProcessLens.App/MainWindow.xaml",
+  "src/ProcessLens.App/MainWindow.xaml.cs",
+  "src/ProcessLens.App/MemoryDashboardView.xaml",
+  "src/ProcessLens.App/MemoryDashboardView.xaml.cs",
+  "src/ProcessLens.Core/MemoryEvidence.cs",
+  "src/ProcessLens.Core/WindowsAllocationEvidence.cs",
+  "src/ProcessLens.Semantics/IdentityResolver.cs",
+  "src/ProcessLens.Semantics/ProcessQueryEngine.cs",
+  "src/ProcessLens.Semantics/RoleClassifier.cs",
+  "src/ProcessLens.Windows/WindowsAllocationInspector.cs",
+  "src/ProcessLens.Windows/WindowsPhysicalMemoryReader.cs",
+  "src/ProcessLens.Windows/WindowsVirtualMemoryInspector.cs",
+  "start-processlens-all.ps1"
+]

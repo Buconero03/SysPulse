@@ -1,0 +1,14 @@
+test,kind,status
+65 structural checks,Python source/XML,PASS
+6 button regressions,Python source guards,PASS
+14 resource guard tests including mutations,Python source guards,PASS
+R6 to R7 exact patch,git apply and SHA256,PASS
+CPU deterministic numerical and continuity tests,.NET runtime,NON ESEGUITO
+Metadata cache churn tests,.NET runtime,NON ESEGUITO
+Native CPU counters independent self check and RAM bindings,Windows .NET runtime,NON ESEGUITO
+Other .NET builds and tests,dotnet,NON ESEGUITO
+All PowerShell scripts and new passive measurement,PowerShell,NON ESEGUITO
+Tray taskbar Explorer restart minimize restore cycles,manual Windows,NON ESEGUITO
+WPF DPI culture wrapping and selection,Windows,NON ESEGUITO
+Task Manager equivalent PID counter comparison,Windows,NON ESEGUITO
+Actual CPU and RAM overhead or savings,measurement,NON MISURATO

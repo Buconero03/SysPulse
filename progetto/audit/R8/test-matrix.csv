@@ -1,0 +1,42 @@
+﻿test,kind,status,reason
+ProcessLens.BehaviorTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.CpuTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.DiagnosticsTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.GuardianDashboardTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.GuardianStorageTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.GuardianTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.MemoryAlertTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.MemoryEfficiencyTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.MemoryTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.OriginTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.ProfilerFixture,dotnet-build-only,NON ESEGUITO,Linux senza dotnet
+ProcessLens.ProfilerTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.RefreshPolicyTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.ServiceHistoryTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.ServiceStopTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.ServiceTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.TerminationTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+ProcessLens.TerminologyTests,dotnet-run,NON ESEGUITO,Linux senza dotnet
+check-classification-hierarchy-v01914.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-classification-language-v01911.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-detail-hierarchy-v01910.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-diagnostics-v01913.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-elevation.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-etw-startup-order.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-guardian-dashboard.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-memory-dashboard.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-memory-efficiency-r8.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-memory-measurement-audit.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-memory-ui-v0195.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-powershell-syntax.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-profiler-fixture-v01912.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-profiler-isolation.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-structured-queries.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-terminology-ui.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-ui-readability.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-windows-allocation-inspector.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+check-wpf-contextmenu.ps1,PowerShell,NON ESEGUITO,pwsh/Windows PowerShell non disponibile
+WPF build,Windows or dotnet,NON ESEGUITO,Richiede ambiente compatibile; istruzioni allegate
+WPF visuale/DPI,Windows or dotnet,NON ESEGUITO,Richiede ambiente compatibile; istruzioni allegate
+RAM reale prima/dopo,Windows or dotnet,NON ESEGUITO,Richiede ambiente compatibile; istruzioni allegate
+benchmark allocazioni gestite,Windows or dotnet,NON ESEGUITO,Richiede ambiente compatibile; istruzioni allegate

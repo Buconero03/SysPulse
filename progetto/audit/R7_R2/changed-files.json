@@ -1,0 +1,37 @@
+[
+  {
+    "file": "HOTFIX_R7_R2.md",
+    "sha256_before": "",
+    "sha256_after": "945b782280028edf1fe3113a89e690aa1d19f2d7141a73b0bbb69b00cde685c6"
+  },
+  {
+    "file": "README.md",
+    "sha256_before": "5e848d1a7c734bd304d3161fc8f1ceb995ca4affb1df2e4645339992e288ee18",
+    "sha256_after": "7246f0467691ab8263986ef3061bdac10e5fe7750bca7a0b05e2f2a7d7f65f5b"
+  },
+  {
+    "file": "VERSION.txt",
+    "sha256_before": "99f3e526c09eeaf97412a8ff0dc47799831ff391c2d1963a0abf1f212e1fdd5c",
+    "sha256_after": "aba7e3575bdf64083e2f2dedb39892f98118e0fe4be0820717e92e38c75e9947"
+  },
+  {
+    "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+    "sha256_before": "4a956e9ae490109164f6c6d5cff60c9de20d79e0fa62543993640c64aa74d7f8",
+    "sha256_after": "a9a02293998b0447164285990c4b477c029c84a974e76266c93d8f9a723f0d6c"
+  },
+  {
+    "file": "src/ProcessLens.Semantics/RoleClassifier.cs",
+    "sha256_before": "3814dfd5accf54bec91463b940101093b5a3fdbf88ae8fbe506cacde9751b063",
+    "sha256_after": "d8b52e3ce7512ab57e6dd9cfeb176c83de0820848db887d84f18f5ef3d598efd"
+  },
+  {
+    "file": "start-processlens-all.ps1",
+    "sha256_before": "cb69c2d103cc144b46b3f7fc56075799869bfbd9fe4f661a4ff002a7ca12ee85",
+    "sha256_after": "4261020125dab7cc581f916cd3cbe10e92fcf2c833bf4c5064278c85a04e8555"
+  },
+  {
+    "file": "tests/ProcessLens.TerminologyTests/Program.cs",
+    "sha256_before": "a69cef9fc056d5b34e6c171f9ab50cdd93d33dc677b1ddf5b5e36344417379df",
+    "sha256_after": "2a7c77541cc0cca0993977cbe765ed8419927ba56baeda356ab4aa7a0eb511c5"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "baseline_sha256": "2c383c3e3e57f46cee2c3deef6a632655d9a1472dade5a2b24a35b63a92ef528",
+  "modified_files": [
+    "LEGGIMI.txt",
+    "progetto/build-dashboard.ps1",
+    "progetto/src/ProcessLens.App/ProcessLens.App.csproj",
+    "progetto/src/ProcessLens.App/TrayWindowController.cs",
+    "supporto/avvia.ps1"
+  ],
+  "new_files": [
+    "progetto/audit/tools/check_powershell_r32r1.py",
+    "progetto/audit/tools/check_wpf_path_r32r1.ps1",
+    "progetto/audit/tools/package_wpf_path_r32r1.py",
+    "progetto/audit/tools/test_launcher_r32r1.ps1",
+    "progetto/audit/tools/typecheck_wpf_sources_r32r1.py"
+  ],
+  "protected": "All Core, Semantics, native code, tests and UI unchanged from R32; only System.IO.Path qualification, version, launcher and declared preflight changed",
+  "new_dependencies": 0,
+  "Windows_runtime_DPI_RAM": "NOT EXECUTED / NOT MEASURED"
+}

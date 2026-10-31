@@ -1,0 +1,62 @@
+PASS Sintassi PowerShell: 77 script verificati.
+PASS menu servizi: tasto destro, azione SCM e PID ospitante collegati.
+PASS XAML: nessun ContextMenu con handler dentro Style.Setter.Value.
+PASS menu contestuale: creazione e handlers in C#.
+PASS UI readability: window centered at startup
+PASS UI readability: filters and counters on separate rows
+PASS UI readability: text wraps in process explanations
+PASS UI readability: process labels wrap
+PASS UI readability: technical identification section
+PASS UI readability: XML valido e nomi univoci
+PASS UI readability v0.19.16 R3: metric columns and technical tooltips.
+PASS UI readability R4: optional RAM guide, Windows API source and PID example.
+PASS R8: lazy dashboard hosts, on-demand details, sample buffer, recycling and lifecycle guards.
+PASS R10 R1: all buttons styled; missing/unknown styles and fixed-height regressions rejected.
+PASS R9: time and network presentation wired; button labels and metric cells can wrap. Structural checks only; visual Windows verification is separate.
+PASS R10 R10: resizable analysis, focus/return, Windows context and Guardian diagnostic details wired. Source checks only; WPF and DPI checks remain separate.
+PASS UX R11: concise terminology and memory summary; compact logs with legacy parsing. Source checks only.
+PASS R12: passive network view, manual refresh, scoped labels, incomplete-data states and copy. Source checks only.
+PASS R16 source: local read-only Windows evidence, audit status, bounded history and owned resource cleanup.
+PASS R17 source: owned native capture, WLAN cache, manual activation and bounded metadata.
+PASS R18 source: bounded own IPv4 socket, retained error diagnostics, no probes or policy changes.
+PASS R18 R2 source guard: 13 regression cases; original false positive reproduced.
+PASS R18 R1 source: bounded native Dispatcher layout; original height, wrap and selection assertions retained.
+PASS R13: explicit capture, bounded commands, local interface, monitor verification, owned-child cleanup, copied output. Source checks only.
+PASS R14 source only: lazy system inventory, bounded read-only acquisition, identity guards and copy.
+PASS R15 source: curated components, grouped instances, manual acquisition and explicit RAM maximum.
+PASS R14 R3: headless WPF context setup and asynchronous ownership preflight supplied (source check).
+PASS R10 copy: selectable output, one-way bindings, grid copy, complete report and no automatic GUI termination. Structural checks only.
+PASS R10 R3 hierarchy: overview, chapters, wrapping, source retention and lazy controls. Source checks only.
+PASS R10 R4 exit notice: verified instance, Windows exit signal and bounded UI lifecycle. Source checks only.
+PASS R10 R7 lifecycle: taskbar restore route, Mostra, explicit exit and shell recovery wired. Source checks only.
+PASS R10 R6 audit layout: timestamp/stage/message cards, spacing, append and original copy wired. Source checks only.
+PASS R10 R7 resources: CPU tick, stale generation, sample age and self-resource copy wired. Source checks only.
+PASS Terminologia UI: etichette, vocabolario centrale e XAML validi.
+PASS UX R11: short role labels; redundant badge and sorting prose removed.
+PASS Detail UI v0.19.10: sezioni, gerarchia, dati originali e collegamenti WPF.
+PASS Classification UI: concise facts, diagnostic details and limit statements.
+PASS Classification hierarchy v0.19.14: readable groups, preserved original, bounded display.
+PASS Guardian dashboard: valid XML, navigation, bindings, System.IO import, null guard and read-only SQLite access.
+PASS Memory Dashboard: navigazione, XAML, soglia e riarmo, timer leggero e notifica WinForms.
+PASS RAM UI v0.19.5: XAML, indicatori, prove, stati agente e nomi unici
+PASS: menu hover WPF, handler, rapporto RAM strutturato e pressione fisica reale.
+PASS: selected PID memory refresh, source audit and evidence boundaries.
+PASS native Windows allocation API, PID identity, bounded sampling, UI evidence and logs.
+PASS profiler isolation: GUI avvia solo il profiler esterno
+PASS profiler isolation: Dump temporaneo
+PASS profiler isolation: RAM gate all 85 percent
+PASS profiler isolation: GUI esplicita e consenso
+PASS profiler isolation: Nessun tool auto-installato
+PASS profiler isolation: Profilazione annullabile
+PASS profiler isolation: Binario profiler separato
+PASS fixture: processo sintetico chiuso e file rimossi
+PASS fixture: identita PID con ora avvio
+PASS fixture: nessun profiler automatico nella build
+PASS fixture: nessun profiler automatico nel launcher
+PASS fixture: nessuna installazione automatica
+PASS fixture: target di prova con oggetti sintetici
+PASS fixture: nessun servizio Guardian modificato
+PASS fixture: consenso scritto richiesto
+PASS fixture: soglia preventiva RAM
+PASS fixture: default senza acquisizione
+PASS v0.19.13: catalogo eventi, build, RAM, profiler e lettore JSONL collegati.

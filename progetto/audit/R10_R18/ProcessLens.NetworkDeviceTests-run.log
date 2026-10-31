@@ -1,0 +1,82 @@
+PASS network devices: gateway changes cannot inherit recognition
+PASS network devices: IPv6 scope index changes do not replace the stable adapter and gateway fingerprint
+PASS network devices: missing gateway MAC cannot establish a recognition scope
+PASS network devices: MAC normalization retains locally administered addresses
+PASS network devices: invalid or multicast MAC rejected: 
+PASS network devices: invalid or multicast MAC rejected: 00-00-00-00-00-00
+PASS network devices: invalid or multicast MAC rejected: FF-FF-FF-FF-FF-FF
+PASS network devices: invalid or multicast MAC rejected: 01-00-5E-00-00-01
+PASS network devices: invalid or multicast MAC rejected: garbage
+PASS network devices: invalid or multicast MAC rejected: 02-11
+PASS network devices: non-device address excluded: 127.0.0.1
+PASS network devices: non-device address excluded: 224.0.0.1
+PASS network devices: non-device address excluded: 255.255.255.255
+PASS network devices: non-device address excluded: 0.0.0.0
+PASS network devices: non-device address excluded: ::
+PASS network devices: non-device address excluded: ::%5
+PASS network devices: non-device address excluded: ::1
+PASS network devices: non-device address excluded: ff02::1
+PASS network devices: non-device address excluded: invalid
+PASS network devices: IPv4 and IPv6 share one MAC row [it-IT]
+PASS network devices: unknown device has no invented identity or intrusion claim [it-IT]
+PASS network devices: green means user-recognized observed entries only [it-IT]
+PASS network devices: partial acquisition cannot become green [it-IT]
+PASS network devices: IPv4 and IPv6 share one MAC row [en-US]
+PASS network devices: unknown device has no invented identity or intrusion claim [en-US]
+PASS network devices: green means user-recognized observed entries only [en-US]
+PASS network devices: partial acquisition cannot become green [en-US]
+PASS network devices: stale cache is not current connectivity
+PASS network devices: permanent entry is not confirmed presence
+PASS network devices: unresolved address retained but not counted as a device
+PASS network devices: empty cache cannot certify a safe or empty network
+PASS network devices: failed acquisition preserves its error and unavailable count
+PASS network devices: same MAC on another scope remains unrecognized
+PASS network devices: missing scope does not show an invented zero unknown devices
+PASS network devices: registry failure is visible and blocks recognition
+PASS network devices: same MAC on distinct adapters is not merged
+PASS network devices: first complete capture establishes baseline without a new-device alert
+PASS network devices: partial reads cannot change novelty history
+PASS network devices: new address alerts once across repeated refreshes
+PASS network devices: temporary absence does not create another new-device alert
+PASS network devices: another network gets its own initial baseline
+PASS network devices: a user-recognized device does not raise an unknown-device alert
+PASS network devices: missing local registry is an empty catalog
+PASS network devices: recognition and Unicode name survive save and reload
+PASS network devices: atomic save leaves no temporary files
+PASS network devices: invalid user labels cannot overwrite a valid registry
+PASS network devices: corrupt registry cannot be silently replaced
+PASS network devices: R14 R1 oversized registry [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 oversized registry [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 unknown schema [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 unknown schema [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 null device list [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 null device list [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 null device entry [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 null device entry [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 duplicate identities [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 duplicate identities [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 too many devices [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 too many devices [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 empty JSON [it-IT] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 empty JSON [it-IT] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 exact byte limit is accepted without rewriting [it-IT]
+PASS network devices: R14 R1 oversized registry [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 oversized registry [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 unknown schema [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 unknown schema [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 null device list [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 null device list [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 null device entry [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 null device entry [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 duplicate identities [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 duplicate identities [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 too many devices [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 too many devices [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 empty JSON [en-US] returns an unavailable catalog with its reason
+PASS network devices: R14 R1 empty JSON [en-US] blocks overwrite and preserves exact bytes without temporary files
+PASS network devices: R14 R1 exact byte limit is accepted without rewriting [en-US]
+PASS network devices: native row stride and aligned table header match Windows SDK layout
+PASS network devices: independent IPv4 fixture decodes offsets and unreachable flag without live acquisition
+PASS network devices: independent IPv6 fixture retains scope and missing MAC
+PASS network devices: native table row cap reports truncation
+Network device regressions complete; no live network acquisition or probes.

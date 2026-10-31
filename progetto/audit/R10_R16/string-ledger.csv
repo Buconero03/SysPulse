@@ -1,0 +1,236 @@
+file,line,added_or_modified_source_text,context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,10,"public string Text => Category + "": "" + (FailuresEnabled is true ? ""raccolta errori abilitata adesso"" :",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,11,"FailuresEnabled is false ? ""raccolta errori disabilitata adesso"" : ""configurazione N/D"") +",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,12,"(Note.Length == 0 ? """" : "" · "" + Note);",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,18,"public string Time => Utc.ToLocalTime().ToString(""yyyy-MM-dd HH:mm:ss"", CultureInfo.CurrentCulture);",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,19,"public string PidText => Pid?.ToString(CultureInfo.CurrentCulture) ?? ""N/D"";",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,20,"public string Details => $""[Security:{RecordId?.ToString(CultureInfo.InvariantCulture) ?? ""N/D""}] Evento {EventId}\n"" +",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,21,"$""Ora UTC: {Utc:O}\n{Event}\nSorgente: {SourceAddress} · porta {SourcePort}\n"" +",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,22,"$""Destinazione: {DestinationAddress} · porta {DestinationPort}\nDirezione: {Direction} · protocollo: {Protocol}\n"" +",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,23,"$""PID riportato all'epoca: {PidText} · programma riportato: {Application}\nStato riportato: {Status}\n"" +",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,24,"""È un evento storico del PC. Il PID può essere stato riutilizzato; non identifica l'istanza attuale. "" +",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,25,"""Un blocco o un accesso fallito non dimostra un'intrusione o un ascolto del traffico."";",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,37,"private static readonly XNamespace Ns = ""http://schemas.microsoft.com/win/2004/08/events/event"";",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,40,"if (xml.Length == 0 || xml.Length > MaximumXmlChars) throw new InvalidDataException(""XML evento oltre il limite o vuoto."");",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,45,"if (root?.Name != Ns + ""Event"") throw new InvalidDataException(""Schema evento non riconosciuto."");",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,46,"var system = root.Element(Ns + ""System"") ?? throw new InvalidDataException(""Intestazione evento assente."");",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,47,"if ((string?)system.Element(Ns + ""Provider"")?.Attribute(""Name"") != ""Microsoft-Windows-Security-Auditing"")",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,48,"throw new InvalidDataException(""Provider evento inatteso."");",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,49,"if (!int.TryParse((string?)system.Element(Ns + ""EventID""), NumberStyles.None, CultureInfo.InvariantCulture, out int id))",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,50,"throw new InvalidDataException(""ID evento non valido."");",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,52,"string stamp = (string?)system.Element(Ns + ""TimeCreated"")?.Attribute(""SystemTime"") ?? """";",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,54,"throw new InvalidDataException(""Ora evento UTC non valida."");",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,57,"foreach (var e in root.Element(Ns + ""EventData"")?.Elements(Ns + ""Data"") ?? [])",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,59,"string name = (string?)e.Attribute(""Name"") ?? """";",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,60,"if (name.Length == 0 || !fields.TryAdd(name, e.Value)) throw new InvalidDataException(""Campi evento ambigui."");",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,62,"string Get(string key) => fields.TryGetValue(key, out string? value) ? value : """";",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,63,"string logon = Get(""LogonType"");",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,64,"if (id == 4625 && logon is not (""3"" or ""10"")) return null; // Network / RemoteInteractive only.",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,65,"long? record = long.TryParse((string?)system.Element(Ns + ""EventRecordID""), NumberStyles.None,",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,67,"string source = Address(Get(id == 5157 ? ""SourceAddress"" : ""IpAddress""));",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,68,"string direction = id == 4625 ? ""Accesso alla macchina"" : Get(""Direction"") switch {",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,69,"""%%14592"" => ""Ingresso"", ""%%14593"" => ""Uscita"", _ => ""N/D"" };",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,70,"string protocol = id == 4625 ? ""N/D"" : Get(""Protocol"") switch { ""6"" => ""TCP"", ""17"" => ""UDP"", ""1"" => ""ICMP"", ""58"" => ""ICMPv6"", _ => Clean(Get(""Protocol""), 16) };",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,72,"id == 5157 ? ""Connessione bloccata da WFP"" : logon == ""10"" ? ""Accesso interattivo remoto fallito"" : ""Accesso di rete fallito"",",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,73,"source, Port(Get(id == 5157 ? ""SourcePort"" : ""IpPort"")),",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,74,"id == 5157 ? Address(Get(""DestAddress"")) : ""Questo PC"", id == 5157 ? Port(Get(""DestPort"")) : ""N/D"",",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,75,"direction, protocol, Pid(Get(id == 5157 ? ""ProcessID"" : ""ProcessId"")),",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,76,"Basename(Get(id == 5157 ? ""Application"" : ""ProcessName"")), id == 4625 ? Clean(Get(""Status""), 32) : ""Blocco registrato"");",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,78,"private static string Address(string value) => IPAddress.TryParse(value, out var ip) ? ip.ToString() : ""N/D"";",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,80,"? port.ToString(CultureInfo.InvariantCulture) : ""N/D"";",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,83,"bool hex = value.StartsWith(""0x"", StringComparison.OrdinalIgnoreCase);",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,87,"private static string Basename(string value) => Clean(value.Replace('/', '\\').Split('\\').LastOrDefault() ?? """", 128);",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,90,"if (string.IsNullOrWhiteSpace(value) || value == ""-"") return ""N/D"";",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,94,"$""[Security] Campione: {s.CapturedUtc:O}\nIntervallo UTC: {s.SinceUtc:O} → {s.CapturedUtc:O}\n"" +",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,95,"(s.Available ? $""Eventi nel campione: {s.Events.Count} · blocchi WFP: {s.Events.Count(e => e.EventId == 5157)} · accessi di rete/remoti falliti: {s.Events.Count(e => e.EventId == 4625)}"" : ""Registro Security: non disponibile; conteggi N/D"") +",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,96,"(s.Partial ? ""\nLettura parziale: non rappresenta tutti gli eventi dell'intervallo."" : """") + ""\n"" +",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,97,"string.Join(""\n"", s.Audit.Select(a => a.Text)) + ""\n"" + s.Note + ""\n"" +",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,98,"""La configurazione attuale non ricostruisce quella passata o le eccezioni per utente. Zero eventi non certifica assenza di tentativi. "" +",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,99,"""Questa vista non conta i client del router e non rileva con certezza un ascolto passivo.\n"" +",UI/report or technical source context
+src/ProcessLens.Core/NativeNetworkEvidence.cs,100,"string.Join(""\n\n"", s.Events.Select(e => e.Details));",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,21,"internal static readonly Guid ConnectionAudit = new(""0cce9226-69ae-11d9-bed3-505054503030"");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,22,"internal static readonly Guid LogonAudit = new(""0cce9215-69ae-11d9-bed3-505054503030"");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,24,"""*[System[Provider[@Name='Microsoft-Windows-Security-Auditing'] and (EventID=5157 or EventID=4625) and "" +",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,25,"$""TimeCreated[@SystemTime >= '{since:O}' and @SystemTime <= '{until:O}']]]"";",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,36,"string note = ""Fonte: Windows Event Log API · Security locale · eventi 5157 e 4625 tipi 3/10. "" +",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,37,"""Massimo 256 eventi letti; nessuna modifica ai criteri di audit o al firewall."";",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,42,"audit.Add(_api.ReadAudit(ConnectionAudit, ""Blocchi connessione / WFP""));",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,44,"audit.Add(_api.ReadAudit(LogonAudit, ""Accessi / Logon""));",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,46,"if (query == IntPtr.Zero) throw new InvalidDataException(""Handle della query eventi non valido."");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,57,"throw new Win32Exception(error, ""EvtNext non riuscita · Win32 "" + error);",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,62,"if (record == IntPtr.Zero) throw new InvalidDataException(""Handle evento nullo."");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,65,"{ partial = true; note += "" Limite testo raggiunto.""; break; }",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,77,"if (!exhausted) { partial = true; note += "" Lettura limitata per numero, tempo o testo.""; }",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,78,"if (malformed > 0) note += $"" {malformed} eventi non interpretabili."";",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,84,"note += "" "" + (ex is Win32Exception native ? ""Win32 "" + native.NativeErrorCode + "" · "" : """") + ex.Message + (ex is Win32Exception { NativeErrorCode: 5 } ? "" Lettura non autorizzata: può richiedere privilegi amministrativi o diritti sul registro Security."" : """");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,95,"[DllImport(""advapi32.dll"", ExactSpelling = true, SetLastError = true)]",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,98,"[DllImport(""advapi32.dll"", ExactSpelling = true)] private static extern void AuditFree(IntPtr buffer);",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,99,"[DllImport(""wevtapi.dll"", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,101,"[DllImport(""wevtapi.dll"", ExactSpelling = true, SetLastError = true)]",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,104,"[DllImport(""wevtapi.dll"", ExactSpelling = true, SetLastError = true)]",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,108,"[DllImport(""wevtapi.dll"", ExactSpelling = true, SetLastError = true)]",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,116,"return new(name, null, ""AuditQuerySystemPolicy · Win32 "" + Marshal.GetLastWin32Error());",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,117,"if (policy == IntPtr.Zero) return new(name, null, ""Risultato audit vuoto"");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,119,"if (info.Subcategory != category) return new(name, null, ""Sottocategoria audit inattesa"");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,120,"return new(name, FailureEnabled(info.Flags), ""Criterio di sistema attuale; eccezioni per utente non lette"");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,130,"IntPtr query = EvtQuery(IntPtr.Zero, ""Security"", xpath, 0x201); // Channel path + reverse direction.",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,140,"{ if (record != IntPtr.Zero) EvtClose(record); record = IntPtr.Zero; throw new InvalidDataException(""Conteggio EvtNext inatteso.""); }",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,148,"throw new InvalidDataException(""Dimensione XML evento non valida o EvtRender non disponibile · Win32 "" + error);",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,155,"throw new InvalidDataException(""XML evento troncato."");",UI/report or technical source context
+src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs,156,"return Marshal.PtrToStringUni(buffer, checked((int)used / 2 - 1)) ?? """";",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,1,"<UserControl x:Class=""ProcessLens.App.NativeNetworkEvidenceView""",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,2,"xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,3,"xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,4,"xmlns:local=""clr-namespace:ProcessLens.App"">",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,6,"<Style x:Key=""NativeAction"" TargetType=""Button"">",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,7,"<Setter Property=""MinHeight"" Value=""36""/><Setter Property=""Padding"" Value=""12,8""/><Setter Property=""Margin"" Value=""0,0,8,6""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,8,"<Setter Property=""ContentTemplate""><Setter.Value><DataTemplate><TextBlock Text=""{Binding}"" TextWrapping=""Wrap"" TextAlignment=""Center""/></DataTemplate></Setter.Value></Setter>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,10,"<Style x:Key=""NativeCell"" TargetType=""TextBlock""><Setter Property=""TextWrapping"" Value=""Wrap""/><Setter Property=""Padding"" Value=""5""/></Style>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,12,"<Grid Margin=""0,10,0,0"">",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,13,"<Grid.RowDefinitions><RowDefinition Height=""Auto""/><RowDefinition Height=""*"" MinHeight=""90""/><RowDefinition Height=""Auto""/></Grid.RowDefinitions>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,15,"<TextBlock Text=""Segnali di rete · API Windows"" FontSize=""21"" FontWeight=""SemiBold""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,16,"<local:SelectableText Text=""Blocchi di connessione e accessi di rete falliti registrati su questo PC negli ultimi 15 minuti. Lettura manuale, senza programmi aggiuntivi."" TextWrapping=""Wrap"" Margin=""0,5,0,8""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,18,"<Button x:Name=""ReadNativeNetworkButton"" Content=""Leggi eventi Windows"" Style=""{StaticResource NativeAction}"" Click=""Read_Click""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,19,"<Button x:Name=""CopyNativeNetworkButton"" Content=""Copia rapporto"" Style=""{StaticResource NativeAction}"" Click=""Copy_Click"" IsEnabled=""False""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,21,"<local:SelectableText x:Name=""NativeNetworkStatusText"" Text=""Nessuna lettura eseguita."" TextWrapping=""Wrap"" Margin=""0,0,0,7""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,22,"<Expander Header=""Raccolta eventi e limiti"" Margin=""0,0,0,8"">",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,23,"<ScrollViewer MaxHeight=""160"" VerticalScrollBarVisibility=""Auto"">",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,25,"<local:SelectableText x:Name=""NativeNetworkCoverageText"" Text=""Configurazione audit: N/D"" TextWrapping=""Wrap""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,26,"<local:SelectableText Text=""Massimo 256 eventi. Se l'audit è disabilitato o il registro non è accessibile, gli eventi possono mancare. La configurazione attuale non descrive tutto il passato. Un blocco non dimostra un'intrusione; zero eventi non certifica una rete sicura. Il conteggio dei dispositivi resta nella scheda Cache: i client del router e l'ascolto passivo non sono verificabili da questa lettura.""",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,27,"TextWrapping=""Wrap"" Margin=""0,7,0,0""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,32,"<DataGrid x:Name=""NativeNetworkEventsTable"" Grid.Row=""1"" IsReadOnly=""True"" AutoGenerateColumns=""False"" CanUserAddRows=""False"" CanUserDeleteRows=""False""",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,33,"EnableRowVirtualization=""True"" EnableColumnVirtualization=""True"" VirtualizingPanel.VirtualizationMode=""Recycling""",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,34,"local:GridCopySupport.Enabled=""True"" SelectionMode=""Single"" SelectionUnit=""FullRow"" MinRowHeight=""34"" SelectionChanged=""Event_Changed"">",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,36,"<DataGridTextColumn Header=""Ora locale"" Binding=""{Binding Time}"" Width=""155"" ElementStyle=""{StaticResource NativeCell}""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,37,"<DataGridTextColumn Header=""Evento"" Binding=""{Binding Event}"" Width=""200"" ElementStyle=""{StaticResource NativeCell}""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,38,"<DataGridTextColumn Header=""IP sorgente"" Binding=""{Binding SourceAddress}"" Width=""150"" ElementStyle=""{StaticResource NativeCell}""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,39,"<DataGridTextColumn Header=""IP destinazione"" Binding=""{Binding DestinationAddress}"" Width=""150"" ElementStyle=""{StaticResource NativeCell}""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,40,"<DataGridTextColumn Header=""Porta dest."" Binding=""{Binding DestinationPort}"" Width=""80"" ElementStyle=""{StaticResource NativeCell}""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,41,"<DataGridTextColumn Header=""Direzione"" Binding=""{Binding Direction}"" Width=""110"" ElementStyle=""{StaticResource NativeCell}""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,42,"<DataGridTextColumn Header=""PID all'epoca"" Binding=""{Binding PidText}"" Width=""85"" ElementStyle=""{StaticResource NativeCell}""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,45,"<ScrollViewer Grid.Row=""2"" MaxHeight=""160"" VerticalScrollBarVisibility=""Auto"" Margin=""0,9,0,0"">",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml,46,"<local:SelectableText x:Name=""NativeNetworkSelectionText"" Text=""Seleziona un evento per leggere i dettagli."" TextWrapping=""Wrap""/>",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,26,"NativeNetworkStatusText.Text = ""Campione da aggiornare."";",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,27,"NativeNetworkCoverageText.Text = ""Configurazione audit: N/D"";",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,28,"NativeNetworkSelectionText.Text = ""Seleziona un evento dopo la lettura."";",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,38,"NativeNetworkStatusText.Text = ""Lettura del registro Security…"";",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,39,"NativeNetworkCoverageText.Text = ""Configurazione audit: lettura in corso."";",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,40,"NativeNetworkSelectionText.Text = ""Seleziona un evento dopo la lettura."";",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,48,"NativeNetworkStatusText.Text = !result.Available ? ""Registro Security non disponibile · conteggi N/D"" :",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,49,"$""{result.Events.Count} eventi nel campione · {result.Events.Count(e => e.EventId == 5157)} blocchi WFP · "" +",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,50,"$""{result.Events.Count(e => e.EventId == 4625)} accessi di rete/remoti falliti"" + (result.Partial ? "" · lettura parziale"" : """");",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,51,"NativeNetworkCoverageText.Text = string.Join(""\n"", result.Audit.Select(a => a.Text)) + ""\n"" + result.Note;",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,57,"{ NativeNetworkStatusText.Text = ""Lettura non disponibile · conteggi N/D""; NativeNetworkCoverageText.Text = ex.Message; }",UI/report or technical source context
+src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs,72,"? row.Details : ""Seleziona un evento per leggere i dettagli."";",UI/report or technical source context
+src/ProcessLens.App/NetworkDevicesView.xaml,84,"<TabItem Header=""Segnali Windows""><ContentControl x:Name=""NativeNetworkHost"" HorizontalContentAlignment=""Stretch"" VerticalContentAlignment=""Stretch""/></TabItem>",UI/report or technical source context
+src/ProcessLens.App/NetworkDevicesView.xaml.cs,63,"NetworkSummaryText.Text = NetworkTabs.SelectedIndex == 1 ? ""Aggiorna la cache dopo le operazioni sulla scheda Wi-Fi."" : ""Premi Aggiorna elenco quando torni alla cache."";",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,12,"{ if (!ok) throw new Exception(""FAIL native network: "" + label); Console.WriteLine(""PASS native network: "" + label); }",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,14,"{ try { action(); } catch (Exception e) when (e is InvalidDataException or XmlException) { Check(true, label); return; } throw new Exception(""FAIL native network: "" + label); }",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,16,"static readonly XNamespace Ns = ""http://schemas.microsoft.com/win/2004/08/events/event"";",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,18,"new XElement(Ns + ""Event"", new XElement(Ns + ""System"",",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,19,"new XElement(Ns + ""Provider"", new XAttribute(""Name"", ""Microsoft-Windows-Security-Auditing"")),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,20,"new XElement(Ns + ""EventID"", id), new XElement(Ns + ""EventRecordID"", record),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,21,"new XElement(Ns + ""TimeCreated"", new XAttribute(""SystemTime"", (stamp ?? Until.AddMinutes(-1)).ToString(""O"")))),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,22,"new XElement(Ns + ""EventData"", fields.Select(f => new XElement(Ns + ""Data"", new XAttribute(""Name"", f.Key), f.Value))))",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,26,"(""Direction"", ""%%14592""), (""SourceAddress"", ""192.0.2.8""), (""SourcePort"", ""42000""),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,27,"(""DestAddress"", ""2001:db8::1""), (""DestPort"", ""3389""), (""Protocol"", ""6""),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,28,"(""ProcessID"", ""120""), (""Application"", @""\device\harddiskvolume1\private\app.exe""));",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,31,"foreach (string culture in new[] { ""it-IT"", ""en-US"" })",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,35,"Check(block.EventId == 5157 && block.Direction == ""Ingresso"" && block.Protocol == ""TCP"" &&",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,36,"block.SourceAddress == ""192.0.2.8"" && block.DestinationAddress == ""2001:db8::1"" && block.DestinationPort == ""3389"",",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,37,"""5157 fields decoded by name in both address families "" + culture);",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,38,"Check(block.Pid == 120 && block.Application == ""app.exe"" && block.RecordId == 42 && block.Utc == Until.AddMinutes(-1),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,39,"""reported historical identity and UTC retained without image directory "" + culture);",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,40,"var logon = Decode(Xml(4625, 43, null, (""LogonType"", ""10""), (""IpAddress"", ""198.51.100.9""),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,41,"(""IpPort"", ""4444""), (""ProcessId"", ""0x1f4""), (""ProcessName"", @""C:\secret\winlogon.exe""),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,42,"(""Status"", ""0xC000006D""), (""TargetUserName"", ""PRIVATE_ACCOUNT_SECRET"")))!;",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,43,"Check(logon.Pid == 500 && logon.Event.Contains(""interattivo remoto"") && logon.DestinationAddress == ""Questo PC"" &&",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,44,"logon.Protocol == ""N/D"" && logon.DestinationPort == ""N/D"" && logon.Status == ""0xC000006D"",",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,45,"""4625 remote logon is failure rather than successful access or invented RDP port "" + culture);",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,46,"Check(!logon.Details.Contains(""PRIVATE_ACCOUNT_SECRET"") && !logon.Details.Contains(@""C:\secret"") &&",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,47,"logon.Details.Contains(""riutilizzato"") && logon.Details.Contains(""non dimostra""),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,48,"""private account and image directory omitted; old PID and attribution limits explicit "" + culture);",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,49,"Check(Decode(Xml(4625, 43, null, (""LogonType"", ""2""))) is null && Decode(Xml(4625, 43, null, (""LogonType"", ""5""))) is null,",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,50,"""interactive local and service logon failures do not become network events "" + culture);",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,51,"var missing = Decode(Xml(4625, 44, null, (""LogonType"", ""3""), (""IpAddress"", ""-""), (""IpPort"", ""-"")))!;",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,52,"Check(missing.SourceAddress == ""N/D"" && missing.SourcePort == ""N/D"" && missing.Pid is null,",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,53,"""network logon with missing source and PID remains unavailable "" + culture);",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,54,"var unavailable = new NativeNetworkSnapshot(Until, Until.AddMinutes(-15), false, true, [], [], ""Win32 5"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,56,"Check(report.Contains(""conteggi N/D"") && report.Contains(""Win32 5"") && report.Contains(""ascolto passivo"") && !report.Contains(""blocchi WFP: 0""),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,57,"""failed acquisition has unavailable counters and original reason "" + culture);",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,59,"var outgoing = Decode(Block().Replace(""%%14592"", ""%%14593""))!;",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,60,"Check(outgoing.Direction == ""Uscita"", ""outbound blocks retain their direction instead of inventing an incoming attacker"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,61,"var unknown = Decode(Xml(5157, 1, null, (""Direction"", ""unexpected""), (""Protocol"", """"), (""SourceAddress"", ""garbage""),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,62,"(""DestPort"", ""65536""), (""ProcessID"", ""4294967295"")))!;",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,63,"Check(unknown.Direction == ""N/D"" && unknown.Protocol == ""N/D"" && unknown.SourceAddress == ""N/D"" &&",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,64,"unknown.DestinationPort == ""N/D"" && unknown.Pid is null, ""invalid address port protocol and oversized PID stay unavailable"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,67,"""exact 15-minute bounds retain endpoints and exclude stale or future records"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,68,"Reject(() => Decode(Block().Replace(""Microsoft-Windows-Security-Auditing"", ""FakeProvider"")), ""wrong provider rejected"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,69,"Reject(() => Decode(""<Event/>""), ""wrong namespace rejected"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,70,"Reject(() => Decode(Block().Replace(""<EventID>5157</EventID>"", ""<EventID>bad</EventID>"")), ""invalid event ID rejected"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,71,"Reject(() => Decode(Block().Replace(""SystemTime=\""2026"", ""SystemTime=\""bad2026"")), ""invalid event timestamp rejected"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,72,"Reject(() => Decode(Xml(5157, 1, null, (""SourceAddress"", ""192.0.2.1""), (""SourceAddress"", ""192.0.2.2""))), ""duplicate named fields rejected"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,73,"Reject(() => Decode(""<!DOCTYPE Event [<!ENTITY x SYSTEM 'file:///private'>]><Event>&x;</Event>""), ""DTD and external entities rejected without IO"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,74,"Reject(() => Decode(new string('x', NativeNetworkEvidence.MaximumXmlChars + 1)), ""oversized XML rejected before parsing"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,75,"var safe = Decode(Xml(5157, 1, null, (""Application"", ""evil\nFAKE_LOG.exe""), (""Protocol"", ""1\nFAKE_EVENT"")))!;",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,76,"Check(!safe.Application.Contains('\n') && !safe.Protocol.Contains('\n'), ""event data cannot inject visual log lines"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,78,"Marshal.OffsetOf<NetworkEvidenceApi.AuditPolicyInfo>(""Flags"").ToInt32() == 16 &&",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,79,"Marshal.OffsetOf<NetworkEvidenceApi.AuditPolicyInfo>(""Category"").ToInt32() == 20,",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,80,"""audit structure matches independent Windows SDK offsets 0 16 20 and stride 36"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,84,"""audit failure flag handles disabled success-only combined and invalid masks"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,85,"Check(WindowsNativeNetworkEvidence.ConnectionAudit == new Guid(""0cce9226-69ae-11d9-bed3-505054503030"") &&",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,86,"WindowsNativeNetworkEvidence.LogonAudit == new Guid(""0cce9215-69ae-11d9-bed3-505054503030""), ""audit categories are published WFP connection and Logon GUIDs"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,89,"""normal empty query closes its handle and reports no sampled events rather than a safe verdict"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,90,"Check(empty.Threads.Distinct().Count() == 1 && empty.QueryText.Contains(""@SystemTime >= '"") &&",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,91,"empty.QueryText.Contains(""@SystemTime <= '"") && !empty.QueryText.Contains(""5152""),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,92,"""native query stays on one owner thread with absolute bounds and no per-packet logging"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,96,"""record IDs deduplicate repeated records and every owned event handle closes"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,98,"Check(!noAccess.Available && noAccess.Note.Contains(""Win32Exception"") == false && noAccess.Note.Contains(""Win32 5"") && noAccess.Note.Contains(""non autorizzata"") &&",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,99,"noAccess.Audit.Count == 2 && denied.Closed.Count == 0, ""denied channel preserves unavailable state and audit observations"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,101,"Check(!failedNext.Available && failedNext.Partial && failedNext.Note.Contains(""Win32 5"") && nextError.Closed.SequenceEqual(new[] { 1 }),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,102,"""first read failure is unavailable rather than a successful empty log"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,104,"Check(partial.Available && partial.Partial && partial.Events.Count == 1 && partial.Note.Contains(""15011"") && lateError.Closed.Count == 2,",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,105,"""mid-query error preserves prior events its reason and all handle cleanup"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,106,"var malformed = new Fake([""<bad>"", now]); var bad = new WindowsNativeNetworkEvidence(malformed).Capture(default);",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,107,"Check(bad.Available && bad.Partial && bad.Events.Count == 1 && bad.Note.Contains(""non interpretabili""),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,108,"""malformed event cannot become a complete empty acquisition"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,112,"""fixed event budget bounds retained history and closes the last event and query"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,113,"string large = now.Replace(""</Event>"", ""<UserData>"" + new string('x', 30000) + ""</UserData></Event>"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,116,"Check(limitedText.Partial && limitedText.Note.Contains(""Limite testo"") && textBudget.NextCalls < 40 &&",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,118,"""aggregate XML text budget stops before retaining or parsing unbounded event payloads"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,120,"Check(renderFail.Partial && render.Closed.Order().SequenceEqual(new[] { 1, 2 }), ""render failure releases owned event and query handles"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,123,"try { new WindowsNativeNetworkEvidence(cancel).Capture(cancelled.Token); throw new Exception(""cancel ignored""); }",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,124,"catch (OperationCanceledException) { Check(cancel.Closed.Order().SequenceEqual(new[] { 1, 2 }), ""cancellation propagates and releases owned handles""); }",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,125,"var disabled = new NetworkAuditSetting(""WFP"", false, """"); var unknownAudit = new NetworkAuditSetting(""Logon"", null, ""Win32 5"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,126,"Check(disabled.Text.Contains(""disabilitata"") && unknownAudit.Text.Contains(""N/D"") && unknownAudit.Text.Contains(""Win32 5""),",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,127,"""disabled and unknown audit configuration remain distinct"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,128,"Console.WriteLine(""Native network evidence tests complete; owned fake API only, no live query, capture, setting or firewall change."");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,132,"public List<int> Closed = []; public List<int> Threads = []; public string QueryText = """";",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,135,"public NetworkAuditSetting ReadAudit(Guid category, string name) => new(name, false, ""fixture disabled"");",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/Program.cs,142,"{ Threads.Add(Environment.CurrentManagedThreadId); if (RenderError) throw new InvalidDataException(""render fixture error""); return rows[record.ToInt32() - 2]; }",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/ProcessLens.NativeNetworkTests.csproj,1,"<Project Sdk=""Microsoft.NET.Sdk"">",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/ProcessLens.NativeNetworkTests.csproj,3,"<ItemGroup><ProjectReference Include=""../../src/ProcessLens.Core/ProcessLens.Core.csproj""/>",UI/report or technical source context
+tests/ProcessLens.NativeNetworkTests/ProcessLens.NativeNetworkTests.csproj,4,"<Compile Include=""../../src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs"" Link=""WindowsNativeNetworkEvidence.cs""/>",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,153,"var nativeHost = (ContentControl)actualNetwork.FindName(""NativeNetworkHost"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,154,"Check(nativeHost.Content is null, ""R16 native evidence pane stays lazy while packet tab is used"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,155,"((Button)window.FindName(""NavNetworkButton"")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,156,"((TabControl)actualNetwork.FindName(""NetworkTabs"")).SelectedIndex = 2;",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,158,"((DataGrid)((NativeNetworkEvidenceView)nativeHost.Content).FindName(""NativeNetworkEventsTable"")).Items.Count == 0,",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,159,"""R16 native tab constructs without reading Security or audit policy"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,180,"Check(nativeSource.Calls == 0, ""R16 native view constructor does not invoke Windows APIs"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,182,"Check(nativeSource.Calls == 0, ""R16 native activation does not automatically read logs"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,184,"var nativeGrid = (DataGrid)nativeView.FindName(""NativeNetworkEventsTable"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,186,"""R16 manual native acquisition binds copied virtualized event data"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,188,"Check(((SelectableText)nativeView.FindName(""NativeNetworkSelectionText"")).Text.Contains(""PID può essere stato riutilizzato"") &&",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,189,"GridCopySupport.CaptureTable(nativeGrid, false).Contains(""192.0.2.8""),",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,190,"""R16 event selection and table copy retain reported historical source and PID limits"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,193,"Check(nativeSource.Started.Wait(TimeSpan.FromSeconds(5)), ""R16 blocked native fixture starts on worker"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,195,"Check(nativeSource.Calls == 2, ""R16 concurrent native refreshes coalesce"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,197,"Check(nativeGrid.Items.Count == 0 && !((Button)nativeView.FindName(""ReadNativeNetworkButton"")).IsEnabled,",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,198,"""R16 hidden pane rejects late native results and releases event rows"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,200,"nativeSource.Snapshot = nativeSource.Snapshot with { Available = false, Partial = true, Events = [], Note = ""fixture access denied"" };",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,202,"Check(nativeGrid.Items.Count == 0 && ((SelectableText)nativeView.FindName(""NativeNetworkStatusText"")).Text.Contains(""N/D"") &&",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,203,"((SelectableText)nativeView.FindName(""NativeNetworkCoverageText"")).Text.Contains(""fixture access denied""),",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,204,"""R16 unavailable log clears old rows and preserves error without invented zero"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,220,"new[] { new NetworkAuditSetting(""WFP"", false, ""fixture policy"") },",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,221,"new[] { new NativeNetworkEvent(DateTime.UtcNow, 1, 5157, ""Connessione bloccata da WFP"", ""192.0.2.8"", ""12345"", ""192.0.2.1"", ""3389"", ""Ingresso"", ""TCP"", 123, ""fixture.exe"", ""Blocco registrato"") }, ""fixture note"");",UI/report or technical source context

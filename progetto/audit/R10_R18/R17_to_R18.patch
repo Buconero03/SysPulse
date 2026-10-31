@@ -1,0 +1,1254 @@
+diff --git a/README.md b/README.md
+index a3fd6a0..62ba3d4 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,5 @@
++> **Candidata R18:** corretti gli esiti rete poco leggibili. Aggiunta cattura IPv4 nativa Winsock indipendente dalle API PktMon; diagnosi copiata e conservata dopo il cambio scheda; audit disabilitato evidenziato con istruzioni manuali. 332 asserzioni portabili PASS; cattura reale e WPF da verificare su Windows. Leggere `RETE_CORREZIONI_R18.md`.
++
+ > **Candidata R17:** Rete → Cattura Windows / Wi-Fi usa le API PktMon e Native Wi-Fi senza installare Wireshark/Npcap. Sessione propria, raccolta manuale e cache radio distinta dai client del router. 276 asserzioni .NET portabili passate; cattura reale, WPF e RAM su Windows da verificare. Leggere `RETE_NATIVA_R17.md`. Le istruzioni delle revisioni seguenti sono storiche.
+ 
+ > **Candidata R16:** Rete → Segnali Windows: lettura manuale nativa degli eventi di connessione bloccata e accesso remoto/rete fallito, con stato dei criteri audit. Senza programmi o driver aggiuntivi. 201 asserzioni .NET portabili passate; chiamate Windows, WPF e RAM reale da verificare. Leggere `RETE_NATIVA_R16.md`.
+diff --git a/RETE_CORREZIONI_R18.md b/RETE_CORREZIONI_R18.md
+new file mode 100644
+index 0000000..7e78863
+--- /dev/null
++++ b/RETE_CORREZIONI_R18.md
+@@ -0,0 +1,69 @@
++# R18 — cattura IP locale e audit spiegato
++
++Questa candidata continua l’esatta R17, dopo le due schermate segnalate il 22 ottobre 2026. Non ripete la revisione semantica precedente.
++
++## Che cosa si vede nelle schermate
++
++- **Cattura Windows / Wi-Fi:** il testo «Sezione chiusa» e l’assenza di sorgenti non mostrano il risultato dell’ultimo tentativo. La R17 rilasciava righe e messaggi quando si lasciava la scheda. Dalla schermata non si ricava un codice errore né si può concludere che la DLL sia assente.
++- **Segnali Windows:** la lettura ha restituito zero eventi, con audit WFP disabilitato e audit Logon abilitato. Non è una prova di guasto della query: il sistema potrebbe non aver registrato i blocchi WFP. La UI dava troppo risalto ai conteggi e poco alla copertura mancante.
++
++## Come usare la R18
++
++1. Estrarre in una cartella nuova e compilare con `.\build-dashboard.ps1`. Avviare l’EXE generato: il manifest richiede amministratore.
++2. Aprire **Rete → Cattura Windows / Wi-Fi → Elenca sorgenti Windows**.
++3. Per una cattura indipendente dalle esportazioni PktMon, scegliere **Windows · IP locale · <scheda> · <IPv4>**, quindi **Cattura per 20 s**. Durante la raccolta usare normalmente una propria applicazione di rete sulla scheda scelta; ProcessLens non genera traffico di prova. È necessaria una scheda attiva con IPv4 locale univoco. La semplice enumerazione non apre un socket né certifica che i permessi consentano la cattura.
++4. Le sorgenti **PktMon** rimangono distinte e selezionabili solo quando le API documentate sono disponibili. Se non lo sono, il motivo rimane leggibile senza impedire l’elenco IP locale.
++5. **Leggi reti Wi-Fi** continua a leggere la cache radio WLAN. Richiede scheda/servizio WLAN attivi e può richiedere il consenso Posizione. Non è il conteggio dei client del router.
++6. Alla fine leggere protocollo, endpoint e byte campionati. **Interrompi lettura** ferma la raccolta. Quando si cambia scheda vengono rilasciate le righe e gli handle; resta una diagnosi testuale limitata e copiabile con l’ora UTC dell’ultimo esito. Un risultato tardivo non ripopola la scheda chiusa.
++
++## Alternativa Winsock
++
++Il nuovo collector usa il socket Windows `AF_INET / SOCK_RAW / IPPROTO_IP`, associa un IPv4 locale esplicito e imposta `SIO_RCVALL` a **RCVALL_IPLEVEL = 3**. Non usa RCVALL_ON, non abilita la modalità promiscua della scheda e non cambia il canale o la modalità Wi-Fi. Non dipende dalle esportazioni di `Pktmonapi.dll`, da Wireshark o da Npcap.
++
++Il bind viene verificato sulla stessa identità di scheda e sullo stesso indirizzo correnti; un IPv4 condiviso tra più schede non diventa una scelta ambigua. Un indirizzo migrato a un’altra scheda richiede una nuova enumerazione. I token di selezione non sopravvivono alla chiusura o a una nuova enumerazione.
++
++Limiti: solo IPv4 sulla scheda scelta; nessun ARP, frame 802.11, dissector completo o attribuzione al PID. L’ora è quella di ricezione nel programma, distinta dal timestamp del driver di PktMon. Componenti PktMon, motivi scarto e perdite non misurate sono **N/D**, mai zeri inventati. Anche un campione terminato regolarmente può aver perso pacchetti nel socket: questa perdita non è misurabile da questa lettura.
++
++La cattura conserva soltanto metadati derivati da intestazioni fino a 128 byte; il datagramma completo passa temporaneamente in un buffer di 65.535 byte, poi il buffer viene azzerato. Massimo 2.048 righe e 20 s di raccolta attiva, polling non bloccante con attesa di 100 ms. Setup e chiamate di sistema non hanno una garanzia di durata rigida. Il socket viene ripristinato a RCVALL_OFF e chiuso anche su errori o annullamento. Nessun nuovo processo ausiliario, servizio o timer permanente. Nessuna cifra di RAM totale o risparmio è stata misurata qui.
++
++## Segnali Windows: attivare i futuri blocchi WFP
++
++La scheda evidenzia **Copertura incompleta** se un criterio è disabilitato e **Copertura non verificata** se la lettura del criterio manca. «Nessun evento trovato» resta un esito possibile anche con audit attivo.
++
++Per attivare i futuri eventi 5157, aprire un terminale amministrativo e controllare prima lo stato:
++
++```powershell
++auditpol /get /subcategory:"{0CCE9226-69AE-11D9-BED3-505054503030}"
++```
++
++Se si desidera attivarli:
++
++```powershell
++auditpol /set /subcategory:"{0CCE9226-69AE-11D9-BED3-505054503030}" /failure:enable
++```
++
++Poi premere **Leggi eventi Windows**. Non vengono ricreati eventi passati e non vengono provocati blocchi o accessi falliti di prova. Abilitare l’audit può aumentare il volume del registro Security. Se prima era disabilitato e si vuole ripristinare quello stato:
++
++```powershell
++auditpol /set /subcategory:"{0CCE9226-69AE-11D9-BED3-505054503030}" /failure:disable
++```
++
++Queste istruzioni sono anche nell’interfaccia, sotto **Come attivare la raccolta**. ProcessLens non esegue i comandi e non cambia criteri di audit, firewall o rete. I criteri di un PC aziendale possono prevalere.
++
++## Verifiche eseguite e limiti
++
++- **332 asserzioni .NET portabili PASS**, incluse 56 nuove per sorgenti, identità, socket simulati, buffer, errori, chiusura, cap, annullamento, informazioni mancanti e copertura audit, in it-IT/en-US.
++- Controllo dei tipi C# di Windows, Semantics, App e tre progetti di test UI: sei assembly senza errori o avvisi. Sono usati stub espliciti per i campi generati: **non è compilazione del markup WPF/BAML né esecuzione dei test WPF**.
++- Sorgenti/markup XML e regressioni precedenti ricontrollati; patch R17→R18, prima/dopo, registro stringhe e manifest SHA-256 inclusi.
++- **NON ESEGUITI:** cattura reale Winsock/PktMon, chiamate WLAN reali, modifica manuale dell’audit, build completa Windows, sintassi PowerShell, esecuzione WPF, DPI e misure reali RAM/CPU.
++
++Prima della promozione eseguire la pipeline Windows e provare: sorgente IP locale su scheda attiva; traffico proprio noto; interruzione; chiusura/riapertura; errori ancora copiabili; audit disabilitato/abilitato senza generare eventi fittizi. Nessuna promessa di vedere tutti i dispositivi Wi-Fi o rilevare chi osserva l’IP.
++
++## Fonti primarie
++
++- [SIO_RCVALL: modalità IPLEVEL, bind esplicito e privilegi](https://learn.microsoft.com/en-us/windows/win32/winsock/sio-rcvall)
++- [IOControlCode.ReceiveAll](https://learn.microsoft.com/en-us/dotnet/api/system.net.sockets.iocontrolcode)
++- [Auditing WFP: sottocategorie e GUID indipendenti dalla lingua](https://learn.microsoft.com/en-us/windows/win32/fwp/auditing-and-logging)
++- [Criteri avanzati: significato e volume degli eventi](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/advanced-audit-policy-configuration)
++
++Audit corrente: `audit/R10_R18`. Le revisioni precedenti rimangono come storico.
+diff --git a/audit/tools/check_device_catalog_r14r1.py b/audit/tools/check_device_catalog_r14r1.py
+index 22a4650..8680fb6 100644
+--- a/audit/tools/check_device_catalog_r14r1.py
++++ b/audit/tools/check_device_catalog_r14r1.py
+@@ -22,15 +22,15 @@ def main():
+     after='ex is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or ArgumentException'
+     check('production catalog delta is exactly one explicit exception alternative',
+         old[core].count(before.encode())==1 and (root/core).read_bytes()==old[core].replace(before.encode(),after.encode(),1))
+-    check('App project delta changes only candidate identity',(root/app).read_bytes()==old[app].replace(b'R14-system-processes-candidate',b'R14-R1-device-catalog-fix-candidate') or any(approved_feature(root,app,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17')))
++    check('App project delta changes only candidate identity',(root/app).read_bytes()==old[app].replace(b'R14-system-processes-candidate',b'R14-R1-device-catalog-fix-candidate') or any(approved_feature(root,app,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18')))
+     changed={n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}
+-    check('catalog fix retained with only exact authorized R14 R2/R3 and R15 UI delta',changed - {n for n in changed if any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17'))} == {core,app} - {n for n in (core,app) if any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17'))})
+-    check('R14 sources and prior C# tests retained outside exact authorized R14 R2/R3 and R15 delta',all((root/n).read_bytes()==data or any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17')) for n,data in old.items() if (n.startswith('src/') and n not in {core,app}) or (n.startswith('tests/') and n.endswith('.cs') and n!=test)))
++    check('catalog fix retained with only exact authorized R14 R2/R3 and R15 UI delta',changed - {n for n in changed if any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18'))} == {core,app} - {n for n in (core,app) if any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18'))})
++    check('R14 sources and prior C# tests retained outside exact authorized R14 R2/R3 and R15 delta',all((root/n).read_bytes()==data or any(approved_feature(root,n,rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18')) for n,data in old.items() if (n.startswith('src/') and n not in {core,app}) or (n.startswith('tests/') and n.endswith('.cs') and n!=test)))
+     check('current network guards pass',not network_violations(files))
+     t=files[test]
+     check('real file tests retain oversized schema null duplicate boundary and overwrite checks',all(s in t for s in ['MaximumBytes + 1','null device list','null device entry','duplicate identities','too many devices','empty JSON','exact byte limit','File.ReadAllBytes(path).SequenceEqual(bytes)','store.Save(known) == loaded.Error','it-IT','en-US']))
+     ledger=json.loads((root/'audit/R10_R14_R1/authorized-source-edits.json').read_text())['files']
+-    check('catalog fix hashes exact or exact authorized R14 R2/R3 or R15 version update',len(ledger)==2 and all(sha((root/r['file']).read_bytes())==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17')) for r in ledger))
++    check('catalog fix hashes exact or exact authorized R14 R2/R3 or R15 version update',len(ledger)==2 and all(sha((root/r['file']).read_bytes())==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18')) for r in ledger))
+     evidence=json.loads((root/'audit/R10_R14_R1/runtime-evidence.json').read_text())
+     check('retained compiled source hashes match current source',all(sha((root/n).read_bytes())==digest for n,digest in evidence['source_hashes'].items()))
+     d=root/'audit/R10_R14_R1'
+diff --git a/audit/tools/check_native_capture_r17.py b/audit/tools/check_native_capture_r17.py
+index 257955e..51ab685 100644
+--- a/audit/tools/check_native_capture_r17.py
++++ b/audit/tools/check_native_capture_r17.py
+@@ -24,7 +24,7 @@ def violations(files):
+  need('BssEntrySize = 360' in c and 'MaximumBssRows = 512' in c and 'len > 32' in c and 'count > MaximumBssRows' in c and '8L + count * BssEntrySize > size' in c and 'UTF8Encoding(false, true)' in c and 'Clean(ssid, 96)' in c,'bounded BSS array and untrusted SSID encoding')
+  need('non client connessi' in c and 'non all’intera rete' in c and 'dati possono essere precedenti' in c and 'i privilegi amministrativi non sostituiscono questo consenso' in n and 'Posizione' in n,'cache visibility location permissions and coverage explicit')
+  need('if (!_active || _busy) return;' in u and 'generation != _generation' in u and '_operation?.Cancel()' in u and 'NativeCaptureSourcesBox.SelectedIndex = -1' in u and 'NativePacketsTable.ItemsSource = null' in u and 'WifiBssTable.ItemsSource = null' in u,'manual coalesced UI selection cancellation and late result checks')
+- need('ClipboardText.Copy(this, _report)' in u and 'StartedUtc' in c and 'SourceName' in c and 'Perdite segnalate: N/D' in c,'copy retains source bounds and unavailable metrics')
++ need(('ClipboardText.Copy(this, _report)' in u or 'ClipboardText.Copy(this, _report.Length > 0 ? _report : _lastDiagnostics)' in u) and 'StartedUtc' in c and 'SourceName' in c and 'Perdite segnalate: N/D' in c,'copy retains source bounds and unavailable metrics')
+  need(not any(t in c+n+u for t in ['Process.Start(', 'DispatcherTimer', 'WlanSetInterface', 'WlanScan(', 'Socket.Connect', 'HttpClient', 'AuditSetSystemPolicy', 'FwpmFilterAdd']), 'no external child auto refresh radio mode policy change or network probe')
+  return bad
+ 
+@@ -35,10 +35,10 @@ def main():
+  rows=[]
+  def check(label,ok):rows.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML/mutation or portable evidence correlation; not Windows runtime'});print(rows[-1]['status'],label)
+  ledger=json.loads((audit/'authorized-source-edits.json').read_text())['files'];allowed={x['file'] for x in ledger}
+- check('exact R16 baseline and R17 source/test ledger',all(sha((r/x['file']).read_bytes())==x['sha256_after'] and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
++ check('exact R16 baseline and R17 source/test ledger',all((sha((r/x['file']).read_bytes())==x['sha256_after'] or approved_feature(r,x['file'],'R10_R18')) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
+  check('all prior files retained',all((r/n).is_file() for n in old))
+- check('no source or C# test outside authorized delta',all(n in allowed for n in {f.relative_to(r).as_posix() for f in r.rglob('*') if f.is_file()} if (n.startswith('src/') or n.startswith('tests/') and n.endswith(('.cs','.csproj'))) and old.get(n)!=(r/n).read_bytes()))
+- check('Guardian MemoryAgent profiler and all other baseline collectors retained byte for byte',all((r/n).read_bytes()==b for n,b in old.items() if n.startswith('src/') and n not in allowed))
++ check('no source or C# test outside authorized delta',all(n in allowed or approved_feature(r,n,'R10_R18') for n in {f.relative_to(r).as_posix() for f in r.rglob('*') if f.is_file()} if (n.startswith('src/') or n.startswith('tests/') and n.endswith(('.cs','.csproj'))) and old.get(n)!=(r/n).read_bytes()))
++ check('Guardian MemoryAgent profiler and all other baseline collectors retained byte for byte',all((r/n).read_bytes()==b or approved_feature(r,n,'R10_R18') for n,b in old.items() if n.startswith('src/') and n not in allowed))
+  check('legacy external capture source and fixtures retained byte for byte',all((r/n).read_bytes()==old[n] for n in ['src/ProcessLens.Windows/WiresharkTools.cs','src/ProcessLens.Core/PacketCaptureEvidence.cs','src/ProcessLens.App/NetworkCaptureView.xaml','src/ProcessLens.App/NetworkCaptureView.xaml.cs','tests/ProcessLens.PacketCaptureTests/Program.cs']))
+  files={f.relative_to(r).as_posix():f.read_text(encoding='utf-8-sig') for f in r.rglob('*') if f.suffix in {'.cs','.xaml','.ps1'}}
+  check('all native source guards',not violations(files))
+@@ -59,8 +59,8 @@ def main():
+  prior_stages=[line for line in old['build-dashboard.ps1'].decode('utf-8-sig').splitlines() if line.startswith('Invoke-CheckedDotnet ')]
+  check('all prior Windows build and test stages retained verbatim and in order',all(line in build for line in prior_stages) and [build.index(line) for line in prior_stages]==sorted(build.index(line) for line in prior_stages))
+  typecheck=json.loads((audit/'wpf-typecheck-evidence.json').read_text())
+- check('real C# type checking with explicit field stubs matches current sources and all six assemblies',len(typecheck['assemblies'])==6 and all(row['status']=='PASS' for row in typecheck['assemblies']) and all(sha((r/n).read_bytes())==h for n,h in typecheck['inputs'].items()))
+- evidence=json.loads((audit/'runtime-evidence.json').read_text());check('portable evidence matches all current compiled inputs',all(sha((r/n).read_bytes())==h for n,h in evidence['source_hashes'].items()))
++ check('real C# type checking with explicit field stubs matches current sources and all six assemblies',len(typecheck['assemblies'])==6 and all(row['status']=='PASS' for row in typecheck['assemblies']) and all(sha((r/n).read_bytes())==h or approved_feature(r,n,'R10_R18') for n,h in typecheck['inputs'].items()))
++ evidence=json.loads((audit/'runtime-evidence.json').read_text());check('portable evidence matches all current compiled inputs',all(sha((r/n).read_bytes())==h or approved_feature(r,n,'R10_R18') for n,h in evidence['source_hashes'].items()))
+  for suite,count in [('NativeCaptureTests',75),('NativeNetworkTests',40),('WindowsComponentTests',58),('SystemProcessTests',22),('NetworkDeviceTests',81)]:
+   name='ProcessLens.'+suite;item=next(t for t in evidence['outcomes'] if t['suite']==name);log=(audit/(name+'-run.log')).read_text()
+   check('executed portable '+suite,item['status']=='PASS' and item['assertions']==count and sum(l.startswith('PASS ') for l in log.splitlines())==count and (audit/(name+'-build.log')).read_text()=='')
+@@ -82,6 +82,6 @@ def main():
+   probe=dict(files);assert before in probe[path];probe[path]=probe[path].replace(before,after);check('reject '+label,bool(violations(probe)))
+  for p in [*r.rglob('*.xaml'),*r.rglob('*.csproj')]:ET.parse(p)
+  check('all project and XAML XML parse',True)
+- syntax=json.loads((audit/'syntax-evidence.json').read_text());check('current edited C# syntax corresponds to exact source bytes',syntax['status']=='PASS' and all(sha((r/n).read_bytes())==h for n,h in syntax['source_hashes'].items()))
++ syntax=json.loads((audit/'syntax-evidence.json').read_text());check('current edited C# syntax corresponds to exact source bytes',syntax['status']=='PASS' and all(sha((r/n).read_bytes())==h or approved_feature(r,n,'R10_R18') for n,h in syntax['source_hashes'].items()))
+  a.output.write_text(json.dumps(rows,indent=2)+'\n');raise SystemExit(0 if all(row['status']=='PASS' for row in rows) else 1)
+ if __name__=='__main__':main()
+diff --git a/audit/tools/check_native_network_r16.py b/audit/tools/check_native_network_r16.py
+index 32a687b..ef5b7f7 100644
+--- a/audit/tools/check_native_network_r16.py
++++ b/audit/tools/check_native_network_r16.py
+@@ -43,10 +43,10 @@ def main():
+     def check(label,ok):rows.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML/mutation and portable evidence correlation only'});print(rows[-1]['status'],label)
+     files={f.relative_to(r).as_posix():f.read_text(encoding='utf-8-sig') for f in r.rglob('*') if f.suffix in {'.cs','.xaml','.ps1'}}
+     ledger=json.loads((r/'audit/R10_R16/authorized-source-edits.json').read_text())['files'];allowed={x['file'] for x in ledger}
+-    check('exact source and C# test ledger before and after hashes',all((sha((r/x['file']).read_bytes())==x['sha256_after'] or approved_feature(r,x['file'],'R10_R17')) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
++    check('exact source and C# test ledger before and after hashes',all((sha((r/x['file']).read_bytes())==x['sha256_after'] or any(approved_feature(r,x['file'],revision18) for revision18 in ('R10_R17','R10_R18'))) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
+     check('existing R15 files retained',all((r/n).is_file() for n in old))
+-    check('no production or C# test change outside native feature manifest',all(n in allowed or approved_feature(r,n,'R10_R17') for n in {f.relative_to(r).as_posix() for f in r.rglob('*') if f.is_file()} if (n.startswith('src/') or n.startswith('tests/') and n.endswith(('.cs','.csproj'))) and old.get(n)!=(r/n).read_bytes()))
+-    check('existing native collectors semantics Guardian profiler and RAM monitor unchanged',all((r/n).read_bytes()==b or approved_feature(r,n,'R10_R17') for n,b in old.items() if n.startswith('src/') and n not in allowed))
++    check('no production or C# test change outside native feature manifest',all(n in allowed or any(approved_feature(r,n,revision18) for revision18 in ('R10_R17','R10_R18')) for n in {f.relative_to(r).as_posix() for f in r.rglob('*') if f.is_file()} if (n.startswith('src/') or n.startswith('tests/') and n.endswith(('.cs','.csproj'))) and old.get(n)!=(r/n).read_bytes()))
++    check('existing native collectors semantics Guardian profiler and RAM monitor unchanged',all((r/n).read_bytes()==b or any(approved_feature(r,n,revision18) for revision18 in ('R10_R17','R10_R18')) for n,b in old.items() if n.startswith('src/') and n not in allowed))
+     check('all native security evidence guards pass',not violations(files))
+     check('cache and Wireshark safety guards retained',not cache_guards(files) and not packet_guards(files))
+     x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
+@@ -59,7 +59,7 @@ def main():
+     check('event table copied read-only and virtualized',all(e.get('IsReadOnly')=='True' and e.get(local+'GridCopySupport.Enabled')=='True' and e.get('VirtualizingPanel.VirtualizationMode')=='Recycling' for e in view.iter(w+'DataGrid')))
+     check('report selectable and wraps; action buttons have no fixed height',all(e.get('TextWrapping')=='Wrap' for e in view.iter(local+'SelectableText')) and all(e.get('Style')=='{StaticResource NativeAction}' and 'Height' not in e.attrib for e in view.iter(w+'Button')))
+     ui=files['tests/ProcessLens.NetworkUiTests/Program.cs'];before=old['tests/ProcessLens.NetworkUiTests/Program.cs'].decode('utf-8-sig')
+-    check('every previous network UI assertion preserved with dispatcher context',valid_context(ui) and (all(c in checks(ui) for c in checks(before)) or approved_feature(r,'tests/ProcessLens.NetworkUiTests/Program.cs','R10_R17')))
++    check('every previous network UI assertion preserved with dispatcher context',valid_context(ui) and (all(c in checks(ui) for c in checks(before)) or any(approved_feature(r,'tests/ProcessLens.NetworkUiTests/Program.cs',revision18) for revision18 in ('R10_R17','R10_R18'))))
+     check('new UI regressions cover lazy acquisition results copying coalescing errors and late work',all(t in ui for t in ['new NativeNetworkEvidenceView(nativeSource)','nativeSource.Calls == 0','nativeSource.Calls == 2','nativeView.SetActive(false)','fixture access denied','R16 native tab constructs','PID può essere stato riutilizzato']))
+     check('all clipboard calls retain owner and text',not any(invalid_calls(p.read_text()) for p in (r/'src/ProcessLens.App').rglob('*.cs')))
+     check('Windows build includes native source gate and independent portable suite','check-native-network-r16.ps1' in files['build-dashboard.ps1'] and 'Tests.ProcessLens.NativeNetworkTests' in files['build-dashboard.ps1'])
+@@ -82,6 +82,6 @@ def main():
+     for p in [*r.rglob('*.xaml'),*r.rglob('*.csproj')]:ET.parse(p)
+     check('all XAML and project XML parse',True)
+     syntax=json.loads((r/'audit/R10_R16/syntax-evidence.json').read_text())
+-    check('current edited C# syntax evidence matches exact sources',syntax['status']=='PASS' and all(sha((r/n).read_bytes())==h or approved_feature(r,n,'R10_R17') for n,h in syntax['source_hashes'].items()))
++    check('current edited C# syntax evidence matches exact sources',syntax['status']=='PASS' and all(sha((r/n).read_bytes())==h or any(approved_feature(r,n,revision18) for revision18 in ('R10_R17','R10_R18')) for n,h in syntax['source_hashes'].items()))
+     a.output.write_text(json.dumps(rows,indent=2)+'\n');raise SystemExit(0 if all(row['status']=='PASS' for row in rows) else 1)
+ if __name__=='__main__':main()
+diff --git a/audit/tools/check_network_recovery_r18.py b/audit/tools/check_network_recovery_r18.py
+new file mode 100644
+index 0000000..17b913b
+--- /dev/null
++++ b/audit/tools/check_network_recovery_r18.py
+@@ -0,0 +1,103 @@
++"""R18 source/XML, mutation and current portable evidence guards. Does not qualify WPF or live Windows APIs."""
++import argparse,hashlib,json,zipfile
++from pathlib import Path
++import xml.etree.ElementTree as ET
++from ux_writing_rules import approved_feature
++from check_wpf_test_context_r14r3 import valid_context,checks
++from test_clipboard_calls_r10r9 import invalid_calls
++
++def violations(files):
++ n=files['src/ProcessLens.Windows/WindowsNativeCapture.cs'];c=files['src/ProcessLens.Core/NativeCaptureEvidence.cs'];u=files['src/ProcessLens.App/NativeCaptureView.xaml.cs'];bad=[]
++ def need(ok,label):
++  if not ok:bad.append(label)
++ need('NativeLibrary.TryGetExport' in n and 'Environment.SpecialFolder.System' in n and '0x00010000' in n and 'Architecture.X64' in n,'exact dynamic system exports API version and supported ABI')
++ need('PacketMonitorCreateLiveSession' in n and '"ProcessLens-" + Guid.NewGuid()' in n and 'PacketMonitorCloseSessionHandle' in n and 'PacketMonitorCloseRealtimeStream' in n,'private session and stream handles')
++ need('BufferSizeMultiplier = 1' in n and 'TruncationSize = NativeCaptureEvidence.SnapshotBytes' in n and 'MaximumRows = 2048' in c and 'SnapshotBytes = 128' in c and 'DurationSeconds = 20;' in c and 'rows.Count >= NativeCaptureEvidence.MaximumRows' in n,'bounded callback rows snap length ring and active wait')
++ need('(ulong)d.MetadataOffset + 48 > d.DataSize' in n and '(ulong)d.PacketOffset + d.PacketLength > d.DataSize' in n and 'd.PacketLength > NativeCaptureEvidence.SnapshotBytes' in n and 'd.DataSize > 65536' in n,'validate descriptor offsets lengths before dereference')
++ need('MaximumNativeBuffer = 1048576' in c and 'MaximumSources = 256' in c and 'offset < 8L + count * IntPtr.Size' in n and 'offset > length - 8' in n and 'count > NativeCaptureEvidence.MaximumSources' in n,'bounded owned enumeration and pointer range')
++ need('source.Name != NativeCaptureEvidence.Clean(selected.Name)' in n and '_sources.TryGetValue(source.Key' in n and '_sources.Clear()' in n,'opaque discovery lease rejects stale selection')
++ need('GC.KeepAlive(data)' in n and 'GC.KeepAlive(events)' in n and 'if (stream != IntPtr.Zero) _api.CloseStream(stream)' in n and 'if (session != IntPtr.Zero) _api.CloseSession(session)' in n and 'if (session != IntPtr.Zero) _api.SetActive(session, false)' in n,'callback roots retained through owned cleanup')
++ need('missedWrites += d.MissedWrites' in n and 'missedReads += d.MissedReads' in n and 'partial || missedWrites > 0 || missedReads > 0' in n and 'kind == 2' in n and 'if (!stopping)' in n,'loss fatal events and unexpected stop preserve partial status')
++ need('[MarshalAs(UnmanagedType.U1)] bool active' in n and '[MarshalAs(UnmanagedType.U1)] bool hidden' in n and '[MarshalAs(UnmanagedType.Bool)] bool security' in n,'BOOLEAN versus BOOL marshaling')
++ need('WlanOpenHandle(2' in n and 'WlanEnumInterfaces' in n and 'WlanGetNetworkBssList(client, ref id, IntPtr.Zero, 1, false' in n and 'i * 532' in n and 'count > 16' in n,'manual native WLAN enumeration and SDK interface layout')
++ need('finally { if (bss != IntPtr.Zero) WlanFreeMemory(bss); }' in n and 'WlanFreeMemory(interfaces)' in n and 'WlanCloseHandle(client' in n and 'Marshal.FreeHGlobal(_buffer)' in n and '_uninitialize(_handle)' in n and 'NativeLibrary.Free(_module)' in n,'WLAN enumeration and engine module resources released')
++ need('BssEntrySize = 360' in c and 'MaximumBssRows = 512' in c and 'len > 32' in c and 'count > MaximumBssRows' in c and '8L + count * BssEntrySize > size' in c and 'UTF8Encoding(false, true)' in c and 'Clean(ssid, 96)' in c,'bounded BSS array and untrusted SSID encoding')
++ need('non client connessi' in c and 'non all’intera rete' in c and 'dati possono essere precedenti' in c and 'i privilegi amministrativi non sostituiscono questo consenso' in n and 'Posizione' in n,'cache visibility location permissions and coverage explicit')
++ need('if (!_active || _busy) return;' in u and 'generation != _generation' in u and '_operation?.Cancel()' in u and 'NativeCaptureSourcesBox.SelectedIndex = -1' in u and 'NativePacketsTable.ItemsSource = null' in u and 'WifiBssTable.ItemsSource = null' in u,'manual coalesced UI selection cancellation and late result checks')
++ need('ClipboardText.Copy(this, _report.Length > 0 ? _report : _lastDiagnostics)' in u and 'StartedUtc' in c and 'SourceName' in c and 'Perdite segnalate: N/D' in c,'copy retains source bounds and unavailable metrics')
++ need(not any(t in c+n+u for t in ['Process.Start(', 'DispatcherTimer', 'WlanSetInterface', 'WlanScan(', 'Socket.Connect', 'HttpClient', 'AuditSetSystemPolicy', 'FwpmFilterAdd']), 'no external child auto refresh radio mode policy change or network probe')
++ raw=files['src/ProcessLens.Windows/WindowsCompatibleCapture.cs'];status=files['src/ProcessLens.Core/NetworkEvidenceStatus.cs'];nu=files['src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs']
++ need('Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.IP)' in raw and 'IOControlCode.ReceiveAll' in raw and 'WriteInt32LittleEndian(input, mode)' in raw and 'socket.SetReceiveMode(3)' in raw,'native IPv4 IPLEVEL only without promiscuous mode')
++ need('socket.Bind(local)' in raw and 'current.Count(i => i.Address == b.Address) != 1' in raw and 'i.Id == b.Id && i.Address == b.Address' in raw and 'Verify(binding)' in raw,'explicit current unique adapter and IPv4 identity')
++ need('socket.Poll(100000)' in raw and 'new byte[65535]' in raw and 'rows.Count < NativeCaptureEvidence.MaximumRows' in raw and '_elapsed() < TimeSpan.FromSeconds(NativeCaptureEvidence.DurationSeconds)' in raw,'raw read bounded by poll buffer duration and rows')
++ need('socket.SetReceiveMode(0)' in raw and 'finally { socket?.Dispose(); }' in raw and 'finally { Array.Clear(buffer); }' in raw,'own socket mode restored disposed and datagram buffer cleared')
++ need('LossCountsAvailable = false' in raw and 'HasComponent = false, HasDropReason = false' in raw and 'ricezione nel programma' in raw and 'result.Available && result.LossCountsAvailable' in c,'unmeasured raw losses components drops and timestamps explicit')
++ need('_lastDiagnostics' in u and 'Take(4096)' in u and 'NativeCaptureNoteText.Text = _lastDiagnostics' in u and 'RememberDiagnostics()' in u,'last diagnostic survives section leave with bounded retained text')
++ need('NetworkEvidenceStatus.Summary(result)' in nu and 'NetworkEvidenceStatus.Action(result)' in nu and 'NetworkEvidenceStatus.Setup' in nu and 'Copertura incompleta' in status and '/failure:enable' in status and '/failure:disable' in status,'audit disabled unknown and unavailable states have explicit manual setup')
++ need(not any(t in raw+status+nu for t in ['Process.Start(', '.Connect(', '.Send(', 'AuditSetSystemPolicy(', 'FwpmFilterAdd', 'WlanSetInterface(', 'WlanScan(']),'no probes packet sending automatic policy or radio changes')
++ return bad
++
++def main():
++ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args();r=a.candidate.resolve();audit=r/'audit/R10_R18';sha=lambda b:hashlib.sha256(b).hexdigest()
++ assert sha(a.baseline_zip.read_bytes())=='f13cf60440be5b8f115973a0d23d67399bd263e5d9b219f88b88ac22739f5d3b'
++ with zipfile.ZipFile(a.baseline_zip) as z:old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++ rows=[]
++ def check(label,ok):rows.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML/mutation or portable evidence correlation; not Windows runtime'});print(rows[-1]['status'],label)
++ ledger=json.loads((audit/'authorized-source-edits.json').read_text())['files'];allowed={x['file'] for x in ledger}
++ check('exact R17 baseline and R18 source/test ledger',all(sha((r/x['file']).read_bytes())==x['sha256_after'] and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
++ check('all prior files retained',all((r/n).is_file() for n in old))
++ check('no source or C# test outside authorized delta',all(n in allowed for n in {f.relative_to(r).as_posix() for f in r.rglob('*') if f.is_file()} if (n.startswith('src/') or n.startswith('tests/') and n.endswith(('.cs','.csproj'))) and old.get(n)!=(r/n).read_bytes()))
++ check('Guardian MemoryAgent profiler and all other baseline collectors retained byte for byte',all((r/n).read_bytes()==b for n,b in old.items() if n.startswith('src/') and n not in allowed))
++ check('legacy external capture source and fixtures retained byte for byte',all((r/n).read_bytes()==old[n] for n in ['src/ProcessLens.Windows/WiresharkTools.cs','src/ProcessLens.Core/PacketCaptureEvidence.cs','src/ProcessLens.App/NetworkCaptureView.xaml','src/ProcessLens.App/NetworkCaptureView.xaml.cs','tests/ProcessLens.PacketCaptureTests/Program.cs']))
++ files={f.relative_to(r).as_posix():f.read_text(encoding='utf-8-sig') for f in r.rglob('*') if f.suffix in {'.cs','.xaml','.ps1'}}
++ check('all native source guards',not violations(files))
++ x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
++ view=ET.fromstring(files['src/ProcessLens.App/NativeCaptureView.xaml']);names=[e.get(x+'Name') for e in view.iter() if e.get(x+'Name')]
++ check('new markup names unique and handlers connected',len(names)==len(set(names)) and all(v+'(' in files['src/ProcessLens.App/NativeCaptureView.xaml.cs'] for e in view.iter() for k,v in e.attrib.items() if k in {'Click','SelectionChanged'}))
++ check('both real tables read-only copied and virtualized',len(list(view.iter(w+'DataGrid')))==2 and all(e.get('IsReadOnly')=='True' and e.get(local+'GridCopySupport.Enabled')=='True' and e.get('VirtualizingPanel.VirtualizationMode')=='Recycling' for e in view.iter(w+'DataGrid')))
++ check('buttons wrap without fixed height and report text selectable',all(e.get('Style')=='{StaticResource CaptureAction}' and 'Height' not in e.attrib for e in view.iter(w+'Button')) and all(e.get('TextWrapping')=='Wrap' for e in view.iter(local+'SelectableText')))
++ parent=ET.fromstring(files['src/ProcessLens.App/NetworkDevicesView.xaml']);tabs=next(e for e in parent.iter(w+'TabControl') if e.get(x+'Name')=='NetworkTabs')
++ check('native capture replaces external installation pane and initial cache remains selected',tabs.get('SelectedIndex')=='0' and [e.get('Header') for e in tabs.findall(w+'TabItem')]==['Dispositivi nella cache','Cattura Windows / Wi-Fi','Segnali Windows'])
++ source=files['src/ProcessLens.App/NetworkDevicesView.xaml.cs'];check('native pane lazy activation follows visibility',all(t in source for t in ['NetworkTabs.SelectedIndex == 1 && _captureView is null','new NativeCaptureView()','_captureView?.SetActive(active && NetworkTabs.SelectedIndex == 1)','_captureView?.SetActive(_active && NetworkTabs.SelectedIndex == 1)']))
++ ui=files['tests/ProcessLens.NetworkUiTests/Program.cs'];before=old['tests/ProcessLens.NetworkUiTests/Program.cs'].decode('utf-8-sig');previous=checks(before);current=checks(ui)
++ changed=[s for s in previous if s not in current]
++ check('all R17 UI assertions preserved',len(changed)==0 and 'packetHost.Content is NativeCaptureView' in ui and valid_context(ui))
++ check('new UI fixtures cover lazy selection copies pending work late results unavailable state',all(t in ui for t in ['new NativeCaptureView(nativeCaptureFixture)','nativeSources.SelectedIndex == -1','nativeCaptureFixture.Started.Wait','nativeCaptureFixture.Calls == calls','nativeCaptureFixture.Released > 0','fixture access denied','wifiGrid.Items.Count == 0']))
++ check('all copy calls keep owner and text',not any(invalid_calls(p.read_text()) for p in (r/'src/ProcessLens.App').rglob('*.cs')))
++ build=files['build-dashboard.ps1'];check('standard Windows pipeline includes source gate independent native suite and WPF suite','check-network-recovery-r18.ps1' in build and 'Tests.ProcessLens.NativeCaptureTests' in build and 'Tests.ProcessLens.NetworkUiTests' in build and 'Tests.ProcessLens.CompatibleCaptureTests' in build)
++ prior_stages=[line for line in old['build-dashboard.ps1'].decode('utf-8-sig').splitlines() if line.startswith('Invoke-CheckedDotnet ')]
++ check('all prior Windows build and test stages retained verbatim and in order',all(line in build for line in prior_stages) and [build.index(line) for line in prior_stages]==sorted(build.index(line) for line in prior_stages))
++ typecheck=json.loads((audit/'wpf-typecheck-evidence.json').read_text())
++ check('real C# type checking with explicit field stubs matches current sources and all six assemblies',len(typecheck['assemblies'])==6 and all(row['status']=='PASS' for row in typecheck['assemblies']) and all(sha((r/n).read_bytes())==h for n,h in typecheck['inputs'].items()))
++ evidence=json.loads((audit/'runtime-evidence.json').read_text());check('portable evidence matches all current compiled inputs',all(sha((r/n).read_bytes())==h for n,h in evidence['source_hashes'].items()))
++ for suite,count in [('CompatibleCaptureTests',56),('NativeCaptureTests',75),('NativeNetworkTests',40),('WindowsComponentTests',58),('SystemProcessTests',22),('NetworkDeviceTests',81)]:
++  name='ProcessLens.'+suite;item=next(t for t in evidence['outcomes'] if t['suite']==name);log=(audit/(name+'-run.log')).read_text()
++  check('executed portable '+suite,item['status']=='PASS' and item['assertions']==count and sum(l.startswith('PASS ') for l in log.splitlines())==count and (audit/(name+'-build.log')).read_text()=='')
++ for label,path,before,after in [
++  ('row cap','src/ProcessLens.Core/NativeCaptureEvidence.cs','MaximumRows = 2048','MaximumRows = int.MaxValue'),
++  ('snap length','src/ProcessLens.Core/NativeCaptureEvidence.cs','SnapshotBytes = 128','SnapshotBytes = 9000'),
++  ('duration','src/ProcessLens.Core/NativeCaptureEvidence.cs','DurationSeconds = 20','DurationSeconds = 2000'),
++  ('BSS count','src/ProcessLens.Core/NativeCaptureEvidence.cs','count > MaximumBssRows','false'),
++  ('SSID size','src/ProcessLens.Core/NativeCaptureEvidence.cs','len > 32','false'),
++  ('metadata bound','src/ProcessLens.Windows/WindowsNativeCapture.cs','(ulong)d.MetadataOffset + 48 > d.DataSize','false'),
++  ('payload bound','src/ProcessLens.Windows/WindowsNativeCapture.cs','(ulong)d.PacketOffset + d.PacketLength > d.DataSize','false'),
++  ('source pointer bound','src/ProcessLens.Windows/WindowsNativeCapture.cs','offset > length - 8','false'),
++  ('stream release','src/ProcessLens.Windows/WindowsNativeCapture.cs','if (stream != IntPtr.Zero) _api.CloseStream(stream)','if (false) _api.CloseStream(stream)'),
++  ('callback root','src/ProcessLens.Windows/WindowsNativeCapture.cs','GC.KeepAlive(data)','GC.KeepAlive(null)'),
++  ('WLAN release','src/ProcessLens.Windows/WindowsNativeCapture.cs','WlanFreeMemory(bss)','WlanFreeMemory(IntPtr.Zero)'),
++  ('loss status','src/ProcessLens.Windows/WindowsNativeCapture.cs','partial || missedWrites > 0 || missedReads > 0','partial'),
++  ('BOOLEAN ABI','src/ProcessLens.Windows/WindowsNativeCapture.cs','[MarshalAs(UnmanagedType.U1)] bool active','[MarshalAs(UnmanagedType.Bool)] bool active'),
++  ('late publication','src/ProcessLens.App/NativeCaptureView.xaml.cs','generation != _generation','false'),
++  ('raw IPLEVEL','src/ProcessLens.Windows/WindowsCompatibleCapture.cs','socket.SetReceiveMode(3)','socket.SetReceiveMode(1)'),
++  ('unique raw interface','src/ProcessLens.Windows/WindowsCompatibleCapture.cs','current.Count(i => i.Address == b.Address) != 1','false'),
++  ('raw poll budget','src/ProcessLens.Windows/WindowsCompatibleCapture.cs','socket.Poll(100000)','socket.Poll(-1)'),
++  ('raw buffer bound','src/ProcessLens.Windows/WindowsCompatibleCapture.cs','new byte[65535]','new byte[int.MaxValue]'),
++  ('raw socket disposal','src/ProcessLens.Windows/WindowsCompatibleCapture.cs','finally { socket?.Dispose(); }','finally { }'),
++  ('raw loss unknown','src/ProcessLens.Windows/WindowsCompatibleCapture.cs','LossCountsAvailable = false','LossCountsAvailable = true'),
++  ('retained diagnostics bound','src/ProcessLens.App/NativeCaptureView.xaml.cs','Take(4096)','Take(int.MaxValue)')]:
++  probe=dict(files);assert before in probe[path];probe[path]=probe[path].replace(before,after);check('reject '+label,bool(violations(probe)))
++ for p in [*r.rglob('*.xaml'),*r.rglob('*.csproj')]:ET.parse(p)
++ check('all project and XAML XML parse',True)
++ syntax=json.loads((audit/'syntax-evidence.json').read_text());check('current edited C# syntax corresponds to exact source bytes',syntax['status']=='PASS' and all(sha((r/n).read_bytes())==h for n,h in syntax['source_hashes'].items()))
++ a.output.write_text(json.dumps(rows,indent=2)+'\n');raise SystemExit(0 if all(row['status']=='PASS' for row in rows) else 1)
++if __name__=='__main__':main()
+diff --git a/audit/tools/check_network_tab_r14r2.py b/audit/tools/check_network_tab_r14r2.py
+index 0b9f120..e33e8f6 100644
+--- a/audit/tools/check_network_tab_r14r2.py
++++ b/audit/tools/check_network_tab_r14r2.py
+@@ -28,13 +28,13 @@ def main():
+     view='src/ProcessLens.App/NetworkDevicesView.xaml';app='src/ProcessLens.App/ProcessLens.App.csproj';test='tests/ProcessLens.NetworkUiTests/Program.cs'
+     before=b'<TabControl x:Name="NetworkTabs" SelectionChanged="NetworkTabs_Changed">'
+     after=b'<TabControl x:Name="NetworkTabs" SelectedIndex="0" SelectionChanged="NetworkTabs_Changed">'
+-    check('initial tab delta retained or exact authorized R16 third tab',(old[view].count(before)==1 and (root/view).read_bytes()==old[view].replace(before,after,1)) or any(approved_feature(root,view,revision17) for revision17 in ('R10_R16','R10_R17')))
++    check('initial tab delta retained or exact authorized R16 third tab',(old[view].count(before)==1 and (root/view).read_bytes()==old[view].replace(before,after,1)) or any(approved_feature(root,view,revision17) for revision17 in ('R10_R16','R10_R17','R10_R18')))
+     check('R2 production delta plus exact authorized R15/R16 presentation',
+-          {n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}- {n for n in old if n.startswith('src/') and any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17'))} == {view,app} - {n for n in (view,app) if any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17'))})
+-    check('production C# retained outside exact authorized R15/R16 presentation',all((root/n).read_bytes()==data or any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17')) for n,data in old.items() if n.startswith('src/') and n.endswith('.cs')))
++          {n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}- {n for n in old if n.startswith('src/') and any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18'))} == {view,app} - {n for n in (view,app) if any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18'))})
++    check('production C# retained outside exact authorized R15/R16 presentation',all((root/n).read_bytes()==data or any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18')) for n,data in old.items() if n.startswith('src/') and n.endswith('.cs')))
+     check('network UI fixture retained outside exact authorized R3/R15/R16 changes',
+-          {n for n,data in old.items() if n.startswith('tests/') and n.endswith('.cs') and (root/n).read_bytes()!=data and not any(approved_feature(root,n,rev) for rev in ('R10_R14_R3','R10_R15','R10_R16','R10_R17'))}=={test} - {n for n in (test,) if any(approved_feature(root,n,revision) for revision in ('R10_R14_R3','R10_R16','R10_R17'))})
+-    check('candidate version delta exact',(root/app).read_bytes()==old[app].replace(b'R14-R1-device-catalog-fix-candidate',b'R14-R2-network-tab-init-candidate') or any(approved_feature(root,app,rev) for rev in ('R10_R14_R3','R10_R15','R10_R16','R10_R17')))
++          {n for n,data in old.items() if n.startswith('tests/') and n.endswith('.cs') and (root/n).read_bytes()!=data and not any(approved_feature(root,n,rev) for rev in ('R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18'))}=={test} - {n for n in (test,) if any(approved_feature(root,n,revision) for revision in ('R10_R14_R3','R10_R16','R10_R17','R10_R18'))})
++    check('candidate version delta exact',(root/app).read_bytes()==old[app].replace(b'R14-R1-device-catalog-fix-candidate',b'R14-R2-network-tab-init-candidate') or any(approved_feature(root,app,rev) for rev in ('R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18')))
+     tree=ET.parse(root/view).getroot();check('actual XAML explicitly selects cache before Loaded',valid_initial_tab(tree))
+     check('the same XML guard rejects original R1 initialization',not valid_initial_tab(ET.fromstring(old[view])))
+     for label,value in [('missing selection',None),('no selected tab','-1'),('capture tab selected','1')]:
+@@ -55,7 +55,7 @@ def main():
+     gate=files['tests/check-network-devices-r12.ps1']
+     check('standard Windows source gate requires explicit initial tab',"$tabs.GetAttribute('SelectedIndex') -ne '0'" in gate)
+     approved=json.loads((root/'audit/R10_R14_R2/authorized-source-edits.json').read_text())['files']
+-    check('R2 delta hashes retained or superseded by exact authorized R3/R15/R16 hashes',len(approved)==3 and all((sha((root/r['file']).read_bytes())==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R3','R10_R15','R10_R16','R10_R17'))) for r in approved))
++    check('R2 delta hashes retained or superseded by exact authorized R3/R15/R16 hashes',len(approved)==3 and all((sha((root/r['file']).read_bytes())==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18'))) for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]:ET.parse(f)
+     check('all project and XAML XML parse',True)
+     reported=(root/'audit/R10_R14_R2/reported-windows-build.log').read_text()
+diff --git a/audit/tools/check_packet_capture_r13.py b/audit/tools/check_packet_capture_r13.py
+index b26d549..7670908 100644
+--- a/audit/tools/check_packet_capture_r13.py
++++ b/audit/tools/check_packet_capture_r13.py
+@@ -55,11 +55,11 @@ def main():
+     check('packet integration satisfies all source guards',not violations(files))
+     allowed={'src/ProcessLens.App/NetworkDevicesView.xaml','src/ProcessLens.App/NetworkDevicesView.xaml.cs','src/ProcessLens.App/ProcessLens.App.csproj'}
+     check('R13 changes plus exact authorized R14 and R15 source integration since R12',
+-          {rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel] and not any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17'))}==allowed - {rel for rel in allowed if any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17'))})
++          {rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel] and not any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18'))}==allowed - {rel for rel in allowed if any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18'))})
+     check('existing sources exact to R12 outside R13 and exact authorized R14 and R15 integration',
+-          all((root/rel).read_bytes()==data or any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17')) for rel,data in old.items() if rel.startswith('src/') and rel not in allowed))
++          all((root/rel).read_bytes()==data or any(approved_feature(root,rel,r) for r in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18')) for rel,data in old.items() if rel.startswith('src/') and rel not in allowed))
+     approved=json.loads((root/'audit/R10_R13/authorized-source-edits.json').read_text())['files']
+-    check('R13 source hashes retained or superseded by exact authorized R14 and R15 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],revision) for revision in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17')) for r in approved))
++    check('R13 source hashes retained or superseded by exact authorized R14 and R15 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],revision) for revision in ('R10_R14','R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18')) for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]:ET.parse(f)
+     check('all XAML and project XML parse',True)
+     view=ET.parse(root/'src/ProcessLens.App/NetworkCaptureView.xaml').getroot();x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
+diff --git a/audit/tools/check_system_processes_r14.py b/audit/tools/check_system_processes_r14.py
+index 9cf00d2..33c6d84 100644
+--- a/audit/tools/check_system_processes_r14.py
++++ b/audit/tools/check_system_processes_r14.py
+@@ -65,12 +65,12 @@ def main():
+     changed={rel for rel in old if rel.startswith('src/') and (root/rel).read_bytes()!=old[rel]}
+     allowed={'src/ProcessLens.App/MainWindow.xaml','src/ProcessLens.App/MainWindow.xaml.cs',
+              'src/ProcessLens.App/ProcessLens.App.csproj','src/ProcessLens.App/CopyTestVisibility.cs'}
+-    check('only R14 UI changes and exact recorded R14 R1/R2/R3 fixes and exact R15 presentation since R13',changed - {p for p in changed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17'))} == allowed - {p for p in allowed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17'))})
++    check('only R14 UI changes and exact recorded R14 R1/R2/R3 fixes and exact R15 presentation since R13',changed - {p for p in changed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18'))} == allowed - {p for p in allowed if any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18'))})
+     check('existing sources exact to R13 outside R14 UI and exact R14 R1/R2/R3 fixes and exact R15 presentation',
+-          all((root/p).read_bytes()==data or any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17')) for p,data in old.items() if p.startswith('src/') and p not in allowed))
++          all((root/p).read_bytes()==data or any(approved_feature(root,p,rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18')) for p,data in old.items() if p.startswith('src/') and p not in allowed))
+     check('no baseline file deleted',all((root/p).is_file() for p in old))
+     approved=json.loads((root/'audit/R10_R14/authorized-source-edits.json').read_text())['files']
+-    check('R14 production hashes retained or replaced by exact R14 R1/R2/R3 or R15 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17')) for r in approved))
++    check('R14 production hashes retained or replaced by exact R14 R1/R2/R3 or R15 hashes',all(hashlib.sha256((root/r['file']).read_bytes()).hexdigest()==r['sha256_after'] or any(approved_feature(root,r['file'],rev) for rev in ('R10_R14_R1','R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18')) for r in approved))
+     for f in [*root.rglob('*.xaml'),*root.rglob('*.csproj')]: ET.parse(f)
+     check('all project XML and XAML parse',True)
+     view=ET.parse(root/'src/ProcessLens.App/SystemProcessesView.xaml').getroot();x='{http://schemas.microsoft.com/winfx/2006/xaml}';w='{http://schemas.microsoft.com/winfx/2006/xaml/presentation}';local='{clr-namespace:ProcessLens.App}'
+diff --git a/audit/tools/check_windows_components_r15.py b/audit/tools/check_windows_components_r15.py
+index eb758ca..c1ebd68 100644
+--- a/audit/tools/check_windows_components_r15.py
++++ b/audit/tools/check_windows_components_r15.py
+@@ -13,10 +13,10 @@ def main():
+     result=[]
+     def check(label,ok):result.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML and actual portable result correlation; not WPF runtime'});print(result[-1]['status'],label)
+     ledger=json.loads((r/'audit/R10_R15/authorized-source-edits.json').read_text())['files'];allowed={x['file'] for x in ledger}
+-    check('R15 exact ledger retained or exact authorized R16 successor',all((r/n).is_file() for n in old) and all((sha((r/x['file']).read_bytes())==x['sha256_after'] or any(approved_feature(r,x['file'],revision17) for revision17 in ('R10_R16','R10_R17'))) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
++    check('R15 exact ledger retained or exact authorized R16 successor',all((r/n).is_file() for n in old) and all((sha((r/x['file']).read_bytes())==x['sha256_after'] or any(approved_feature(r,x['file'],revision17) for revision17 in ('R10_R16','R10_R17','R10_R18'))) and (sha(old[x['file']]) if x['file'] in old else None)==x['sha256_before'] for x in ledger))
+     current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file()}
+-    check('no production or C# test delta outside exact R15/R16 ledgers',all(n in allowed or any(approved_feature(r,n,revision17) for revision17 in ('R10_R16','R10_R17')) for n,b in current.items() if (n.startswith('src/') or (n.startswith('tests/') and n.endswith(('.cs','.csproj')))) and old.get(n)!=b))
+-    check('R3 sources retained outside exact R15/R16 ledgers',all(current[n]==b or any(approved_feature(r,n,revision17) for revision17 in ('R10_R16','R10_R17')) for n,b in old.items() if n.startswith('src/') and n not in allowed))
++    check('no production or C# test delta outside exact R15/R16 ledgers',all(n in allowed or any(approved_feature(r,n,revision17) for revision17 in ('R10_R16','R10_R17','R10_R18')) for n,b in current.items() if (n.startswith('src/') or (n.startswith('tests/') and n.endswith(('.cs','.csproj')))) and old.get(n)!=b))
++    check('R3 sources retained outside exact R15/R16 ledgers',all(current[n]==b or any(approved_feature(r,n,revision17) for revision17 in ('R10_R16','R10_R17','R10_R18')) for n,b in old.items() if n.startswith('src/') and n not in allowed))
+     files={n:b.decode('utf-8-sig') for n,b in current.items() if n.endswith(('.cs','.xaml','.ps1'))}
+     check('existing native lifetime navigation and observation guards pass',not violations(files))
+     u=files['src/ProcessLens.App/SystemProcessesView.xaml.cs'];core=files['src/ProcessLens.Core/WindowsComponentCatalog.cs'];test=files['tests/ProcessLens.SystemProcessUiTests/Program.cs']
+diff --git a/audit/tools/check_wpf_test_context_r14r3.py b/audit/tools/check_wpf_test_context_r14r3.py
+index 6697b5b..4f15853 100644
+--- a/audit/tools/check_wpf_test_context_r14r3.py
++++ b/audit/tools/check_wpf_test_context_r14r3.py
+@@ -38,14 +38,14 @@ def main():
+         results.append({'test':label,'status':'PASS' if ok else 'FAIL','kind':'source/XML/mutation only; no WPF execution'});print(results[-1]['status'],label)
+     app='src/ProcessLens.App/ProcessLens.App.csproj';tests=['tests/ProcessLens.'+n+'/Program.cs' for n in ['NetworkUiTests','SystemProcessUiTests']]
+     check('no baseline files removed',all((root/n).is_file() for n in old))
+-    check('R2 production retained outside exact authorized R15/R16 delta',all((root/n).read_bytes()==data or any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17')) for n,data in old.items() if n.startswith('src/') and n.endswith(('.cs','.xaml'))))
++    check('R2 production retained outside exact authorized R15/R16 delta',all((root/n).read_bytes()==data or any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18')) for n,data in old.items() if n.startswith('src/') and n.endswith(('.cs','.xaml'))))
+     changed={n for n,data in old.items() if n.startswith('src/') and (root/n).read_bytes()!=data}
+-    check('R3 production delta or exact authorized R15/R16 presentation',(changed - {n for n in changed if any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17'))} == {app} - {n for n in (app,) if any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17'))}) and ((root/app).read_bytes()==old[app].replace(b'R14-R2-network-tab-init-candidate',b'R14-R3-wpf-test-context-candidate') or any(approved_feature(root,app,revision) for revision in ('R10_R15','R10_R16','R10_R17'))))
++    check('R3 production delta or exact authorized R15/R16 presentation',(changed - {n for n in changed if any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18'))} == {app} - {n for n in (app,) if any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18'))}) and ((root/app).read_bytes()==old[app].replace(b'R14-R2-network-tab-init-candidate',b'R14-R3-wpf-test-context-candidate') or any(approved_feature(root,app,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18'))))
+     check('only two WPF C# fixtures changed', {n for n,data in old.items() if n.startswith('tests/') and n.endswith('.cs') and (root/n).read_bytes()!=data}==set(tests))
+     for n in tests:
+         s=(root/n).read_text();before=old[n].decode('utf-8-sig');label=n.split('/')[1]
+         check(label+' installs context before pending await and worker completion',valid_context(s))
+-        check(label+' retains original checks or exact authorized R15/R16 replacement suite',all(c in checks(s) for c in checks(before)) or any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17')))
++        check(label+' retains original checks or exact authorized R15/R16 replacement suite',all(c in checks(s) for c in checks(before)) or any(approved_feature(root,n,revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18')))
+         check(label+' retains original dispatcher pump and exception propagation',all(token in s for token in ['Dispatcher.PushFrame(frame)','task.GetAwaiter().GetResult();','TaskScheduler.Default','[STAThread]']))
+         check(label+' does not suppress thread ownership checks or awaiting context',not any(token in s for token in ['ConfigureAwait(false)','DisableProcessing','catch (InvalidOperationException','catch {']))
+         for name,mutant in [
+@@ -56,7 +56,7 @@ def main():
+             ('missing owner verification',s.replace('dispatcher.CheckAccess() && Environment.CurrentManagedThreadId == ownerThread','true'))]:
+             check(label+' guard rejects '+name,not valid_context(mutant))
+     ledger=json.loads((root/'audit/R10_R14_R3/authorized-source-edits.json').read_text())
+-    check('R3 baseline hashes and current hashes or exact authorized R15/R16 successors',len(ledger['files'])==3 and {r['file'] for r in ledger['files']}=={app,*tests} and all(sha(old[r['file']])==r['sha256_before'] and (sha((root/r['file']).read_bytes())==r['sha256_after'] or any(approved_feature(root,r['file'],revision) for revision in ('R10_R15','R10_R16','R10_R17'))) for r in ledger['files']))
++    check('R3 baseline hashes and current hashes or exact authorized R15/R16 successors',len(ledger['files'])==3 and {r['file'] for r in ledger['files']}=={app,*tests} and all(sha(old[r['file']])==r['sha256_before'] and (sha((root/r['file']).read_bytes())==r['sha256_after'] or any(approved_feature(root,r['file'],revision) for revision in ('R10_R15','R10_R16','R10_R17','R10_R18'))) for r in ledger['files']))
+     gate=(root/'tests/check-wpf-test-context-r14r3.ps1').read_text();build=(root/'build-dashboard.ps1').read_text(encoding='utf-8-sig')
+     check('standard Windows pipeline includes source gate',"tests\\check-wpf-test-context-r14r3.ps1" in build and all(t in gate for t in ['NetworkUiTests','SystemProcessUiTests','IndexOf($setup)','IndexOf($firstAwait)',RESTORE]))
+     for path in [*root.rglob('*.csproj'),*root.rglob('*.xaml')]:ET.parse(path)
+diff --git a/audit/tools/package_network_recovery_r18.py b/audit/tools/package_network_recovery_r18.py
+new file mode 100644
+index 0000000..df21f93
+--- /dev/null
++++ b/audit/tools/package_network_recovery_r18.py
+@@ -0,0 +1,95 @@
++"""Package the R18 native Windows network evidence with source-only WPF checks. This does not compile or qualify Windows runtime."""
++import argparse, csv, difflib, hashlib, json, shutil, subprocess, tempfile, zipfile
++from pathlib import Path
++
++def sha(data): return hashlib.sha256(data).hexdigest()
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--candidate',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True)
++    p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()
++    root=a.candidate.resolve();audit=root/'audit/R10_R18';output=a.output_directory.resolve()
++    assert sha(a.baseline_zip.read_bytes())=='f13cf60440be5b8f115973a0d23d67399bd263e5d9b219f88b88ac22739f5d3b'
++    for d in sorted(root.rglob('__pycache__'),reverse=True):shutil.rmtree(d)
++    with zipfile.ZipFile(a.baseline_zip) as z:
++        assert z.testzip() is None
++        old={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++    assert all((root/n).is_file() for n in old)
++    for row in json.loads((audit/'authorized-source-edits.json').read_text())['files']:
++        assert sha((root/row['file']).read_bytes())==row['sha256_after'],row['file']
++    evidence=json.loads((audit/'runtime-evidence.json').read_text())
++    assert sum(row['assertions'] for row in evidence['outcomes'])==332
++    assert all(row['status']=='PASS' for row in evidence['outcomes'])
++    assert all(sha((root/n).read_bytes())==digest for n,digest in evidence['source_hashes'].items())
++    assert (audit/'csharp-syntax.log').read_text().count('PASS C# syntax:')==7
++    results=[]
++    for n,count in [('recovery-results.json',47),('capture-retention-results.json',39),('native-retention-results.json',31),('component-retention-results.json',24),('context-retention-results.json',26),('tab-retention-results.json',20),('catalog-retention-results.json',15),('system-retention-results.json',33)]:
++        rows=json.loads((audit/n).read_text());assert len(rows)==count and all(row['status']=='PASS' for row in rows)
++        results.extend(rows)
++    typecheck=json.loads((audit/'wpf-typecheck-evidence.json').read_text())
++    assert len(typecheck['assemblies'])==6 and all(row['status']=='PASS' and row['warning_count']==0 for row in typecheck['assemblies'])
++    assert all(sha((root/n).read_bytes())==h for n,h in typecheck['inputs'].items())
++    # Preserve all added/changed source contexts in the current string ledger.
++    with (audit/'string-ledger.csv').open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerow(['file','line','added_or_modified_source_text','context'])
++        for row in json.loads((audit/'authorized-source-edits.json').read_text())['files']:
++            n=row['file'];before=old.get(n,b'').decode('utf-8-sig').splitlines();after=(root/n).read_text(encoding='utf-8-sig').splitlines()
++            for tag,i,j,k,l in difflib.SequenceMatcher(None,before,after).get_opcodes():
++                if tag not in ('insert','replace'):continue
++                for number,line in enumerate(after[k:l],k+1):
++                    if '"' in line:writer.writerow([n,number,line.strip(),'UI/report or technical source context'])
++    def included(n):return not n.startswith('audit/R10_R18/') and n!='SHA256SUMS_R10.txt'
++    current={f.relative_to(root).as_posix():f.read_bytes() for f in root.rglob('*') if f.is_file()}
++    delta=[n for n,data in sorted(current.items()) if included(n) and old.get(n)!=data]
++    with (audit/'files-changed.csv').open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerow(['file','kind','sha256_before','sha256_after'])
++        for n in delta:writer.writerow([n,'modified' if n in old else 'added',sha(old[n]) if n in old else '',sha(current[n])])
++    staging=root.parent.parent/'test';staging.mkdir(exist_ok=True)
++    with tempfile.TemporaryDirectory(prefix='patch-replay-r18-',dir=staging) as temporary:
++        temp=Path(temporary);before=temp/'before';after=temp/'after';before.mkdir();after.mkdir()
++        for base,values in [(before,old),(after,current)]:
++            for n,data in values.items():
++                if not included(n):continue
++                path=base/n;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
++        diff=subprocess.run(['git','diff','--no-index','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=temp,capture_output=True)
++        assert diff.returncode==1,diff.stderr.decode()
++        lines=[]
++        for line in diff.stdout.splitlines(keepends=True):
++            if line.startswith((b'diff --git ', b'--- ', b'+++ ')):
++                for prefix in (b'a/before/',b'a/after/'):line=line.replace(prefix,b'a/')
++                for prefix in (b'b/before/',b'b/after/'):line=line.replace(prefix,b'b/')
++            lines.append(line)
++        patch=b''.join(lines)
++        path=audit/'R17_to_R18.patch';path.write_bytes(patch)
++        subprocess.run(['git','apply','--check',str(path)],cwd=before,check=True,capture_output=True)
++        subprocess.run(['git','apply',str(path)],cwd=before,check=True,capture_output=True)
++        mismatch=[n for n,data in current.items() if included(n) and (before/n).read_bytes()!=data]
++        assert not mismatch,mismatch
++    (audit/'patch-replay-results.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','delta_files':len(delta),'patch_sha256':sha(patch),'excluded':'Current audit metadata and current manifest only; excluded for self-reference.'},indent=2)+'\n')
++    (audit/'retention.json').write_text(json.dumps({'source_trees':1,'patch_replay_temporary_tree_removed':True,'baseline':'R17 retained for byte comparisons','no_bin_obj_pycache_in_release':True,'source_check_count':len(results),'Windows_runtime_and_RAM_measurement':'NOT EXECUTED','current_portable_runtime_assertions':332,'R18_WPF_runtime':'NOT EXECUTED'},indent=2)+'\n')
++    matrix=audit/'test-matrix.csv'
++    with matrix.open(newline='') as f:
++        matrix_rows=[row for row in csv.reader(f) if row and row[0] not in
++            {'Current R18 source and evidence guards','R17 to R18 patch replay'}]
++    with matrix.open('w',newline='') as f:
++        writer=csv.writer(f);writer.writerows(matrix_rows)
++        writer.writerow(['Current R18 source and evidence guards','Python source/XML/mutations','PASS',f'{len(results)} checks; no C# execution'])
++        writer.writerow(['R17 to R18 patch replay','git apply and byte comparison','PASS',f'{len(delta)} changed or added files; audit metadata and manifest excluded'])
++    for d in root.rglob('*'):
++        assert not (d.is_dir() and d.name in ('__pycache__','bin','obj')),d
++    files=sorted(f for f in root.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt')
++    (root/'SHA256SUMS_R10.txt').write_text(''.join(sha(f.read_bytes())+'  '+f.relative_to(root).as_posix()+'\n' for f in files))
++    output.mkdir(parents=True,exist_ok=True)
++    target=output/'ProcessLens-v0.19.16-R10-R18-network-recovery-candidate.zip'
++    with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
++        for f in sorted(root.rglob('*')):
++            if f.is_file():
++                assert f.stat().st_size < 10*1024*1024, f
++                z.write(f,root.name+'/'+f.relative_to(root).as_posix())
++    with zipfile.ZipFile(target) as z:
++        assert z.testzip() is None
++        for line in z.read(root.name+'/SHA256SUMS_R10.txt').decode().splitlines():
++            expected,n=line.split('  ',1);assert sha(z.read(root.name+'/'+n))==expected,n
++        assert len({n.split('/')[0] for n in z.namelist()})==1
++    result={'zip':str(target),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files),'delta_files':len(delta),'source_checks':len(results),'Windows_runtime':'NOT EXECUTED','current_portable_runtime_assertions':332,'R18_WPF_runtime':'NOT EXECUTED'}
++    (output/'verification-r18.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
++if __name__=='__main__':main()
+diff --git a/audit/tools/run_network_recovery_portable_r18.py b/audit/tools/run_network_recovery_portable_r18.py
+new file mode 100644
+index 0000000..bb8904b
+--- /dev/null
++++ b/audit/tools/run_network_recovery_portable_r18.py
+@@ -0,0 +1,26 @@
++"""Direct Roslyn/.NET portable qualification for R18 on this host; no MSBuild or WPF."""
++import argparse,hashlib,json,subprocess
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();work.mkdir(parents=True,exist_ok=True);audit=r/'audit/R10_R18';audit.mkdir(exist_ok=True)
++refs=sorted((sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll'))
++globals=work/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))
++source_hashes={};outcomes=[]
++def compile(name,sources,library=False,extra=()):
++ for f in sources:source_hashes[f.relative_to(r).as_posix()]=hashlib.sha256(f.read_bytes()).hexdigest()
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(work/(name+'.dll'))]
++ args+=['-r:'+str(f) for f in [*refs,*extra]]+[str(globals)]+[str(f) for f in sources]
++ result=subprocess.run(args,capture_output=True,text=True);(audit/(name+'-build.log')).write_text(result.stdout+result.stderr)
++ if result.returncode:raise SystemExit(result.stdout+result.stderr)
++ if not library:(work/(name+'.runtimeconfig.json')).write_text(json.dumps({'runtimeOptions':{'tfm':'net8.0','framework':{'name':'Microsoft.NETCore.App','version':'8.0.32'}}}))
++def run(name):
++ result=subprocess.run([str(sdk/'dotnet'),str(work/(name+'.dll'))],capture_output=True,text=True,timeout=45)
++ log=result.stdout+result.stderr;(audit/(name+'-run.log')).write_text(log)
++ if result.returncode:raise SystemExit(log)
++ outcome={'suite':name,'status':'PASS','assertions':sum(l.startswith('PASS ') for l in log.splitlines()),'skipped':[l for l in log.splitlines() if l.startswith('SKIP ')]};outcomes.append(outcome);print(json.dumps(outcome))
++compile('ProcessLens.Core',sorted((r/'src/ProcessLens.Core').glob('*.cs')),True)
++for suite,extra_sources in [('CompatibleCaptureTests',[r/'src/ProcessLens.Windows/WindowsCompatibleCapture.cs',r/'src/ProcessLens.Windows/WindowsNativeCapture.cs']),('NativeCaptureTests',[r/'src/ProcessLens.Windows/WindowsNativeCapture.cs']),('NativeNetworkTests',[r/'src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs']),('WindowsComponentTests',[]),('SystemProcessTests',[r/'src/ProcessLens.Windows/WindowsSystemProcessSource.cs']),('NetworkDeviceTests',[r/'src/ProcessLens.Windows/WindowsNetworkDevices.cs'])]:
++ name='ProcessLens.'+suite
++ compile(name,[r/'tests'/name/'Program.cs',*extra_sources],extra=[work/'ProcessLens.Core.dll']);run(name)
++evidence={'environment':'Linux x64; Roslyn SDK 8.0.426 and .NET 8.0.32 direct compilation; not MSBuild/WPF','outcomes':outcomes,'source_hashes':source_hashes,'Windows_WPF_PowerShell_DPI_and_live_RAM':'NOT EXECUTED'}
++(audit/'runtime-evidence.json').write_text(json.dumps(evidence,indent=2)+'\n')
+diff --git a/audit/tools/typecheck_wpf_sources_r18.py b/audit/tools/typecheck_wpf_sources_r18.py
+new file mode 100644
+index 0000000..80f10c3
+--- /dev/null
++++ b/audit/tools/typecheck_wpf_sources_r18.py
+@@ -0,0 +1,44 @@
++"""Type-check real C# against WindowsDesktop reference assemblies with explicit generated-field stubs.
++This is NOT WPF markup compilation, BAML, MSBuild, or runtime validation. Stubs live outside the deliverable.
++"""
++import argparse,hashlib,json,subprocess,xml.etree.ElementTree as ET
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();out=work/'typecheck';out.mkdir(exist_ok=True);audit=r/'audit/R10_R18';sha=lambda b:hashlib.sha256(b).hexdigest()
++base={p.name:p for p in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll')};desktop=list((work/'wpf-ref').glob('*.dll'))
++assert len(desktop)>20
++for f in desktop:base[f.name]=f
++refs=list(base.values());event=sdk/'packs/Microsoft.AspNetCore.App.Ref/8.0.32/ref/net8.0/System.Diagnostics.EventLog.dll';sqlite=work/'Microsoft.Data.Sqlite.dll'
++globals=out/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))
++x='{http://schemas.microsoft.com/winfx/2006/xaml}';stubs=[];inputs={}
++for path in (r/'src/ProcessLens.App').glob('*.xaml'):
++ tree=ET.parse(path).getroot();cls=tree.get(x+'Class');assert cls
++ fields=[]
++ for e in tree.iter():
++  name=e.get(x+'Name')
++  if not name:continue
++  tag=e.tag.split('}',1)[1]
++  if e.tag.startswith('{clr-namespace:ProcessLens.App}'):typ='ProcessLens.App.'+tag
++  elif tag=='Polyline':typ='System.Windows.Shapes.Polyline'
++  else:typ='System.Windows.Controls.'+tag
++  fields.append('internal '+typ+' '+name+' = null!;')
++ ns,short=cls.rsplit('.',1);stubs.append('namespace '+ns+' { public partial class '+short+' { '+ ' '.join(fields)+' private void InitializeComponent() {} } }')
++ inputs[path.relative_to(r).as_posix()]=sha(path.read_bytes())
++stub=out/'MarkupFieldStubs.cs';stub.write_text('\n'.join(stubs));results=[]
++def compile(name,sources,extra=(),library=True):
++ for f in sources:
++  if f.is_relative_to(r):inputs[f.relative_to(r).as_posix()]=sha(f.read_bytes())
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(out/(name+'.dll'))]
++ args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
++ args+=['-r:'+str(f) for f in [*refs,event,*extra]]+[str(globals)]+[str(f) for f in sources]
++ result=subprocess.run(args,capture_output=True,text=True);log=result.stdout+result.stderr;(audit/(name+'-typecheck.log')).write_text(log)
++ print(name, 'PASS' if result.returncode==0 else 'FAIL');results.append({'assembly':name,'status':'PASS' if result.returncode==0 else 'FAIL','warning_count':log.count('warning CS')})
++ if result.returncode:raise SystemExit(log)
++core=work/'runtime/ProcessLens.Core.dll';assert core.is_file()
++compile('ProcessLens.Windows',sorted((r/'src/ProcessLens.Windows').glob('*.cs')),[core])
++compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),[core])
++extra=[core,out/'ProcessLens.Windows.dll',out/'ProcessLens.Semantics.dll',sqlite]
++compile('ProcessLens',sorted((r/'src/ProcessLens.App').rglob('*.cs'))+[stub],extra)
++for name in ['NetworkUiTests','CopyUiTests','SystemProcessUiTests']:
++ compile('ProcessLens.'+name,[r/'tests'/('ProcessLens.'+name)/'Program.cs'],extra+[out/'ProcessLens.dll'],False)
++(audit/'wpf-typecheck-evidence.json').write_text(json.dumps({'qualification':'C# type checking with generated-field stubs only; NOT actual WPF markup compilation or runtime','assemblies':results,'inputs':inputs,'stub_sha256':sha(stub.read_bytes()),'reference_hashes':{f.name:sha(f.read_bytes()) for f in [*desktop,event,sqlite]}},indent=2)+'\n')
+diff --git a/audit/tools/ux_writing_rules.py b/audit/tools/ux_writing_rules.py
+index 0734f7d..34c79c9 100644
+--- a/audit/tools/ux_writing_rules.py
++++ b/audit/tools/ux_writing_rules.py
+@@ -18,7 +18,7 @@ def approved_revision(root, relative):
+     """R11 editorial delta or separately recorded, user-requested R12/R13/R14 feature delta."""
+     if approved_editorial(root, relative):
+         return True
+-    return any(approved_feature(root, relative, revision) for revision in ('R10_R12', 'R10_R13', 'R10_R14', 'R10_R14_R1', 'R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17'))
++    return any(approved_feature(root, relative, revision) for revision in ('R10_R12', 'R10_R13', 'R10_R14', 'R10_R14_R1', 'R10_R14_R2','R10_R14_R3','R10_R15','R10_R16','R10_R17','R10_R18'))
+ 
+ 
+ def approved_feature(root, relative, revision):
+diff --git a/build-dashboard.ps1 b/build-dashboard.ps1
+index 07177ab..0d08808 100644
+--- a/build-dashboard.ps1
++++ b/build-dashboard.ps1
+@@ -17,6 +17,7 @@ Write-Host 'Controllo sintassi di tutti gli script PowerShell...' -ForegroundCol
+ & (Join-Path $PSScriptRoot 'tests\check-network-devices-r12.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-native-network-r16.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-native-capture-r17.ps1')
++& (Join-Path $PSScriptRoot 'tests\check-network-recovery-r18.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-packet-capture-r13.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-system-processes-r14.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-windows-components-r15.ps1')
+@@ -63,6 +64,7 @@ Write-Host 'Test rete nativa: eventi sintetici, policy e handle posseduti...' -F
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.NativeNetworkTests' -Project '.\tests\ProcessLens.NativeNetworkTests\ProcessLens.NativeNetworkTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.NativeNetworkTests\ProcessLens.NativeNetworkTests.csproj','-c','Release')
+ Write-Host 'Test cattura Windows e Wi-Fi: fixture, senza traffico reale...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.NativeCaptureTests' -Project '.\tests\ProcessLens.NativeCaptureTests\ProcessLens.NativeCaptureTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.NativeCaptureTests\ProcessLens.NativeCaptureTests.csproj','-c','Release')
++Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.CompatibleCaptureTests' -Project '.\tests\ProcessLens.CompatibleCaptureTests\ProcessLens.CompatibleCaptureTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.CompatibleCaptureTests\ProcessLens.CompatibleCaptureTests.csproj','-c','Release')
+ Write-Host 'Test WPF rete: sorgente simulata, nessuna lettura di rete reale...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.NetworkUiTests' -Project '.\tests\ProcessLens.NetworkUiTests\ProcessLens.NetworkUiTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.NetworkUiTests\ProcessLens.NetworkUiTests.csproj','-c','Release')
+ 
+diff --git a/src/ProcessLens.App/NativeCaptureView.xaml b/src/ProcessLens.App/NativeCaptureView.xaml
+index ee6ee79..c697c4e 100644
+--- a/src/ProcessLens.App/NativeCaptureView.xaml
++++ b/src/ProcessLens.App/NativeCaptureView.xaml
+@@ -12,19 +12,19 @@
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*" MinHeight="100"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <StackPanel>
+    <TextBlock Text="Cattura Windows / Wi-Fi" FontSize="21" FontWeight="SemiBold"/>
+-   <local:SelectableText Text="API Windows integrate. Non servono Wireshark, TShark o Npcap. PktMon richiede privilegi amministrativi e le API multisessione disponibili nella tua versione di Windows." TextWrapping="Wrap" Margin="0,6,0,9"/>
++   <local:SelectableText Text="API Windows integrate. Non servono Wireshark, TShark o Npcap. La cattura IP locale richiede amministratore. PktMon è disponibile solo se Windows espone le sue API; Wi-Fi usa una lettura separata." TextWrapping="Wrap" Margin="0,6,0,9"/>
+    <WrapPanel>
+-    <Button x:Name="DiscoverNativeCaptureButton" Content="Verifica PktMon" Style="{StaticResource CaptureAction}" Click="Discover_Click"/>
++    <Button x:Name="DiscoverNativeCaptureButton" Content="Elenca sorgenti Windows" Style="{StaticResource CaptureAction}" Click="Discover_Click"/>
+     <Button x:Name="ReadWifiBssButton" Content="Leggi reti Wi-Fi" Style="{StaticResource CaptureAction}" Click="Wifi_Click"/>
+     <Button x:Name="StopNativeCaptureButton" Content="Interrompi lettura" Style="{StaticResource CaptureAction}" Click="Stop_Click" IsEnabled="False"/>
+     <Button x:Name="CopyNativeCaptureButton" Content="Copia rapporto" Style="{StaticResource CaptureAction}" Click="Copy_Click" IsEnabled="False"/>
+    </WrapPanel>
+    <WrapPanel>
+-    <TextBlock Text="Sorgente PktMon:" VerticalAlignment="Center" Margin="0,0,8,7"/>
++    <TextBlock Text="Sorgente:" VerticalAlignment="Center" Margin="0,0,8,7"/>
+     <ComboBox x:Name="NativeCaptureSourcesBox" DisplayMemberPath="Name" MinWidth="220" MaxWidth="470" Margin="0,0,8,7" SelectionChanged="Source_Changed"/>
+     <Button x:Name="StartNativeCaptureButton" Content="Cattura per 20 s" Style="{StaticResource CaptureAction}" Click="Capture_Click" IsEnabled="False"/>
+    </WrapPanel>
+-   <local:SelectableText x:Name="NativeCaptureStatusText" Text="Scegli Verifica PktMon oppure Leggi reti Wi-Fi. Nessuna raccolta automatica." TextWrapping="Wrap" Margin="0,0,0,8"/>
++   <local:SelectableText x:Name="NativeCaptureStatusText" Text="Scegli Elenca sorgenti Windows oppure Leggi reti Wi-Fi. Nessuna raccolta automatica." TextWrapping="Wrap" Margin="0,0,0,8"/>
+    <Expander Header="Che cosa posso vedere?" Margin="0,0,0,8">
+     <ScrollViewer MaxHeight="150" VerticalScrollBarVisibility="Auto"><StackPanel>
+      <local:SelectableText Text="Cattura: traffico visibile al PC, fino a 2.048 osservazioni e 128 byte per pacchetto; gli stessi pacchetti possono apparire più volte. Conserva solo metadati di rete, non il payload. L’elenco non identifica i processi proprietari." TextWrapping="Wrap"/>
+@@ -34,7 +34,7 @@
+    </Expander>
+   </StackPanel>
+   <TabControl Grid.Row="1" x:Name="NativeResultTabs" SelectedIndex="0">
+-   <TabItem Header="Osservazioni PktMon">
++   <TabItem Header="Osservazioni di rete">
+     <DataGrid x:Name="NativePacketsTable" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling" local:GridCopySupport.Enabled="True" MinRowHeight="34">
+      <DataGrid.Columns>
+       <DataGridTextColumn Header="Ora locale" Binding="{Binding Time}" Width="115" ElementStyle="{StaticResource CaptureCell}"/>
+@@ -43,8 +43,8 @@
+       <DataGridTextColumn Header="Destinazione" Binding="{Binding Destination}" Width="210" ElementStyle="{StaticResource CaptureCell}"/>
+       <DataGridTextColumn Header="Direzione" Binding="{Binding Direction}" Width="90" ElementStyle="{StaticResource CaptureCell}"/>
+       <DataGridTextColumn Header="Byte campionati" Binding="{Binding Bytes}" Width="110" ElementStyle="{StaticResource CaptureCell}"/>
+-      <DataGridTextColumn Header="Componente PktMon" Binding="{Binding Component}" Width="125" ElementStyle="{StaticResource CaptureCell}"/>
+-      <DataGridTextColumn Header="Codice scarto" Binding="{Binding DropReason}" Width="95" ElementStyle="{StaticResource CaptureCell}"/>
++      <DataGridTextColumn Header="Componente (se disponibile)" Binding="{Binding ComponentText}" Width="125" ElementStyle="{StaticResource CaptureCell}"/>
++      <DataGridTextColumn Header="Codice scarto" Binding="{Binding DropReasonText}" Width="95" ElementStyle="{StaticResource CaptureCell}"/>
+      </DataGrid.Columns>
+     </DataGrid>
+    </TabItem>
+diff --git a/src/ProcessLens.App/NativeCaptureView.xaml.cs b/src/ProcessLens.App/NativeCaptureView.xaml.cs
+index e6effe5..25b5804 100644
+--- a/src/ProcessLens.App/NativeCaptureView.xaml.cs
++++ b/src/ProcessLens.App/NativeCaptureView.xaml.cs
+@@ -9,9 +9,9 @@ public partial class NativeCaptureView : UserControl
+     private readonly INativeCaptureClient _client;
+     private bool _active, _busy;
+     private int _generation;
+-    private string _report = "";
++    private string _report = "", _lastDiagnostics = "";
+     private CancellationTokenSource? _operation;
+-    public NativeCaptureView() : this(new WindowsNativeCapture()) { }
++    public NativeCaptureView() : this(new WindowsCompatibleCapture()) { }
+     internal NativeCaptureView(INativeCaptureClient client) { _client = client; InitializeComponent(); UpdateButtons(); }
+     public void SetActive(bool active)
+     {
+@@ -20,7 +20,8 @@ public partial class NativeCaptureView : UserControl
+         if (!active)
+         {
+             _generation++; _operation?.Cancel(); Clear(); NativeCaptureSourcesBox.ItemsSource = null;
+-            NativeCaptureStatusText.Text = "Sezione chiusa. Verifica di nuovo PktMon o leggi le reti Wi-Fi.";
++            NativeCaptureStatusText.Text = _busy ? "Lettura interrotta. Elenca di nuovo le sorgenti o leggi le reti Wi-Fi." : "Elenca di nuovo le sorgenti o leggi le reti Wi-Fi.";
++            NativeCaptureNoteText.Text = _lastDiagnostics;
+             if (!_busy) _client.Release();
+         }
+         UpdateButtons();
+@@ -38,7 +39,7 @@ public partial class NativeCaptureView : UserControl
+         _busy = true; int generation = _generation;
+         using var operation = new CancellationTokenSource(); _operation = operation;
+         Clear(); if (action == 0) NativeCaptureSourcesBox.ItemsSource = null;
+-        NativeCaptureStatusText.Text = action == 0 ? "Verifica delle API PktMon…" : action == 1 ? "Cattura in corso · massimo 20 s…" : "Lettura della cache radio Windows…";
++        NativeCaptureStatusText.Text = action == 0 ? "Elenco delle sorgenti Windows…" : action == 1 ? "Cattura in corso · massimo 20 s…" : "Lettura della cache radio Windows…";
+         UpdateButtons();
+         try
+         {
+@@ -48,7 +49,7 @@ public partial class NativeCaptureView : UserControl
+                 if (!_active || generation != _generation || operation.IsCancellationRequested) return;
+                 NativeCaptureSourcesBox.ItemsSource = result.Available ? result.Sources : null;
+                 NativeCaptureSourcesBox.SelectedIndex = -1;
+-                NativeCaptureStatusText.Text = result.Available ? $"{result.Sources.Count} sorgenti PktMon · seleziona una sorgente." : "PktMon non disponibile · sorgenti N/D";
++                NativeCaptureStatusText.Text = result.Available ? $"{result.Sources.Count} sorgenti Windows · seleziona una sorgente." : "Nessuna sorgente di cattura disponibile · leggi il motivo sotto";
+                 NativeCaptureNoteText.Text = result.Note;
+             }
+             else if (action == 1)
+@@ -58,7 +59,7 @@ public partial class NativeCaptureView : UserControl
+                 NativePacketsTable.ItemsSource = result.Available ? result.Rows : null; NativeResultTabs.SelectedIndex = 0;
+                 _report = NativeCaptureEvidence.Report(result);
+                 NativeCaptureStatusText.Text = result.Available ? $"{result.Rows.Count} osservazioni · " + (result.Partial ? "cattura parziale" : "raccolta terminata") : "Cattura non disponibile · conteggio N/D";
+-                NativeCaptureNoteText.Text = result.Note + (result.Available ? $"\nPerdite: scrittura {result.MissedWrites}, lettura {result.MissedReads}.\n" : "\nPerdite: N/D\n") + NativeCaptureEvidence.Limits;
++                NativeCaptureNoteText.Text = result.Note + (result.Available && result.LossCountsAvailable ? $"\nPerdite: scrittura {result.MissedWrites}, lettura {result.MissedReads}.\n" : "\nPerdite: N/D\n") + NativeCaptureEvidence.Limits;
+             }
+             else
+             {
+@@ -69,11 +70,12 @@ public partial class NativeCaptureView : UserControl
+                 NativeCaptureStatusText.Text = result.Available ? $"{result.Rows.Count} voci BSS nella cache radio" + (result.Partial ? " · lettura parziale" : "") : "Wi-Fi non disponibile · voci N/D";
+                 NativeCaptureNoteText.Text = result.Note + "\n" + NativeCaptureEvidence.WifiLimits;
+             }
++            RememberDiagnostics();
+         }
+         catch (OperationCanceledException)
+-        { if (_active && generation == _generation) NativeCaptureStatusText.Text = "Lettura interrotta."; }
++        { if (_active && generation == _generation) { NativeCaptureStatusText.Text = "Lettura interrotta."; RememberDiagnostics(); } }
+         catch (Exception ex)
+-        { if (_active && generation == _generation) { NativeCaptureStatusText.Text = "Operazione non disponibile · conteggio N/D"; NativeCaptureNoteText.Text = ex.Message; } }
++        { if (_active && generation == _generation) { NativeCaptureStatusText.Text = "Operazione non disponibile · conteggio N/D"; NativeCaptureNoteText.Text = ex.Message; RememberDiagnostics(); } }
+         finally
+         {
+             if (ReferenceEquals(_operation, operation)) _operation = null;
+@@ -81,6 +83,11 @@ public partial class NativeCaptureView : UserControl
+             _busy = false; UpdateButtons();
+         }
+     }
++    private void RememberDiagnostics()
++    {
++        _lastDiagnostics = "Ultimo esito UTC: " + DateTime.UtcNow.ToString("O") + "\n" + NativeCaptureStatusText.Text + "\n" +
++            new string(NativeCaptureNoteText.Text.Take(4096).ToArray()) + "\nLe tabelle vengono rilasciate quando lasci la sezione.";
++    }
+     private void UpdateButtons()
+     {
+         if (StartNativeCaptureButton is null) return;
+@@ -88,12 +95,12 @@ public partial class NativeCaptureView : UserControl
+         StartNativeCaptureButton.IsEnabled = _active && !_busy && NativeCaptureSourcesBox.SelectedItem is NativeCaptureSource;
+         NativeCaptureSourcesBox.IsEnabled = _active && !_busy;
+         StopNativeCaptureButton.IsEnabled = _active && _busy;
+-        CopyNativeCaptureButton.IsEnabled = _active && !_busy && _report.Length > 0;
++        CopyNativeCaptureButton.IsEnabled = _active && !_busy && (_report.Length > 0 || _lastDiagnostics.Length > 0);
+     }
+     private void Source_Changed(object sender, SelectionChangedEventArgs e) => UpdateButtons();
+     private async void Discover_Click(object sender, RoutedEventArgs e) => await DiscoverAsync();
+     private async void Capture_Click(object sender, RoutedEventArgs e) => await CaptureAsync();
+     private async void Wifi_Click(object sender, RoutedEventArgs e) => await ReadWifiAsync();
+     private void Stop_Click(object sender, RoutedEventArgs e) => _operation?.Cancel();
+-    private void Copy_Click(object sender, RoutedEventArgs e) { if (!_busy && _report.Length > 0) ClipboardText.Copy(this, _report); }
++    private void Copy_Click(object sender, RoutedEventArgs e) { if (!_busy && (_report.Length > 0 || _lastDiagnostics.Length > 0)) ClipboardText.Copy(this, _report.Length > 0 ? _report : _lastDiagnostics); }
+ }
+diff --git a/src/ProcessLens.App/NativeNetworkEvidenceView.xaml b/src/ProcessLens.App/NativeNetworkEvidenceView.xaml
+index 06bf7dd..5ee7e40 100644
+--- a/src/ProcessLens.App/NativeNetworkEvidenceView.xaml
++++ b/src/ProcessLens.App/NativeNetworkEvidenceView.xaml
+@@ -19,7 +19,7 @@
+     <Button x:Name="CopyNativeNetworkButton" Content="Copia rapporto" Style="{StaticResource NativeAction}" Click="Copy_Click" IsEnabled="False"/>
+    </WrapPanel>
+    <local:SelectableText x:Name="NativeNetworkStatusText" Text="Nessuna lettura eseguita." TextWrapping="Wrap" Margin="0,0,0,7"/>
+-   <Expander Header="Raccolta eventi e limiti" Margin="0,0,0,8">
++   <Expander Header="Raccolta eventi e limiti" IsExpanded="True" Margin="0,0,0,8">
+     <ScrollViewer MaxHeight="160" VerticalScrollBarVisibility="Auto">
+      <StackPanel>
+       <local:SelectableText x:Name="NativeNetworkCoverageText" Text="Configurazione audit: N/D" TextWrapping="Wrap"/>
+@@ -28,6 +28,9 @@
+      </StackPanel>
+     </ScrollViewer>
+    </Expander>
++   <Expander Header="Come attivare la raccolta" Margin="0,0,0,8">
++    <ScrollViewer MaxHeight="170" VerticalScrollBarVisibility="Auto"><local:SelectableText x:Name="NativeNetworkSetupText" Text="Leggi gli eventi per visualizzare i comandi di configurazione." TextWrapping="Wrap"/></ScrollViewer>
++   </Expander>
+   </StackPanel>
+   <DataGrid x:Name="NativeNetworkEventsTable" Grid.Row="1" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+     EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"
+diff --git a/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs b/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs
+index 75caf8e..3a4dece 100644
+--- a/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs
++++ b/src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs
+@@ -45,10 +45,10 @@ public partial class NativeNetworkEvidenceView : UserControl
+             if (!_active || generation != _generation || operation.IsCancellationRequested) return;
+             _snapshot = result;
+             NativeNetworkEventsTable.ItemsSource = result.Available ? result.Events : null;
+-            NativeNetworkStatusText.Text = !result.Available ? "Registro Security non disponibile · conteggi N/D" :
+-                $"{result.Events.Count} eventi nel campione · {result.Events.Count(e => e.EventId == 5157)} blocchi WFP · " +
+-                $"{result.Events.Count(e => e.EventId == 4625)} accessi di rete/remoti falliti" + (result.Partial ? " · lettura parziale" : "");
+-            NativeNetworkCoverageText.Text = string.Join("\n", result.Audit.Select(a => a.Text)) + "\n" + result.Note;
++            NativeNetworkStatusText.Text = NetworkEvidenceStatus.Summary(result);
++            NativeNetworkCoverageText.Text = NetworkEvidenceStatus.Action(result) + "\n\n" +
++                string.Join("\n", result.Audit.Select(a => a.Text)) + "\n" + result.Note;
++            NativeNetworkSetupText.Text = NetworkEvidenceStatus.Setup;
+         }
+         catch (OperationCanceledException) { }
+         catch (Exception ex)
+diff --git a/src/ProcessLens.App/ProcessLens.App.csproj b/src/ProcessLens.App/ProcessLens.App.csproj
+index 3a65bc5..af15fc3 100644
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R17-pktmon-wifi-native-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R18-network-recovery-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+diff --git a/src/ProcessLens.Core/NativeCaptureEvidence.cs b/src/ProcessLens.Core/NativeCaptureEvidence.cs
+index a89da00..13a904a 100644
+--- a/src/ProcessLens.Core/NativeCaptureEvidence.cs
++++ b/src/ProcessLens.Core/NativeCaptureEvidence.cs
+@@ -8,10 +8,17 @@ namespace ProcessLens.Core;
+ public sealed record NativeCaptureSource(string Key, string Name);
+ public sealed record NativeCaptureDiscovery(bool Available, IReadOnlyList<NativeCaptureSource> Sources, string Note);
+ public sealed record NativePacketRow(string Time, string Protocol, string Source, string Destination, string Direction,
+-    int Bytes, ushort Component, uint DropReason);
++    int Bytes, ushort Component, uint DropReason)
++{
++    public bool HasComponent { get; init; } = true;
++    public bool HasDropReason { get; init; } = true;
++    public string ComponentText => HasComponent ? Component.ToString(CultureInfo.CurrentCulture) : "N/D";
++    public string DropReasonText => HasDropReason ? DropReason.ToString(CultureInfo.CurrentCulture) : "N/D";
++}
+ public sealed record NativeCaptureResult(bool Available, bool Partial, IReadOnlyList<NativePacketRow> Rows,
+     ulong MissedWrites, ulong MissedReads, string Note)
+ {
++    public bool LossCountsAvailable { get; init; } = true;
+     public string SourceName { get; init; } = "N/D";
+     public DateTimeOffset? StartedUtc { get; init; }
+     public DateTimeOffset? EndedUtc { get; init; }
+@@ -100,13 +107,13 @@ public static class NativeCaptureEvidence
+         }
+         return rows;
+     }
+-    public static string Report(NativeCaptureResult result) => "CATTURA PKTMON WINDOWS\nSorgente: " + Clean(result.SourceName) +
++    public static string Report(NativeCaptureResult result) => "CATTURA WINDOWS\nSorgente: " + Clean(result.SourceName) +
+         "\nInizio UTC: " + (result.StartedUtc?.ToString("O", CultureInfo.InvariantCulture) ?? "N/D") +
+         "\nFine UTC: " + (result.EndedUtc?.ToString("O", CultureInfo.InvariantCulture) ?? "N/D") + "\n" + result.Note + "\n" + Limits +
+         $"\nOsservazioni: {(result.Available ? result.Rows.Count.ToString(CultureInfo.CurrentCulture) : "N/D")} · dati " + (result.Partial ? "parziali" : "nel limite di raccolta") +
+-        (result.Available ? $"\nPerdite segnalate: scrittura {result.MissedWrites}, lettura {result.MissedReads}\n" : "\nPerdite segnalate: N/D\n") +
++        (result.Available && result.LossCountsAvailable ? $"\nPerdite segnalate: scrittura {result.MissedWrites}, lettura {result.MissedReads}\n" : "\nPerdite segnalate: N/D\n") +
+         "Ora\tProtocollo\tSorgente\tDestinazione\tDirezione\tByte campionati\tComponente\tScarto\n" +
+-        string.Join("\n", result.Rows.Select(x => $"{x.Time}\t{x.Protocol}\t{x.Source}\t{x.Destination}\t{x.Direction}\t{x.Bytes}\t{x.Component}\t{x.DropReason}"));
++        string.Join("\n", result.Rows.Select(x => $"{x.Time}\t{x.Protocol}\t{x.Source}\t{x.Destination}\t{x.Direction}\t{x.Bytes}\t{x.ComponentText}\t{x.DropReasonText}"));
+     public static string Report(NativeWifiResult result) => "WI-FI · CACHE BSS WINDOWS\n" + result.Note + "\n" + WifiLimits +
+         "\nScheda\tSSID\tBSSID\tRSSI dBm\tFrequenza\tTipo\n" + string.Join("\n", result.Rows.Select(x => $"{x.Adapter}\t{x.Ssid}\t{x.Bssid}\t{x.Rssi}\t{x.Frequency}\t{x.BssType}"));
+ }
+diff --git a/src/ProcessLens.Core/NetworkEvidenceStatus.cs b/src/ProcessLens.Core/NetworkEvidenceStatus.cs
+new file mode 100644
+index 0000000..92c6a05
+--- /dev/null
++++ b/src/ProcessLens.Core/NetworkEvidenceStatus.cs
+@@ -0,0 +1,30 @@
++namespace ProcessLens.Core;
++
++public static class NetworkEvidenceStatus
++{
++    public const string WfpGuid = "{0CCE9226-69AE-11D9-BED3-505054503030}";
++    public const string Setup = "Per registrare i futuri blocchi WFP, apri un terminale come amministratore ed esegui:\n" +
++        "auditpol /get /subcategory:\"" + WfpGuid + "\"\n" +
++        "auditpol /set /subcategory:\"" + WfpGuid + "\" /failure:enable\n" +
++        "Poi premi Leggi eventi Windows. Gli eventi passati mancanti non vengono ricreati; un elenco vuoto resta possibile se non avvengono blocchi. " +
++        "Il registro Security può crescere più rapidamente. Se prima la raccolta era disabilitata e vuoi ripristinarla:\n" +
++        "auditpol /set /subcategory:\"" + WfpGuid + "\" /failure:disable\n" +
++        "ProcessLens mostra i comandi, senza eseguirli o cambiare audit e firewall. Su PC gestiti, i criteri aziendali possono prevalere.";
++    public static string Summary(NativeNetworkSnapshot s)
++    {
++        if (!s.Available) return "Registro Security non disponibile · conteggi N/D";
++        string counts = $"{s.Events.Count} eventi trovati negli ultimi 15 min" + (s.Partial ? " · lettura parziale" : "");
++        if (s.Audit.Any(a => a.FailuresEnabled is false)) return "Copertura incompleta · audit disabilitato per alcune voci · " + counts;
++        if (s.Audit.Count < 2 || s.Audit.Any(a => a.FailuresEnabled is null)) return "Copertura non verificata · " + counts;
++        return s.Events.Count == 0 ? "Nessun evento trovato negli ultimi 15 min" + (s.Partial ? " · lettura parziale" : "") : counts;
++    }
++    public static string Action(NativeNetworkSnapshot s)
++    {
++        if (!s.Available) return "La lettura del registro non è riuscita. Leggi il motivo qui sotto; non è un conteggio pari a zero.";
++        var disabled = s.Audit.Where(a => a.FailuresEnabled is false).Select(a => a.Category).ToArray();
++        if (disabled.Length > 0) return "Audit disabilitato: " + string.Join(", ", disabled) + ". Windows potrebbe non aver registrato questi eventi. " +
++            "Per i blocchi WFP apri «Come attivare la raccolta». La configurazione attuale non ricostruisce quella passata.";
++        if (s.Audit.Count < 2 || s.Audit.Any(a => a.FailuresEnabled is null)) return "Non è stato possibile verificare tutti i criteri di audit. I dettagli indicano quali letture mancano.";
++        return "Lettura eseguita. Le righe compaiono solo se Windows ha registrato eventi compatibili nell’intervallo; l’audit attivo adesso non dimostra la copertura di tutto il passato.";
++    }
++}
+diff --git a/src/ProcessLens.Windows/WindowsCompatibleCapture.cs b/src/ProcessLens.Windows/WindowsCompatibleCapture.cs
+new file mode 100644
+index 0000000..f49f1f9
+--- /dev/null
++++ b/src/ProcessLens.Windows/WindowsCompatibleCapture.cs
+@@ -0,0 +1,167 @@
++using System.Buffers.Binary;
++using System.Diagnostics;
++using System.Net;
++using System.Net.NetworkInformation;
++using System.Net.Sockets;
++using ProcessLens.Core;
++namespace ProcessLens.Windows;
++
++public sealed record LocalIpInterface(string Id, string Name, string Address);
++public interface ILocalIpCaptureSocket : IDisposable
++{
++    void Bind(IPAddress address);
++    void SetReceiveMode(int mode);
++    bool Poll(int microseconds);
++    int Receive(byte[] buffer);
++}
++// Native Winsock only. RCVALL_IPLEVEL (3) deliberately avoids NIC promiscuous mode.
++internal sealed class LocalIpCaptureSocket : ILocalIpCaptureSocket
++{
++    private readonly Socket _socket;
++    public LocalIpCaptureSocket()
++    {
++        if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Cattura IP locale disponibile solo su Windows.");
++        _socket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.IP);
++        try { _socket.Blocking = false; _socket.ReceiveBufferSize = 262144; }
++        catch { _socket.Dispose(); throw; }
++    }
++    public void Bind(IPAddress address) => _socket.Bind(new IPEndPoint(address, 0));
++    public void SetReceiveMode(int mode)
++    { byte[] input = new byte[4]; BinaryPrimitives.WriteInt32LittleEndian(input, mode); _socket.IOControl(IOControlCode.ReceiveAll, input, null); }
++    public bool Poll(int microseconds) => _socket.Poll(microseconds, SelectMode.SelectRead);
++    public int Receive(byte[] buffer) => _socket.Receive(buffer, SocketFlags.None);
++    public void Dispose() => _socket.Dispose();
++}
++public sealed class WindowsCompatibleCapture : INativeCaptureClient
++{
++    private readonly INativeCaptureClient _pktmon;
++    private readonly Func<IReadOnlyList<LocalIpInterface>> _interfaces;
++    private readonly Func<ILocalIpCaptureSocket> _open;
++    private readonly Func<TimeSpan> _elapsed;
++    private readonly Stopwatch _watch = new();
++    private readonly Dictionary<string, LocalIpInterface> _local = new(StringComparer.Ordinal);
++    private readonly Dictionary<string, NativeCaptureSource> _packet = new(StringComparer.Ordinal);
++    private readonly object _gate = new();
++    public WindowsCompatibleCapture() : this(new WindowsNativeCapture(), Enumerate, () => new LocalIpCaptureSocket()) { }
++    public WindowsCompatibleCapture(INativeCaptureClient pktmon, Func<IReadOnlyList<LocalIpInterface>> interfaces,
++        Func<ILocalIpCaptureSocket> open, Func<TimeSpan>? elapsed = null)
++    { _pktmon = pktmon; _interfaces = interfaces; _open = open; _elapsed = elapsed ?? (() => _watch.Elapsed); }
++    internal static bool ValidAddress(string address) => IPAddress.TryParse(address, out var ip) &&
++        ip.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(ip) &&
++        !ip.Equals(IPAddress.Any) && !ip.Equals(IPAddress.Broadcast) && ip.GetAddressBytes()[0] is > 0 and < 224;
++    private static IReadOnlyList<LocalIpInterface> Enumerate()
++    {
++        if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Lettura delle schede disponibile solo su Windows.");
++        var result = new List<LocalIpInterface>();
++        foreach (var adapter in NetworkInterface.GetAllNetworkInterfaces())
++        {
++            if (adapter.OperationalStatus != OperationalStatus.Up || adapter.NetworkInterfaceType == NetworkInterfaceType.Loopback) continue;
++            foreach (var unicast in adapter.GetIPProperties().UnicastAddresses)
++                if (ValidAddress(unicast.Address.ToString()))
++                { result.Add(new(adapter.Id, NativeCaptureEvidence.Clean(adapter.Name), unicast.Address.ToString())); if (result.Count > 256) throw new InvalidDataException("Troppe associazioni IPv4 locali."); }
++        }
++        return result;
++    }
++    public NativeCaptureDiscovery Discover(CancellationToken cancellation)
++    {
++        lock (_gate)
++        {
++            Release(); cancellation.ThrowIfCancellationRequested();
++            var choices = new List<NativeCaptureSource>(); var notes = new List<string>(); string token = Guid.NewGuid().ToString("N");
++            try
++            {
++                var all = _interfaces();
++                if (all.Count > 256) throw new InvalidDataException("Troppe associazioni IPv4 locali.");
++                foreach (var binding in all.Where(b => ValidAddress(b.Address) && !string.IsNullOrWhiteSpace(b.Id)).Distinct())
++                {
++                    cancellation.ThrowIfCancellationRequested();
++                    if (all.Count(b => b.Address == binding.Address) != 1) continue; // Binding by IP would be ambiguous.
++                    if (choices.Count >= 128) { notes.Add("Elenco IPv4 limitato a 128 sorgenti."); break; }
++                    string key = "ip:" + token + ":" + choices.Count; _local.Add(key, binding);
++                    choices.Add(new(key, Label(binding)));
++                }
++                notes.Add($"IP locale Windows: {choices.Count} sorgenti IPv4. Socket aperto solo dopo Cattura; richiede amministratore. Non dipende dalle esportazioni PktMon.");
++            }
++            catch (OperationCanceledException) { Release(); throw; }
++            catch (Exception ex) { notes.Add("Elenco IPv4 non disponibile: " + ex.Message); }
++            cancellation.ThrowIfCancellationRequested();
++            try
++            {
++                var packet = _pktmon.Discover(cancellation); notes.Add(packet.Note);
++                foreach (var item in packet.Available ? packet.Sources.Take(256 - choices.Count) : Array.Empty<NativeCaptureSource>())
++                { string key = "pkt:" + token + ":" + choices.Count; _packet.Add(key, item); choices.Add(new(key, "PktMon · " + item.Name)); }
++            }
++            catch (OperationCanceledException) { Release(); throw; }
++            catch (Exception ex) { notes.Add("PktMon non disponibile: " + ex.Message); }
++            return new(choices.Count > 0, choices, string.Join("\n", notes));
++        }
++    }
++    private static string Label(LocalIpInterface b) => "Windows · IP locale · " + NativeCaptureEvidence.Clean(b.Name) + " · " + b.Address;
++    private void Verify(LocalIpInterface b)
++    {
++        var current = _interfaces();
++        if (current.Count > 256 || current.Count(i => i.Address == b.Address) != 1 || !current.Any(i => i.Id == b.Id && i.Address == b.Address))
++            throw new InvalidDataException("Scheda o indirizzo IPv4 cambiato. Elenca di nuovo le sorgenti.");
++    }
++    public NativeCaptureResult Capture(NativeCaptureSource source, CancellationToken cancellation)
++    {
++        lock (_gate)
++        {
++            if (_packet.TryGetValue(source.Key, out var packet) && source.Name == "PktMon · " + packet.Name)
++                return _pktmon.Capture(packet, cancellation);
++            if (!_local.TryGetValue(source.Key, out var binding) || source.Name != Label(binding))
++                return new(false, false, [], 0, 0, "Sorgente scaduta o non verificata. Elenca di nuovo le sorgenti.") { LossCountsAvailable = false };
++            cancellation.ThrowIfCancellationRequested();
++            var rows = new List<NativePacketRow>(); ILocalIpCaptureSocket? socket = null;
++            bool available = false, partial = false, enabled = false; DateTimeOffset? started = null;
++            string note = "Winsock SIO_RCVALL / IPLEVEL · solo IPv4 sulla scheda selezionata. Massimo 20 s e 2.048 osservazioni. " +
++                "Ora: ricezione nel programma, non timestamp del driver. Perdite del socket non misurate. Nessun ARP, frame Wi-Fi o attribuzione al PID.";
++            try
++            {
++                Verify(binding); var local = IPAddress.Parse(binding.Address); socket = _open(); socket.Bind(local);
++                Verify(binding); cancellation.ThrowIfCancellationRequested();
++                socket.SetReceiveMode(3); enabled = true; available = true; started = DateTimeOffset.UtcNow; _watch.Restart();
++                byte[] buffer = new byte[65535];
++                try
++                {
++                    while (_elapsed() < TimeSpan.FromSeconds(NativeCaptureEvidence.DurationSeconds) && rows.Count < NativeCaptureEvidence.MaximumRows)
++                    {
++                        cancellation.ThrowIfCancellationRequested();
++                        if (!socket.Poll(100000)) continue;
++                        cancellation.ThrowIfCancellationRequested();
++                        int length;
++                        try { length = socket.Receive(buffer); }
++                        catch (SocketException ex) when (ex.SocketErrorCode == SocketError.WouldBlock) { continue; }
++                        if (length < 20 || length > buffer.Length || buffer[0] >> 4 != 4)
++                            throw new InvalidDataException("Datagramma IPv4 non valido o incompleto.");
++                        var data = buffer.AsSpan(0, length); int header = (data[0] & 15) * 4;
++                        int total = BinaryPrimitives.ReadUInt16BigEndian(data[2..]);
++                        if (header < 20 || total < header || total > length) throw new InvalidDataException("Lunghezza IPv4 non coerente.");
++                        ushort direction = data.Slice(12, 4).SequenceEqual(local.GetAddressBytes()) ? (ushort)2 :
++                            data.Slice(16, 4).SequenceEqual(local.GetAddressBytes()) ? (ushort)1 : (ushort)0;
++                        rows.Add(NativeCaptureEvidence.Decode(data[..Math.Min(total, NativeCaptureEvidence.SnapshotBytes)], 3, direction, 0, 0,
++                            DateTime.UtcNow.ToFileTimeUtc()) with { HasComponent = false, HasDropReason = false });
++                    }
++                }
++                finally { Array.Clear(buffer); }
++                if (rows.Count == NativeCaptureEvidence.MaximumRows) { partial = true; note += " Limite osservazioni raggiunto."; }
++            }
++            catch (OperationCanceledException) { partial = true; note += " Lettura interrotta su richiesta."; }
++            catch (Exception ex)
++            {
++                partial = true; note += " " + (ex is SocketException socketError ? "Winsock " + socketError.ErrorCode + " · " : "") + ex.Message;
++                if (ex is SocketException { SocketErrorCode: SocketError.AccessDenied }) note += " Avvia ProcessLens come amministratore; verifica eventuali restrizioni del sistema.";
++            }
++            finally
++            {
++                try { if (enabled && socket is not null) socket.SetReceiveMode(0); }
++                catch (Exception ex) { partial = true; note += " Ripristino socket: " + ex.Message; }
++                finally { socket?.Dispose(); }
++            }
++            return new(available, partial, rows, 0, 0, note) { SourceName = source.Name, StartedUtc = started,
++                EndedUtc = available ? DateTimeOffset.UtcNow : null, LossCountsAvailable = false };
++        }
++    }
++    public NativeWifiResult ReadWifi(CancellationToken cancellation) => _pktmon.ReadWifi(cancellation);
++    public void Release() { lock (_gate) { _local.Clear(); _packet.Clear(); _pktmon.Release(); } }
++}
+diff --git a/tests/ProcessLens.CompatibleCaptureTests/ProcessLens.CompatibleCaptureTests.csproj b/tests/ProcessLens.CompatibleCaptureTests/ProcessLens.CompatibleCaptureTests.csproj
+new file mode 100644
+index 0000000..cddc157
+--- /dev/null
++++ b/tests/ProcessLens.CompatibleCaptureTests/ProcessLens.CompatibleCaptureTests.csproj
+@@ -0,0 +1 @@
++<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><ProjectReference Include="../../src/ProcessLens.Core/ProcessLens.Core.csproj"/><Compile Include="../../src/ProcessLens.Windows/WindowsCompatibleCapture.cs" Link="WindowsCompatibleCapture.cs"/><Compile Include="../../src/ProcessLens.Windows/WindowsNativeCapture.cs" Link="WindowsNativeCapture.cs"/></ItemGroup></Project>
+\ No newline at end of file
+diff --git a/tests/ProcessLens.CompatibleCaptureTests/Program.cs b/tests/ProcessLens.CompatibleCaptureTests/Program.cs
+new file mode 100644
+index 0000000..9645800
+--- /dev/null
++++ b/tests/ProcessLens.CompatibleCaptureTests/Program.cs
+@@ -0,0 +1,95 @@
++using System.Globalization;
++using System.Net;
++using System.Net.Sockets;
++using ProcessLens.Core;
++using ProcessLens.Windows;
++void Check(bool ok, string label) { if (!ok) throw new Exception("FAIL compatible capture: " + label); Console.WriteLine("PASS compatible capture: " + label); }
++LocalIpInterface binding = new("adapter-A", "Wi-Fi", "192.0.2.1");
++IReadOnlyList<LocalIpInterface> interfaces = new[] { binding };
++foreach (string address in new[] { "0.0.0.0", "127.0.0.1", "255.255.255.255", "224.0.0.1", "::1", "2001:db8::1", "garbage" })
++ Check(!WindowsCompatibleCapture.ValidAddress(address), "invalid wildcard loopback multicast or non-IPv4 excluded: " + address);
++Check(WindowsCompatibleCapture.ValidAddress("192.0.2.1") && WindowsCompatibleCapture.ValidAddress("169.254.1.2"), "explicit unicast and link-local IPv4 retained");
++foreach (string culture in new[] { "it-IT", "en-US" })
++{
++ CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(culture);
++ var pkt = new PacketStub(); var socket = new SocketStub(); int enumerations = 0, opened = 0;
++ var client = new WindowsCompatibleCapture(pkt, () => { enumerations++; return interfaces; }, () => { opened++; return socket; }, () => socket.Polls >= 1 ? TimeSpan.FromSeconds(21) : TimeSpan.Zero);
++ Check(enumerations == 0 && opened == 0 && pkt.Discoveries == 0, "constructor is lazy [" + culture + "]");
++ var discovery = client.Discover(default); var source = discovery.Sources.Single();
++ Check(discovery.Available && source.Name.Contains("IP locale") && discovery.Note.Contains("missing PacketMonitorInitialize") && opened == 0,
++   "native IP sources remain visible when PktMon exports are missing [" + culture + "]");
++ var result = client.Capture(source, default); var row = result.Rows.Single();
++ Check(result.Available && !result.Partial && row.Source == "192.0.2.1:12345" && row.Destination == "198.51.100.2:443" && row.Direction == "Out", "owned raw socket feeds actual bounded decoder [" + culture + "]");
++ Check(socket.Modes.SequenceEqual(new[] { 3, 0 }) && socket.Bound?.ToString() == "192.0.2.1" && socket.Disposed == 1,
++   "IPLEVEL enabled and disabled only on own explicitly bound socket [" + culture + "]");
++ Check(socket.LastPoll == 100000 && socket.BufferLength == 65535, "finite poll and full IPv4 datagram buffer [" + culture + "]");
++ Check(!result.LossCountsAvailable && row.ComponentText == "N/D" && row.DropReasonText == "N/D" && result.Note.Contains("ricezione nel programma"),
++   "unmeasured drops components and driver timestamps are not fabricated [" + culture + "]");
++ string report = NativeCaptureEvidence.Report(result);
++ Check(report.Contains("Perdite segnalate: N/D") && report.Contains(source.Name) && result.StartedUtc is not null && result.EndedUtc >= result.StartedUtc,
++   "copy retains actual source interval and unavailable loss counts [" + culture + "]");
++ interfaces = new[] { binding with { Id = "replacement-B" } }; int before = opened;
++ var stale = client.Capture(source, default);
++ Check(!stale.Available && stale.Note.Contains("cambiato") && opened == before, "IP reused on another adapter cannot open a socket [" + culture + "]");
++ interfaces = new[] { binding }; client.Discover(default);
++ Check(!client.Capture(source, default).Available, "rediscovery invalidates old opaque local source [" + culture + "]");
++ client.Release(); Check(!client.Capture(source, default).Available, "release invalidates local source without background capture [" + culture + "]");
++ var audit = new NativeNetworkSnapshot(DateTime.UtcNow, DateTime.UtcNow.AddMinutes(-15), true, false,
++   new[] { new NetworkAuditSetting("WFP", false, ""), new NetworkAuditSetting("Logon", true, "") }, [], "");
++ Check(NetworkEvidenceStatus.Summary(audit).Contains("Copertura incompleta") && NetworkEvidenceStatus.Action(audit).Contains("WFP") && NetworkEvidenceStatus.Action(audit).Contains("disabilitato"),
++   "screenshot state puts disabled WFP coverage before empty counts [" + culture + "]");
++ Check(NetworkEvidenceStatus.Summary(audit with { Audit = new[] { new NetworkAuditSetting("WFP", true, ""), new NetworkAuditSetting("Logon", true, "") } }).StartsWith("Nessun evento trovato"),
++   "enabled empty audit is explained as no matching events [" + culture + "]");
++ Check(NetworkEvidenceStatus.Summary(audit with { Available = false }).Contains("N/D") && !NetworkEvidenceStatus.Summary(audit with { Available = false }).Contains("0 eventi"),
++   "failed Security acquisition cannot become a zero count [" + culture + "]");
++ Check(NetworkEvidenceStatus.Summary(audit with { Audit = new[] { new NetworkAuditSetting("WFP", null, "Win32 5") } }).Contains("non verificata"),
++   "unknown audit policy stays distinct from disabled [" + culture + "]");
++}
++interfaces = new[] { binding, binding with { Id = "adapter-B" } };
++Check(new WindowsCompatibleCapture(new PacketStub(), () => interfaces, () => throw new Exception()).Discover(default).Sources.Count == 0,
++ "duplicate local IPv4 across adapters is not a selectable ambiguous bind");
++interfaces = new[] { binding };
++foreach (string error in new[] { "open", "bind", "enable", "poll", "receive", "disable", "bad-length" })
++{
++ var socket = new SocketStub { Failure = error }; int opens = 0;
++ var c = new WindowsCompatibleCapture(new PacketStub(), () => interfaces, () => { opens++; if (error == "open") throw new SocketException(10013); return socket; }, () => socket.Polls >= 1 ? TimeSpan.FromSeconds(21) : TimeSpan.Zero);
++ var s = c.Discover(default).Sources.Single(); var result = c.Capture(s, default);
++ Check(result.Partial && result.Note.Contains(error == "open" ? "amministratore" : error == "bad-length" ? "non valido" : "fixture " + error), "failure reason retained: " + error);
++ Check(socket.Disposed == (error == "open" ? 0 : 1), "owned socket disposed after " + error);
++ c.Release();
++}
++var cappedSocket = new SocketStub(); var cappedClient = new WindowsCompatibleCapture(new PacketStub(), () => interfaces, () => cappedSocket, () => TimeSpan.Zero);
++var capped = cappedClient.Capture(cappedClient.Discover(default).Sources.Single(), default);
++Check(capped.Rows.Count == 2048 && capped.Partial && cappedSocket.Disposed == 1 && cappedSocket.Modes.Last() == 0, "real loop caps synthetic observations and restores socket"); cappedClient.Release();
++using var cancel = new CancellationTokenSource(); var cancelSocket = new SocketStub { Cancel = cancel };
++var cancelClient = new WindowsCompatibleCapture(new PacketStub(), () => interfaces, () => cancelSocket, () => TimeSpan.Zero);
++var cancelled = cancelClient.Capture(cancelClient.Discover(default).Sources.Single(), cancel.Token);
++Check(cancelled.Available && cancelled.Partial && cancelSocket.Disposed == 1 && cancelSocket.Modes.SequenceEqual(new[] { 3, 0 }), "cancellation during native polling restores only own socket"); cancelClient.Release();
++var packet = new PacketStub { Available = true }; int rawOpened = 0;
++var combined = new WindowsCompatibleCapture(packet, () => interfaces, () => { rawOpened++; return new SocketStub(); });
++var both = combined.Discover(default); var packetChoice = both.Sources.Single(s => s.Key.StartsWith("pkt:"));
++Check(both.Sources.Count == 2 && combined.Capture(packetChoice, default).Available && packet.Captures == 1 && rawOpened == 0, "explicit PktMon selection delegates to its original verified source");
++Check(!combined.Capture(packetChoice with { Name = "forged" }, default).Available && packet.Captures == 1, "mismatched engine source cannot start another backend"); combined.Release();
++Check(NetworkEvidenceStatus.Setup.Contains("/failure:enable") && NetworkEvidenceStatus.Setup.Contains(NetworkEvidenceStatus.WfpGuid) &&
++ !NetworkEvidenceStatus.Setup.Contains("/success:enable") && NetworkEvidenceStatus.Setup.Contains("/failure:disable"), "audit help limits configuration to failures and states conditional rollback");
++Console.WriteLine("Compatible capture tests complete; synthetic network interfaces, datagrams and owned fake sockets only. No live capture or configuration change.");
++
++sealed class PacketStub : INativeCaptureClient
++{
++ public int Discoveries, Captures; public bool Available;
++ public NativeCaptureDiscovery Discover(CancellationToken cancellation) { Discoveries++; return new(Available, Available ? new[] { new NativeCaptureSource("original", "fixture") } : [], Available ? "PktMon fixture" : "missing PacketMonitorInitialize"); }
++ public NativeCaptureResult Capture(NativeCaptureSource source, CancellationToken cancellation) { if (source.Key != "original") throw new Exception("wrong source"); Captures++; return new(true, false, [], 0, 0, "fixture"); }
++ public NativeWifiResult ReadWifi(CancellationToken cancellation) => new(false, true, [], "fixture Wi-Fi denied");
++ public void Release() { }
++}
++sealed class SocketStub : ILocalIpCaptureSocket
++{
++ public string Failure = ""; public int Polls, LastPoll, BufferLength, Disposed; public IPAddress? Bound; public CancellationTokenSource? Cancel;
++ public readonly List<int> Modes = new();
++ private void Fail(string stage) { if (Failure == stage) throw new IOException("fixture " + stage); }
++ public void Bind(IPAddress address) { Fail("bind"); Bound = address; }
++ public void SetReceiveMode(int mode) { Modes.Add(mode); Fail(mode == 3 ? "enable" : "disable"); }
++ public bool Poll(int microseconds) { Fail("poll"); Polls++; LastPoll = microseconds; Cancel?.Cancel(); return true; }
++ public int Receive(byte[] buffer) { Fail("receive"); BufferLength = buffer.Length; if (Failure == "bad-length") return 1; byte[] data = Convert.FromHexString("450000280000000040060000C0000201C6336402303901BB00000000000000005000000000000000"); data.CopyTo(buffer, 0); return data.Length; }
++ public void Dispose() { Disposed++; }
++}
+diff --git a/tests/ProcessLens.NetworkUiTests/Program.cs b/tests/ProcessLens.NetworkUiTests/Program.cs
+index 8038a5e..c565a98 100644
+--- a/tests/ProcessLens.NetworkUiTests/Program.cs
++++ b/tests/ProcessLens.NetworkUiTests/Program.cs
+@@ -165,6 +165,10 @@ internal static class Program
+             Check(wifiGrid.Items.Count == 0 && ((SelectableText)nativeCapture.FindName("NativeCaptureStatusText")).Text.Contains("N/D") &&
+                 ((SelectableText)nativeCapture.FindName("NativeCaptureNoteText")).Text.Contains("access denied"),
+                 "R17 unavailable Wi-Fi retains the reason and never becomes zero observed clients");
++            nativeCapture.SetActive(false); nativeCapture.SetActive(true);
++            Check(((SelectableText)nativeCapture.FindName("NativeCaptureNoteText")).Text.Contains("fixture access denied") &&
++                ((Button)nativeCapture.FindName("CopyNativeCaptureButton")).IsEnabled,
++                "R18 error diagnostics survive tab leave and reopen and remain copyable");
+             nativeCapture.SetActive(false);
+ 
+             var window = new MainWindow();
+@@ -237,6 +241,12 @@ internal static class Program
+             Check(nativeGrid.Items.Count == 0 && ((SelectableText)nativeView.FindName("NativeNetworkStatusText")).Text.Contains("N/D") &&
+                 ((SelectableText)nativeView.FindName("NativeNetworkCoverageText")).Text.Contains("fixture access denied"),
+                 "R16 unavailable log clears old rows and preserves error without invented zero");
++            nativeSource.Snapshot = nativeSource.Snapshot with { Available = true, Partial = false, Events = Array.Empty<NativeNetworkEvent>() };
++            Complete(nativeView.RefreshAsync());
++            Check(((SelectableText)nativeView.FindName("NativeNetworkStatusText")).Text.Contains("Copertura incompleta") &&
++                ((SelectableText)nativeView.FindName("NativeNetworkCoverageText")).Text.Contains("Audit disabilitato") &&
++                ((SelectableText)nativeView.FindName("NativeNetworkSetupText")).Text.Contains("/failure:enable"),
++                "R18 screenshot disabled audit is prominent with optional manual setup and no fabricated events");
+             nativeView.SetActive(false);
+ 
+         }
+diff --git a/tests/check-native-capture-r17.ps1 b/tests/check-native-capture-r17.ps1
+index ae89e73..cb75414 100644
+--- a/tests/check-native-capture-r17.ps1
++++ b/tests/check-native-capture-r17.ps1
+@@ -16,7 +16,7 @@ foreach ($token in @('MaximumRows = 2048', 'SnapshotBytes = 128', 'DurationSecon
+  if (-not $core.Contains($token)) { throw "FAIL R17 capture or WLAN parser: $token" }
+ }
+ foreach ($token in @('_operation?.Cancel()', 'generation != _generation', 'NativePacketsTable.ItemsSource = null',
+- 'WifiBssTable.ItemsSource = null', 'NativeCaptureSourcesBox.SelectedIndex = -1', 'ClipboardText.Copy(this, _report)')) {
++ 'WifiBssTable.ItemsSource = null', 'NativeCaptureSourcesBox.SelectedIndex = -1', 'ClipboardText.Copy(this, _report')) {
+  if (-not $ui.Contains($token)) { throw "FAIL R17 UI lifetime: $token" }
+ }
+ foreach ($forbidden in @('Process.Start(', 'DispatcherTimer', 'WlanSetInterface', 'WlanScan(', 'Socket.Connect', 'HttpClient', 'PacketMonitorSetGlobal')) {
+diff --git a/tests/check-network-recovery-r18.ps1 b/tests/check-network-recovery-r18.ps1
+new file mode 100644
+index 0000000..6ea800b
+--- /dev/null
++++ b/tests/check-network-recovery-r18.ps1
+@@ -0,0 +1,16 @@
++$ErrorActionPreference = 'Stop'
++$root = Split-Path -Parent $PSScriptRoot
++$raw = Get-Content -LiteralPath (Join-Path $root 'src\ProcessLens.Windows\WindowsCompatibleCapture.cs') -Raw -Encoding UTF8
++$ui = Get-Content -LiteralPath (Join-Path $root 'src\ProcessLens.App\NativeCaptureView.xaml.cs') -Raw -Encoding UTF8
++foreach ($token in @('socket.SetReceiveMode(3)', 'socket.SetReceiveMode(0)', 'socket.Bind(local)',
++ 'socket.Poll(100000)', 'new byte[65535]', 'rows.Count < NativeCaptureEvidence.MaximumRows',
++ 'LossCountsAvailable = false', 'HasComponent = false, HasDropReason = false', 'finally { socket?.Dispose(); }')) {
++ if (-not $raw.Contains($token)) { throw "FAIL R18 raw capture: $token" }
++}
++foreach ($token in @('_lastDiagnostics', 'Take(4096)', 'NativeCaptureNoteText.Text = _lastDiagnostics', 'RememberDiagnostics()')) {
++ if (-not $ui.Contains($token)) { throw "FAIL R18 diagnostics: $token" }
++}
++foreach ($forbidden in @('Process.Start(', '.Connect(', '.Send(', 'WlanSetInterface(', 'AuditSetSystemPolicy(')) {
++ if (($raw + $ui).Contains($forbidden)) { throw "FAIL R18 unexpected action: $forbidden" }
++}
++Write-Host 'PASS R18 source: bounded own IPv4 socket, retained error diagnostics, no probes or policy changes.'

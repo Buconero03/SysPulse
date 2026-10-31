@@ -1,0 +1,287 @@
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using ProcessLens.Core;
+
+namespace ProcessLens.Windows;
+
+[StructLayout(LayoutKind.Sequential)]
+public struct PktmonStreamConfiguration
+{ public IntPtr Context, EventCallback, DataCallback; public ushort BufferSizeMultiplier, TruncationSize; }
+[StructLayout(LayoutKind.Sequential)]
+public struct PktmonDataDescriptor
+{ public IntPtr Data; public uint DataSize, MetadataOffset, PacketOffset, PacketLength, MissedWrites, MissedReads; }
+[StructLayout(LayoutKind.Sequential)]
+public struct PktmonMetadata
+{
+    public ulong Group; public ushort PacketCount, Appearance, Direction, PacketType, Component, Edge, Reserved;
+    public uint DropReason, DropLocation; public ushort Processor; public long Timestamp;
+}
+[UnmanagedFunctionPointer(CallingConvention.Winapi)]
+public delegate void PktmonDataCallback(IntPtr context, IntPtr descriptor);
+[UnmanagedFunctionPointer(CallingConvention.Winapi)]
+public delegate void PktmonEventCallback(IntPtr context, IntPtr info, int kind);
+public sealed record PktmonSource(IntPtr Specification, string Name);
+// Injectable native boundary. Tests own all pointers and never call a live Windows driver.
+public interface IPktmonSessionApi : IDisposable
+{
+    IReadOnlyList<PktmonSource> Sources { get; }
+    IntPtr CreateSession(string name);
+    void AddSource(IntPtr session, IntPtr specification);
+    IntPtr CreateStream(PktmonStreamConfiguration configuration);
+    void Attach(IntPtr session, IntPtr stream);
+    void SetActive(IntPtr session, bool active);
+    void CloseStream(IntPtr stream);
+    void CloseSession(IntPtr session);
+}
+public sealed class WindowsNativeCapture : INativeCaptureClient
+{
+    private readonly Func<IPktmonSessionApi> _factory;
+    private readonly Func<WaitHandle[], TimeSpan, int> _wait;
+    private readonly object _gate = new();
+    private IPktmonSessionApi? _api;
+    private Dictionary<string, PktmonSource> _sources = new(StringComparer.Ordinal);
+    public WindowsNativeCapture() : this(() => new PktmonSessionApi()) { }
+    public WindowsNativeCapture(Func<IPktmonSessionApi> factory) : this(factory, (handles, duration) => WaitHandle.WaitAny(handles, duration)) { }
+    internal WindowsNativeCapture(Func<IPktmonSessionApi> factory, Func<WaitHandle[], TimeSpan, int> wait) { _factory = factory; _wait = wait; }
+    public NativeCaptureDiscovery Discover(CancellationToken cancellation)
+    {
+        lock (_gate)
+        {
+            Release(); cancellation.ThrowIfCancellationRequested();
+            try
+            {
+                _api = _factory(); string generation = Guid.NewGuid().ToString("N");
+                if (_api.Sources.Count > NativeCaptureEvidence.MaximumSources) throw new InvalidDataException("Troppe sorgenti PktMon.");
+                var rows = new List<NativeCaptureSource>();
+                foreach (var source in _api.Sources)
+                {
+                    cancellation.ThrowIfCancellationRequested();
+                    string key = generation + ":" + rows.Count;
+                    _sources.Add(key, source); rows.Add(new(key, NativeCaptureEvidence.Clean(source.Name)));
+                }
+                return new(true, rows, "API PktMon multisessione disponibili. Seleziona una sorgente; la cattura richiede privilegi amministrativi.");
+            }
+            catch (OperationCanceledException) { Release(); throw; }
+            catch (Exception ex) { Release(); return new(false, Array.Empty<NativeCaptureSource>(), "Cattura nativa non disponibile: " + ex.Message); }
+        }
+    }
+    public NativeCaptureResult Capture(NativeCaptureSource source, CancellationToken cancellation)
+    {
+        lock (_gate)
+        {
+            if (_api is null || !_sources.TryGetValue(source.Key, out var selected) || source.Name != NativeCaptureEvidence.Clean(selected.Name))
+                return new(false, false, Array.Empty<NativePacketRow>(), 0, 0, "Sorgente non verificata o selezione scaduta. Verifica di nuovo PktMon.");
+            cancellation.ThrowIfCancellationRequested();
+            var rows = new List<NativePacketRow>(); var dataGate = new object();
+            using var finished = new ManualResetEventSlim();
+            ulong missedWrites = 0, missedReads = 0; bool partial = false, available = false, stopping = false;
+            string note = "Durata massima 20 s · massimo 2.048 osservazioni · intestazioni fino a 128 byte. Nessun payload conservato.";
+            IntPtr session = IntPtr.Zero, stream = IntPtr.Zero; DateTimeOffset? started = null;
+            void Incomplete(string text)
+            { lock (dataGate) { partial = true; note = NativeCaptureEvidence.Clean(text, 400); } finished.Set(); }
+            PktmonDataCallback data = (_, pointer) =>
+            {
+                try
+                {
+                    lock (dataGate)
+                    {
+                        if (rows.Count >= NativeCaptureEvidence.MaximumRows) { partial = true; finished.Set(); return; }
+                        if (pointer == IntPtr.Zero) throw new InvalidDataException("Descrittore PktMon mancante.");
+                        var d = Marshal.PtrToStructure<PktmonDataDescriptor>(pointer);
+                        missedWrites += d.MissedWrites; missedReads += d.MissedReads;
+                        if (d.Data == IntPtr.Zero || d.DataSize > 65536 || d.PacketLength > NativeCaptureEvidence.SnapshotBytes ||
+                            (ulong)d.MetadataOffset + 48 > d.DataSize || (ulong)d.PacketOffset + d.PacketLength > d.DataSize ||
+                            (d.PacketLength > 0 && d.MetadataOffset < (ulong)d.PacketOffset + d.PacketLength && d.PacketOffset < (ulong)d.MetadataOffset + 48))
+                            throw new InvalidDataException("Offset o dimensione PktMon non validi.");
+                        var metadata = Marshal.PtrToStructure<PktmonMetadata>(IntPtr.Add(d.Data, (int)d.MetadataOffset));
+                        byte[] bytes = new byte[d.PacketLength]; Marshal.Copy(IntPtr.Add(d.Data, (int)d.PacketOffset), bytes, 0, bytes.Length);
+                        rows.Add(NativeCaptureEvidence.Decode(bytes, metadata.PacketType, metadata.Direction, metadata.Component, metadata.DropReason, metadata.Timestamp));
+                        // Raw packet headers are discarded after extracting bounded endpoint metadata.
+                        if (rows.Count == NativeCaptureEvidence.MaximumRows) { partial = true; finished.Set(); }
+                    }
+                }
+                catch (Exception ex) { Incomplete("Cattura parziale: " + ex.Message); }
+            };
+            PktmonEventCallback events = (_, info, kind) =>
+            {
+                try
+                {
+                    if (kind == 2) Incomplete("PktMon: errore fatale, codice " + (info == IntPtr.Zero ? "N/D" : ((uint)Marshal.ReadInt32(info, 4)).ToString()));
+                    else if (kind == 3) Incomplete("PktMon: avviso di elaborazione, codice " + (info == IntPtr.Zero ? "N/D" : ((uint)Marshal.ReadInt32(info, 4)).ToString()));
+                    else if (kind == 1) { lock (dataGate) { if (!stopping) { partial = true; note = "PktMon ha interrotto lo stream prima del termine richiesto."; } } finished.Set(); }
+                    else if (kind != 0) Incomplete("PktMon: evento streaming sconosciuto " + kind);
+                }
+                catch (Exception ex) { Incomplete("Evento PktMon non leggibile: " + ex.Message); }
+            };
+            try
+            {
+                session = _api.CreateSession("ProcessLens-" + Guid.NewGuid().ToString("N"));
+                if (session == IntPtr.Zero) throw new InvalidDataException("Sessione PktMon non creata.");
+                _api.AddSource(session, selected.Specification);
+                stream = _api.CreateStream(new() { EventCallback = Marshal.GetFunctionPointerForDelegate(events), DataCallback = Marshal.GetFunctionPointerForDelegate(data), BufferSizeMultiplier = 1, TruncationSize = NativeCaptureEvidence.SnapshotBytes });
+                if (stream == IntPtr.Zero) throw new InvalidDataException("Stream PktMon non creato.");
+                _api.Attach(session, stream); started = DateTimeOffset.UtcNow; _api.SetActive(session, true); available = true;
+                int end = _wait(new[] { finished.WaitHandle, cancellation.WaitHandle }, TimeSpan.FromSeconds(NativeCaptureEvidence.DurationSeconds));
+                if (end == 1) { partial = true; note = "Cattura interrotta su richiesta."; }
+            }
+            catch (Exception ex) { partial = true; note = "Cattura non completata: " + ex.Message; }
+            finally
+            {
+                // Only the owned session handle is changed. Never invoke global pktmon stop/unload/reset.
+                lock (dataGate) stopping = true;
+                try { if (session != IntPtr.Zero) _api.SetActive(session, false); }
+                catch (Exception ex) { partial = true; note += " · Arresto: " + NativeCaptureEvidence.Clean(ex.Message); }
+                try { if (stream != IntPtr.Zero) _api.CloseStream(stream); }
+                finally
+                {
+                    try { if (session != IntPtr.Zero) _api.CloseSession(session); }
+                    finally { GC.KeepAlive(data); GC.KeepAlive(events); }
+                }
+            }
+            lock (dataGate)
+                return new(available, partial || missedWrites > 0 || missedReads > 0, rows.ToArray(), missedWrites, missedReads, note) { SourceName = source.Name, StartedUtc = available ? started : null, EndedUtc = available ? DateTimeOffset.UtcNow : null };
+        }
+    }
+    public NativeWifiResult ReadWifi(CancellationToken cancellation) => WindowsWifiBss.Read(cancellation);
+    public void Release()
+    { lock (_gate) { _sources.Clear(); var api = _api; _api = null; api?.Dispose(); } }
+}
+
+internal sealed class PktmonSessionApi : IPktmonSessionApi
+{
+    private IntPtr _module, _handle, _buffer;
+    public IReadOnlyList<PktmonSource> Sources { get; private set; } = Array.Empty<PktmonSource>();
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)] private delegate int Initialize(uint version, IntPtr reserved, out IntPtr handle);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)] private delegate void Close(IntPtr handle);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)] private delegate int NewSession(IntPtr handle, string name, out IntPtr session);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)] private delegate int EnumSources(IntPtr handle, int kind, [MarshalAs(UnmanagedType.U1)] bool hidden, nuint capacity, out nuint needed, IntPtr buffer);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)] private delegate int Pair(IntPtr first, IntPtr second);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)] private delegate int Active(IntPtr session, [MarshalAs(UnmanagedType.U1)] bool active);
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)] private delegate int NewStream(IntPtr handle, in PktmonStreamConfiguration configuration, out IntPtr stream);
+    private readonly Close _uninitialize = null!, _closeSession = null!, _closeStream = null!;
+    private readonly NewSession _newSession = null!; private readonly NewStream _newStream = null!;
+    private readonly Pair _add = null!, _attach = null!; private readonly Active _active = null!;
+    private T Export<T>(string name) where T : Delegate
+    {
+        if (!NativeLibrary.TryGetExport(_module, name, out var address) || address == IntPtr.Zero)
+            throw new NotSupportedException("Questa versione di Windows non espone " + name + ". La presenza di pktmon.exe non garantisce queste API; Wi-Fi e Segnali Windows restano separati.");
+        return Marshal.GetDelegateForFunctionPointer<T>(address);
+    }
+    private static void Check(int hr) { if (hr < 0) Marshal.ThrowExceptionForHR(hr); }
+    public PktmonSessionApi()
+    {
+        if (!OperatingSystem.IsWindows() || RuntimeInformation.ProcessArchitecture != Architecture.X64)
+            throw new PlatformNotSupportedException("Cattura PktMon: candidata per Windows x64.");
+        try
+        {
+            // Absolute system path; never resolve a DLL from the working directory or PATH.
+            _module = NativeLibrary.Load(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "Pktmonapi.dll"));
+            var initialize = Export<Initialize>("PacketMonitorInitialize");
+            _uninitialize = Export<Close>("PacketMonitorUninitialize");
+            _newSession = Export<NewSession>("PacketMonitorCreateLiveSession");
+            var enumerate = Export<EnumSources>("PacketMonitorEnumDataSources");
+            _newStream = Export<NewStream>("PacketMonitorCreateRealtimeStream");
+            _add = Export<Pair>("PacketMonitorAddSingleDataSourceToSession"); _attach = Export<Pair>("PacketMonitorAttachOutputToSession");
+            _active = Export<Active>("PacketMonitorSetSessionActive");
+            _closeSession = Export<Close>("PacketMonitorCloseSessionHandle"); _closeStream = Export<Close>("PacketMonitorCloseRealtimeStream");
+            Check(initialize(0x00010000, IntPtr.Zero, out _handle));
+            if (_handle == IntPtr.Zero) throw new InvalidDataException("Handle PktMon mancante.");
+            int first = enumerate(_handle, 1, false, 0, out nuint needed, IntPtr.Zero);
+            if (first < 0 && first != unchecked((int)0x8007007A)) Check(first);
+            if (needed < 8 || needed > NativeCaptureEvidence.MaximumNativeBuffer) throw new InvalidDataException("Buffer sorgenti PktMon fuori limite.");
+            int capacity = (int)needed; _buffer = Marshal.AllocHGlobal(capacity);
+            Check(enumerate(_handle, 1, false, (nuint)capacity, out needed, _buffer));
+            if (needed < 8 || needed > (nuint)capacity) throw new InvalidDataException("Tabella sorgenti PktMon cambiata: ripeti la verifica.");
+            Sources = ParseSources(_buffer, (int)needed);
+        }
+        catch { Dispose(); throw; }
+    }
+    internal static IReadOnlyList<PktmonSource> ParseSources(IntPtr buffer, int length)
+    {
+        if (buffer == IntPtr.Zero || length < 8 || length > NativeCaptureEvidence.MaximumNativeBuffer) throw new InvalidDataException("Buffer sorgenti PktMon non valido.");
+            uint count = (uint)Marshal.ReadInt32(buffer);
+            if (count > NativeCaptureEvidence.MaximumSources || 8L + count * IntPtr.Size > length) throw new InvalidDataException("Conteggio sorgenti PktMon non valido.");
+            var sources = new List<PktmonSource>();
+            for (int i = 0; i < count; i++)
+            {
+                IntPtr p = Marshal.ReadIntPtr(buffer, 8 + i * IntPtr.Size);
+                long offset = p.ToInt64() - buffer.ToInt64();
+                if (offset < 8L + count * IntPtr.Size || offset > length - 8 || Marshal.ReadInt32(p) != 1)
+                    throw new InvalidDataException("Puntatore sorgente PktMon non valido.");
+                // Keep the original OS specification intact. No guessed lengths for unpublished name constants.
+                var chars = new List<char>();
+                for (int j = 0; j < 64 && offset + 4 + j * 2 + 2 <= length; j++)
+                { char c = (char)Marshal.ReadInt16(p, 4 + j * 2); if (c == '\0') break; chars.Add(c); }
+                string name = NativeCaptureEvidence.Clean(new string(chars.ToArray()));
+                sources.Add(new(p, "Sorgente " + (i + 1) + (name.Length > 0 ? " · " + name : "")));
+            }
+            return sources;
+    }
+    public IntPtr CreateSession(string name) { Check(_newSession(_handle, name, out var session)); return session; }
+    public void AddSource(IntPtr session, IntPtr specification) => Check(_add(session, specification));
+    public IntPtr CreateStream(PktmonStreamConfiguration configuration) { Check(_newStream(_handle, in configuration, out var stream)); return stream; }
+    public void Attach(IntPtr session, IntPtr stream) => Check(_attach(session, stream));
+    public void SetActive(IntPtr session, bool active) => Check(_active(session, active));
+    public void CloseStream(IntPtr stream) => _closeStream(stream);
+    public void CloseSession(IntPtr session) => _closeSession(session);
+    public void Dispose()
+    {
+        if (_buffer != IntPtr.Zero) { Marshal.FreeHGlobal(_buffer); _buffer = IntPtr.Zero; }
+        if (_handle != IntPtr.Zero) { _uninitialize(_handle); _handle = IntPtr.Zero; }
+        if (_module != IntPtr.Zero) { NativeLibrary.Free(_module); _module = IntPtr.Zero; }
+    }
+}
+
+internal static class WindowsWifiBss
+{
+    public static NativeWifiResult Read(CancellationToken cancellation)
+    {
+        if (!OperatingSystem.IsWindows()) return new(false, false, Array.Empty<WifiBssRow>(), "Native Wi-Fi disponibile solo su Windows.");
+        IntPtr client = IntPtr.Zero, interfaces = IntPtr.Zero; var rows = new List<WifiBssRow>(); var errors = new List<string>(); int completed = 0;
+        try
+        {
+            cancellation.ThrowIfCancellationRequested(); Check(WlanOpenHandle(2, IntPtr.Zero, out _, out client));
+            Check(WlanEnumInterfaces(client, IntPtr.Zero, out interfaces));
+            if (interfaces == IntPtr.Zero) throw new InvalidDataException("Tabella schede Wi-Fi mancante.");
+            uint count = (uint)Marshal.ReadInt32(interfaces);
+            if (count > 16) throw new InvalidDataException("Troppe schede Wi-Fi.");
+            for (int i = 0; i < count; i++)
+            {
+                cancellation.ThrowIfCancellationRequested(); IntPtr entry = IntPtr.Add(interfaces, 8 + i * 532);
+                Guid id = Marshal.PtrToStructure<Guid>(entry);
+                string name = NativeCaptureEvidence.Clean(Marshal.PtrToStringUni(IntPtr.Add(entry, 16), 256)?.TrimEnd('\0'));
+                IntPtr bss = IntPtr.Zero;
+                try
+                {
+                    // NULL SSID requests all BSS entries; type/security arguments are ignored in that case.
+                    Check(WlanGetNetworkBssList(client, ref id, IntPtr.Zero, 1, false, IntPtr.Zero, out bss));
+                    if (bss == IntPtr.Zero) throw new InvalidDataException("Tabella BSS mancante.");
+                    uint size = (uint)Marshal.ReadInt32(bss);
+                    if (size < 8 || size > NativeCaptureEvidence.MaximumNativeBuffer) throw new InvalidDataException("Buffer BSS fuori limite.");
+                    byte[] bytes = new byte[size]; Marshal.Copy(bss, bytes, 0, bytes.Length);
+                    var parsed = NativeCaptureEvidence.ParseBss(bytes, name);
+                    if (rows.Count + parsed.Count > NativeCaptureEvidence.MaximumBssRows) throw new InvalidDataException("Limite complessivo BSS raggiunto.");
+                    rows.AddRange(parsed); completed++;
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException) { errors.Add(name + ": " + ex.Message); }
+                finally { if (bss != IntPtr.Zero) WlanFreeMemory(bss); }
+            }
+            string note = count == 0 ? "Nessuna interfaccia WLAN restituita da Windows." :
+                "Cache BSS letta su " + completed + " schede alle " + DateTime.Now.ToString("HH:mm:ss") + ". Ora di lettura, non di rilevamento radio.";
+            return new(count == 0 || completed > 0, errors.Count > 0, rows, note + (errors.Count > 0 ? "\n" + string.Join("\n", errors) : ""));
+        }
+        catch (OperationCanceledException) { throw; }
+        catch (Exception ex) { return new(false, true, Array.Empty<WifiBssRow>(), ex.Message); }
+        finally { if (interfaces != IntPtr.Zero) WlanFreeMemory(interfaces); if (client != IntPtr.Zero) WlanCloseHandle(client, IntPtr.Zero); }
+    }
+    private static void Check(uint code)
+    {
+        if (code == 5) throw new Win32Exception(5, "Accesso Wi-Fi negato. Controlla Impostazioni → Privacy e sicurezza → Posizione e l’accesso delle app desktop; i privilegi amministrativi non sostituiscono questo consenso.");
+        if (code != 0) throw new Win32Exception((int)code);
+    }
+    [DllImport("wlanapi.dll"), DefaultDllImportSearchPaths(DllImportSearchPath.System32)] private static extern uint WlanOpenHandle(uint version, IntPtr reserved, out uint negotiated, out IntPtr client);
+    [DllImport("wlanapi.dll"), DefaultDllImportSearchPaths(DllImportSearchPath.System32)] private static extern uint WlanEnumInterfaces(IntPtr client, IntPtr reserved, out IntPtr list);
+    [DllImport("wlanapi.dll"), DefaultDllImportSearchPaths(DllImportSearchPath.System32)] private static extern uint WlanGetNetworkBssList(IntPtr client, ref Guid id, IntPtr ssid, int type, [MarshalAs(UnmanagedType.Bool)] bool security, IntPtr reserved, out IntPtr list);
+    [DllImport("wlanapi.dll"), DefaultDllImportSearchPaths(DllImportSearchPath.System32)] private static extern void WlanFreeMemory(IntPtr memory);
+    [DllImport("wlanapi.dll"), DefaultDllImportSearchPaths(DllImportSearchPath.System32)] private static extern uint WlanCloseHandle(IntPtr client, IntPtr reserved);
+}

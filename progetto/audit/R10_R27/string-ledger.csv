@@ -1,0 +1,138 @@
+file,line,before_or_after,changed_text
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                                            <Image Source=""{Binding IconSource}"""
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                                            <Image Source=""{Binding IconSource}"" ToolTip=""{Binding IconDescription}"""
+src/ProcessLens.App/MainWindow.xaml,see patch,before,"                        <Image Source=""{Binding Name.IconSource}"" Width=""22"" Height=""22""/>"
+src/ProcessLens.App/MainWindow.xaml,see patch,after,"                        <Image Source=""{Binding Name.IconSource}"" ToolTip=""{Binding Name.IconDescription}"" Width=""22"" Height=""22""/>"
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        DetailProcessIcon.ToolTip = row.IconDescription;
+src/ProcessLens.App/MainWindow.xaml.cs,see patch,after,        DetailProcessIcon.ToolTip = null;
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,"        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IconDescription)));"
+src/ProcessLens.App/ProcessGroupRow.cs,see patch,after,    public string IconDescription => Members.FirstOrDefault()?.IconDescription ?? WindowsProcessIconPolicy.ExecutableDescription;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,using ProcessLens.Core;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,    private static readonly string WindowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,    internal static DrawingImage WindowsComponentIcon { get; } = CreateWindowsComponentIcon();
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,    internal static ImageSource? GetIcon(ProcessSnapshot process) =>
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        WindowsProcessIconPolicy.UseWindowsIcon(process, WindowsDirectory)"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"            ? WindowsComponentIcon : GetIcon(process.ExecutablePath, process.Name);"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,    internal static string IconDescription(ProcessSnapshot process) =>
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        WindowsProcessIconPolicy.UseWindowsIcon(process, WindowsDirectory)"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,            ? WindowsProcessIconPolicy.WindowsDescription : WindowsProcessIconPolicy.ExecutableDescription;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,    private static DrawingImage CreateWindowsComponentIcon()
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,    {
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        // One frozen vector shared by all Windows rows, groups and details, at every DPI."
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,        var tiles = new GeometryGroup();
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        tiles.Children.Add(new RectangleGeometry(new Rect(0, 0, 7, 7)));"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        tiles.Children.Add(new RectangleGeometry(new Rect(9, 0, 7, 7)));"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        tiles.Children.Add(new RectangleGeometry(new Rect(0, 9, 7, 7)));"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        tiles.Children.Add(new RectangleGeometry(new Rect(9, 9, 7, 7)));"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,"        var drawing = new GeometryDrawing(new SolidColorBrush(Color.FromRgb(0, 120, 212)), null, tiles);"
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,        var image = new DrawingImage(drawing); image.Freeze(); return image;
+src/ProcessLens.App/ProcessIconResolver.cs,see patch,after,    }
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,before,    <InformationalVersion>0.19.16-R10-R26-scroll-native-minimize-candidate</InformationalVersion>
+src/ProcessLens.App/ProcessLens.App.csproj,see patch,after,    <InformationalVersion>0.19.16-R10-R27-windows-icons-candidate</InformationalVersion>
+src/ProcessLens.App/ProcessRow.cs,see patch,before,"    public ImageSource? IconSource => ProcessIconResolver.GetIcon(Process.ExecutablePath, Process.Name);"
+src/ProcessLens.App/ProcessRow.cs,see patch,after,    public ImageSource? IconSource => ProcessIconResolver.GetIcon(Process);
+src/ProcessLens.App/ProcessRow.cs,see patch,after,    public string IconDescription => ProcessIconResolver.IconDescription(Process);
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,using ProcessLens.Core;
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,namespace ProcessLens.App;
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"// A display classification from the existing snapshot, never a signature/security verdict."
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,internal static class WindowsProcessIconPolicy
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,{
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"    internal const string WindowsDescription = ""Componente Windows · classificazione da PID riservato, nome/percorso o metadati del file. Firma digitale non verificata."";"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"    internal const string ExecutableDescription = ""Icona dell’eseguibile o icona generica di Windows."";"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"    internal static bool UseWindowsIcon(ProcessSnapshot p, string windowsDirectory)"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,    {
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        if (p.Pid == 0) return p.Name.Equals(""Idle"", StringComparison.OrdinalIgnoreCase) ||"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"            p.Name.Equals(""System Idle Process"", StringComparison.OrdinalIgnoreCase);"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        if (p.Pid == 4) return p.Name.Equals(""System"", StringComparison.OrdinalIgnoreCase);"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        if (!SafeWindowsPath(p.ExecutablePath, windowsDirectory)) return false;"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        string name = p.Name.EndsWith("".exe"", StringComparison.OrdinalIgnoreCase) ? p.Name : p.Name + "".exe"";"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        string actual = p.ExecutablePath!.Replace('/', '\\');"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        if (!actual[(actual.LastIndexOf('\\') + 1)..].Equals(name, StringComparison.OrdinalIgnoreCase)) return false;"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        var entry = new SystemProcessEntry(p.Pid, p.ParentPid, name, null, null, null, null, p.ExecutablePath);"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        if (WindowsComponentCatalog.Match(entry, windowsDirectory) is not null) return true;"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,        // Remaining OS components (e.g. ShellHost/SystemApps) may carry the OS product metadata.
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,        // Restrict this fallback to OS locations: a Microsoft app or a Windows\Temp binary is not enough.
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        string relative = actual[(windowsDirectory.Replace('/', '\\').TrimEnd('\\').Length + 1)..];"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        if (!(relative.StartsWith(""System32\\"", StringComparison.OrdinalIgnoreCase) ||"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"              relative.StartsWith(""SysWOW64\\"", StringComparison.OrdinalIgnoreCase) ||"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"              relative.StartsWith(""SystemApps\\"", StringComparison.OrdinalIgnoreCase))) return false;"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        string company = (p.CompanyName ?? """").Trim();"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        if (!company.Equals(""Microsoft Corporation"", StringComparison.OrdinalIgnoreCase)) return false;"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        string product = string.Join(' ', (p.ProductName ?? """").Replace(""®"", """").Replace(""™"", """")"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"            .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        return product.Equals(""Microsoft Windows Operating System"", StringComparison.OrdinalIgnoreCase) ||"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"               product.Equals(""Sistema operativo Microsoft Windows"", StringComparison.OrdinalIgnoreCase);"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,    }
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"    private static bool SafeWindowsPath(string? path, string directory)"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,    {
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        if (directory.Any(char.IsControl) || (directory.Length > 2 && directory[2..].Contains(':')) || directory.Split('\\', '/').Any(x => x is ""."" or "".."")) return false;"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,"        if (!SystemProcessPresentation.UnderWindows(path, directory)) return false;"
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,        return !path!.Any(char.IsControl) && !path[2..].Contains(':');
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,    }
+src/ProcessLens.App/WindowsProcessIconPolicy.cs,see patch,after,}
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,before,"<Compile Include=""../../src/ProcessLens.App/WindowLifetimePolicy.cs"" Link=""WindowLifetimePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/ReadingPositionPolicy.cs"" Link=""ReadingPositionPolicy.cs""/></ItemGroup></Project>"
+tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj,see patch,after,"<Compile Include=""../../src/ProcessLens.App/WindowLifetimePolicy.cs"" Link=""WindowLifetimePolicy.cs""/><Compile Include=""../../src/ProcessLens.App/ReadingPositionPolicy.cs"" Link=""ReadingPositionPolicy.cs""/><Compile Include=""../../src/ProcessLens.App/WindowsProcessIconPolicy.cs"" Link=""WindowsProcessIconPolicy.cs""/></ItemGroup></Project>"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,// R27: snapshot-only icon classification; no Shell/native calls.
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"ProcessSnapshot IconProcess(string name,string? path,string? company=null,string? product=null,int pid=7000)=>new(){"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Pid=pid,ParentPid=1,Name=name,ExecutablePath=path,CompanyName=company,ProductName=product};"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"const string win27=@""C:\Windows"";"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,foreach(var d in WindowsComponentCatalog.Definitions.Where(d=>d.RelativePath is not null))
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,{
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    var p27=IconProcess(d.Name,win27+@""\""+d.RelativePath);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Check(WindowsProcessIconPolicy.UseWindowsIcon(p27,win27),""R27 catalog component uses Windows icon at expected path: ""+d.Name);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,}
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"var icons27=new (string Label,ProcessSnapshot Process,string Directory,bool Expected)[]{"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""reserved System PID"",IconProcess(""System"",null,pid:4),"""",true),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""reserved idle PID"",IconProcess(""Idle"",null,pid:0),"""",true),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""reserved idle display name"",IconProcess(""System Idle Process"",null,pid:0),"""",true),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""non-reserved System name"",IconProcess(""System"",null),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""wrong reserved PID name"",IconProcess(""unrelated.exe"",null,pid:4),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""wrong idle PID name"",IconProcess(""unrelated.exe"",null,pid:0),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""unknown path does not promote a name"",IconProcess(""svchost.exe"",null),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""unexpected executable path"",IconProcess(""svchost.exe"",@""C:\Users\fixture\svchost.exe""),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""Windows prefix collision"",IconProcess(""svchost.exe"",@""C:\Windows.old\System32\svchost.exe""),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""path traversal"",IconProcess(""svchost.exe"",@""C:\Windows\System32\..\Temp\svchost.exe""),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""alternate stream"",IconProcess(""svchost.exe"",@""C:\Windows\System32\svchost.exe:payload""),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""control character in path"",IconProcess(""svchost.exe"",""C:\\Windows\\System32\\svchost.exe\0""),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""snapshot name differs from file"",IconProcess(""svchost.exe"",@""C:\Windows\System32\other.exe""),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""case and path separators"",IconProcess(""SVCHOST.EXE"",""c:/windows/system32/SVCHOST.EXE""),""C:/WINDOWS/"",true),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""executable extension omitted in snapshot"",IconProcess(""svchost"",@""C:\Windows\System32\svchost.exe""),win27,true),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""actual alternate Windows drive"",IconProcess(""svchost.exe"",@""D:\OS\System32\svchost.exe""),@""D:\OS"",true),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""empty Windows directory"",IconProcess(""svchost.exe"",@""C:\Windows\System32\svchost.exe""),"""",false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""malformed Windows directory"",IconProcess(""svchost.exe"",@""C:\Windows\System32\svchost.exe""),@""C:\OS\..\Windows"",false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""ShellHost OS product metadata"",IconProcess(""ShellHost.exe"",@""C:\Windows\System32\ShellHost.exe"",""Microsoft Corporation"",""Microsoft® Windows® Operating System""),win27,true),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""SystemApps Italian OS metadata"",IconProcess(""TextInputHost.exe"",@""C:\Windows\SystemApps\fixture\TextInputHost.exe"",""Microsoft Corporation"",""Sistema operativo Microsoft® Windows®""),win27,true),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""Microsoft app metadata is not an OS component"",IconProcess(""app.exe"",@""C:\Windows\System32\app.exe"",""Microsoft Corporation"",""Microsoft Office""),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""publisher alone is insufficient"",IconProcess(""app.exe"",@""C:\Windows\System32\app.exe"",""Microsoft Corporation"",null),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""OS product alone is insufficient"",IconProcess(""app.exe"",@""C:\Windows\System32\app.exe"",null,""Microsoft Windows Operating System""),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""lookalike publisher"",IconProcess(""app.exe"",@""C:\Windows\System32\app.exe"",""Not Microsoft Corporation"",""Microsoft Windows Operating System""),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""lookalike product"",IconProcess(""app.exe"",@""C:\Windows\System32\app.exe"",""Microsoft Corporation"",""Microsoft Windows Operating System Helper""),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""OS metadata outside Windows"",IconProcess(""app.exe"",@""C:\Apps\app.exe"",""Microsoft Corporation"",""Microsoft Windows Operating System""),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""OS metadata in Windows Temp"",IconProcess(""app.exe"",@""C:\Windows\Temp\app.exe"",""Microsoft Corporation"",""Microsoft Windows Operating System""),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""ordinary app in system32"",IconProcess(""thirdparty.exe"",@""C:\Windows\System32\thirdparty.exe""),win27,false),"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    (""ordinary app keeps original icon"",IconProcess(""chrome.exe"",@""C:\Apps\Chrome\chrome.exe"",""Google LLC"",""Google Chrome""),win27,false)"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,};
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,foreach(var c27 in icons27)
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,{
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    Check(WindowsProcessIconPolicy.UseWindowsIcon(c27.Process,c27.Directory)==c27.Expected,""R27 icon classification: ""+c27.Label);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,}
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,var before27=icons27[18].Process with{};
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"WindowsProcessIconPolicy.UseWindowsIcon(icons27[18].Process,win27);"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(icons27[18].Process==before27,""R27 visual classification never mutates the snapshot"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Check(WindowsProcessIconPolicy.WindowsDescription.Contains(""Firma digitale non verificata"") &&"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"    !WindowsProcessIconPolicy.WindowsDescription.Contains(""sicuro""),""R27 Windows icon is a category marker rather than a safety verdict"");"
+tests/ProcessLens.ProcessGroupsTests/Program.cs,see patch,after,"Console.WriteLine(""R27 Windows icon policy regressions complete; synthetic snapshots only."");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var systemIconRow=new ProcessRow(new ProcessSnapshot{Pid=4,ParentPid=0,Name=""System""},"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            analyzer.Analyze(new ProcessSnapshot{Pid=4,ParentPid=0,Name=""System""}));"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var idleIconRow=new ProcessRow(new ProcessSnapshot{Pid=0,ParentPid=0,Name=""Idle""},"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            analyzer.Analyze(new ProcessSnapshot{Pid=0,ParentPid=0,Name=""Idle""}));"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        var iconGroup=new ProcessGroupRow(""owned-icon-fixture"",""Windows"",new[]{systemIconRow},1);"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(ReferenceEquals(systemIconRow.IconSource,idleIconRow.IconSource) &&"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            ReferenceEquals(iconGroup.IconSource,systemIconRow.IconSource),""R27 Windows rows and groups share one icon object"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"        Check(systemIconRow.IconSource is DrawingImage{IsFrozen:true},""R27 shared vector icon is frozen and needs no Shell handle"");"
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,        Check(iconGroup.IconDescription==systemIconRow.IconDescription &&
+tests/ProcessLens.ProcessGroupsUiTests/Program.cs,see patch,after,"            systemIconRow.IconDescription.Contains(""Firma digitale non verificata""),""R27 icon tooltip keeps category meaning explicit"");"

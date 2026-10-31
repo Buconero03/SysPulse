@@ -1,0 +1,122 @@
+[
+  {
+    "test": "exact ledger covers current production and C# test delta",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "no unrecorded production or C# test change",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "existing native acquisition Core semantics Guardian and profiler sources exact to R3",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "existing native lifetime navigation and observation guards pass",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "native result trimmed on worker before publication",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "only component groups assigned to system table",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "groups keep individual identity navigation",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "hidden workspace releases catalog groups and instance selector",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "no new timer child process profiler or live event collector",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "RAM is a maximum over available counters without a group sum",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "observed sample and catalog function explicitly distinct",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "scope has only all-components and the five categories",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "details have a row splitter and no fixed maximum height",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "all UI handlers exist and names unique",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "process counters hidden only while system pane active",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "WPF suite retains dispatcher context forced worker and finally restoration",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "WPF regressions supplied for groups apps categories selector and late completion",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "portable suite and source gate run in normal Windows pipeline",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "real portable compiler and runner evidence matches all compiled sources",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "actual portable WindowsComponentTests assertions and build logs",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "actual portable SystemProcessTests assertions and build logs",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "actual portable NetworkDeviceTests assertions and build logs",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "current C# syntax evidence corresponds to all five edited C# files",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  },
+  {
+    "test": "all XML projects and markup parse",
+    "status": "PASS",
+    "kind": "source/XML and actual portable result correlation; not WPF runtime"
+  }
+]

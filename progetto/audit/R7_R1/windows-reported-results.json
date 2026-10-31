@@ -1,0 +1,7 @@
+{
+  "origin": "Log incollato dall’utente, 2026-10-14; R7 prima di R1",
+  "MemoryTests": "PASS riportato",
+  "BehaviorTests": "FAIL riportato: partial network acquisition; precedenti controlli e 3 regressioni R7 PASS riportati",
+  "subsequent_stages": "NON ESEGUITO",
+  "R7_R1_dotnet_tests": "NON ESEGUITO qui"
+}

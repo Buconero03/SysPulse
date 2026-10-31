@@ -1,0 +1,13 @@
+{
+  "state": "CANDIDATE_PORTABLE_VALIDATED",
+  "base": "R27",
+  "baseline_sha256": "554bad70574c36e6045bcfcf8fa93b815aff943f6892644ae51815f4d7aedd69",
+  "portable_assertions": 737,
+  "PowerShell_source_stages": 35,
+  "launcher_fixtures": 17,
+  "runtime_negative_controls": 4,
+  "CSharp_WindowsDesktop_assemblies": 9,
+  "actual_WPF_BAML_build": "NOT_RUN",
+  "Windows_MainWindowShell_gate": "INCLUDED_NOT_RUN_HERE",
+  "DPI_RAM_measurement": "NOT_RUN"
+}

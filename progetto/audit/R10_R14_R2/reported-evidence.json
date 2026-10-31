@@ -1,0 +1,16 @@
+{
+  "source": "User-provided Windows build log",
+  "sha256": "96e0b2cf21eba62833c16aa34aebf3e09134f43ec700986271943273a7712540",
+  "candidate": "R14 R1",
+  "confirmed_complete": [
+    "NetworkDeviceTests",
+    "PacketCaptureTests"
+  ],
+  "failure": "NetworkUiTests first explicit refresh compound assertion",
+  "warnings": [
+    "CS8600 Program.cs line 116",
+    "CS8602 Program.cs line 117"
+  ],
+  "diagnosis": "RefreshAsync returns when NetworkTabs.SelectedIndex != 0. The XAML had no explicit initial selected index. Selection/layout timing not reproduced locally because WPF runtime is unavailable.",
+  "fix": "Set SelectedIndex=0 in actual XAML; preserve all three original conditions as separate checks and assert initial state before Loaded."
+}

@@ -1,0 +1,22 @@
+{
+  "git_apply_check": "PASS",
+  "actual_git_apply": "PASS",
+  "exact_changed_files": 24,
+  "existing_source_files_retained_exact": 98,
+  "existing_source_files_changed": [
+    "src/ProcessLens.App/MainWindow.xaml",
+    "src/ProcessLens.App/MainWindow.xaml.cs",
+    "src/ProcessLens.App/ProcessLens.App.csproj",
+    "src/ProcessLens.App/ProcessRow.cs",
+    "src/ProcessLens.App/TrayWindowController.cs",
+    "src/ProcessLens.App/WindowLifetimePolicy.cs",
+    "src/ProcessLens.Windows/WindowsProcessCollector.cs"
+  ],
+  "new_source_files": [
+    "src/ProcessLens.Core/BoundedMetadataCache.cs",
+    "src/ProcessLens.Core/LiveCpuSample.cs",
+    "src/ProcessLens.Windows/WindowsLiveCpuSampler.cs",
+    "src/ProcessLens.Windows/WindowsSelfResources.cs"
+  ],
+  "scope": "GUI lifecycle and CPU-only polling, self-resource reads, bounded metadata, tests, source guards and qualification docs; historical/current audit and manifest excluded for self-reference."
+}

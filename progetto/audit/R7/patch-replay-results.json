@@ -1,0 +1,7 @@
+{
+  "git_apply_check": "PASS",
+  "git_apply": "PASS",
+  "exact_changed_files_sha256": 31,
+  "status": "PASS",
+  "encoding": "UTF-8 BOM/newline bytes preserved"
+}

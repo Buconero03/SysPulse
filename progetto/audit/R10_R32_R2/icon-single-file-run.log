@@ -1,0 +1,21 @@
+PASS icon: actual SDK embedded resource is available without a path
+PASS icon: 32-pixel native icon payload selected from actual asset
+PASS icon: selected actual image has PNG resource signature
+PASS icon: small and tray sizes retain distinct image payloads
+PASS icon: 256-pixel entry retains its actual dimensions
+PASS icon: invalid or missing data is unavailable
+PASS icon: invalid or missing data is unavailable
+PASS icon: invalid or missing data is unavailable
+PASS icon: invalid or missing data is unavailable
+PASS icon: invalid or missing data is unavailable
+PASS icon: overflowing payload offset rejected
+PASS icon: overflowing payload length rejected
+PASS icon: payload cannot overlap icon directory
+PASS icon: cursor does not masquerade as icon
+PASS icon: invalid requested dimensions rejected
+PASS icon: missing optional assembly resource is unavailable
+PASS icon: reads preserve embedded bytes exactly
+PASS icon: single-file assembly has no external location
+PASS icon: embedded icon survives real single-file publication without external assets
+Icon resource tests complete; no WPF, native icon handles, filesystem icon lookup or user data.
+

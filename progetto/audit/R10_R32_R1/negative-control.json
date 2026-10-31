@@ -1,0 +1,7 @@
+{
+  "mutation": "remove only System.IO. qualification from copied TrayWindowController.cs",
+  "exit_code": 1,
+  "expected": "CS0103 for Path",
+  "result": "PASS: original user error reproduced",
+  "candidate_unchanged": true
+}

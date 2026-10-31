@@ -1,0 +1,43 @@
+{
+  "baseline_sha256": "79a6b2db701b48a80a168bf26fdbee83c86c82c32494cf25dd4701c6a8adc642",
+  "modified": [
+    "LEGGIMI.txt",
+    "progetto/audit/tools/check_scroll_minimize_r26.ps1",
+    "progetto/audit/tools/check_search_hosts_r31.ps1",
+    "progetto/audit/tools/check_window_diagnostics_r29.ps1",
+    "progetto/audit/tools/check_windows_icons_r27.ps1",
+    "progetto/build-dashboard.ps1",
+    "progetto/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv",
+    "progetto/src/ProcessLens.App/App.xaml.cs",
+    "progetto/src/ProcessLens.App/MainWindow.xaml",
+    "progetto/src/ProcessLens.App/NativeIconPreference.cs",
+    "progetto/src/ProcessLens.App/ProcessIconResolver.cs",
+    "progetto/src/ProcessLens.App/ProcessLens.App.csproj",
+    "progetto/src/ProcessLens.App/TrayWindowController.cs",
+    "progetto/src/ProcessLens.App/WindowActionDiagnostics.cs",
+    "progetto/src/ProcessLens.App/WindowLifetimePolicy.cs",
+    "progetto/src/ProcessLens.App/WindowsProcessIconPolicy.cs",
+    "progetto/src/ProcessLens.Core/ProcessDetailPresentation.cs",
+    "progetto/tests/ProcessLens.LiveMetricsUiTests/Program.cs",
+    "progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj",
+    "progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs",
+    "progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs",
+    "progetto/tests/ProcessLens.TerminologyTests/Program.cs",
+    "progetto/tests/check-classification-language-v01911.ps1",
+    "progetto/tests/check-terminology-ui.ps1",
+    "supporto/avvia.ps1"
+  ],
+  "added": [
+    "progetto/audit/tools/check_notification_area_r32.ps1",
+    "progetto/audit/tools/check_powershell_r32.py",
+    "progetto/audit/tools/package_notification_area_r32.py",
+    "progetto/audit/tools/test_launcher_r32.ps1",
+    "progetto/audit/tools/typecheck_wpf_sources_r32.py",
+    "progetto/src/ProcessLens.App/Assets/ProcessLens.ico",
+    "progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs"
+  ],
+  "protected": "native acquisition, Semantics, Guardian, MemoryAgent, RAM monitor, network, scroll policies byte identical",
+  "new_external_dependencies": 0,
+  "Windows_WPF_runtime": "NOT EXECUTED",
+  "RAM": "NOT MEASURED"
+}

@@ -1,0 +1,1288 @@
+--- /dev/null
++++ b/CPU_RAM_RIPRISTINO_R10_R7.md
+@@ -0,0 +1,82 @@
++# ProcessLens v0.19.16 R10 R7 — candidata CPU, risorse GUI e riapertura
++
++Prosegue dalla candidata R10 R6. Le revisioni precedenti, la copia dei log e la loro impaginazione restano incluse. Questa revisione risponde alla riapertura intermittente dall’icona, alla CPU poco aggiornata e alla richiesta di ridurre/misurare la RAM della GUI. Non ripete la revisione semantica già registrata.
++
++**Stato: candidata da qualificare su Windows.** In questo ambiente Linux non sono disponibili SDK .NET, PowerShell o WPF. Compilazione, test C#, script PowerShell, riapertura reale, DPI e confronto con Gestione attività: **NON ESEGUITI**. Consumo RAM e risparmio in MiB: **NON MISURATI**. I controlli Python, le mutazioni dei controlli di sorgente e la riproduzione esatta delle patch non sostituiscono queste prove.
++
++## Prima / dopo
++
++| Area | Prima, R10 R6 | R10 R7 |
++|---|---|---|
++| X della finestra | Nascondeva la finestra se l’icona risultava registrata | Riduce nella barra applicazioni, lasciando un secondo accesso anche se la tray perde l’icona o i clic |
++| Menu dell’icona | Apri ProcessLens | **Mostra ProcessLens** e **Esci da ProcessLens** |
++| Presenza dell’icona | Flag locale finché non arrivava TaskbarCreated | Prima di ridurre verifica anche NIM_MODIFY; se l’icona è persa prova a registrarla di nuovo |
++| CPU visibile | Campionata insieme all’intera raccolta, ogni 15 s o 45 s sotto carico | Lettura CPU separata ogni circa **2 s**, con intervallo effettivo misurato |
++| Denominatore per PID nella GUI | Delta sistema condiviso fra letture di processi eseguite in momenti diversi | Delta tempo CPU dello stesso processo / intervallo monotono di quel PID / numero di CPU logiche attive del computer |
++| Lettura interrotta o PID riusato | Possibile confronto tra intervalli o istanze non equivalenti | Nuova baseline; fino a due letture confrontabili mostra N/D, senza inventare zero |
++| Media CPU | Campioni legati al lento refresh completo | Media degli intervalli CPU disponibili fino a 30 s; pesi limitati alla porzione nella finestra, massimo 64 intervalli |
++| Aggiornamento rapido | Avrebbe richiesto ricostruire tutta la lista per aumentare la frequenza | Notifica i soli valori CPU sulle righe esistenti; dettagli CPU aggiornati senza rilanciare ispezione o rapporto |
++| Cache metadati dei file | Dizionario senza limite fra percorsi incontrati durante tutta la sessione | Massimo **512** percorsi; un dato espulso viene riletto quando serve |
++| Risorse della GUI | Nessun riepilogo proprio sempre visibile | Riga **GUI ProcessLens**, PID, CPU, RAM privata residente e totale, con **Copia risorse GUI**; commit privato e istante UTC nel testo copiato/tooltip |
++
++La CPU rapida e i dashboard GUI sono sospesi quando la finestra è ridotta; i buffer CPU vengono rilasciati appena il worker in corso è concluso. Al ripristino la baseline CPU riparte; nessuna media su un lungo periodo nascosto viene presentata come attività attuale. Gli esiti arrivati dopo una transizione di visibilità vengono scartati. I campioni per PID hanno anche una verifica di età prima della pubblicazione. La diagnostica testuale completa è etichettata come snapshot dell’ultimo aggiornamento dei dettagli; i valori CPU continui sono nel riquadro Analisi CPU. La lista dei processi e i metadati continuano a essere rilevati ogni 15/45 s: un nuovo processo compare al successivo rilevamento completo. L’ordinamento CPU dei processi già elencati viene aggiornato con la lettura rapida, conservando gli oggetti delle righe.
++
++## Che cosa misura la CPU
++
++Per ogni PID leggibile si usano `OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION)` e `GetProcessTimes`: creazione, tempo kernel e tempo utente appartengono allo stesso handle, chiuso subito dopo. L’intervallo proviene da `Stopwatch`, vicino alla lettura di quel PID, e non dall’orologio civile o dall’avvio della scansione completa. La percentuale è:
++
++`100 × Δ(kernel + user in unità da 100 ns) / (10.000.000 × secondi trascorsi × CPU logiche attive)`.
++
++Una CPU logica occupata per tutto l’intervallo su 12 CPU dà circa 8,33%; due danno circa 16,67%. Lo zero è valido soltanto fra due contatori riusciti e confrontabili. Cambiamento della creazione o del numero di CPU, contatore decrescente, intervallo nullo/inverso o superiore a 6 s invalidano la continuità. Una lettura fallita cancella la baseline di quel PID. La pubblicazione nella GUI richiede anche la creazione nota e uguale a quella della riga; l’assenza di identità non autorizza un’associazione.
++
++Il totale sistema usa il tempo occupato di `GetSystemTimes`, normalizzato sull’intervallo monotono e sulle CPU logiche. Oltre 64 CPU logiche questo totale è **N/D**, perché l’API copre il solo gruppo del thread chiamante; i processi possono continuare a essere misurati rispetto al totale delle CPU attive. L’acquisizione completa precedente e i suoi contratti restano presenti per i consumatori esistenti; **la GUI non ne riutilizza i vecchi valori CPU** quando ricarica i metadati.
++
++Non è promessa un’uguaglianza istantanea con un’altra finestra: le finestre di campionamento, gli arrotondamenti e l’aggregazione possono differire. Questo non giustifica errori di calcolo: vanno confrontati PID, creazione e contatore equivalenti. Microsoft documenta che Windows 11 recente usa metriche standard nelle varie pagine di Gestione attività e conserva la precedente metrica nella colonna facoltativa **CPU Utility**. Non si assume che tutte le versioni di Windows usino ancora la vecchia metrica di utilità. Registrare versione/build Windows e colonna osservata.
++
++## RAM: cosa si può affermare
++
++La cache ora ha un limite verificabile nel codice; i test di churn controllano che non superi 512 voci. I cicli rapidi CPU evitano di ricostruire righe, classificazioni, controlli del rapporto e ispezioni profonde. Rimangono i limiti di cache, la virtualizzazione e la costruzione differita dei dashboard delle revisioni precedenti. Non sono stati introdotti GC forzati o svuotamenti del working set.
++
++**Non è dimostrato un risparmio di 10, 30 o 50 MiB**, né che la nuova frequenza CPU abbia un costo trascurabile sul computer dell’utente. La misura deve verificare sia CPU della GUI sia RAM a parità di scenario. Il limite riguarda il numero di percorsi, non un tetto in byte all’intera applicazione; con oltre 512 eseguibili distinti la ricarica dei metadati può aumentare il lavoro e va misurata.
++
++La nuova riga distingue RAM privata residente, working set totale e commit privato. Il totale residente comprende pagine condivisibili; il commit non è RAM fisica. I contatori riguardano **solo il PID della GUI**, non la somma di Guardian e MemoryAgent. `PrivateWorkingSetSize` è letto con EX2; su sistemi senza estensione valida la sentinella evita di mostrare un falso zero e la RAM privata resta N/D. Nessuna differenza fra questi contatori viene chiamata consumo di oggetti .NET.
++
++## Verifica su Windows
++
++1. Per sostituire i binari, uscire dalla GUI precedente con **Esci da ProcessLens** nel menu dell’icona. La X riduce: non termina. Nessun processo viene chiuso automaticamente dagli script.
++2. Nella cartella estratta eseguire `powershell -NoProfile -File .\verify-candidate-r10.ps1` per tutti i test e le build, oppure il consueto `build-dashboard.ps1`, che ora comprende anche `ProcessLens.CpuTests`. Qualsiasi FAIL blocca la qualificazione. La fixture del profiler viene solo compilata nella verifica completa.
++3. Dopo esito positivo pubblicare con la procedura esistente e aprire la nuova GUI. Controllare che **Copia risorse GUI** riporti `0.19.16-R10-R7-cpu-restore-candidate`.
++4. Provare 20 cicli alternati: X → pulsante nella barra; X → clic sull’icona; X → menu **Mostra ProcessLens**; minimizza → barra; finestra massimizzata → X → Mostra. Controllare selezione e dimensioni. Un secondo avvio deve richiedere il ripristino della stessa istanza. Testare anche un riavvio di Explorer e sospensione/ripresa **solo se avviati manualmente dall’utente**. Nel log diagnostico il ripristino riporta visibilità, stato e risultato di Activate; una richiesta accolta non viene chiamata conferma del primo piano.
++5. Selezionare un processo esistente con carico osservabile. Confrontare in Gestione attività **lo stesso PID**, non un gruppo App. Registrare build Windows e CPU standard / CPU Utility. Osservare almeno 60 s e i cambiamenti di carico; confrontare intervalli e medie, non una singola cifra di due aggiornamenti diversi. Controllare l’aggiornamento dei valori anche senza ricostruzione della lista e con ordinamento CPU attivo. Ripetere dopo finestra ridotta per oltre 10 s: N/D iniziale, poi nuova coppia valida, nessun picco dovuto alla pausa.
++6. Controllare riduzione/riapertura durante una raccolta completa e durante il campionamento rapido. Campioni tardivi non devono ripubblicare valori della sessione precedente. Provare un PID non leggibile e l’uscita di un processo già aperto dall’utente: N/D, nessuna falsa lettura a zero o eredità da un PID riusato.
++7. Verificare log selezionabili, copia dei rapporti, notifiche di uscita, filtri, menu contestuali e dashboard come nelle revisioni precedenti. Controllare 100/125/150/200% DPI, 1180×800 e 950×680 DIP, con culture it-IT/en-US; la riga delle risorse deve andare a capo senza sovrapposizioni.
++
++Per la misura passiva copiare il PID dalla riga delle risorse e, da una seconda PowerShell, usare ad esempio:
++
++```powershell
++.\measure-processlens-resources.ps1 -TargetPid 1234 -Label R10R7 -Scenario processes-idle -DurationSeconds 180 -IntervalSeconds 2
++```
++
++Sostituire **1234 con il PID reale**. Lo script non avvia processi o profiler, non installa nulla e non modifica memoria. Tiene un handle in lettura alla stessa istanza e verifica la creazione. Salva CSV e JSON in `verification-r10r7`: campioni disponibili, mediana e massimo **campionato**, non picco continuo dell’intera sessione. Il CSV dichiara la cultura della sessione. Le celle mancanti non sono zero.
++
++Se R6 è disponibile e funzionante, misurarla prima nello stesso scenario con `-Label R10R6` usando **lo stesso nuovo script**. Attendere un minuto dall’avvio, mantenere stesse schede aperte, filtri, numero approssimativo di processi e carico esterno. Misurare separatamente lista inattiva, dettaglio aperto, navigazione RAM e finestra ridotta. Ripetere almeno tre volte; confrontare lo stesso contatore. Una RAM privata minore con CPU sensibilmente maggiore non dimostra un miglioramento complessivo. Al momento questi risultati non esistono nel pacchetto.
++
++## Test aggiunti e perimetro
++
++- `CpuTests`: normalizzazione, intervallo effettivo, zero reale, baseline, contatore inverso, clock invalido, riuso PID, pause, cambio CPU logiche, media pesata e bordo dei 30 s, sovrapposizione sicura dei valori sullo snapshot.
++- `MemoryEfficiencyTests`: limite della nuova cache su 10.000 percorsi, confronto senza distinzione maiuscole, sostituzione, ricaricamento e capacità non valida. Non è una misura RAM della GUI.
++- `CopyUiTests`: confronto del contatore CPU nativo con due letture .NET indipendenti sul solo processo di test, identità reale, PID inesistente, seconda lettura e reset, contatori RAM del processo di test e notifiche delle proprietà della riga. Non avvia/termina processi bersaglio né mostra il monitor; la riapertura reale resta manuale.
++- Test di policy: X lascia il pulsante nella barra anche con icona registrata; Esci consente la chiusura. Guardie Python con mutazioni conservano i vincoli di sorgente; non eseguono questi test C#.
++
++Il solo cambiamento a un file Windows preesistente è la dichiarazione della cache metadati, ora limitata. Gli altri file Windows/Core aggiunti contengono il nuovo percorso CPU e la lettura della sola GUI, motivati da questa richiesta e accompagnati dai test indicati. Nessun contratto JSON o ID della knowledge base cambia. Guardian, MemoryAgent, profiler, diagnostica originale e log RAM originali sono conservati. Nessuna nuova terminazione o profilazione automatica.
++
++Restano aperti i rilievi semantici in `audit/R10/review-findings.csv` e il rischio asincrono dei rapporti generali in `audit/R10_R6/new-review-finding.csv`; non sono stati implicitamente risolti dal nuovo campionatore CPU. L’analisi della causa intermittente originale di mancato ripristino non è riprodotta qui: la seconda via tramite taskbar elimina la dipendenza esclusiva dalla tray, ma l’esito sul sistema dell’utente va provato.
++
++## Fonti Microsoft consultate il 18 ottobre 2026
++
++- GetProcessTimes, unità e diritti: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes
++- CPU logiche su tutti i gruppi: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getactiveprocessorcount
++- Limite di gruppo GetSystemTimes: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getsystemtimes
++- Gestione attività attuale e CPU Utility: https://learn.microsoft.com/en-us/windows/whats-new/whats-new-windows-11-version-25h2 e https://support.microsoft.com/en-us/help/5053656
++- Contatori e supporto EX2: https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex2
++- GetProcessMemoryInfo: https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getprocessmemoryinfo
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,12 @@
+-﻿# R10 R6 — registro verifiche RAM leggibile e priorità del progetto
++﻿# R10 R7 — CPU separata, risorse GUI e riapertura
++
++Leggere **CPU_RAM_RIPRISTINO_R10_R7.md**. La X mantiene il pulsante nella barra applicazioni; nell’icona è disponibile **Mostra ProcessLens**. CPU aggiornata separatamente ogni circa 2 s con identità e intervallo per PID; valori sulle righe esistenti, senza ripetere raccolta completa e ispezioni. Cache metadati limitata a 512 percorsi. Riga **GUI ProcessLens** con RAM privata residente, RAM totale e CPU, più **Copia risorse GUI**. Script passivo `measure-processlens-resources.ps1` per confrontare CPU/RAM della stessa istanza con CSV e riepilogo.
++
++**Candidata, non build qualificata:** .NET, PowerShell, WPF, DPI e confronto reale con Gestione attività **NON ESEGUITI** qui; RAM e risparmio **NON MISURATI**. Prima eseguire le verifiche Windows indicate nel documento. Manifest corrente `SHA256SUMS_R10.txt`. Le note sotto sono lo storico: la politica di chiusura R5 è sostituita da R7.
++
++---
++
++# R10 R6 — registro verifiche RAM leggibile e priorità del progetto
+ 
+ Leggere `REGISTRO_LEGGIBILE_R10_R6.md` e `VALUTAZIONE_PROGETTO_R10_R6.md`. Il registro visto nella schermata ha ora voci separate: orario, fase, messaggio, carattere più grande, margini e spazi fra eventi. Copia registro completo usa il testo originale; file e codici diagnostici invariati. Aggiornamento incrementale e rilascio delle schede a registro chiuso. R5 e funzionalità precedenti incluse. Build/test .NET/PowerShell e WPF/DPI **NON ESEGUITI** qui. Manifest corrente `SHA256SUMS_R10.txt`.
+ 
+--- a/audit/tools/check_r10.py
++++ b/audit/tools/check_r10.py
+@@ -14,7 +14,12 @@
+ user=archive(a.input_zip);r9=archive(a.r9_zip)
+ protected=[r for r in user if r.startswith(('src/ProcessLens.Windows/','src/ProcessLens.Core/','src/ProcessLens.Semantics/',
+  'src/ProcessLens.Guardian.','src/ProcessLens.MemoryAgent/','src/ProcessLens.Profiler/')) or r in ['src/ProcessLens.App/ProfilerClient.cs','src/ProcessLens.App/AppDiagnostics.cs','src/ProcessLens.App/MemoryAnalysisAudit.cs','src/ProcessLens.App/GuardianDashboardReader.cs','src/ProcessLens.App/GuardianLineageReader.cs']]
+-check('user native models semantics and protected components retained',all((b/r).read_bytes()==user[r] for r in protected),f'{len(protected)} files byte-identical to new user input; semantic review findings remain open')
++native='src/ProcessLens.Windows/WindowsProcessCollector.cs'
++expected=user[native].decode('utf-8-sig').replace('private readonly Dictionary<string, FileMetadata> _fileMetadataCache = new(StringComparer.OrdinalIgnoreCase);', '// Bound retained paths across long sessions; a miss re-reads the same metadata.\n    private readonly BoundedMetadataCache<FileMetadata> _fileMetadataCache = new(512);')
++check('protected components retained with exact scoped metadata-cache change',
++ all((b/r).read_bytes()==user[r] for r in protected if r!=native) and
++ (b/native).read_text(encoding='utf-8-sig')==expected,
++ f'{len(protected)-1} existing protected files byte-identical; one exact cache declaration replacement, independent churn tests supplied; CPU acquisition added separately')
+ prior=['src/ProcessLens.App/BoundedCache.cs','src/ProcessLens.App/MemoryObservationBuffer.cs','src/ProcessLens.App/ProcessIconResolver.cs','src/ProcessLens.App/ProcessDisplayFormatter.cs','src/ProcessLens.App/ProcessNetworkPresentation.cs']
+ check('R8 R9 helper implementations retained',all((b/r).read_bytes()==r9[r] for r in prior),'Prior delivered memory and numeric formatting helpers retained')
+ xmlpaths=list(b.rglob('*.xaml'))+list(b.rglob('*.csproj'))+list((b/'src').rglob('*.manifest'))
+@@ -98,7 +103,7 @@
+     'string.Equals(evidence, _renderedEvidenceText, StringComparison.Ordinal)', 'expanded.Contains(groupName)', 'section.Tag = groupName']),
+     'Unchanged evidence skips rebuild; changed same-PID evidence restores open group names')
+ check('all-process collection and copy sources retained',
+-    (b/'src/ProcessLens.Windows/WindowsProcessCollector.cs').read_bytes()==user['src/ProcessLens.Windows/WindowsProcessCollector.cs'] and
++    (b/native).read_text(encoding='utf-8-sig')==expected and
+     '_copyAnswerBody = result.Answer;' in ui and 'ReportLayout' not in (b/'src/ProcessLens.App/CopyTextFormat.cs').read_text(),
+     'Enumerator and source report copy do not depend on visual formatting')
+ exit_watch=(b/'src/ProcessLens.App/ProcessExitWatch.cs').read_text()
+@@ -123,10 +128,10 @@
+     'Independent read-only Windows self-process binding plus pure deduplication tests; NOT EXECUTED here')
+ tray=(b/'src/ProcessLens.App/TrayWindowController.cs').read_text()
+ app=(b/'src/ProcessLens.App/App.xaml.cs').read_text()
+-check('X hides and explicit Exit closes',all(t in tray for t in ['WindowLifetimePolicy.Close(', 'e.Cancel = true;',
+-    '_window.Hide();', 'Esci da ProcessLens', 'AllowExit(); _shutdown();', '_window.WindowState = WindowState.Minimized;']),
+-    'Closing route depends on tray availability; Exit bypasses hiding')
+-check('restore supports hidden and minimized window',all(t in tray for t in ['Apri ProcessLens',
++check('X preserves taskbar and explicit Exit closes',all(t in tray for t in ['WindowLifetimePolicy.Close(', 'e.Cancel = true;',
++    '_window.ShowInTaskbar = true;', 'Esci da ProcessLens', 'AllowExit(); _shutdown();', '_window.WindowState = WindowState.Minimized;']),
++    'X minimizes with a persistent taskbar button regardless of tray availability; explicit Exit closes')
++check('restore supports hidden and minimized window',all(t in tray for t in ['Mostra ProcessLens',
+     '_window.ShowInTaskbar = true;', '_window.Show();', '_window.WindowState = restoreState;', '_window.Activate();']) and
+     'TrayWindowController.TryRestoreExisting()' in app and 'SendMessageTimeoutW' in tray,
+     'Tray activation and acknowledged single-instance message; older-version fallback retained')
+@@ -162,5 +167,9 @@
+     'TimeSpan.TryParseExact', 'Message = previous.Message + "\\n" + line', 'new Entry("", "Registro", line, line)',
+     'location = line;']) and 'audit complete copy retains original CRLF' in (b/'tests/ProcessLens.CopyTests/Program.cs').read_text(),
+     'RAM/profiler entries, continuation lines, source location, cultures and original-copy regressions supplied; .NET NOT EXECUTED')
++from live_resource_rules import violations as resource_violations
++resource_files={p.relative_to(b).as_posix():p.read_text(encoding='utf-8-sig') for p in b.rglob('*') if p.suffix in ['.cs','.xaml','.ps1']}
++resource_bad=resource_violations(resource_files)
++check('R10 R7 CPU restore self-resource source invariants',not resource_bad,str(resource_bad) if resource_bad else '13 conservative source guards; executable .NET and Windows checks supplied, not executed')
+ output=a.output or b/'audit/R10/structural-results.json';output.parent.mkdir(parents=True,exist_ok=True);output.write_text(json.dumps(results,ensure_ascii=False,indent=2)+'\n')
+ raise SystemExit(0 if all(r['status']=='PASS' for r in results) else 1)
+--- /dev/null
++++ b/audit/tools/live_resource_rules.py
+@@ -0,0 +1,54 @@
++"""Conservative source guards. No C#/.NET/WPF execution or numerical qualification."""
++def violations(files):
++    bad=[]
++    def need(ok, label):
++        if not ok: bad.append(label)
++    ui=files['src/ProcessLens.App/MainWindow.xaml.cs']
++    fast=ui[ui.index('    private async Task RefreshCpuAsync()'):ui.index('    private void CopySelfResourcesButton_Click')]
++    tray=files['src/ProcessLens.App/TrayWindowController.cs']
++    closing=tray[tray.index('    private void Closing('):tray.index('    private void Closed(')]
++    policy=files['src/ProcessLens.App/WindowLifetimePolicy.cs']
++    native=files['src/ProcessLens.Windows/WindowsLiveCpuSampler.cs']
++    tracker=files['src/ProcessLens.Core/LiveCpuSample.cs']
++    cache=files['src/ProcessLens.Core/BoundedMetadataCache.cs']
++    self_memory=files['src/ProcessLens.Windows/WindowsSelfResources.cs']
++    measure=files['measure-processlens-resources.ps1']
++    need('_window.ShowInTaskbar = true;' in closing and '_window.WindowState = WindowState.Minimized;' in closing and
++         '_window.Hide()' not in closing and 'exitRequested ? WindowCloseAction.Exit : WindowCloseAction.MinimizeToTaskbar' in policy,
++         'X must preserve taskbar route independently of tray')
++    need('Mostra ProcessLens' in tray and 'Shell_NotifyIconW(1, ref existing)' in tray and
++         'TaskbarCreated' in tray and '_window.Show();' in tray and '_window.WindowState = restoreState;' in tray,
++         'explicit restore and lost tray entry recovery')
++    need('Interval = TimeSpan.FromSeconds(2)' in ui and '_cpuTimer.Tick +=' in ui and
++         not any(t in fast for t in ['_collector.Capture(', 'BuildRow(', 'ApplyFilter(', 'ShowDetails(', '_deepInspector.Inspect(']),
++         'two-second CPU-only tick must not repeat expensive metadata or detail rebuilding')
++    need('_cpuRefreshing || _windowClosed || !IsVisible || WindowState == WindowState.Minimized' in fast and
++         'generation != _cpuGeneration' in fast and '_cpuTimer.Stop();' in ui and '_liveCpu.Reset();' in fast,
++         'coalescing pause generation and baseline reset')
++    need('Stopwatch.GetTimestamp()' in native and 'GetActiveProcessorCount(0xffff)' in native and
++         'PROCESS_QUERY_LIMITED_INFORMATION' in native and 'finally { if (handle != IntPtr.Zero) NativeMethods.CloseHandle(handle); }' in native,
++         'monotonic per-PID reads, machine logical count and limited released handles')
++    need('_processes.Remove(pid); // A failed read breaks continuity' in native and
++         'DateTime.FromFileTimeUtc' in native and 'cpus is > 0 and <= 64' in native,
++         'failed continuity and processor-group bounds')
++    need(all(t in tracker for t in ['old.Value.Start == startUtc', 'old.Value.Cpus == cpus',
++         'totalTicks >= old.Value.Ticks', 'elapsed > 0 && elapsed <= MaximumGapSeconds',
++         'MaximumGapSeconds = 6;', '_history.Count > 64', 'Math.Min(x.Seconds, x.End - (now - 30))',
++         'p.StartTime.HasValue', 'ToUniversalTime()']), 'identity gaps normalization bounded window and unknown identity')
++    need('PropertyChanged?.Invoke(this, change)' in files['src/ProcessLens.App/ProcessRow.cs'] and
++         'row.UpdateCpu(' in fast and '? cpu.Apply(p) : LiveCpuSample.Unavailable(p)' in ui,
++         'update existing row bindings and prevent old metadata CPU overwrites')
++    need('_entries.Count == _capacity' in cache and '_entries.Remove(' in cache and 'StringComparer.OrdinalIgnoreCase' in cache and
++         'BoundedMetadataCache<FileMetadata> _fileMetadataCache = new(512)' in files['src/ProcessLens.Windows/WindowsProcessCollector.cs'],
++         'bounded case-insensitive metadata cache')
++    need('PrivateWorkingSet = nuint.MaxValue' in self_memory and 'counters.PrivateWorkingSet <= counters.WorkingSet' in self_memory and
++         'SelfResourcesText' in files['src/ProcessLens.App/MainWindow.xaml'] and 'Solo processo GUI' in fast,
++         'self RAM distinct metrics and EX2 prefix detection')
++    need('OpenProcess(0x1000' in measure and 'CloseHandle($handle)' in measure and
++         'GetProcessTimes(' in measure and '$started.ToFileTimeUtc()' in measure and
++         all(x in measure for x in ['CpuPercentTime','PrivateWorkingSetMiB','WorkingSetMiB','PrivateCommitMiB','AvailableSamples','SampledPeak']),
++         'passive reproducible CPU/RAM report with process identity')
++    need(not any(t in native+self_memory+measure for t in ['GC.Collect(', 'EmptyWorkingSet(', 'SetProcessWorkingSetSize(', 'TerminateProcess(', 'Start-Process ', 'Stop-Process ']),
++         'no fake working-set savings or process actions')
++    need('Tests.ProcessLens.CpuTests' in files['build-dashboard.ps1'], 'CPU regressions in normal build gate')
++    return bad
+--- /dev/null
++++ b/audit/tools/test_live_resource_r10r7.py
+@@ -0,0 +1,31 @@
++"""Source guard mutation tests only. Never compiles or runs the C# algorithms."""
++from pathlib import Path
++import argparse,json
++from live_resource_rules import violations
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
++files={f.relative_to(a.candidate).as_posix():f.read_text(encoding='utf-8-sig') for f in a.candidate.rglob('*') if f.suffix in ['.cs','.xaml','.ps1']}
++results=[]
++def check(name, ok):
++ results.append(dict(test=name,status='PASS' if ok else 'FAIL',scope='Python source guard, not C# execution'));print(results[-1]['status'],name)
++check('candidate satisfies all resource guards',not violations(files))
++mutations=[
++ ('hidden only restore route','src/ProcessLens.App/WindowLifetimePolicy.cs','exitRequested ? WindowCloseAction.Exit : WindowCloseAction.MinimizeToTaskbar','exitRequested ? WindowCloseAction.Exit : WindowCloseAction.HideToTray'),
++ ('lost icon detection removed','src/ProcessLens.App/TrayWindowController.cs','Shell_NotifyIconW(1, ref existing)','NoIconCheck()'),
++ ('CPU tick becomes busy loop','src/ProcessLens.App/MainWindow.xaml.cs','Interval = TimeSpan.FromSeconds(2)','Interval = TimeSpan.FromMilliseconds(2)'),
++ ('stale generation accepted','src/ProcessLens.App/MainWindow.xaml.cs','generation != _cpuGeneration','false'),
++ ('handle not released','src/ProcessLens.Windows/WindowsLiveCpuSampler.cs','NativeMethods.CloseHandle(handle);','KeepHandle(handle);'),
++ ('partial processor group labelled total','src/ProcessLens.Windows/WindowsLiveCpuSampler.cs','cpus is > 0 and <= 64','cpus > 0'),
++ ('creation verification removed','src/ProcessLens.Core/LiveCpuSample.cs','old.Value.Start == startUtc','true'),
++ ('long pause accepted','src/ProcessLens.Core/LiveCpuSample.cs','MaximumGapSeconds = 6','MaximumGapSeconds = 600'),
++ ('unbounded metadata retained','src/ProcessLens.Core/BoundedMetadataCache.cs','_entries.Count == _capacity','false'),
++ ('EX2 prefix sentinel removed','src/ProcessLens.Windows/WindowsSelfResources.cs','PrivateWorkingSet = nuint.MaxValue','PrivateWorkingSet = 0'),
++ ('passive report opens all access','measure-processlens-resources.ps1','OpenProcess(0x1000','OpenProcess(0x1fffff'),
++ ('forced garbage collection introduced','src/ProcessLens.Windows/WindowsSelfResources.cs','using System.Diagnostics;','using System.Diagnostics; // GC.Collect()'),
++ ('CPU tests skipped','build-dashboard.ps1','Tests.ProcessLens.CpuTests','Tests.SkippedCpuTests'),
++]
++for name,path,before,after in mutations:
++ assert before in files[path],(name,before)
++ changed=dict(files);changed[path]=changed[path].replace(before,after)
++ check('reject '+name,bool(violations(changed)))
++a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(results,indent=2)+'\n')
++raise SystemExit(0 if all(x['status']=='PASS' for x in results) else 1)
+--- a/build-dashboard.ps1
++++ b/build-dashboard.ps1
+@@ -1,4 +1,4 @@
+-$ErrorActionPreference = 'Stop'
++﻿$ErrorActionPreference = 'Stop'
+ Set-Location $PSScriptRoot
+ . (Join-Path $PSScriptRoot 'build-diagnostics.ps1')
+ if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
+@@ -32,6 +32,8 @@
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.GuardianDashboardTests' -Project '.\tests\ProcessLens.GuardianDashboardTests\ProcessLens.GuardianDashboardTests.csproj' -Arguments @('run', '--project', '.\tests\ProcessLens.GuardianDashboardTests\ProcessLens.GuardianDashboardTests.csproj', '-c', 'Release')
+ Write-Host 'Test Memory Alert Policy 85/80...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.MemoryAlertTests' -Project '.\tests\ProcessLens.MemoryAlertTests\ProcessLens.MemoryAlertTests.csproj' -Arguments @('run', '--project', '.\tests\ProcessLens.MemoryAlertTests\ProcessLens.MemoryAlertTests.csproj', '-c', 'Release')
++Write-Host 'Test CPU: intervalli monotoni, identita e ripresa...' -ForegroundColor Cyan
++Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.CpuTests' -Project '.\tests\ProcessLens.CpuTests\ProcessLens.CpuTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.CpuTests\ProcessLens.CpuTests.csproj','-c','Release')
+ Write-Host '[FASE 2] Test RAM: separazione memoria fisica/virtuale, campioni e culture it-IT/en-US...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.MemoryTests' -Project '.\tests\ProcessLens.MemoryTests\ProcessLens.MemoryTests.csproj' -Arguments @('run', '--project', '.\tests\ProcessLens.MemoryTests\ProcessLens.MemoryTests.csproj', '-c', 'Release')
+ Write-Host 'Test interpretazione approfondita dei processi...' -ForegroundColor Cyan
+--- /dev/null
++++ b/measure-processlens-resources.ps1
+@@ -0,0 +1,106 @@
++# Passive read-only measurement of one existing process. No launches, stops, profiler, GC or trimming.
++[CmdletBinding()]
++param(
++    [Parameter(Mandatory=$true)][ValidateRange(1,2147483647)][int]$TargetPid,
++    [Parameter(Mandatory=$true)][ValidatePattern('^[A-Za-z0-9_-]+$')][string]$Label,
++    [ValidateRange(10,1800)][int]$DurationSeconds = 180,
++    [ValidateRange(1,30)][int]$IntervalSeconds = 2,
++    [ValidatePattern('^[A-Za-z0-9_-]+$')][string]$Scenario = 'processes-idle'
++)
++$ErrorActionPreference = 'Stop'
++if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) { throw 'NON ESEGUITO: Windows richiesto.' }
++if (-not ('ProcessLensPassiveResourcesR7' -as [type])) {
++Add-Type -TypeDefinition @'
++using System;
++using System.Runtime.InteropServices;
++public static class ProcessLensPassiveResourcesR7 {
++    [StructLayout(LayoutKind.Sequential)] public struct Counters {
++        public uint cb, PageFaultCount;
++        public UIntPtr PeakWorkingSetSize, WorkingSetSize, QuotaPeakPagedPoolUsage, QuotaPagedPoolUsage;
++        public UIntPtr QuotaPeakNonPagedPoolUsage, QuotaNonPagedPoolUsage, PagefileUsage, PeakPagefileUsage;
++        public UIntPtr PrivateUsage, PrivateWorkingSetSize;
++        public ulong SharedCommitUsage;
++    }
++    [DllImport("kernel32.dll", SetLastError=true)] public static extern IntPtr OpenProcess(uint access, bool inherit, uint pid);
++    [DllImport("kernel32.dll")] public static extern bool CloseHandle(IntPtr handle);
++    [DllImport("kernel32.dll", SetLastError=true)] public static extern uint GetActiveProcessorCount(ushort group);
++    [DllImport("kernel32.dll", SetLastError=true)] public static extern bool GetProcessTimes(IntPtr process, out ulong creation, out ulong exit, out ulong kernel, out ulong user);
++    [DllImport("psapi.dll", SetLastError=true)] public static extern bool GetProcessMemoryInfo(IntPtr process, ref Counters counters, uint size);
++}
++'@
++}
++$target = Get-Process -Id $TargetPid -ErrorAction Stop
++$started = $target.StartTime.ToUniversalTime()
++$version = 'N/D'
++try { $version = $target.MainModule.FileVersionInfo.ProductVersion } catch { }
++$directory = Join-Path $PSScriptRoot 'verification-r10r7'
++New-Item -ItemType Directory -Path $directory -Force | Out-Null
++$file = Join-Path $directory ($Label + '-' + $Scenario + '-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss-fff') + '.csv')
++$rows = New-Object System.Collections.Generic.List[object]
++$watch = [Diagnostics.Stopwatch]::StartNew()
++$previousCpu = $null; $previousAt = $null; $previousCpus = $null
++$handle = [IntPtr]::Zero
++try {
++    $handle = [ProcessLensPassiveResourcesR7]::OpenProcess(0x1000, $false, [uint32]$TargetPid)
++    if ($handle -eq [IntPtr]::Zero) { throw ('OpenProcess non riuscita, errore ' + [Runtime.InteropServices.Marshal]::GetLastWin32Error()) }
++    while ($watch.Elapsed.TotalSeconds -le $DurationSeconds) {
++        $target.Refresh()
++        if ($target.HasExited -or $target.StartTime.ToUniversalTime() -ne $started) { throw 'Istanza terminata o cambiata: raccolta interrotta.' }
++        [uint64]$creation=0; [uint64]$exitTime=0; [uint64]$kernel=0; [uint64]$userTime=0
++        $cpu=$null; $cpuTicks=$null; $cpuError=$null; $sampleSeconds=$null
++        $cpus = [ProcessLensPassiveResourcesR7]::GetActiveProcessorCount(0xffff)
++        if ([ProcessLensPassiveResourcesR7]::GetProcessTimes($handle,[ref]$creation,[ref]$exitTime,[ref]$kernel,[ref]$userTime)) {
++            if ($creation -ne [uint64]($started.ToFileTimeUtc())) { throw 'Creazione non corrispondente: nessun campione attribuito al PID.' }
++            $at = [Diagnostics.Stopwatch]::GetTimestamp() / [double][Diagnostics.Stopwatch]::Frequency
++            $cpuTicks = [double]$kernel + [double]$userTime
++            if ($null -ne $previousCpu -and $cpus -gt 0 -and $previousCpus -eq $cpus) {
++                $sampleSeconds = $at - $previousAt
++                if ($sampleSeconds -gt 0 -and $cpuTicks -ge $previousCpu) {
++                    $cpu = [math]::Min(100,[math]::Max(0,100 * ($cpuTicks - $previousCpu) / (10000000 * $sampleSeconds * $cpus)))
++                }
++            }
++            $previousCpu=$cpuTicks; $previousAt=$at; $previousCpus=$cpus
++        } else {
++            $cpuError = [Runtime.InteropServices.Marshal]::GetLastWin32Error()
++            $previousCpu=$null; $previousAt=$null; $previousCpus=$null
++        }
++        $privateWs=$null; $workingSet=$null; $commit=$null; $nativeError=$null
++        $native = New-Object ProcessLensPassiveResourcesR7+Counters
++        $native.cb = [Runtime.InteropServices.Marshal]::SizeOf($native)
++        $sentinel = if ([IntPtr]::Size -eq 8) { [uint64]::MaxValue } else { [uint64][uint32]::MaxValue }
++        $native.PrivateWorkingSetSize = [UIntPtr]::new($sentinel)
++        if ([ProcessLensPassiveResourcesR7]::GetProcessMemoryInfo($handle,[ref]$native,$native.cb)) {
++            $workingSet = $native.WorkingSetSize.ToUInt64() / 1MB
++            $commit = $native.PrivateUsage.ToUInt64() / 1MB
++            $privateBytes = $native.PrivateWorkingSetSize.ToUInt64()
++            if ($privateBytes -ne $sentinel -and $privateBytes -le $native.WorkingSetSize.ToUInt64()) { $privateWs = $privateBytes / 1MB }
++        } else { $nativeError = [Runtime.InteropServices.Marshal]::GetLastWin32Error() }
++        $rows.Add([PSCustomObject]@{
++            Label=$Label; Scenario=$Scenario; Version=$version; PID=$TargetPid; Culture=$PSCulture;
++            StartedUtc=$started.ToString('o'); SampleUtc=[DateTime]::UtcNow.ToString('o');
++            ElapsedSeconds=$watch.Elapsed.TotalSeconds; CpuPercentTime=$cpu; CpuIntervalSeconds=$sampleSeconds;
++            CpuCumulativeTicks=$cpuTicks; LogicalProcessors=$cpus; CpuError=$cpuError;
++            PrivateWorkingSetMiB=$privateWs; WorkingSetMiB=$workingSet; PrivateCommitMiB=$commit; NativeCounterError=$nativeError
++        })
++        Start-Sleep -Seconds $IntervalSeconds
++    }
++}
++finally {
++    $rows | Export-Csv -LiteralPath $file -NoTypeInformation -Encoding UTF8
++    if ($handle -ne [IntPtr]::Zero) { [ProcessLensPassiveResourcesR7]::CloseHandle($handle) | Out-Null }
++    $target.Dispose()
++    Write-Host ('Campioni salvati: ' + $file)
++}
++$summary = [ordered]@{ Label=$Label; Scenario=$Scenario; PID=$TargetPid; Version=$version; Samples=$rows.Count; Metrics=[ordered]@{} }
++foreach ($metric in @('CpuPercentTime','PrivateWorkingSetMiB','WorkingSetMiB','PrivateCommitMiB')) {
++    $values = @($rows | Where-Object { $null -ne $_.$metric } | ForEach-Object { [double]$_.$metric } | Sort-Object)
++    $entry = [ordered]@{ AvailableSamples=$values.Count; Median=$null; SampledPeak=$null }
++    if ($values.Count -gt 0) {
++        $middle = [int][math]::Floor($values.Count / 2)
++        $entry.Median = if ($values.Count % 2 -eq 0) { ($values[$middle-1] + $values[$middle]) / 2 } else { $values[$middle] }
++        $entry.SampledPeak = $values[-1]
++    }
++    $summary.Metrics[$metric] = $entry
++}
++$summary | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath ([IO.Path]::ChangeExtension($file,'.json')) -Encoding UTF8
++Write-Host 'CSV e riepilogo: solo PID indicato, picchi dei campioni e contatori distinti. Vuoto/N/D non equivale a zero. Confrontare stessa durata, scenario e colonna.'
+--- a/src/ProcessLens.App/MainWindow.xaml
++++ b/src/ProcessLens.App/MainWindow.xaml
+@@ -1,4 +1,4 @@
+-﻿<Window x:Class="ProcessLens.App.MainWindow"
++<Window x:Class="ProcessLens.App.MainWindow"
+         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:local="clr-namespace:ProcessLens.App"
+@@ -178,7 +178,7 @@
+ 
+             <StackPanel VerticalAlignment="Center">
+                 <TextBlock Text="ProcessLens" FontSize="30" FontWeight="SemiBold"/>
+-                <local:SelectableText Text="Analisi basata su dati di Windows. Seleziona un processo per esaminarlo."
++                <local:SelectableText Text="Analisi basata su dati di Windows. La X riduce la finestra; per riaprirla usa la barra applicazioni o Mostra ProcessLens nell’icona."
+                            TextWrapping="Wrap"
+                            Margin="1,3,0,0"
+                            Foreground="#667085"
+@@ -255,6 +255,13 @@
+                         <TextBlock Text="Analisi basata su evidenze" FontSize="11" FontWeight="SemiBold" Foreground="#276749"/>
+                     </Border>
+                 </WrapPanel>
++                <DockPanel Margin="0,7,0,0" LastChildFill="True">
++                    <Button x:Name="CopySelfResourcesButton" IsEnabled="False" DockPanel.Dock="Right" Content="Copia risorse GUI"
++                            Style="{StaticResource ActionButtonStyle}" Margin="12,0,0,0"
++                            Click="CopySelfResourcesButton_Click"/>
++                    <local:SelectableText x:Name="SelfResourcesText" Text="Risorse GUI: in attesa del primo campione…"
++                                          FontSize="11" Foreground="#667085" VerticalAlignment="Center" TextWrapping="Wrap"/>
++                </DockPanel>
+             </StackPanel>
+         </Border>
+ 
+@@ -820,7 +827,7 @@
+                                 <local:SelectableText x:Name="DetailCpuCoreText" Text="-" FontSize="12" TextWrapping="Wrap"/>
+                                 <local:SelectableText x:Name="DetailCpuGroupText" Text="-" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                 <local:SelectableText x:Name="DetailCpuTotalTimeText" Text="-" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
+-                                <local:SelectableText Text="CPU: percentuale della capacità complessiva del computer (tutti i processori logici), non di un solo core." FontSize="11" Foreground="#667085" TextWrapping="Wrap" Margin="0,6,0,0"/>
++                                <local:SelectableText Text="CPU: percentuale della capacità complessiva del computer (tutti i processori logici), non di un solo core. Campionamento temporale ogni circa 2 s; elenco processi aggiornato separatamente." FontSize="11" Foreground="#667085" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                 <local:SelectableText TextWrapping="Wrap" x:Name="CpuGraphScaleText" Text="-" FontSize="11" Foreground="#667085" Margin="0,8,0,3"/>
+                                 <Border BorderBrush="#CBDBED" BorderThickness="1" Background="White" CornerRadius="4" Padding="3">
+                                     <Canvas x:Name="CpuGraphCanvas" Height="68" ClipToBounds="True" SizeChanged="CpuGraphCanvas_SizeChanged">
+@@ -926,8 +933,12 @@
+                                 <Expander Header="Diagnostica completa in formato originale" IsExpanded="False"
+                                           Margin="0,0,0,8" Padding="0,3">
+                                     <Border Style="{StaticResource DetailCard}">
++                                        <StackPanel>
++                                            <local:SelectableText Text="Snapshot dell’ultimo aggiornamento dei dettagli. I valori CPU aggiornati continuamente sono nel riquadro Analisi CPU."
++                                                                  TextWrapping="Wrap" FontSize="11" Foreground="#667085" Margin="0,0,0,8"/>
+                                         <local:SelectableText x:Name="DetailTechnicalContextText" FontFamily="Consolas" FontSize="11"
+                                                    FontWeight="Normal" TextWrapping="Wrap"/>
++                                        </StackPanel>
+                                     </Border>
+                                 </Expander>
+                             </StackPanel>
+--- a/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -1,9 +1,11 @@
+-﻿using System.Diagnostics;
++using System.Diagnostics;
+ using System.Windows;
+ using System.Windows.Controls;
+ using System.Windows.Input;
+ using System.Windows.Media;
+ using System.Windows.Threading;
++using System.Windows.Data;
++using System.ComponentModel;
+ using ProcessLens.Core;
+ using ProcessLens.Semantics;
+ using ProcessLens.Windows;
+@@ -31,6 +33,13 @@
+     private readonly WindowsVirtualMemoryInspector _memoryInspector = new();
+     private readonly WindowsAllocationInspector _allocationInspector = new();
+     private readonly DispatcherTimer _timer;
++    private readonly DispatcherTimer _cpuTimer = new() { Interval = TimeSpan.FromSeconds(2) };
++    private readonly WindowsLiveCpuSampler _liveCpu = new();
++    private IReadOnlyDictionary<int, LiveCpuSample> _latestCpu = new Dictionary<int, LiveCpuSample>();
++    private bool _cpuRefreshing;
++    private bool _resetCpu = true;
++    private int _cpuGeneration;
++    private string _selfResourceReport = string.Empty;
+     private readonly DispatcherTimer _processNoticeTimer = new() { Interval = TimeSpan.FromSeconds(8) };
+     private readonly ProcessExitNotice _exitNotices = new();
+     private ProcessExitWatch? _selectedExitWatch;
+@@ -46,6 +55,7 @@
+     private readonly HashSet<int> _deepInspectionInProgress = new();
+     private readonly SemaphoreSlim _deepInspectionGate = new(1, 1);
+     private readonly Dictionary<int, Queue<(DateTime TimestampUtc, double Cpu)>> _cpuHistory = new();
++    private readonly Dictionary<int, DateTime?> _cpuHistoryStarts = new();
+     private readonly Dictionary<int, (DateTime StartTime, bool PrivateResident, MemoryObservationBuffer Samples)> _memoryHistory = new();
+     private readonly Dictionary<int, ProcessProgressSample> _progressSamples = new();
+     private bool _queryBusy;
+@@ -94,6 +104,7 @@
+             Height = Math.Max(MinHeight, workArea.Height);
+ 
+         _timer = new DispatcherTimer { Interval = MonitorRefreshPolicy.NormalProcessInterval };
++        _cpuTimer.Tick += async (_, _) => await RefreshCpuAsync();
+         _processNoticeTimer.Tick += (_, _) =>
+         {
+             _processNoticeTimer.Stop();
+@@ -128,6 +139,8 @@
+                 await RefreshAsync();
+                 AppDiagnostics.Record("Prima lettura processi completata");
+                 _timer.Start();
++                _cpuTimer.Start();
++                await RefreshCpuAsync();
+             }
+             catch (Exception ex)
+             {
+@@ -141,6 +154,8 @@
+         Closed += (_, _) =>
+         {
+             _windowClosed = true;
++            _cpuGeneration++;
++            _cpuTimer.Stop();
+             _processNoticeTimer.Stop();
+             _selectedExitWatch?.Dispose();
+             _requestedExitWatch?.Dispose();
+@@ -163,9 +178,12 @@
+         try
+         {
+             var elapsed = Stopwatch.StartNew();
+-            var snapshots = await Task.Run(() => _collector.Capture());
++            var captured = await Task.Run(() => _collector.Capture());
++            if (_windowClosed) return;
++            // Metadata refresh must never overwrite recent fast CPU with a 15/45-second sample.
++            var snapshots = captured.Select(p => RecentCpu(p.Pid) is { } cpu && cpu.Matches(p)
++                ? cpu.Apply(p) : LiveCpuSample.Unavailable(p)).ToArray();
+             elapsed.Stop();
+-            TrackCpuHistory(snapshots);
+             TrackMemoryHistory(snapshots);
+ 
+             var livePids = snapshots.Select(x => x.Pid).ToHashSet();
+@@ -176,7 +194,10 @@
+                 _deepCache.Remove(deadPid);
+ 
+             foreach (var deadPid in _cpuHistory.Keys.Where(pid => !livePids.Contains(pid)).ToArray())
++            {
+                 _cpuHistory.Remove(deadPid);
++                _cpuHistoryStarts.Remove(deadPid);
++            }
+             foreach (var deadPid in _memoryHistory.Keys.Where(pid => !livePids.Contains(pid)).ToArray())
+                 _memoryHistory.Remove(deadPid);
+ 
+@@ -200,16 +221,10 @@
+             if (elapsed.Elapsed >= TimeSpan.FromSeconds(1) &&
+                 DateTime.UtcNow - _lastSlowRefreshLoggedUtc > TimeSpan.FromMinutes(2))
+             {
+-                AppDiagnostics.Record($"Raccolta processi lenta: {snapshots.Count} processi, " +
++                AppDiagnostics.Record($"Raccolta processi lenta: {snapshots.Length} processi, " +
+                     $"durata {elapsed.ElapsedMilliseconds} ms; intervallo successivo {_timer.Interval.TotalSeconds:F0} s.");
+                 _lastSlowRefreshLoggedUtc = DateTime.UtcNow;
+             }
+-            SystemCpuText.Text = sysCpu.HasSample ? ProcessDisplayFormatter.Percent(sysCpu.BusyPercent) : "N/D";
+-            SystemCpuAverageText.Text = sysCpu.HasSample ? ProcessDisplayFormatter.Percent(sysCpu.Average30Seconds) : "N/D";
+-            SystemCpuText.ToolTip = $"Misura GetSystemTimes di Windows; intervallo ~{ProcessDisplayFormatter.Seconds(sysCpu.SampleIntervalSeconds)}. " +
+-                $"PID campionati {sysCpu.ProcessesWithCpuSamples}; senza dato {sysCpu.ProcessesWithoutCpuAccess}. " +
+-                "Potrebbe differire da Gestione attività per intervallo e contatori.";
+-
+             // IMPORTANT: use the selection that exists NOW, after the async capture.
+             // The user may have clicked another process while Capture() was running.
+             if (!_servicesMode && !_guardianMode && !_memoryMode)
+@@ -224,10 +239,149 @@
+     internal void SetDashboardWindowVisibility(bool active)
+     {
+         if (_windowClosed) return;
++        if (active)
++        {
++            _cpuTimer.Start();
++            _ = RefreshCpuAsync();
++        }
++        else
++        {
++            _cpuTimer.Stop();
++            _cpuGeneration++;
++            _cpuHistory.Clear();
++            _cpuHistoryStarts.Clear();
++            _resetCpu = true;
++            if (!_cpuRefreshing) _liveCpu.Reset(); // No worker can be using these buffers here.
++            _latestCpu = new Dictionary<int, LiveCpuSample>();
++            _selfResourceReport = string.Empty;
++            CopySelfResourcesButton.IsEnabled = false;
++            SelfResourcesText.Text = "Risorse GUI: campionamento sospeso mentre la finestra è ridotta.";
++            foreach (var row in _allRows) row.UpdateCpu(null);
++            SystemCpuText.Text = "Sospeso";
++            SystemCpuAverageText.Text = "N/D";
++        }
+         GuardianDashboard?.SetActive(active && _guardianMode);
+         MemoryDashboard?.SetActive(active && _memoryMode);
+     }
+ 
++
++    private LiveCpuSample? RecentCpu(int pid)
++    {
++        if (!_latestCpu.TryGetValue(pid, out var sample)) return null;
++        double age = Stopwatch.GetTimestamp() / (double)Stopwatch.Frequency - sample.CapturedAtMonotonicSeconds;
++        return age is >= 0 and <= CpuIntervalTracker.MaximumGapSeconds ? sample : null;
++    }
++
++    private async Task RefreshCpuAsync()
++    {
++        if (_cpuRefreshing || _windowClosed || !IsVisible || WindowState == WindowState.Minimized) return;
++        _cpuRefreshing = true;
++        int generation = _cpuGeneration;
++        bool reset = _resetCpu;
++        _resetCpu = false;
++        int[] pids = (!_servicesMode && !_guardianMode && !_memoryMode ? _allRows.Select(r => r.Pid) : Enumerable.Empty<int>())
++            .Append(Environment.ProcessId).Distinct().ToArray();
++        try
++        {
++            var result = await Task.Run(() =>
++            {
++                if (reset) _liveCpu.Reset();
++                return (Cpu: _liveCpu.Capture(pids), Memory: WindowsSelfResources.Capture());
++            });
++            if (_windowClosed || generation != _cpuGeneration || !IsVisible || WindowState == WindowState.Minimized)
++            {
++                _liveCpu.Reset(); // Worker has completed; release its obsolete sample buffers.
++                _resetCpu = true;
++                return;
++            }
++            _latestCpu = result.Cpu.Processes;
++            foreach (var row in _allRows) row.UpdateCpu(RecentCpu(row.Pid));
++            TrackCpuHistory(_allRows.Select(r => r.Process).ToArray());
++            if (_sortMode == "CPU" && !_servicesMode && !_guardianMode && !_memoryMode && ProcessList.ItemsSource is not null)
++            {
++                _suppressSelectionEvents = true;
++                try { CollectionViewSource.GetDefaultView(ProcessList.ItemsSource).Refresh(); }
++                finally { _suppressSelectionEvents = false; }
++            }
++            var sys = result.Cpu.System;
++            LogicalCpuText.Text = sys.LogicalProcessors > 0 ? sys.LogicalProcessors.ToString() : "N/D";
++            SystemCpuText.Text = sys.HasSample ? ProcessDisplayFormatter.Percent(sys.BusyPercent) : "N/D";
++            SystemCpuAverageText.Text = sys.HasSample ? ProcessDisplayFormatter.Percent(sys.Average30Seconds) : "N/D";
++            SystemCpuText.ToolTip = $"Tempo CPU occupato da GetSystemTimes / tempo trascorso monotono / CPU logiche. " +
++                $"Intervallo {ProcessDisplayFormatter.Seconds(sys.SampleIntervalSeconds)}; " +
++                $"PID con campione {sys.ProcessesWithCpuSamples}, senza campione {sys.ProcessesWithoutCpuAccess}. " +
++                "Oltre 64 CPU logiche il totale sistema è N/D: GetSystemTimes copre un solo gruppo. " +
++                "Confrontare stesso PID e colonna CPU temporale; la colonna CPU Utility usa una metrica diversa. Gli aggiornamenti delle due finestre non sono simultanei.";
++            if (_currentDetailRow is { } detail && _selectedPid == detail.Pid)
++            {
++                detail.UpdateCpu(RecentCpu(detail.Pid));
++                RefreshCpuDetails(detail);
++            }
++            var memory = result.Memory;
++            static string MiB(long? value) => value.HasValue ? $"{value.Value / 1048576d:F1} MiB" : "N/D";
++            var own = RecentCpu(Environment.ProcessId);
++            string ownCpu = own?.Available == true ? ProcessDisplayFormatter.Percent(own.Percent) : "N/D";
++            SelfResourcesText.Text = $"GUI ProcessLens · PID {memory.Pid} · CPU {ownCpu} · " +
++                $"RAM privata residente {MiB(memory.PrivateResident)} · RAM residente totale {MiB(memory.Resident)}";
++            _selfResourceReport = SelfResourcesText.Text + "\nIntervallo CPU effettivo: " +
++                (own?.Available == true ? ProcessDisplayFormatter.Seconds(own.IntervalSeconds) : "N/D") + $"\nCommit privato: {MiB(memory.PrivateCommit)}" +
++                $"\nCampione UTC: {memory.CapturedUtc:O}\nVersione: " +
++                typeof(MainWindow).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false)
++                    .OfType<System.Reflection.AssemblyInformationalVersionAttribute>().FirstOrDefault()?.InformationalVersion +
++                "\nSolo processo GUI; Guardian e MemoryAgent esclusi. Commit e RAM fisica sono contatori distinti.";
++            SelfResourcesText.ToolTip = _selfResourceReport;
++            CopySelfResourcesButton.IsEnabled = true;
++        }
++        catch (Exception ex)
++        {
++            _resetCpu = true;
++            _latestCpu = new Dictionary<int, LiveCpuSample>();
++            foreach (var row in _allRows) row.UpdateCpu(null);
++            if (_currentDetailRow is { } failedDetail)
++            {
++                failedDetail.UpdateCpu(null);
++                RefreshCpuDetails(failedDetail);
++            }
++            SystemCpuText.Text = "N/D"; SystemCpuAverageText.Text = "N/D";
++            SelfResourcesText.Text = "Risorse GUI: lettura non disponibile.";
++            _selfResourceReport = string.Empty;
++            CopySelfResourcesButton.IsEnabled = false;
++            AppDiagnostics.Record("Campionamento CPU rapido non riuscito", ex);
++        }
++        finally { _cpuRefreshing = false; }
++    }
++
++    private void CopySelfResourcesButton_Click(object sender, RoutedEventArgs e)
++    {
++        if (_selfResourceReport.Length > 0) ClipboardText.Copy(_selfResourceReport);
++    }
++
++    private void RefreshCpuDetails(ProcessRow row)
++    {
++        var p = row.Process;
++        DetailCpuText.Text = p.CpuSampleAvailable ? ProcessDisplayFormatter.Percent(p.CpuPercent) : "N/D";
++        DetailCpuAverageText.Text = p.CpuSampleAvailable ? $"Media: {ProcessDisplayFormatter.Percent(p.CpuAverage30Seconds)}" : "Media: N/D";
++        DetailCpuPeakText.Text = p.CpuSampleAvailable ? $"Picco: {ProcessDisplayFormatter.Percent(p.CpuPeak30Seconds)}" : "Picco: N/D";
++        DetailCpuCoreText.Text = p.CpuSampleAvailable
++            ? $"Equivalente a {p.CpuLogicalCoreEquivalent:F2} core logici interamente occupati; campione {ProcessDisplayFormatter.Seconds(p.CpuSampleIntervalSeconds)}."
++            : "Campione CPU non disponibile: servono due letture confrontabili della stessa istanza; dato assente o intervallo interrotto.";
++        DetailCpuTotalTimeText.Text = p.CpuCumulativeAvailable
++            ? $"Tempo CPU accumulato: {ProcessDisplayFormatter.CpuDuration(p.CpuCumulativeSeconds)}."
++            : "Tempo CPU accumulato: non disponibile.";
++        DetailCpuTotalTimeText.ToolTip = p.CpuCumulativeAvailable
++            ? $"Valore del contatore: {p.CpuCumulativeSeconds:G17} s. Somma del tempo CPU dei thread, distinta dal tempo trascorso dall’avvio. La sintesi è arrotondata al millisecondo."
++            : "Contatore del tempo CPU non accessibile; non equivale a zero.";
++        DetailCpuGroupText.Text = DescribeRelatedProcessCpu(p);
++        UpdateCpuGraph(p.Pid);
++        DetailRuntimeStateText.Text = !p.CpuSampleAvailable ? "CPU: dato non disponibile in questo intervallo." : p.CpuPercent switch
++        {
++            >= 10 => $"Utilizzo CPU elevato ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
++            >= 2 => $"Utilizzo CPU moderato ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
++            >= 0.2 => $"Utilizzo CPU contenuto ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
++            _ => $"Utilizzo CPU minimo ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo)."
++        };
++
++    }
+ 
+     private ProcessInsight GetCachedInsight(ProcessSnapshot process)
+     {
+@@ -328,6 +482,15 @@
+         try
+         {
+             ProcessList.ItemsSource = visible;
++            if (_sortMode == "CPU")
++            {
++                var cpuView = CollectionViewSource.GetDefaultView(ProcessList.ItemsSource);
++                using (cpuView.DeferRefresh())
++                {
++                    cpuView.SortDescriptions.Add(new SortDescription(nameof(ProcessRow.CpuPercent), ListSortDirection.Descending));
++                    cpuView.SortDescriptions.Add(new SortDescription(nameof(ProcessRow.MemoryDisplayMb), ListSortDirection.Descending));
++                }
++            }
+             VisibleCountText.Text = visible.Count.ToString();
+             CurrentFilterText.Text = _activeFilter == "Tutti" ? "Vista: tutti i processi" : $"Vista: {_activeFilter}";
+ 
+@@ -722,20 +885,7 @@
+         DetailRiskText.Text = ProcessDetailPresentation.ClosingRiskLabel(i.CloseRisk);
+         ApplyRiskBadge(i.CloseRisk);
+ 
+-        DetailCpuText.Text = p.CpuSampleAvailable ? ProcessDisplayFormatter.Percent(p.CpuPercent) : "N/D";
+-        DetailCpuAverageText.Text = p.CpuSampleAvailable ? $"Media: {ProcessDisplayFormatter.Percent(p.CpuAverage30Seconds)}" : "Media: N/D";
+-        DetailCpuPeakText.Text = p.CpuSampleAvailable ? $"Picco: {ProcessDisplayFormatter.Percent(p.CpuPeak30Seconds)}" : "Picco: N/D";
+-        DetailCpuCoreText.Text = p.CpuSampleAvailable
+-            ? $"Equivalente a {p.CpuLogicalCoreEquivalent:F2} core logici interamente occupati; campione {ProcessDisplayFormatter.Seconds(p.CpuSampleIntervalSeconds)}."
+-            : "Campione CPU non disponibile: dati iniziali oppure accesso negato.";
+-        DetailCpuTotalTimeText.Text = p.CpuCumulativeAvailable
+-            ? $"Tempo CPU accumulato: {ProcessDisplayFormatter.CpuDuration(p.CpuCumulativeSeconds)}."
+-            : "Tempo CPU accumulato: non disponibile.";
+-        DetailCpuTotalTimeText.ToolTip = p.CpuCumulativeAvailable
+-            ? $"Valore del contatore: {p.CpuCumulativeSeconds:G17} s. Somma del tempo CPU dei thread, distinta dal tempo trascorso dall’avvio. La sintesi è arrotondata al millisecondo."
+-            : "Contatore del tempo CPU non accessibile; non equivale a zero.";
+-        DetailCpuGroupText.Text = DescribeRelatedProcessCpu(p);
+-        UpdateCpuGraph(p.Pid);
++        RefreshCpuDetails(row);
+         DetailMemoryLabel.Text = ProcessRow.CompactMemoryLabel(p);
+         DetailMemoryLabel.ToolTip = p.MemoryDescription;
+         DetailMemoryText.Text = p.MemoryDisplayText;
+@@ -750,14 +900,6 @@
+               $"Δ {memoryTrend.DeltaMb:+0.0;-0.0;0.0} MiB · min {memoryTrend.MinimumMb:F1} · picco {memoryTrend.PeakMb:F1} MiB ({memoryTrend.Samples} campioni)"
+             : "Andamento memoria non disponibile: servono almeno tre campioni confrontabili in almeno 20 s.";
+         DetailProjectShortText.Text = i.ProjectRoot is null ? "Non identificato" : ShortenPath(i.ProjectRoot, 34);
+-        DetailRuntimeStateText.Text = !p.CpuSampleAvailable ? "CPU: dato non disponibile in questo intervallo." : p.CpuPercent switch
+-        {
+-            >= 10 => $"Utilizzo CPU elevato ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
+-            >= 2 => $"Utilizzo CPU moderato ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
+-            >= 0.2 => $"Utilizzo CPU contenuto ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
+-            _ => $"Utilizzo CPU minimo ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo)."
+-        };
+-
+         DetailNetworkStateText.Text = ProcessNetworkPresentation.Describe(p);
+ 
+         DetailWindowStateText.Text = p.IsDeepInspected
+@@ -1110,13 +1252,23 @@
+         DateTime now = DateTime.UtcNow;
+         foreach (var p in snapshots)
+         {
++            if (!p.CpuSampleAvailable || !p.StartTime.HasValue)
++            {
++                _cpuHistory.Remove(p.Pid);
++                _cpuHistoryStarts.Remove(p.Pid);
++                continue;
++            }
++            if (!_cpuHistoryStarts.TryGetValue(p.Pid, out var start) || start != p.StartTime)
++            {
++                _cpuHistory.Remove(p.Pid);
++                _cpuHistoryStarts[p.Pid] = p.StartTime;
++            }
+             if (!_cpuHistory.TryGetValue(p.Pid, out var queue))
+             {
+                 queue = new Queue<(DateTime TimestampUtc, double Cpu)>();
+                 _cpuHistory[p.Pid] = queue;
+             }
+ 
+-            if (!p.CpuSampleAvailable) continue;
+             queue.Enqueue((now, p.CpuPercent));
+             while (queue.Count > 40 || (queue.Count > 0 && (now - queue.Peek().TimestampUtc) > TimeSpan.FromSeconds(90)))
+                 queue.Dequeue();
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R6-audit-layout-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R7-cpu-restore-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+--- a/src/ProcessLens.App/ProcessRow.cs
++++ b/src/ProcessLens.App/ProcessRow.cs
+@@ -1,10 +1,23 @@
+-﻿using ProcessLens.Core;
++using ProcessLens.Core;
+ using System.Windows.Media;
++using System.ComponentModel;
+ 
+ namespace ProcessLens.App;
+ 
+-public sealed record ProcessRow(ProcessSnapshot Process, ProcessInsight Insight)
++public sealed class ProcessRow(ProcessSnapshot process, ProcessInsight insight) : INotifyPropertyChanged
+ {
++    public ProcessSnapshot Process { get; private set; } = process;
++    public ProcessInsight Insight { get; } = insight;
++    private static readonly PropertyChangedEventArgs[] CpuChanges =
++        new[] { nameof(Process), nameof(CpuPercent), nameof(CpuDisplay), nameof(RuntimeCpuState) }
++            .Select(n => new PropertyChangedEventArgs(n)).ToArray();
++    public event PropertyChangedEventHandler? PropertyChanged;
++    public void UpdateCpu(LiveCpuSample? sample)
++    {
++        if (sample?.Matches(Process) != true && !Process.CpuSampleAvailable && !Process.CpuCumulativeAvailable) return;
++        Process = sample?.Matches(Process) == true ? sample.Apply(Process) : LiveCpuSample.Unavailable(Process);
++        foreach (var change in CpuChanges) PropertyChanged?.Invoke(this, change);
++    }
+     public string Name => Process.Name;
+     public ImageSource? IconSource => ProcessIconResolver.GetIcon(Process.ExecutablePath, Process.Name);
+     public string FriendlyName => Insight.FriendlyName;
+--- a/src/ProcessLens.App/TrayWindowController.cs
++++ b/src/ProcessLens.App/TrayWindowController.cs
+@@ -31,7 +31,7 @@
+         _source = HwndSource.FromHwnd(_hwnd) ?? throw new InvalidOperationException("Finestra Windows non disponibile.");
+         _source.AddHook(WindowMessage);
+         _menu = new ContextMenu { Placement = PlacementMode.MousePoint };
+-        var open = new MenuItem { Header = "Apri ProcessLens" };
++        var open = new MenuItem { Header = "Mostra ProcessLens" };
+         open.Click += (_, _) => RequestRestore();
+         var exit = new MenuItem { Header = "Esci da ProcessLens" };
+         exit.Click += (_, _) => { AllowExit(); _shutdown(); };
+@@ -50,17 +50,10 @@
+         var action = WindowLifetimePolicy.Close(_exitRequested, _exitRequested || EnsureTray());
+         if (action == WindowCloseAction.Exit) return;
+         e.Cancel = true;
+-        if (action == WindowCloseAction.HideToTray)
+-        {
+-            _window.ShowInTaskbar = false;
+-            _window.Hide();
+-        }
+-        else
+-        {
+-            // Never hide the only restore route when the shell cannot create the icon.
+-            _window.ShowInTaskbar = true;
+-            _window.WindowState = WindowState.Minimized;
+-        }
++        // Keep a second restore route even if Explorer loses the tray icon or its callbacks.
++        _window.ShowInTaskbar = true;
++        _window.WindowState = WindowState.Minimized;
++        AppDiagnostics.Record("X: finestra ridotta; ripristino dalla barra applicazioni o Mostra ProcessLens nell’icona.");
+         UpdateActivity();
+     }
+ 
+@@ -87,7 +80,8 @@
+         _window.ShowInTaskbar = true;
+         _window.Show();
+         _window.WindowState = restoreState;
+-        _window.Activate();
++        bool activated = _window.Activate();
++        AppDiagnostics.Record($"Ripristino finestra: visibile={_window.IsVisible}, stato={_window.WindowState}, primo piano={activated}.");
+         UpdateActivity();
+     }
+ 
+@@ -135,7 +129,12 @@
+     private bool EnsureTray()
+     {
+         if (_disposed) return false;
+-        if (_trayPresent) return true;
++        if (_trayPresent)
++        {
++            var existing = IconData();
++            if (Shell_NotifyIconW(1, ref existing)) return true; // NIM_MODIFY also detects a lost shell entry.
++            _trayPresent = false;
++        }
+         var data = IconData();
+         if (data.Icon == IntPtr.Zero) return false;
+         _trayPresent = Shell_NotifyIconW(0, ref data); // NIM_ADD
+--- a/src/ProcessLens.App/WindowLifetimePolicy.cs
++++ b/src/ProcessLens.App/WindowLifetimePolicy.cs
+@@ -1,11 +1,10 @@
+ namespace ProcessLens.App;
+ 
+-internal enum WindowCloseAction { Exit, HideToTray, MinimizeToTaskbar }
++internal enum WindowCloseAction { Exit, MinimizeToTaskbar }
+ 
+ internal static class WindowLifetimePolicy
+ {
+     public static WindowCloseAction Close(bool exitRequested, bool trayAvailable) =>
+-        exitRequested ? WindowCloseAction.Exit : trayAvailable
+-            ? WindowCloseAction.HideToTray : WindowCloseAction.MinimizeToTaskbar;
++        exitRequested ? WindowCloseAction.Exit : WindowCloseAction.MinimizeToTaskbar;
+     public static bool PollingActive(bool visible, bool minimized) => visible && !minimized;
+ }
+--- /dev/null
++++ b/src/ProcessLens.Core/BoundedMetadataCache.cs
+@@ -0,0 +1,24 @@
++namespace ProcessLens.Core;
++
++/// <summary>Case-insensitive file-path cache with a hard entry limit. Evicted metadata is read again.</summary>
++public sealed class BoundedMetadataCache<TValue>
++{
++    private readonly int _capacity;
++    private readonly Dictionary<string, TValue> _entries = new(StringComparer.OrdinalIgnoreCase);
++    public BoundedMetadataCache(int capacity)
++    {
++        if (capacity <= 0) throw new ArgumentOutOfRangeException(nameof(capacity));
++        _capacity = capacity;
++    }
++    public int Count => _entries.Count;
++    public bool TryGetValue(string path, out TValue value) => _entries.TryGetValue(path, out value!);
++    public TValue this[string path]
++    {
++        set
++        {
++            if (!_entries.ContainsKey(path) && _entries.Count == _capacity)
++                _entries.Remove(_entries.Keys.First());
++            _entries[path] = value;
++        }
++    }
++}
+--- /dev/null
++++ b/src/ProcessLens.Core/LiveCpuSample.cs
+@@ -0,0 +1,64 @@
++namespace ProcessLens.Core;
++
++/// <summary>Time-based CPU share. Creation time and elapsed time belong to the same PID read.</summary>
++public sealed record LiveCpuSample(int Pid, DateTime? StartUtc, bool Available,
++    double Percent, double Average, double Peak, double IntervalSeconds,
++    double CumulativeSeconds, bool CounterAvailable, int LogicalProcessors)
++{
++    public double CapturedAtMonotonicSeconds { get; init; }
++    public ProcessSnapshot Apply(ProcessSnapshot p) => !Matches(p) ? Unavailable(p) : p with
++    {
++        CpuSampleAvailable = Available, CpuPercent = Percent,
++        CpuAverage30Seconds = Average, CpuPeak30Seconds = Peak,
++        CpuSampleIntervalSeconds = IntervalSeconds,
++        CpuLogicalCoreEquivalent = Percent * LogicalProcessors / 100d,
++        CpuCumulativeSeconds = CumulativeSeconds, CpuCumulativeAvailable = CounterAvailable
++    };
++    public bool Matches(ProcessSnapshot p) => p.Pid == Pid && StartUtc.HasValue &&
++        p.StartTime.HasValue && StartUtc.Value == p.StartTime.Value.ToUniversalTime();
++    public static ProcessSnapshot Unavailable(ProcessSnapshot p) => p with
++    {
++        CpuSampleAvailable = false, CpuPercent = 0, CpuAverage30Seconds = 0,
++        CpuPeak30Seconds = 0, CpuLogicalCoreEquivalent = 0, CpuSampleIntervalSeconds = 0,
++        CpuCumulativeAvailable = false, CpuCumulativeSeconds = 0
++    };
++}
++
++/// <summary>One instance per PID. Input clock is monotonic seconds, not wall-clock time.</summary>
++public sealed class CpuIntervalTracker
++{
++    public const double MaximumGapSeconds = 6;
++    private (DateTime Start, long Ticks, double Time, int Cpus)? _previous;
++    private readonly Queue<(double End, double Seconds, double Percent)> _history = new();
++
++    public void Reset() { _previous = null; _history.Clear(); }
++
++    public LiveCpuSample Sample(int pid, DateTime startUtc, long totalTicks, double now, int cpus)
++    {
++        var old = _previous;
++        double elapsed = old.HasValue ? now - old.Value.Time : 0;
++        bool valid = totalTicks >= 0 && double.IsFinite(now) && cpus > 0;
++        bool comparable = valid && old.HasValue && old.Value.Start == startUtc &&
++            old.Value.Cpus == cpus && totalTicks >= old.Value.Ticks &&
++            elapsed > 0 && elapsed <= MaximumGapSeconds;
++        if (!comparable) _history.Clear();
++        _previous = valid ? (startUtc, totalTicks, now, cpus) : null;
++        if (!comparable)
++            return new(pid, startUtc, false, 0, 0, 0, 0,
++                valid ? totalTicks / (double)TimeSpan.TicksPerSecond : 0, valid, cpus) { CapturedAtMonotonicSeconds = now };
++
++        double percent = Math.Clamp(100d * (totalTicks - old!.Value.Ticks) /
++            (TimeSpan.TicksPerSecond * elapsed * cpus), 0, 100);
++        _history.Enqueue((now, elapsed, percent));
++        while (_history.Count > 64 || (_history.Count > 0 && _history.Peek().End <= now - 30)) _history.Dequeue();
++        // Weight only each interval's intersection with the last 30 seconds.
++        double weight = 0, weighted = 0, peak = 0;
++        foreach (var x in _history)
++        {
++            double seconds = Math.Min(x.Seconds, x.End - (now - 30));
++            weight += seconds; weighted += seconds * x.Percent; peak = Math.Max(peak, x.Percent);
++        }
++        return new(pid, startUtc, true, percent, weighted / weight, peak, elapsed,
++            totalTicks / (double)TimeSpan.TicksPerSecond, true, cpus) { CapturedAtMonotonicSeconds = now };
++    }
++}
+--- /dev/null
++++ b/src/ProcessLens.Windows/WindowsLiveCpuSampler.cs
+@@ -0,0 +1,69 @@
++using System.Diagnostics;
++using System.Runtime.InteropServices;
++using ProcessLens.Core;
++
++namespace ProcessLens.Windows;
++
++/// <summary>Cheap CPU-only reads. Not thread-safe; callers serialize capture/reset.</summary>
++public sealed class WindowsLiveCpuSampler
++{
++    public sealed record Batch(IReadOnlyDictionary<int, LiveCpuSample> Processes, CpuTelemetry System);
++    private readonly Dictionary<int, CpuIntervalTracker> _processes = new();
++    private readonly CpuIntervalTracker _system = new();
++    private (ulong Idle, ulong Total)? _oldSystem;
++    private static readonly DateTime SystemIdentity = DateTime.UnixEpoch;
++
++    public void Reset() { _processes.Clear(); _system.Reset(); _oldSystem = null; }
++
++    public Batch Capture(IReadOnlyCollection<int> pids)
++    {
++        int cpus = checked((int)GetActiveProcessorCount(0xffff));
++        var requested = pids.Where(x => x > 0).ToHashSet();
++        foreach (int pid in _processes.Keys.Where(x => !requested.Contains(x)).ToArray()) _processes.Remove(pid);
++        var result = new Dictionary<int, LiveCpuSample>(requested.Count);
++        foreach (int pid in requested)
++        {
++            IntPtr handle = NativeMethods.OpenProcess(NativeMethods.PROCESS_QUERY_LIMITED_INFORMATION, false, (uint)pid);
++            try
++            {
++                if (handle != IntPtr.Zero && GetProcessTimes(handle, out ulong creation, out _, out ulong kernel, out ulong user))
++                {
++                    if (!_processes.TryGetValue(pid, out var tracker)) _processes[pid] = tracker = new();
++                    // Timestamp adjacent to this PID's read; no shared denominator from another scan.
++                    result[pid] = tracker.Sample(pid, DateTime.FromFileTimeUtc(checked((long)creation)),
++                        checked((long)(kernel + user)), Clock(), cpus);
++                    continue;
++                }
++                _processes.Remove(pid); // A failed read breaks continuity, never becomes zero CPU.
++                result[pid] = new(pid, null, false, 0, 0, 0, 0, 0, false, cpus);
++            }
++            finally { if (handle != IntPtr.Zero) NativeMethods.CloseHandle(handle); }
++        }
++
++        LiveCpuSample? system = null;
++        // GetSystemTimes covers only the calling processor group above 64 logical CPUs.
++        // Do not label that partial result as whole-machine CPU.
++        if (cpus is > 0 and <= 64 && NativeMethods.GetSystemTimes(out var idle, out var kernelTime, out var userTime))
++        {
++            ulong total = kernelTime.AsUInt64 + userTime.AsUInt64;
++            ulong idleTicks = idle.AsUInt64;
++            if (total >= idleTicks && (_oldSystem is not { } old ||
++                (total >= old.Total && idleTicks >= old.Idle && total - old.Total >= idleTicks - old.Idle)))
++                system = _system.Sample(0, SystemIdentity, checked((long)(total - idleTicks)), Clock(), cpus);
++            else _system.Reset();
++            _oldSystem = (idleTicks, total);
++        }
++        else { _oldSystem = null; _system.Reset(); }
++        int sampled = result.Values.Count(x => x.Available);
++        return new(result, new(system?.Available == true, system?.Percent ?? 0,
++            system?.Average ?? 0, system?.Peak ?? 0, system?.IntervalSeconds ?? 0,
++            cpus, sampled, result.Count - sampled));
++    }
++
++    private static double Clock() => Stopwatch.GetTimestamp() / (double)Stopwatch.Frequency;
++    [DllImport("kernel32.dll", SetLastError = true)]
++    private static extern uint GetActiveProcessorCount(ushort group);
++    [DllImport("kernel32.dll", SetLastError = true)]
++    [return: MarshalAs(UnmanagedType.Bool)]
++    private static extern bool GetProcessTimes(IntPtr process, out ulong creation, out ulong exit, out ulong kernel, out ulong user);
++}
+--- a/src/ProcessLens.Windows/WindowsProcessCollector.cs
++++ b/src/ProcessLens.Windows/WindowsProcessCollector.cs
+@@ -27,7 +27,8 @@
+ 
+     private readonly Dictionary<int, CpuSample> _cpuHistory = new();
+     private readonly Dictionary<int, StaticProcessInfo> _staticProcessCache = new();
+-    private readonly Dictionary<string, FileMetadata> _fileMetadataCache = new(StringComparer.OrdinalIgnoreCase);
++    // Bound retained paths across long sessions; a miss re-reads the same metadata.
++    private readonly BoundedMetadataCache<FileMetadata> _fileMetadataCache = new(512);
+ 
+     private Dictionary<int, List<ServiceInfo>> _servicesByPid = new();
+     private DateTime _servicesCapturedAtUtc = DateTime.MinValue;
+--- /dev/null
++++ b/src/ProcessLens.Windows/WindowsSelfResources.cs
+@@ -0,0 +1,40 @@
++using System.Diagnostics;
++using System.Runtime.InteropServices;
++
++namespace ProcessLens.Windows;
++
++/// <summary>Current GUI process only. No agent/service aggregation, GC or working-set trimming.</summary>
++public sealed record WindowsSelfResources(int Pid, DateTime CapturedUtc, long? PrivateResident,
++    long? Resident, long? PrivateCommit)
++{
++    public static WindowsSelfResources Capture()
++    {
++        long? resident = null, commit = null, privateResident = null;
++        using var self = Process.GetCurrentProcess();
++        try { resident = self.WorkingSet64; } catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception) { }
++        try { commit = self.PrivateMemorySize64; } catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception) { }
++        var counters = new Counters { Size = (uint)Marshal.SizeOf<Counters>(), PrivateWorkingSet = nuint.MaxValue };
++        // Sentinel detects an older API returning only the EX prefix successfully.
++        if (GetProcessMemoryInfo(GetCurrentProcess(), ref counters, counters.Size))
++        {
++            resident = checked((long)counters.WorkingSet);
++            commit = checked((long)counters.PrivateUsage);
++            if (counters.PrivateWorkingSet <= counters.WorkingSet)
++                privateResident = checked((long)counters.PrivateWorkingSet);
++        }
++        return new(Environment.ProcessId, DateTime.UtcNow, privateResident, resident, commit);
++    }
++
++    [StructLayout(LayoutKind.Sequential)]
++    private struct Counters
++    {
++        public uint Size, PageFaults;
++        public nuint PeakWorkingSet, WorkingSet, PeakPaged, Paged, PeakNonPaged, NonPaged,
++            PagefileUsage, PeakPagefileUsage, PrivateUsage, PrivateWorkingSet;
++        public ulong SharedCommit;
++    }
++    [DllImport("kernel32.dll")] private static extern IntPtr GetCurrentProcess();
++    [DllImport("psapi.dll", SetLastError = true)]
++    [return: MarshalAs(UnmanagedType.Bool)]
++    private static extern bool GetProcessMemoryInfo(IntPtr process, ref Counters counters, uint size);
++}
+--- a/start-processlens-all.ps1
++++ b/start-processlens-all.ps1
+@@ -27,7 +27,7 @@
+ }
+ 
+ try {
+-    Write-Host 'ProcessLens v0.19.16 R10 R6 candidata - Avvio guidato in sequenza' -ForegroundColor Green
++    Write-Host 'ProcessLens v0.19.16 R10 R7 candidata - Avvio guidato in sequenza' -ForegroundColor Green
+     Write-Host ('Modalita: ' + $Mode)
+     Write-Host ('Cartella: ' + $PSScriptRoot)
+     $isAdmin = Test-IsAdministrator
+--- a/tests/ProcessLens.CopyTests/Program.cs
++++ b/tests/ProcessLens.CopyTests/Program.cs
+@@ -72,8 +72,8 @@
+ for (int n = 0; n < 32; n++) notices.Confirm(instance with { Pid = 2000 + n });
+ Check(!notices.WasShown(instance), "exit-notice deduplication history stays bounded");
+ 
+-Check(WindowLifetimePolicy.Close(false, true) == WindowCloseAction.HideToTray,
+-    "window X hides to tray while keeping the app alive");
++Check(WindowLifetimePolicy.Close(false, true) == WindowCloseAction.MinimizeToTaskbar,
++    "X preserves a taskbar restore route even when tray registration succeeded");
+ Check(WindowLifetimePolicy.Close(false, false) == WindowCloseAction.MinimizeToTaskbar,
+     "unavailable tray preserves a taskbar restore route");
+ Check(WindowLifetimePolicy.Close(true, true) == WindowCloseAction.Exit &&
+--- a/tests/ProcessLens.CopyUiTests/Program.cs
++++ b/tests/ProcessLens.CopyUiTests/Program.cs
+@@ -4,6 +4,8 @@
+ using System.Windows.Data;
+ using System.Windows.Input;
+ using ProcessLens.App;
++using ProcessLens.Core;
++using ProcessLens.Windows;
+ 
+ internal static class Program
+ {
+@@ -50,6 +52,46 @@
+             selfWatch.Dispose();
+             Check(Volatile.Read(ref exits) == 0, "disposing a live-process watch is idempotent and does not report an exit");
+         }
++        // Native CPU read is cross-checked against .NET's independent process-time reader.
++        using (var self = System.Diagnostics.Process.GetCurrentProcess())
++        {
++            var cpuSource = new WindowsLiveCpuSampler();
++            double lower = self.TotalProcessorTime.TotalSeconds;
++            var baseline = cpuSource.Capture(new[] { self.Id, int.MaxValue });
++            self.Refresh();
++            double upper = self.TotalProcessorTime.TotalSeconds;
++            var sample = baseline.Processes[self.Id];
++            Check(sample.CounterAvailable && !sample.Available && sample.StartUtc == self.StartTime.ToUniversalTime(),
++                "native CPU first sample verifies process creation and remains unavailable as a rate");
++            Check(sample.CumulativeSeconds >= lower - 0.000001 && sample.CumulativeSeconds <= upper + 0.000001,
++                "native cumulative CPU is bracketed by independent .NET counter reads");
++            Check(!baseline.Processes[int.MaxValue].CounterAvailable && !baseline.Processes[int.MaxValue].Available,
++                "nonexistent PID is unavailable, not sampled zero CPU");
++            System.Threading.Thread.Sleep(100);
++            var next = cpuSource.Capture(new[] { self.Id }).Processes[self.Id];
++            Check(next.Available && next.IntervalSeconds > 0 && next.CapturedAtMonotonicSeconds > 0 && next.Percent is >= 0 and <= 100,
++                "native CPU second read yields bounded rate over actual interval");
++            cpuSource.Reset();
++            Check(!cpuSource.Capture(new[] { self.Id }).Processes[self.Id].Available,
++                "native CPU reset after minimize requires a new pair of counters");
++            var resources = WindowsSelfResources.Capture();
++            Check(resources.Pid == self.Id && resources.Resident.HasValue && resources.Resident.Value > 0 &&
++                resources.PrivateCommit.HasValue && resources.PrivateCommit.Value > 0 &&
++                (!resources.PrivateResident.HasValue || resources.PrivateResident.Value <= resources.Resident!.Value),
++                "GUI memory counters distinguish private resident, total resident and commit");
++        }
++        var rowProcess = new ProcessSnapshot { Pid = 123, ParentPid = 0, Name = "sample.exe", StartTime = DateTime.UnixEpoch };
++        var rowInsight = new ProcessLens.Semantics.ProcessIntelligenceAnalyzer().Analyze(rowProcess);
++        var liveRow = new ProcessRow(rowProcess, rowInsight);
++        var notifications = new List<string?>();
++        liveRow.PropertyChanged += (_, e) => notifications.Add(e.PropertyName);
++        var validSample = new LiveCpuSample(123, DateTime.UnixEpoch, true, 12.5, 10, 15, 2, 20, true, 8);
++        liveRow.UpdateCpu(validSample);
++        Check(liveRow.Process.CpuSampleAvailable && liveRow.CpuPercent == 12.5 && notifications.Contains("CpuDisplay"),
++            "CPU row update notifies existing bindings without replacing the row");
++        liveRow.UpdateCpu(validSample with { StartUtc = DateTime.UnixEpoch.AddTicks(1) });
++        Check(!liveRow.Process.CpuSampleAvailable && liveRow.CpuDisplay == "N/D",
++            "reused PID cannot acquire CPU from a different process instance");
+         string copied = "";
+         var text = new SelectableText(value => copied = value);
+         // Standalone WPF controls have no parent/XAML loader to complete initialization.
+--- a/tests/ProcessLens.CpuTests/Program.cs
++++ b/tests/ProcessLens.CpuTests/Program.cs
+@@ -16,3 +16,53 @@
+ Check("counter-unavailable", CpuMath.ProcessPercentOfMachine(-1, 120_000_000), 0);
+ Check("clamp-counter", CpuMath.ProcessPercentOfMachine(130_000_000, 120_000_000), 100);
+ Console.WriteLine("CPU math tests completed.");
++
++static void Require(bool condition, string label)
++{
++    if (!condition) throw new Exception("FAIL R10 R7 CPU: " + label);
++    Console.WriteLine("PASS R10 R7 CPU: " + label);
++}
++var epoch = new DateTime(2026, 10, 18, 0, 0, 0, DateTimeKind.Utc);
++var tracker = new CpuIntervalTracker();
++Require(!tracker.Sample(23, epoch, 0, 100, 12).Available, "first counter is a baseline, not zero CPU");
++var one = tracker.Sample(23, epoch, 20_000_000, 102, 12);
++Check("R7 one busy core of twelve over two seconds", one.Percent, 100d / 12);
++Require(one.Available && one.IntervalSeconds == 2, "actual per-PID interval retained");
++var zero = tracker.Sample(23, epoch, 20_000_000, 104, 12);
++Require(zero.Available && zero.Percent == 0, "two unchanged valid counters establish actual zero");
++Check("R7 duration weighted mean", zero.Average, 100d / 24);
++Require(!tracker.Sample(23, epoch.AddMinutes(1), 20_000_001, 106, 12).Available, "PID reuse with nondecreasing CPU still resets baseline");
++Require(!tracker.Sample(23, epoch.AddMinutes(1), 20_000_002, 120, 12).Available, "pause beyond six seconds does not become a fresh sample");
++Require(!tracker.Sample(23, epoch.AddMinutes(1), 20_000_003, 120, 12).Available, "zero elapsed interval is not zero CPU");
++Require(!tracker.Sample(23, epoch.AddMinutes(1), 20_000_004, 119, 12).Available, "backwards monotonic input resets baseline");
++Require(!tracker.Sample(23, epoch.AddMinutes(1), 1, 121, 12).Available, "counter rollback resets baseline");
++Require(!tracker.Sample(23, epoch.AddMinutes(1), 2, 123, 24).Available, "processor-count changes reset normalization");
++tracker.Reset();
++Require(!tracker.Sample(23, epoch, 20_000_000, 125, 12).Available, "access recovery requires a new baseline");
++Require(!tracker.Sample(23, epoch, 20_000_000, 127, 0).Available, "unknown logical count cannot be presented as zero CPU");
++Require(!tracker.Sample(23, epoch, 20_000_000, double.NaN, 12).Available, "invalid clock does not produce NaN output");
++
++// A high 0..4 interval overlaps the final 2 seconds of the 2..32 window.
++// Subsequent 4..32 intervals are idle: weighted mean is 2/30 * 100 = 6.6667%.
++tracker.Reset(); tracker.Sample(23, epoch, 0, 0, 1);
++tracker.Sample(23, epoch, 40_000_000, 4, 1);
++LiveCpuSample clipped = one;
++for (int seconds = 6; seconds <= 32; seconds += 2)
++    clipped = tracker.Sample(23, epoch, 40_000_000, seconds, 1);
++Check("R7 partially overlapping window interval clipped", clipped.Average, 100d * 2 / 30);
++Check("R7 overlapping peak retained", clipped.Peak, 100);
++clipped = tracker.Sample(23, epoch, 40_000_000, 34, 1);
++Check("R7 expired peak removed", clipped.Peak, 0);
++
++var input = new ProcessSnapshot { Pid = 23, ParentPid = 0, Name = "test.exe", StartTime = epoch,
++    CpuSampleAvailable = true, CpuPercent = 90, WorkingSetAvailable = true, WorkingSetBytes = 4096 };
++Require(one.Matches(input) && !one.Matches(input with { StartTime = null }) &&
++    !one.Matches(input with { StartTime = epoch.AddTicks(1) }), "publication requires exact known creation time");
++var applied = one.Apply(input);
++Require(applied.CpuPercent == one.Percent && applied.WorkingSetBytes == input.WorkingSetBytes &&
++    input.CpuPercent == 90, "CPU overlay preserves memory and original snapshot");
++Require(!LiveCpuSample.Unavailable(input).CpuSampleAvailable &&
++    !LiveCpuSample.Unavailable(input).CpuCumulativeAvailable, "invalidated overlay cannot retain an old counter");
++
++Require(!one.Apply(input with { StartTime = epoch.AddTicks(1) }).CpuSampleAvailable,
++    "direct overlay API refuses a different process creation timestamp");
+--- a/tests/ProcessLens.MemoryEfficiencyTests/Program.cs
++++ b/tests/ProcessLens.MemoryEfficiencyTests/Program.cs
+@@ -86,3 +86,21 @@
+ else
+     Console.WriteLine("INFO R8 allocation comparison recorded; relative allocation assertion is scoped to Windows x64 deployment.");
+ Console.WriteLine("R8 memory efficiency tests passed; Windows GUI RAM must be measured separately.");
++
++// Independent bound on the collector's new cache. No claim about physical RAM saved.
++var metadata = new BoundedMetadataCache<object>(512);
++var marker = new object();
++metadata["C:\\Tool.exe"] = marker;
++Check(metadata.TryGetValue("c:\\TOOL.EXE", out var hit) && ReferenceEquals(hit, marker),
++    "R7 native metadata cache preserves case-insensitive path and object identity");
++for (int n = 0; n < 10000; n++) metadata[$"C:\\Tool-{n}.exe"] = new object();
++Check(metadata.Count == 512, "R7 metadata path churn has a hard 512-entry bound");
++metadata["C:\\Tool-9999.exe"] = marker;
++Check(metadata.Count == 512 && metadata.TryGetValue("C:\\Tool-9999.exe", out hit) && ReferenceEquals(hit, marker),
++    "R7 metadata update does not evict or grow the cache");
++metadata["C:\\Tool.exe"] = marker;
++Check(metadata.Count == 512 && metadata.TryGetValue("C:\\Tool.exe", out hit),
++    "R7 evicted file metadata can be loaded again");
++bool rejected = false;
++try { _ = new BoundedMetadataCache<object>(0); } catch (ArgumentOutOfRangeException) { rejected = true; }
++Check(rejected, "R7 zero-capacity cache rejected");
+--- a/tests/check-copy-ui-r10.ps1
++++ b/tests/check-copy-ui-r10.ps1
+@@ -1,4 +1,4 @@
+-$ErrorActionPreference = 'Stop'
++﻿$ErrorActionPreference = 'Stop'
+ $root = Split-Path -Parent $PSScriptRoot
+ $code = Get-Content (Join-Path $root 'src\ProcessLens.App\MainWindow.xaml.cs') -Raw -Encoding UTF8
+ foreach ($file in @('MainWindow.xaml','GuardianDashboardView.xaml','MemoryDashboardView.xaml')) {
+@@ -52,15 +52,15 @@
+ Write-Host 'PASS R10 R4 exit notice: verified instance, Windows exit signal and bounded UI lifecycle. Source checks only.'
+ $tray = Get-Content (Join-Path $root 'src\ProcessLens.App\TrayWindowController.cs') -Raw -Encoding UTF8
+ $app = Get-Content (Join-Path $root 'src\ProcessLens.App\App.xaml.cs') -Raw -Encoding UTF8
+-foreach ($token in @('WindowLifetimePolicy.Close(', 'e.Cancel = true;', '_window.Hide();',
+-    'Apri ProcessLens', 'Esci da ProcessLens', '_window.Show();', 'TaskbarCreated', 'SendMessageTimeoutW')) {
++foreach ($token in @('WindowLifetimePolicy.Close(', 'e.Cancel = true;', '_window.ShowInTaskbar = true;',
++    'Mostra ProcessLens', 'Esci da ProcessLens', '_window.Show();', 'TaskbarCreated', 'SendMessageTimeoutW')) {
+     if (-not $tray.Contains($token)) { throw ('FAIL tray lifecycle: missing restore/exit route: ' + $token) }
+ }
+ if (-not $app.Contains('ShutdownMode = ShutdownMode.OnExplicitShutdown;') -or
+     -not $app.Contains('new TrayWindowController(window') -or -not $app.Contains('TrayWindowController.TryRestoreExisting()')) {
+     throw 'FAIL tray lifecycle: startup or existing-instance restore not wired.'
+ }
+-Write-Host 'PASS R10 R5 lifecycle: hide, restore, explicit exit and shell recovery wired. Source checks only.'
++Write-Host 'PASS R10 R7 lifecycle: taskbar restore route, Mostra, explicit exit and shell recovery wired. Source checks only.'
+ $audit = Get-Content (Join-Path $root 'src\ProcessLens.App\AuditLogView.cs') -Raw -Encoding UTF8
+ foreach ($token in @('ProcessQueryAuditText_TextChanged', 'AuditLogPresentation.Parse(ProcessQueryAuditText.Text)',
+     'ProcessQueryAuditPanel_Expanded', 'ProcessQueryAuditPanel_Collapsed', 'CopyQueryAudit_Click')) {
+@@ -71,3 +71,9 @@
+     if (-not $audit.Contains($token)) { throw ('FAIL audit layout: missing spacing or append lifecycle: ' + $token) }
+ }
+ Write-Host 'PASS R10 R6 audit layout: timestamp/stage/message cards, spacing, append and original copy wired. Source checks only.'
++
++foreach ($token in @('Interval = TimeSpan.FromSeconds(2)', 'generation != _cpuGeneration',
++    'RecentCpu(int pid)', 'row.UpdateCpu(', 'CopySelfResourcesButton_Click')) {
++    if (-not $code.Contains($token)) { throw ('FAIL R10 R7 resources: ' + $token) }
++}
++Write-Host 'PASS R10 R7 resources: CPU tick, stale generation, sample age and self-resource copy wired. Source checks only.'

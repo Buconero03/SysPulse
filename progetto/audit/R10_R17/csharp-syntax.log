@@ -1,0 +1,7 @@
+PASS C# syntax: /workspace/scratch/3c80859a1061/ProcessLens/source/ProcessLens-v0.19.16-R10/src/ProcessLens.App/NativeCaptureView.xaml.cs
+PASS C# syntax: /workspace/scratch/3c80859a1061/ProcessLens/source/ProcessLens-v0.19.16-R10/src/ProcessLens.App/NetworkDevicesView.xaml.cs
+PASS C# syntax: /workspace/scratch/3c80859a1061/ProcessLens/source/ProcessLens-v0.19.16-R10/src/ProcessLens.Core/NativeCaptureEvidence.cs
+PASS C# syntax: /workspace/scratch/3c80859a1061/ProcessLens/source/ProcessLens-v0.19.16-R10/src/ProcessLens.Windows/WindowsNativeCapture.cs
+PASS C# syntax: /workspace/scratch/3c80859a1061/ProcessLens/source/ProcessLens-v0.19.16-R10/tests/ProcessLens.NativeCaptureTests/Program.cs
+PASS C# syntax: /workspace/scratch/3c80859a1061/ProcessLens/source/ProcessLens-v0.19.16-R10/tests/ProcessLens.NetworkUiTests/Program.cs
+Syntax parsing only; no WPF type checking or markup compilation.

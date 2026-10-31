@@ -1,0 +1,33 @@
+{
+  "baseline_sha256": "a70a8c2948e137df85f93203a820fd47c6418ccf6906063bb361c6369d01698c",
+  "modified_files": [
+    "LEGGIMI.txt",
+    "progetto/build-dashboard.ps1",
+    "progetto/src/ProcessLens.App/App.xaml.cs",
+    "progetto/src/ProcessLens.App/AppDiagnostics.cs",
+    "progetto/src/ProcessLens.App/MainWindow.xaml",
+    "progetto/src/ProcessLens.App/MainWindow.xaml.cs",
+    "progetto/src/ProcessLens.App/ProcessIconResolver.cs",
+    "progetto/src/ProcessLens.App/ProcessLens.App.csproj",
+    "progetto/src/ProcessLens.App/TrayWindowController.cs",
+    "progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj",
+    "progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs",
+    "progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs",
+    "supporto/avvia.ps1"
+  ],
+  "new_files": [
+    "progetto/audit/tools/check_powershell_r29.py",
+    "progetto/audit/tools/check_window_diagnostics_r29.ps1",
+    "progetto/audit/tools/mutate_window_diagnostics_r29.py",
+    "progetto/audit/tools/package_window_diagnostics_r29.py",
+    "progetto/audit/tools/run_process_groups_r29.py",
+    "progetto/audit/tools/test_launcher_r29.ps1",
+    "progetto/audit/tools/typecheck_wpf_sources_r29.py",
+    "progetto/src/ProcessLens.App/NativeIconPreference.cs",
+    "progetto/src/ProcessLens.App/WindowActionDiagnostics.cs",
+    "progetto/src/ProcessLens.App/WindowDiagnosticJournal.cs"
+  ],
+  "protected": "All Core, Semantics, Windows native acquisition, Guardian, MemoryAgent, profiler, RAM monitor, scrolling and lifetime pure policies BYTE IDENTICAL TO R28",
+  "new_dependencies": 0,
+  "Windows_runtime_DPI_RAM": "NOT EXECUTED / NOT MEASURED"
+}

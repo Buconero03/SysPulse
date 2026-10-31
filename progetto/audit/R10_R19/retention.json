@@ -1,0 +1,12 @@
+{
+  "source_trees": 1,
+  "current_release_zips": 1,
+  "patch_temporary_tree_removed": true,
+  "baseline": "R18 R2 retained for exact byte comparisons",
+  "source_and_preflight_checks": 311,
+  "fresh_presentation_assertions": 86,
+  "fresh_typechecked_assemblies": 6,
+  "retained_network_assertions": 332,
+  "network_rerun": false,
+  "Windows_build_WPF_DPI_live_RAM": "NOT EXECUTED"
+}

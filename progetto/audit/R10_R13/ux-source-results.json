@@ -1,0 +1,167 @@
+[
+  {
+    "test": "native collectors services profiler SQLite readers and meter acquisition unchanged",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "every source edit belongs to the recorded editorial or authorized network feature delta",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "control conditions unchanged Semantics/RoleClassifier",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "control conditions unchanged Semantics/ProcessIntelligenceAnalyzer",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "control conditions unchanged Semantics/ProcessOriginAnalyzer",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "control conditions unchanged Semantics/ProcessBehaviorExplainer",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "control conditions unchanged Semantics/ProcessQueryEngine",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "control conditions unchanged Core/WindowsAllocationEvidence",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "control conditions unchanged Core/StructuredDiagnostics",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "control conditions unchanged Core/ServiceExplanation",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "control conditions unchanged Core/ServiceHistoryInterpretation",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "numeric comparisons including ternary thresholds unchanged",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "threshold mutation is rejected by the real condition comparison",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "knowledge IDs scores criteria labels and risk codes unchanged",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "metric types or numeric formatter already concise and unchanged MemoryEvidence.cs",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "metric types or numeric formatter already concise and unchanged ProcessDisplayFormatter.cs",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "all XAML and project XML parse",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "redundant badge and sort narration removed",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "required labels and subprocess summary present",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "memory summary has separate numbers and no nested driver parentheses",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "trends retain duration excursions and unknown causes",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "new RAM audit grammar and legacy lossless parser connected",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "RAM audit numeric diagnostic event identity preserved",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "machine-readable monitor CSV columns unchanged",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "monitor events have timestamp component partial values and excluded meter",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "clipboard calls retain both required arguments",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "current/legacy log and culture regressions supplied",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "nested allocation and semantic-limit regressions supplied",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "new Windows source checks are wired into the build",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "all four RAM display cases match current labels and description fragments",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "RAM description guard rejects the actual R11 stale-token regression",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "literal equality expectations do not use removed interpolated wording",
+    "status": "PASS",
+    "kind": "source/XML only"
+  },
+  {
+    "test": "interpolated expectation guard rejects the actual R11 R1 overview regression",
+    "status": "PASS",
+    "kind": "source/XML only"
+  }
+]

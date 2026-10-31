@@ -1,0 +1,34 @@
+{
+  "baseline_sha256": "4eb61f3c4e6954dff8bc2e1ec8ca79155a835664f1734ba185d69c72242ec6b2",
+  "modified_files": [
+    "LEGGIMI.txt",
+    "progetto/audit/tools/check_notification_area_r32.ps1",
+    "progetto/audit/tools/check_window_controls_r28.ps1",
+    "progetto/audit/tools/check_windows_icons_r27.ps1",
+    "progetto/build-dashboard.ps1",
+    "progetto/docs/terminology/GLOSSARIO_TERMINOLOGICO_PROCESSLENS.csv",
+    "progetto/src/ProcessLens.App/ProcessGroupRow.cs",
+    "progetto/src/ProcessLens.App/ProcessIconPlaceholder.cs",
+    "progetto/src/ProcessLens.App/ProcessIconResolver.cs",
+    "progetto/src/ProcessLens.App/ProcessLens.App.csproj",
+    "progetto/tests/ProcessLens.IconResourceTests/ProcessLens.IconResourceTests.csproj",
+    "progetto/tests/ProcessLens.IconResourceTests/Program.cs",
+    "progetto/tests/ProcessLens.ProcessGroupsTests/ProcessLens.ProcessGroupsTests.csproj",
+    "progetto/tests/ProcessLens.ProcessGroupsTests/Program.cs",
+    "progetto/tests/ProcessLens.ProcessGroupsUiTests/Program.cs",
+    "supporto/avvia.ps1"
+  ],
+  "new_files": [
+    "progetto/audit/tools/check_powershell_r33.py",
+    "progetto/audit/tools/check_process_symbols_r33.ps1",
+    "progetto/audit/tools/package_process_symbols_r33.py",
+    "progetto/audit/tools/test_launcher_r33.ps1",
+    "progetto/audit/tools/typecheck_wpf_sources_r33.py",
+    "progetto/src/ProcessLens.App/Assets/ProcessSymbols.json",
+    "progetto/src/ProcessLens.App/ProcessSymbolCatalog.cs",
+    "progetto/src/ProcessLens.App/ProcessSymbolDrawing.cs"
+  ],
+  "protected": "Core, Semantics, native process/network acquisition, Guardian, metrics, tray/window/scroll policies and application icon pipeline byte identical to working R32 R2. Only process icon display, catalogue, tests and declared version/build files changed",
+  "new_dependencies": 0,
+  "Windows_runtime_DPI_RAM": "NOT EXECUTED / NOT MEASURED"
+}

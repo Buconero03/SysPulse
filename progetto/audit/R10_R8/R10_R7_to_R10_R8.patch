@@ -1,0 +1,1366 @@
+--- /dev/null
++++ b/Avvia-ProcessLens-con-log-RAM.cmd
+@@ -0,0 +1,3 @@
++@echo off
++powershell.exe -NoProfile -STA -File "%~dp0start-processlens-ram-monitor.ps1" -StartGui
++if errorlevel 1 pause
+--- /dev/null
++++ b/Avvia-solo-monitor-RAM.cmd
+@@ -0,0 +1,3 @@
++@echo off
++powershell.exe -NoProfile -STA -File "%~dp0start-processlens-ram-monitor.ps1"
++if errorlevel 1 pause
+--- /dev/null
++++ b/MONITOR_RAM_E_SERVIZI_R10_R8.md
+@@ -0,0 +1,81 @@
++# R10 R8 — monitor RAM parallelo e navigazione nei servizi
++
++La candidata continua da R10 R7. Include entrambe le richieste: un programma separato che registra il consumo di ProcessLens e la navigazione dalla schermata RAM inviata il 19 ottobre 2026. Le correzioni CPU e ripristino R7 restano incluse.
++
++**Build .NET, script PowerShell, test C#, WPF, DPI e misure reali Windows: NON ESEGUITI qui.** L’ambiente non dispone di SDK .NET né PowerShell. Non è allegato un EXE compilato e non si dichiara un consumo o risparmio RAM misurato. Sono inclusi sorgenti, test, launcher e controlli di sorgente portabili. Occorre qualificare la candidata su Windows.
++
++## Come avviare ProcessLens con il log RAM
++
++Dopo la verifica Windows, aprire **Avvia-ProcessLens-con-log-RAM.cmd**. Il launcher:
++
++1. cerca la GUI pubblicata/compilata nella cartella del progetto; se non la trova, permette di scegliere un `ProcessLens.exe` già esistente;
++2. se manca il misuratore, compila **solo il nuovo monitor** con l’SDK .NET 8 già installato, senza installare strumenti;
++3. apre una finestra console indipendente e avvia la GUI selezionata. Il secondo avvio della GUI usa il normale ripristino dell’istanza esistente.
++
++Se ProcessLens è già aperto e si vuole soltanto misurarlo, usare **Avvia-solo-monitor-RAM.cmd** e selezionare il suo EXE se richiesto. Non occorre ricompilare una GUI precedente per usare il monitor; occorre invece la nuova GUI R8 per le modifiche alla navigazione.
++
++Da PowerShell, con un percorso esplicito:
++
++```powershell
++.\start-processlens-ram-monitor.ps1 -GuiExe 'D:\cartella\ProcessLens.exe' -StartGui
++```
++
++Il percorso nell’esempio deve essere sostituito con quello reale. Senza `-StartGui` parte solo il misuratore. `-IntervalSeconds 1` aumenta la frequenza; il valore predefinito è **5 secondi**. `-DurationSeconds 180` limita la sessione a circa tre minuti; zero significa fino all’arresto manuale o al limite dei log.
++
++Chiudere il monitor con **Ctrl+C**: non termina GUI, servizi o agenti. Ridurre o chiudere davvero la GUI non interrompe il monitor; può continuare a osservare i componenti della suite ancora attivi. Non è configurato alcun avvio all’accesso a Windows. Il monitor non avvia Guardian, MemoryAgent, profiler, acquisizioni ETW o processi bersaglio. Il launcher avvia la GUI solo con la scelta esplicita sopra.
++
++## Che cosa registra
++
++I file sono tutti sotto una sola radice:
++
++`verification-r10r8\ram-monitor\<sessione-UTC-e-PID-monitor>\`
++
++| File | Contenuto |
++|---|---|
++| `monitor.log` | Quadro generale leggibile, dettagli per PID, tre metriche separate, copertura ed errori |
++| `totals.csv` | Serie dei totali, somme disponibili e campioni mancanti; valori grezzi in byte, numeri con formato invariabile |
++| `processes.csv` | PID, PID padre, padre letto dall’handle, creazione, percorso, ragione di inclusione, contatori e limiti |
++| `scope.json` | Percorsi accettati, regole di associazione, intervallo e limiti della sessione |
++| `summary.json` | Numero di campioni, numero di campioni completi, media aritmetica e massimo campionato della RAM privata residente completa |
++
++I file vengono aggiornati e svuotati sullo stream dopo ogni campione; l’arresto forzato della console può lasciare lo stato del riepilogo all’ultimo aggiornamento. Il riepilogo non accumula tutta la serie in memoria. Per contenere la crescita su disco, il monitor si ferma a circa **50 MiB complessivi dei tre log**, più l’ultimo campione, conservando tutto. Non cancella sessioni precedenti. L’EXE accetta anche `--max-log-mib`, da 1 a 1024.
++
++Il valore principale è **la somma della RAM privata residente dei PID identificati nel perimetro**, non l’intero footprint fisico comprensivo di tutte le pagine condivise. Si registrano separatamente:
++
++- working set totale: la sua somma può duplicare pagine condivise fra processi;
++- commit privato: non equivale alla RAM fisica residente;
++- consumo del misuratore: esplicitamente escluso dal totale della suite.
++
++Non viene mai sostituito il working set o il commit alla RAM privata. Se un contatore, un’identità o l’enumerazione non sono disponibili, il totale interessato diventa **N/D / PARZIALE** e resta visibile la somma delle letture riuscite. Non basta un solo PID leggibile per dichiarare completo un gruppo. Un’enumerazione riuscita senza membri nel perimetro dà zero membri osservati; non dimostra che ogni possibile installazione di ProcessLens sia assente dal computer.
++
++## Quali processi include
++
++Le radici sono riconosciute mediante **percorso completo esatto**: GUI selezionata, percorsi standard di build/pubblicazione del progetto, MemoryAgent installato nell’account corrente e Guardian installato in Program Files secondo gli installer del progetto. Il profiler viene contato soltanto se già attivo. Un programma omonimo in un’altra installazione viene segnalato come fuori perimetro.
++
++Sono inclusi anche i discendenti osservabili delle radici: PID padre del censimento, PID padre ottenuto dallo stesso handle del figlio, creazioni compatibili di padre e figlio. La query opzionale `NtQueryInformationProcess` è risolta dinamicamente: se manca o fallisce, non si afferma la relazione al figlio. I figli già osservati vengono seguiti per PID + creazione anche se il padre termina. Il misuratore e i suoi discendenti sono esclusi.
++
++Queste sono associazioni osservate di processo, non una prova che ogni byte sia stato richiesto dalla GUI. Il campionamento può perdere processi brevi, picchi fra due letture e figli già orfani prima dell’avvio del monitor. Le letture dei PID non sono simultanee. Componenti avviati come `dotnet nome.dll` o installati in percorsi personalizzati non sono automaticamente riconosciuti: per un percorso aggiuntivo usare l’EXE del monitor con `--include-exe <percorso>` e controllare `scope.json`. Non viene letta la riga di comando per cercare credenziali o attribuire processi arbitrari. Per i processi non leggibili si conserva il limite; non si tenta elevazione automatica.
++
++## Doppio clic e schede della pagina RAM
++
++- Le quattro schede **Applicazioni e Browser**, **Sviluppo e Runtime**, **Sistema Windows**, **Servizi e Secondari** sono pulsanti: clic sul titolo/sfondo, oppure Tab e Spazio, apre l’elenco RAM della categoria. I valori restano selezionabili per la copia.
++- Il filtro ora opera sul censimento completo restituito dalla lettura, senza tagliare prima la lista ai primi 80 PID. Non viene cambiata l’acquisizione Windows preesistente.
++- Il doppio clic su una riga RAM cerca i servizi SCM associati ai PID del processo/gruppo. Il raggruppamento RAM resta quello esistente per nome eseguibile, non prova di appartenenza a un’unica applicazione. I PID sono confrontati esattamente e l’istanza viene controllata prima/dopo la lettura SCM; un processo nato dopo l’inizio della lettura RAM non può acquisire la navigazione della vecchia riga.
++- Un solo servizio associato: si apre direttamente la finestra di dettagli. Più servizi, come per un gruppo `svchost`: si apre la sezione Servizi limitata agli host verificati, senza scegliere arbitrariamente un servizio. **Mostra tutti i servizi** rimuove il limite.
++- Senza associazioni SCM si apre il dettaglio del processo/PID rappresentativo solo se identificabile; la categoria “Secondari” non basta a chiamare un processo “servizio Windows”. Un PID terminato/riusato non viene sostituito silenziosamente.
++- Nella sezione Servizi, **doppio clic** o **Invio** su una riga apre una finestra con identità, stato, descrizione dichiarata, configurazione, dipendenze e limiti. Tutto è selezionabile e in sola lettura. Non si arresta il servizio.
++- Il pulsante **Ispeziona anatomia RAM** conserva l’analisi RAM esplicita; il doppio clic informativo non la avvia.
++
++La quinta scheda è ora **Memoria non attribuita ai PID**. Apre una spiegazione del residuo contabile: il valore non identifica separatamente Kernel, driver o DLL. È una correzione del testo della scheda toccata; i contratti e l’aritmetica del collector rimangono invariati.
++
++## Qualificazione richiesta
++
++Eseguire `powershell -NoProfile -File .\verify-candidate-r10.ps1` per tutte le build e suite, incluso `ProcessLens.RamMonitorTests`. Per il normale flusso completo, `build-dashboard.ps1` comprende il test del monitor e la sua pubblicazione separata. Nessuno di questi due test avvia automaticamente il monitor operativo.
++
++Le regressioni aggiunte coprono totali parziali, zero realmente letto, metriche distinte, enumerazione fallita, omonimi, creazione/PID, associazioni ai discendenti, esclusione del monitor, CSV UTF-8 e riepilogo. La prova nativa Windows controlla anche la creazione del processo di test contro .NET; non avvia/termina processi bersaglio. I test WPF costruiscono la nuova finestra e le schede senza mostrarle o avviare polling. Qui tali test **NON sono stati eseguiti**.
++
++Verificare manualmente: avvio con un percorso contenente spazi; GUI già aperta; monitor lasciato attivo mentre si riduce/riapre la GUI; servizi/agente già attivi; Ctrl+C e log leggibili; un contatore non leggibile; finestra dettagli singolo servizio; gruppo `svchost`; processo secondario senza servizio; clic su ogni categoria; doppio clic su header/spazio vuoto senza azioni; navigazione rapida verso un’altra scheda durante la lettura SCM; DPI 100/125/150/200% e culture it-IT/en-US. Confrontare working set e privato con le colonne equivalenti di Gestione attività, senza equipararle al commit.
++
++Restano aperti i rilievi semantici RAM precedenti, salvo il testo del residuo qui corretto, e il rischio asincrono generale dei rapporti già registrato in R6. Il nuovo percorso servizi ha proprie guardie di navigazione; questo non qualifica gli altri percorsi asincroni.
++
++Fonti Microsoft: [contatori EX2](https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex2), [GetProcessMemoryInfo](https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getprocessmemoryinfo), [QueryFullProcessImageName](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-queryfullprocessimagenamew), [NtQueryInformationProcess e vincoli di compatibilità](https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntqueryinformationprocess). Consultate fra 18 e 19 ottobre 2026.
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,14 @@
+-﻿# R10 R7 — CPU separata, risorse GUI e riapertura
++﻿# R10 R8 — log RAM parallelo, categorie e dettagli dei servizi
++
++Leggere **MONITOR_RAM_E_SERVIZI_R10_R8.md**. **Avvia-ProcessLens-con-log-RAM.cmd** apre GUI e misuratore separato; **Avvia-solo-monitor-RAM.cmd** misura una GUI già esistente. Il monitor viene compilato al primo avvio con SDK .NET 8, senza installazioni. Log per PID e totale privato residente, contatori distinti, dati mancanti espliciti e consumo del monitor separato. Tutti i log sono sotto `verification-r10r8/ram-monitor`.
++
++Nella pagina RAM le categorie sono cliccabili. Doppio clic su una riga apre i servizi SCM associati o il dettaglio del processo; nella pagina Servizi, doppio clic/Invio apre una finestra di dettagli selezionabili. **Ispeziona anatomia RAM** resta esplicito. Nessun arresto o profiler automatico. R7 CPU/ripristino inclusa.
++
++**Candidata sorgente: nessun EXE compilato qui. Build, PowerShell, test .NET/WPF, DPI e misurazioni Windows NON ESEGUITI.** I controlli portabili sono di sorgente. Verificare su Windows prima dell’uso. Manifest corrente `SHA256SUMS_R10.txt`.
++
++---
++
++# R10 R7 — CPU separata, risorse GUI e riapertura
+ 
+ Leggere **CPU_RAM_RIPRISTINO_R10_R7.md**. La X mantiene il pulsante nella barra applicazioni; nell’icona è disponibile **Mostra ProcessLens**. CPU aggiornata separatamente ogni circa 2 s con identità e intervallo per PID; valori sulle righe esistenti, senza ripetere raccolta completa e ispezioni. Cache metadati limitata a 512 percorsi. Riga **GUI ProcessLens** con RAM privata residente, RAM totale e CPU, più **Copia risorse GUI**. Script passivo `measure-processlens-resources.ps1` per confrontare CPU/RAM della stessa istanza con CSV e riepilogo.
+ 
+--- a/audit/tools/check_r10.py
++++ b/audit/tools/check_r10.py
+@@ -171,5 +171,8 @@
+ resource_files={p.relative_to(b).as_posix():p.read_text(encoding='utf-8-sig') for p in b.rglob('*') if p.suffix in ['.cs','.xaml','.ps1']}
+ resource_bad=resource_violations(resource_files)
+ check('R10 R7 CPU restore self-resource source invariants',not resource_bad,str(resource_bad) if resource_bad else '13 conservative source guards; executable .NET and Windows checks supplied, not executed')
++from ram_monitor_rules import violations as monitor_violations
++monitor_bad=monitor_violations(resource_files)
++check('R10 R8 monitor and RAM service navigation source invariants',not monitor_bad,str(monitor_bad) if monitor_bad else '13 source invariants only; Windows build and runtime still required')
+ output=a.output or b/'audit/R10/structural-results.json';output.parent.mkdir(parents=True,exist_ok=True);output.write_text(json.dumps(results,ensure_ascii=False,indent=2)+'\n')
+ raise SystemExit(0 if all(r['status']=='PASS' for r in results) else 1)
+--- /dev/null
++++ b/audit/tools/ram_monitor_rules.py
+@@ -0,0 +1,41 @@
++"""R8 source-only invariants, not C# compilation or runtime proof."""
++def violations(files):
++    bad=[]
++    def need(ok,name):
++        if not ok:bad.append(name)
++    model=files['src/ProcessLens.RamMonitor/Measurement.cs'];native=files['src/ProcessLens.RamMonitor/NativeSampler.cs']
++    logs=files['src/ProcessLens.RamMonitor/LogSession.cs'];program=files['src/ProcessLens.RamMonitor/Program.cs']
++    ui=files['src/ProcessLens.App/MainWindow.xaml.cs'];memory=files['src/ProcessLens.App/MemoryDashboardView.xaml.cs']
++    nav=files['src/ProcessLens.App/ServiceNavigation.cs'];view=files['src/ProcessLens.App/MemoryDashboardView.xaml']
++    need('complete ? observed : null' in model and 'enumerationComplete && unresolved == 0 && values.Length == members.Length' in model,
++         'missing values or enumeration cannot become complete totals')
++    need('child.HandleParentPid == parent.Pid' in model and 'child.StartUtcTicks.Value >= parent.StartUtcTicks.Value' in model and
++         'NativeLibrary.TryGetExport' in native and 'NtQueryInformationProcess' in native,'same-handle parent and creation check')
++    need('_scope.Contains(reading.Path)' in native and 'previous.StartUtcTicks == reading.StartUtcTicks' in native,
++         'roots need exact path and retained children need exact creation')
++    need('Environment.ProcessId' in native and 'MonitorExcluded' in native and 'capture.Processes' in logs and 'capture.Monitor' in logs,
++         'meter is tracked separately from suite aggregate')
++    need('OpenProcess(0x1000' in native and 'finally { CloseHandle(handle); }' in native and 'finally { CloseHandle(snapshot); }' in native,
++         'limited rights and released handles')
++    need('PrivateWorkingSet = UIntPtr.MaxValue' in native and 'memory && ex2' in native and 'Marshal.OffsetOf<Counters>' in native,
++         'EX prefix fallback never invents private resident bytes')
++    need(not any(x in native+program for x in ['TerminateProcess(', 'EmptyWorkingSet(', 'SetProcessWorkingSetSize(', 'GC.Collect(', 'Process.Start(']),
++         'meter does not change or start monitored processes')
++    need(all(x in logs for x in ['processes.csv','totals.csv','summary.json','scope.json','CultureInfo.InvariantCulture','\n        Flush(); SaveSummary','LimitReached']),
++         'raw log, totals, scope, summary, invariant numeric CSV, flush and size limit')
++    need('ReadFullAnalysis(int.MaxValue)' in memory and 'DetailsRequested?.Invoke' in memory and
++         'new(row.TargetPid, row.ExecutableName, row.Grouped, _lastSnapshotStartedUtc)' in memory,
++         'full RAM category list and snapshot-bound detail request')
++    need(all('Category'+n+'Card' in view for n in ['Apps','Dev','Win','Services','Residual']) and 'MemoryCategoryCard' in view and
++         'ResidualCategoryDetails' in view, 'accessible category buttons and residual limits')
++    need('host.SnapshotStartUtc == host.CurrentStartUtc' in nav and 'host.Pid == target.Pid' in nav and
++         'scope.ContainsKey(pid)' in nav and 'host.CurrentStartUtc!.Value <= target.FrameStartedUtc.Value' in nav,
++         'navigation uses exact PID and known instance existing when RAM acquisition began')
++    need('request != _workspaceNavigation' in ui and 'navigation != _workspaceNavigation' in ui and
++         'ReadProcessStartUtc(p.Pid) == p.SnapshotStartUtc' in ui and 'ServiceNavigation.Includes(service.ProcessId, _serviceHostScope)' in ui,
++         'async service navigation and later catalog refreshes cannot publish another scope')
++    details=files['src/ProcessLens.App/ServiceDetailsWindow.cs']
++    need('ReportView.Section' in details and 'new SelectableText' in details and
++         not any(t in details for t in ['StopService(', 'TerminateProcess(', 'Process.Start(', 'ServiceStopPolicy']),
++         'service popup is read-only and selectable')
++    return bad
+--- /dev/null
++++ b/audit/tools/test_ram_monitor_r10r8.py
+@@ -0,0 +1,28 @@
++from pathlib import Path
++import argparse,json
++from ram_monitor_rules import violations
++p=argparse.ArgumentParser(description='Source-guard mutations only; not C# runtime');p.add_argument('--candidate',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
++files={p.relative_to(a.candidate).as_posix():p.read_text(encoding='utf-8-sig') for p in a.candidate.rglob('*') if p.suffix in ['.cs','.ps1','.xaml']}
++r=[]
++def check(name,ok):r.append(dict(test=name,status='PASS' if ok else 'FAIL',scope='Source only, no C# execution'));print(r[-1]['status'],name)
++check('candidate satisfies monitor and navigation source guards',not violations(files))
++mutations=[
++ ('partial becomes total','src/ProcessLens.RamMonitor/Measurement.cs','complete ? observed : null','observed'),
++ ('snapshot parent accepted alone','src/ProcessLens.RamMonitor/Measurement.cs','child.HandleParentPid == parent.Pid','true'),
++ ('PID reuse allowed','src/ProcessLens.RamMonitor/NativeSampler.cs','previous.StartUtcTicks == reading.StartUtcTicks','true'),
++ ('root name substitutes path','src/ProcessLens.RamMonitor/NativeSampler.cs','_scope.Contains(reading.Path)','true'),
++ ('full process access','src/ProcessLens.RamMonitor/NativeSampler.cs','OpenProcess(0x1000','OpenProcess(0x1fffff'),
++ ('EX prefix becomes private RAM','src/ProcessLens.RamMonitor/NativeSampler.cs','memory && ex2','memory'),
++ ('sampling history accumulates','src/ProcessLens.RamMonitor/LogSession.cs','Flush(); SaveSummary','NoFlush(); SaveSummary'),
++ ('RAM category truncated before filter','src/ProcessLens.App/MemoryDashboardView.xaml.cs','ReadFullAnalysis(int.MaxValue)','ReadFullAnalysis(80)'),
++ ('substring PID service scope','src/ProcessLens.App/ServiceNavigation.cs','scope.ContainsKey(pid)','true'),
++ ('new PID born after RAM frame accepted','src/ProcessLens.App/ServiceNavigation.cs','host.CurrentStartUtc!.Value <= target.FrameStartedUtc.Value','true'),
++ ('stale navigation result accepted','src/ProcessLens.App/MainWindow.xaml.cs','request != _workspaceNavigation','false'),
++ ('service details could stop service','src/ProcessLens.App/ServiceDetailsWindow.cs','Title =','// StopService()\n        Title ='),
++]
++for name,path,before,after in mutations:
++ assert before in files[path],(name,before)
++ changed=dict(files);changed[path]=changed[path].replace(before,after)
++ check('reject '+name,bool(violations(changed)))
++a.output.parent.mkdir(exist_ok=True,parents=True);a.output.write_text(json.dumps(r,indent=2)+'\n')
++raise SystemExit(0 if all(x['status']=='PASS' for x in r) else 1)
+--- a/build-dashboard.ps1
++++ b/build-dashboard.ps1
+@@ -49,6 +49,8 @@
+ Write-Host 'Test WPF copia e caricamento markup, senza avvio monitor o clipboard reale...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.CopyUiTests' -Project '.\tests\ProcessLens.CopyUiTests\ProcessLens.CopyUiTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.CopyUiTests\ProcessLens.CopyUiTests.csproj','-c','Release')
+ 
++Write-Host 'Test monitor RAM separato: totali, copertura e identita...' -ForegroundColor Cyan
++Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.RamMonitorTests' -Project '.\tests\ProcessLens.RamMonitorTests\ProcessLens.RamMonitorTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.RamMonitorTests\ProcessLens.RamMonitorTests.csproj','-c','Release')
+ Write-Host 'Test cache limitate e allocazioni dello storico (dati sintetici)...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.MemoryEfficiencyTests' -Project '.\tests\ProcessLens.MemoryEfficiencyTests\ProcessLens.MemoryEfficiencyTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.MemoryEfficiencyTests\ProcessLens.MemoryEfficiencyTests.csproj','-c','Release')
+ 
+@@ -75,6 +77,8 @@
+     throw 'MemoryAgent.exe non trovato dopo la pubblicazione.'
+ }
+ Write-Host 'Avvisi RAM non attivati automaticamente. Per attivarli: .\install-memory-alerts.ps1 da PowerShell NON amministrativo.' -ForegroundColor Yellow
++# Separate read-only monitor, not started during build.
++& (Join-Path $PSScriptRoot 'build-ram-monitor.ps1')
+ Write-BuildDiagnostic -EventId 'PL-BUILD-5003' -Stage 'BuildDashboard' -Result 'Completed' -Severity 'Information'
+ Write-Host '[OK] Compilazione e pubblicazione riuscite: .\run-release.ps1 oppure publish\win-x64\ProcessLens.exe' -ForegroundColor Green
+ Write-Host '[SICUREZZA] Guardian Windows Service e database esistente NON modificati.' -ForegroundColor Yellow
+--- /dev/null
++++ b/build-ram-monitor.ps1
+@@ -0,0 +1,15 @@
++[CmdletBinding()]
++param()
++$ErrorActionPreference = 'Stop'
++if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) { throw 'SDK .NET 8 richiesto per compilare il monitor. Nessuna installazione automatica.' }
++$out = Join-Path $PSScriptRoot 'publish\RamMonitor-win-x64'
++$running = @(Get-Process -Name 'ProcessLens.RamMonitor' -ErrorAction SilentlyContinue)
++foreach ($process in $running) {
++    try { if ($process.Path -eq (Join-Path $out 'ProcessLens.RamMonitor.exe')) { throw 'Chiudi il monitor con Ctrl+C prima di ricompilarlo.' } }
++    finally { $process.Dispose() }
++}
++. (Join-Path $PSScriptRoot 'build-diagnostics.ps1')
++$project = Join-Path $PSScriptRoot 'src\ProcessLens.RamMonitor\ProcessLens.RamMonitor.csproj'
++Invoke-CheckedDotnet -Stage 'Publish.ProcessLens.RamMonitor' -Project $project -Arguments @('publish',$project,'-c','Release','-r','win-x64','--self-contained','false','-o',$out,'--nologo')
++if (-not (Test-Path -LiteralPath (Join-Path $out 'ProcessLens.RamMonitor.exe'))) { throw 'EXE monitor mancante dopo publish.' }
++Write-Host ('Monitor pronto: ' + $out)
+--- a/src/ProcessLens.App/MainWindow.xaml
++++ b/src/ProcessLens.App/MainWindow.xaml
+@@ -1,4 +1,4 @@
+-<Window x:Class="ProcessLens.App.MainWindow"
++﻿<Window x:Class="ProcessLens.App.MainWindow"
+         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:local="clr-namespace:ProcessLens.App"
+@@ -131,6 +131,8 @@
+ 
+         <Style x:Key="ServiceListItemStyle" TargetType="ListViewItem">
+             <EventSetter Event="PreviewMouseRightButtonDown" Handler="ServiceItem_RightMouseDown"/>
++            <EventSetter Event="MouseDoubleClick" Handler="ServiceItem_MouseDoubleClick"/>
++            <EventSetter Event="KeyDown" Handler="ServiceItem_KeyDown"/>
+             <EventSetter Event="Loaded" Handler="ServiceItem_Loaded"/>
+             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+             <Setter Property="Background" Value="White"/>
+@@ -1016,6 +1018,10 @@
+                 <ScrollViewer VerticalScrollBarVisibility="Auto">
+                     <StackPanel>
+                         <TextBlock Text="Dettagli del servizio" FontSize="20" FontWeight="SemiBold"/>
++                        <local:SelectableText x:Name="ServiceScopeText" Text="Tutti i servizi SCM" TextWrapping="Wrap" Margin="0,6,0,4"/>
++                        <Button x:Name="ShowAllServicesButton" Content="Mostra tutti i servizi" Style="{StaticResource ActionButtonStyle}"
++                                Click="ShowAllServices_Click" HorizontalAlignment="Left" Margin="0,0,0,8"/>
++
+                         <local:SelectableText Text="Dati del Service Control Manager: stato e configurazione reali, senza attribuire cause non provate."
+                                    Foreground="#667085" FontSize="12" TextWrapping="Wrap" Margin="0,3,0,12"/>
+                         <Border Style="{StaticResource DetailCard}" Background="#EEF4FF" BorderBrush="#C9DBF6">
+--- a/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -1,4 +1,4 @@
+-using System.Diagnostics;
++﻿using System.Diagnostics;
+ using System.Windows;
+ using System.Windows.Controls;
+ using System.Windows.Input;
+@@ -76,6 +76,9 @@
+     private string _serviceSortMode = "Attivi prima, poi nome";
+     private DateTime _servicesFetchedUtc = DateTime.MinValue;
+     private bool _servicesRefreshing;
++    private Dictionary<int, DateTime>? _serviceHostScope;
++    private int _workspaceNavigation;
++    private ServiceDetailsWindow? _serviceDetailsWindow;
+     private bool _serviceStopBusy;
+     private bool _servicesMode;
+     private bool _guardianMode;
+@@ -1999,7 +2002,9 @@
+ 
+     private void SetWorkspaceMode(string mode)
+     {
++        _workspaceNavigation++;
+         bool services = mode == "services";
++        if (!services) _serviceHostScope = null;
+         bool guardian = mode == "guardian";
+         bool memory = mode == "memory";
+         _memoryMode = memory;
+@@ -2016,6 +2021,7 @@
+         {
+             MemoryDashboard = new MemoryDashboardView();
+             MemoryDashboard.InspectProcessRequested += pid => _ = InspectPidMemoryFromDashboardAsync(pid);
++            MemoryDashboard.DetailsRequested += target => _ = OpenMemoryDetailsAsync(target);
+             MemoryDashboardHost.Content = MemoryDashboard;
+         }
+         GuardianDashboardHost.Visibility = guardian ? Visibility.Visible : Visibility.Collapsed;
+@@ -2089,18 +2095,107 @@
+     }
+     private void NavServicesButton_Click(object sender, RoutedEventArgs e)
+     {
++        _serviceHostScope = null;
++        SearchBox.Clear();
++        ServiceScopeText.Text = "Tutti i servizi SCM";
++        SetServicesMode(true);
++    }
++
++    private void ProcessShowServices_Click(object sender, RoutedEventArgs e)
++    {
++        if (ProcessList.SelectedItem is ProcessRow row)
++            _ = OpenMemoryDetailsAsync(new(row.Pid, row.Name, false));
++    }
++
++    private static DateTime? ReadProcessStartUtc(int pid)
++    {
++        try { using var process = Process.GetProcessById(pid); return process.StartTime.ToUniversalTime(); }
++        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or System.ComponentModel.Win32Exception) { return null; }
++    }
++
++    private async Task OpenMemoryDetailsAsync(MemoryDetailsTarget target)
++    {
++        _serviceHostScope = new();
++        _serviceFilter = "Tutti";
++        _selectedServiceName = null;
+         SearchBox.Clear();
+         SetServicesMode(true);
+-    }
+-
+-    private void ProcessShowServices_Click(object sender, RoutedEventArgs e)
+-    {
+-        if (_selectedPid is not int pid) return;
+-        _serviceFilter = "Tutti";
+-        _selectedServiceName = null;
+-        SetServicesMode(true);
+-        SearchBox.Text = pid.ToString();
+-        ApplyServiceFilter();
++        int request = _workspaceNavigation;
++        ServiceScopeText.Text = "Verifica dei processi e delle associazioni SCM in corso…";
++        try
++        {
++            if (!_allRows.Any(r => r.Pid == target.Pid)) await RefreshAsync();
++            if (_windowClosed || request != _workspaceNavigation) return;
++            var candidates = _allRows.Where(r => target.Grouped
++                ? string.Equals(System.IO.Path.GetFileNameWithoutExtension(r.Name), System.IO.Path.GetFileNameWithoutExtension(target.ExecutableName), StringComparison.OrdinalIgnoreCase)
++                : r.Pid == target.Pid).Select(r => r.Process).ToArray();
++            var result = await Task.Run(() =>
++            {
++                var before = candidates.Select(p => new ServiceHostCandidate(p.Pid, p.Name, p.StartTime?.ToUniversalTime(), ReadProcessStartUtc(p.Pid)))
++                    .Where(p => ServiceNavigation.Matches(target, p)).ToArray();
++                var catalog = _serviceCatalog.Capture();
++                var hosts = before.Where(p => ReadProcessStartUtc(p.Pid) == p.SnapshotStartUtc)
++                    .ToDictionary(p => p.Pid, p => p.SnapshotStartUtc!.Value);
++                return (Catalog: catalog, Hosts: hosts);
++            });
++            if (_windowClosed || request != _workspaceNavigation || !_servicesMode) return;
++            _allServices = result.Catalog.ToList();
++            _servicesFetchedUtc = DateTime.UtcNow;
++            _serviceHostScope = result.Hosts;
++            var matches = _allServices.Where(service => ServiceNavigation.Includes(service.ProcessId, _serviceHostScope)).ToArray();
++            ServiceScopeText.Text = $"{matches.Length} servizi SCM associati a {result.Hosts.Count} PID verificati" +
++                (target.Grouped ? $" del gruppo RAM per nome «{target.ExecutableName}»." : $" (richiesta PID {target.Pid}).");
++            if (matches.Length == 1) _selectedServiceName = matches[0].Name;
++            ApplyServiceFilter();
++            if (matches.Length == 1) OpenServiceDetails(matches[0]);
++            else if (matches.Length > 1) ServiceList.Focus();
++            else
++            {
++                // A background category does not prove that a process hosts a Windows service.
++                var representative = candidates.FirstOrDefault(p => p.Pid == target.Pid);
++                bool stillSame = representative is not null && ServiceNavigation.Matches(target,
++                    new(representative.Pid, representative.Name, representative.StartTime?.ToUniversalTime(), ReadProcessStartUtc(target.Pid)));
++                if (stillSame)
++                {
++                    _selectedPid = target.Pid; _activeFilter = "Tutti";
++                    SearchBox.Clear(); SetFilterButtonState(); SetWorkspaceMode("processes"); ApplyFilter(target.Pid);
++                    ShowProcessNotice("Dettagli processo", "Nessun servizio SCM associato ai PID verificati. Aperto il processo selezionato o il PID rappresentativo del gruppo RAM.");
++                }
++                else ServiceScopeText.Text += " Processo terminato o identità non verificabile; nessun PID sostitutivo selezionato.";
++            }
++        }
++        catch (Exception ex)
++        {
++            if (!_windowClosed && request == _workspaceNavigation)
++                ServiceScopeText.Text = "Associazioni non verificabili: " + ex.Message;
++            AppDiagnostics.Record("Navigazione RAM verso servizi non riuscita", ex);
++        }
++    }
++
++    private void ShowAllServices_Click(object sender, RoutedEventArgs e)
++    {
++        _workspaceNavigation++;
++        _serviceHostScope = null; _serviceFilter = "Tutti";
++        SearchBox.Clear(); ServiceScopeText.Text = "Tutti i servizi SCM"; ApplyServiceFilter();
++    }
++
++    private void ServiceItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
++    {
++        if (e.ChangedButton == MouseButton.Left && sender is ListViewItem { DataContext: ServiceSnapshot service })
++        { OpenServiceDetails(service); e.Handled = true; }
++    }
++    private void ServiceItem_KeyDown(object sender, KeyEventArgs e)
++    {
++        if (e.Key == Key.Enter && sender is ListViewItem { DataContext: ServiceSnapshot service })
++        { OpenServiceDetails(service); e.Handled = true; }
++    }
++    private void OpenServiceDetails(ServiceSnapshot service)
++    {
++        _serviceDetailsWindow?.Close();
++        var details = new ServiceDetailsWindow(service, _servicesFetchedUtc == DateTime.MinValue ? null : _servicesFetchedUtc) { Owner = this };
++        _serviceDetailsWindow = details;
++        details.Closed += (_, _) => { if (ReferenceEquals(_serviceDetailsWindow, details)) _serviceDetailsWindow = null; };
++        details.Show();
+     }
+ 
+     private async Task RefreshServicesAsync(bool force)
+@@ -2108,10 +2203,19 @@
+         if (_servicesRefreshing || (!force && DateTime.UtcNow - _servicesFetchedUtc < MonitorRefreshPolicy.ServiceCatalogInterval))
+             return;
+         _servicesRefreshing = true;
++        int navigation = _workspaceNavigation;
+         try
+         {
+             var elapsed = Stopwatch.StartNew();
+             var services = await Task.Run(() => _serviceCatalog.Capture());
++            if (_windowClosed || navigation != _workspaceNavigation) return;
++            var scope = _serviceHostScope;
++            if (scope is not null)
++            {
++                var stillLive = await Task.Run(() => scope.Where(pair => ReadProcessStartUtc(pair.Key) == pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value));
++                if (ReferenceEquals(scope, _serviceHostScope)) _serviceHostScope = stillLive;
++            }
++            if (_windowClosed || navigation != _workspaceNavigation) return;
+             elapsed.Stop();
+             _allServices = services.ToList();
+             if (elapsed.Elapsed >= TimeSpan.FromSeconds(1) &&
+@@ -2137,7 +2241,7 @@
+     {
+         if (!_servicesMode) return;
+         string search = SearchBox.Text.Trim();
+-        IEnumerable<ServiceSnapshot> items = _allServices;
++        IEnumerable<ServiceSnapshot> items = _allServices.Where(service => ServiceNavigation.Includes(service.ProcessId, _serviceHostScope));
+         items = _serviceFilter switch
+         {
+             "Attivi" => items.Where(x => x.IsRunning),
+--- a/src/ProcessLens.App/MemoryDashboardView.xaml
++++ b/src/ProcessLens.App/MemoryDashboardView.xaml
+@@ -31,6 +31,17 @@
+             <Setter Property="FontSize" Value="12"/>
+             <Setter Property="FontWeight" Value="SemiBold"/>
+             <Setter Property="Cursor" Value="Hand"/>
++        </Style>
++        <Style x:Key="MemoryCategoryCard" TargetType="Button">
++            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
++            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
++            <Setter Property="Cursor" Value="Hand"/>
++            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
++                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
++                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
++                    <ContentPresenter HorizontalAlignment="Stretch"/>
++                </Border>
++            </ControlTemplate></Setter.Value></Setter>
+         </Style>
+         <!-- Indicatore personalizzato: il colore viene da Foreground,
+              quindi il valore e il livello di uso comunicano lo stesso stato. -->
+@@ -128,44 +139,48 @@
+                         <ColumnDefinition Width="6"/>
+                         <ColumnDefinition Width="1.15*"/>
+                     </Grid.ColumnDefinitions>
+-                    <Border Grid.Column="0" Background="#F0F7FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="8" Padding="9,6">
+-                        <StackPanel>
+-                            <TextBlock Text="Applicazioni e Browser" FontSize="11" FontWeight="SemiBold" Foreground="#1E40AF"/>
++                    <Button x:Name="CategoryAppsCard" Style="{StaticResource MemoryCategoryCard}" Tag="Applicazioni" Click="CategoryFilterButton_Click" Grid.Column="0" Background="#F0F7FF" BorderBrush="#BFDBFE" BorderThickness="1" Padding="9,6">
++                        <StackPanel>
++                            <TextBlock Text="Applicazioni e Browser →" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#1E40AF"/>
+                             <local:SelectableText x:Name="CatAppsValueText" Text="-- MiB" FontSize="15" FontWeight="Bold" Foreground="#1E3A8A" Margin="0,2,0,1"/>
+                             <local:SelectableText x:Name="CatAppsMetaText" Text="--% RAM · -- processi" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
+                         </StackPanel>
+-                    </Border>
+-                    <Border Grid.Column="2" Background="#F5F3FF" BorderBrush="#DDD6FE" BorderThickness="1" CornerRadius="8" Padding="9,6">
+-                        <StackPanel>
+-                            <TextBlock Text="Sviluppo e Runtime" FontSize="11" FontWeight="SemiBold" Foreground="#5B21B6"/>
++                    </Button>
++                    <Button x:Name="CategoryDevCard" Style="{StaticResource MemoryCategoryCard}" Tag="Sviluppo" Click="CategoryFilterButton_Click" Grid.Column="2" Background="#F5F3FF" BorderBrush="#DDD6FE" BorderThickness="1" Padding="9,6">
++                        <StackPanel>
++                            <TextBlock Text="Sviluppo e Runtime →" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#5B21B6"/>
+                             <local:SelectableText x:Name="CatDevValueText" Text="-- MiB" FontSize="15" FontWeight="Bold" Foreground="#4C1D95" Margin="0,2,0,1"/>
+                             <local:SelectableText x:Name="CatDevMetaText" Text="--% RAM · -- processi" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
+                         </StackPanel>
+-                    </Border>
+-                    <Border Grid.Column="4" Background="#ECFEFF" BorderBrush="#A5F3FC" BorderThickness="1" CornerRadius="8" Padding="9,6">
+-                        <StackPanel>
+-                            <TextBlock Text="Sistema Windows" FontSize="11" FontWeight="SemiBold" Foreground="#0E7490"/>
++                    </Button>
++                    <Button x:Name="CategoryWinCard" Style="{StaticResource MemoryCategoryCard}" Tag="Windows" Click="CategoryFilterButton_Click" Grid.Column="4" Background="#ECFEFF" BorderBrush="#A5F3FC" BorderThickness="1" Padding="9,6">
++                        <StackPanel>
++                            <TextBlock Text="Sistema Windows →" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#0E7490"/>
+                             <local:SelectableText x:Name="CatWinValueText" Text="-- MiB" FontSize="15" FontWeight="Bold" Foreground="#155E75" Margin="0,2,0,1"/>
+                             <local:SelectableText x:Name="CatWinMetaText" Text="--% RAM · -- processi" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
+                         </StackPanel>
+-                    </Border>
+-                    <Border Grid.Column="6" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="8" Padding="9,6">
+-                        <StackPanel>
+-                            <TextBlock Text="Servizi e Secondari" FontSize="11" FontWeight="SemiBold" Foreground="#334155"/>
++                    </Button>
++                    <Button x:Name="CategoryServicesCard" Style="{StaticResource MemoryCategoryCard}" Tag="Secondario" Click="CategoryFilterButton_Click" Grid.Column="6" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" Padding="9,6">
++                        <StackPanel>
++                            <TextBlock Text="Servizi e Secondari →" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#334155"/>
+                             <local:SelectableText x:Name="CatBgValueText" Text="-- MiB" FontSize="15" FontWeight="Bold" Foreground="#1E293B" Margin="0,2,0,1"/>
+                             <local:SelectableText x:Name="CatBgMetaText" Text="--% RAM · -- processi" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
+                         </StackPanel>
+-                    </Border>
+-                    <Border Grid.Column="8" Background="#FFFBEB" BorderBrush="#FDE68A" BorderThickness="1" CornerRadius="8" Padding="9,6"
+-                            ToolTip="Differenza tra la RAM fisica totale in uso (GlobalMemoryStatusEx) e la somma delle RAM private esclusive dei processi: comprende Kernel Windows, driver, cache e DLL condivise tra più processi">
+-                        <StackPanel>
+-                            <TextBlock Text="Kernel, Driver e DLL Condivise" FontSize="11" FontWeight="SemiBold" Foreground="#92400E"/>
++                    </Button>
++                    <Button x:Name="CategoryResidualCard" Style="{StaticResource MemoryCategoryCard}" Tag="RESIDUAL" Click="ResidualCategory_Click" Grid.Column="8" Background="#FFFBEB" BorderBrush="#FDE68A" BorderThickness="1" Padding="9,6"
++                            ToolTip="Apri i limiti del residuo: questo calcolo non identifica Kernel, driver o DLL specifiche">
++                        <StackPanel>
++                            <TextBlock Text="Memoria non attribuita ai PID →" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#92400E"/>
+                             <local:SelectableText x:Name="CatKernelValueText" Text="-- GiB" FontSize="15" FontWeight="Bold" Foreground="#78350F" Margin="0,2,0,1"/>
+                             <local:SelectableText x:Name="CatKernelMetaText" Text="--% RAM fisica" FontSize="10.5" Foreground="#78350F" TextWrapping="Wrap"/>
+                         </StackPanel>
+-                    </Border>
+-                </Grid>
+-
++                    </Button>
++                </Grid>
++
++                <Expander x:Name="ResidualCategoryDetails" Header="Che cosa rappresenta la memoria non attribuita" IsExpanded="False" Margin="0,8,0,0">
++                    <local:SelectableText Text="È la differenza fra RAM fisica in uso e RAM privata residente raccolta dai processi. Può comprendere memoria condivisa, componenti di sistema e dati mancanti: questo valore non identifica né misura separatamente Kernel, driver o DLL. Non esiste qui un elenco di processi cui attribuire esattamente il residuo."
++                                          TextWrapping="Wrap" Margin="8"/>
++                </Expander>
+                 <local:SelectableText x:Name="RefreshStatus" Text="Lettura Windows in corso"
+                            Foreground="#64748B" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"/>
+             </StackPanel>
+@@ -269,7 +284,7 @@
+                                             ElementStyle="{StaticResource MemoryNumericCell}"/>
+                     </DataGrid.Columns>
+                 </DataGrid>
+-                <local:SelectableText Grid.Row="3" Text="RAM privata: memoria fisica esclusiva del processo o gruppo (sommabile senza doppi conteggi). Condivisa: DLL di sistema/runtime in comune con altri programmi. Doppio clic su una riga per l'analisi anatomica."
++                <local:SelectableText Grid.Row="3" Text="RAM privata: memoria fisica esclusiva del processo o gruppo (sommabile senza doppi conteggi). Condivisa: DLL di sistema/runtime in comune con altri programmi. Doppio clic: dettagli dei servizi SCM associati, oppure del processo. Il pulsante Ispeziona avvia l’analisi RAM. Le categorie sono classificazioni, non prove di un servizio SCM."
+                            Foreground="#64748B" FontSize="11" TextWrapping="Wrap" Margin="0,7,0,0"/>
+             </Grid>
+         </Border>
+--- a/src/ProcessLens.App/MemoryDashboardView.xaml.cs
++++ b/src/ProcessLens.App/MemoryDashboardView.xaml.cs
+@@ -15,11 +15,13 @@
+     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(10) };
+     private bool _refreshing;
+     private bool _active;
++    private DateTime? _lastSnapshotStartedUtc;
+     private bool _groupByProgram = true;
+     private string _categoryFilter = "ALL";
+     private WindowsPhysicalMemoryReader.FullMemoryAnalysisSnapshot? _lastSnapshot;
+ 
+     public event Action<int>? InspectProcessRequested;
++    public event Action<MemoryDetailsTarget>? DetailsRequested;
+ 
+     private sealed record MemoryRow(
+         string Name,
+@@ -30,7 +32,7 @@
+         string WorkingSetMiB,
+         string CommitMiB,
+         string SystemShare,
+-        int TargetPid);
++        int TargetPid, string ExecutableName, bool Grouped);
+ 
+     public MemoryDashboardView()
+     {
+@@ -74,6 +76,8 @@
+             _categoryFilter = tag;
+             UpdateButtonStyles();
+             PopulateTable();
++            TopMemoryProcesses.BringIntoView();
++            TopMemoryProcesses.Focus();
+         }
+     }
+ 
+@@ -87,8 +91,18 @@
+ 
+     private void TopMemoryProcesses_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+     {
+-        if (TopMemoryProcesses.SelectedItem is MemoryRow row && row.TargetPid > 0)
+-            InspectProcessRequested?.Invoke(row.TargetPid);
++        if (e.ChangedButton != MouseButton.Left) return;
++        if (e.OriginalSource is DependencyObject origin && ItemsControl.ContainerFromElement(TopMemoryProcesses, origin) is DataGridRow { Item: MemoryRow row })
++        {
++            DetailsRequested?.Invoke(new(row.TargetPid, row.ExecutableName, row.Grouped, _lastSnapshotStartedUtc));
++            e.Handled = true;
++        }
++    }
++
++    private void ResidualCategory_Click(object sender, RoutedEventArgs e)
++    {
++        ResidualCategoryDetails.IsExpanded = !ResidualCategoryDetails.IsExpanded;
++        if (ResidualCategoryDetails.IsExpanded) ResidualCategoryDetails.BringIntoView();
+     }
+ 
+     private void UpdateButtonStyles()
+@@ -122,7 +136,13 @@
+         _refreshing = true;
+         try
+         {
+-            var snapshot = await Task.Run(() => WindowsPhysicalMemoryReader.ReadFullAnalysis(80));
++            var captured = await Task.Run(() =>
++            {
++                var begin = DateTime.UtcNow;
++                return (Begin: begin, Snapshot: WindowsPhysicalMemoryReader.ReadFullAnalysis(int.MaxValue));
++            });
++            var snapshot = captured.Snapshot;
++            _lastSnapshotStartedUtc = captured.Begin;
+             if (!_active) return;
+             _lastSnapshot = snapshot;
+ 
+@@ -202,7 +222,7 @@
+         double kernelGib = s.KernelAndSharedPhysicalBytes / 1073741824d;
+         double kernelPct = totalRam > 0 ? 100.0 * s.KernelAndSharedPhysicalBytes / totalRam : 0;
+         CatKernelValueText.Text = $"{kernelGib:F2} GiB ({s.KernelAndSharedPhysicalBytes / 1048576d:F0} MiB)";
+-        CatKernelMetaText.Text = $"{kernelPct:F1}% RAM PC · Kernel, driver e DLL condivise";
++        CatKernelMetaText.Text = $"{kernelPct:F1}% RAM PC · residuo non attribuito ai PID";
+     }
+ 
+     private void PopulateTable()
+@@ -235,7 +255,7 @@
+                     (g.TotalWorkingSetBytes / 1048576d).ToString("F1"),
+                     (g.TotalPrivateCommitBytes / 1048576d).ToString("F1"),
+                     share,
+-                    g.LargestPid);
++                    g.LargestPid, g.ExecutableName, true);
+             }).ToArray();
+ 
+             TopMemoryProcesses.ItemsSource = rows;
+@@ -261,7 +281,7 @@
+                     (p.WorkingSetBytes / 1048576d).ToString("F1"),
+                     (p.PrivateCommitBytes / 1048576d).ToString("F1"),
+                     share,
+-                    p.Pid);
++                    p.Pid, p.Name, false);
+             }).ToArray();
+ 
+             TopMemoryProcesses.ItemsSource = rows;
+--- a/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R7-cpu-restore-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R8-ram-monitor-services-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+--- /dev/null
++++ b/src/ProcessLens.App/ServiceDetailsWindow.cs
+@@ -0,0 +1,26 @@
++using System.Windows;
++using System.Windows.Controls;
++using ProcessLens.Core;
++
++namespace ProcessLens.App;
++
++public sealed class ServiceDetailsWindow : Window
++{
++    public ServiceDetailsWindow(ServiceSnapshot service, DateTime? catalogUpdatedUtc = null)
++    {
++        Title = "Servizio — " + service.DisplayName;
++        FontFamily = new System.Windows.Media.FontFamily("Segoe UI");
++        Width = 760; Height = 640; MinWidth = 480; MinHeight = 360;
++        WindowStartupLocation = WindowStartupLocation.CenterOwner;
++        var sections = new StackPanel { Margin = new Thickness(20) };
++        sections.Children.Add(new SelectableText { Text = service.DisplayName, FontSize = 22, FontWeight = FontWeights.SemiBold });
++        sections.Children.Add(ReportView.Body("Catalogo SCM aggiornato: " + (catalogUpdatedUtc?.ToLocalTime().ToString("g") ?? "data non disponibile") + "\nQuesta finestra mostra uno snapshot di dati e configurazione; non modifica il servizio."));
++        void Add(string title, string text) => sections.Children.Add(ReportView.Section(title, () => ReportView.Body(text)));
++        Add("01 · Identità e stato", $"Nome tecnico: {service.Name}\nStato: {service.StateLabel}\nAvvio: {service.StartupLabel}\nPID ospitante: {service.ProcessIdLabel}\nTipo: {service.HostType}");
++        Add("02 · Descrizione dichiarata", string.IsNullOrWhiteSpace(service.Description) ? "Descrizione non disponibile; la funzione non viene dedotta dal solo nome." : service.Description);
++        Add("03 · Configurazione e dipendenze", $"Account: {service.AccountName ?? "N/D"}\nImagePath: {service.BinaryPath ?? "N/D"}\nDipende da: {string.Join(", ", service.Dependencies)}\nGruppi: {string.Join(", ", service.GroupDependencies)}\nLe dipendenze non provano la causa dell’avvio.");
++        Add("04 · Interpretazione e limiti", ServiceExplanation.WhyRunning(service) + "\n\n" + ServiceExplanation.Impact(service));
++        foreach (var chapter in sections.Children.OfType<Expander>().Take(2)) chapter.IsExpanded = true;
++        Content = new ScrollViewer { Content = sections, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
++    }
++}
+--- /dev/null
++++ b/src/ProcessLens.App/ServiceNavigation.cs
+@@ -0,0 +1,14 @@
++namespace ProcessLens.App;
++
++public sealed record MemoryDetailsTarget(int Pid, string ExecutableName, bool Grouped, DateTime? FrameStartedUtc = null);
++public sealed record ServiceHostCandidate(int Pid, string Name, DateTime? SnapshotStartUtc, DateTime? CurrentStartUtc);
++public static class ServiceNavigation
++{
++    public static bool Matches(MemoryDetailsTarget target, ServiceHostCandidate host) => host.Pid > 0 &&
++        host.SnapshotStartUtc.HasValue && host.SnapshotStartUtc == host.CurrentStartUtc &&
++        (!target.FrameStartedUtc.HasValue || host.CurrentStartUtc!.Value <= target.FrameStartedUtc.Value) &&
++        string.Equals(System.IO.Path.GetFileNameWithoutExtension(host.Name),
++            System.IO.Path.GetFileNameWithoutExtension(target.ExecutableName), StringComparison.OrdinalIgnoreCase) &&
++        (target.Grouped || host.Pid == target.Pid);
++    public static bool Includes(int pid, IReadOnlyDictionary<int, DateTime>? scope) => scope is null || scope.ContainsKey(pid);
++}
+--- /dev/null
++++ b/src/ProcessLens.RamMonitor/LogSession.cs
+@@ -0,0 +1,100 @@
++using System.Globalization;
++using System.Text;
++using System.Text.Json;
++
++namespace ProcessLens.RamMonitor;
++
++public sealed class LogSession : IDisposable
++{
++    private readonly StreamWriter _text, _totals, _processes;
++    private readonly long _limit;
++    private int _samples, _completeSamples;
++    private long? _privatePeak;
++    private decimal _privateSum;
++    public string DirectoryPath { get; }
++    public LogSession(string parent, MonitorScope scope, int interval, int maxMiB)
++    {
++        DirectoryPath = Path.Combine(parent, DateTime.UtcNow.ToString("yyyyMMdd-HHmmss-fff", CultureInfo.InvariantCulture) + "-" + Environment.ProcessId);
++        Directory.CreateDirectory(DirectoryPath);
++        _limit = (long)maxMiB * 1048576;
++        _text = Writer("monitor.log"); _totals = Writer("totals.csv"); _processes = Writer("processes.csv");
++        _totals.WriteLine("BeginUtc,EndUtc,EnumerationComplete,IncludedPids,UnresolvedCandidates,OutsideScope,PrivateCompleteBytes,PrivateObservedBytes,PrivateAvailable,WorkingSetCompleteBytes,WorkingSetObservedBytes,WorkingSetAvailable,CommitCompleteBytes,CommitObservedBytes,CommitAvailable,MonitorPrivateBytes,MonitorWorkingSetBytes");
++        _processes.WriteLine("SampleUtc,ReadUtc,PID,ParentPID,HandleParentPID,StartUtcTicks,Name,Path,Association,Included,PrivateResidentBytes,WorkingSetBytes,PrivateCommitBytes,Errors");
++        File.WriteAllText(Path.Combine(DirectoryPath, "scope.json"), JsonSerializer.Serialize(new
++        {
++            Schema = "ProcessLens.RamMonitor.v1", StartedUtc = DateTime.UtcNow, MeterPid = Environment.ProcessId,
++            Paths = scope.Paths.Order().ToArray(), IntervalSeconds = interval, MaxLogMiB = maxMiB,
++            Rules = "Exact executable paths plus observed descendants with creation-time checks; previously observed surviving descendants retained by PID+creation.",
++            Limit = "Periodic samples are not atomic and can miss short-lived processes, earlier orphaned children, other installations and dotnet-hosted components.",
++            MainMetric = "Sum of private resident bytes of identified processes; shared physical footprint is not measured.",
++            WorkingSet = "Sum may duplicate shared pages. Private commit is not physical RAM. Monitor excluded."
++        }, new JsonSerializerOptions { WriteIndented = true }), new UTF8Encoding(false));
++        Flush(); SaveSummary("Running");
++    }
++    private StreamWriter Writer(string name) => new(Path.Combine(DirectoryPath, name), false, new UTF8Encoding(false)) { AutoFlush = false };
++    private static string Csv(object? value) => "\"" + (value is IFormattable f ? f.ToString(null, CultureInfo.InvariantCulture) : value?.ToString() ?? "").Replace("\"", "\"\"") + "\"";
++    public static string MiB(long? value) => value.HasValue ? (value.Value / 1048576d).ToString("F1", CultureInfo.CurrentCulture) + " MiB" : "N/D";
++    private static string Describe(MetricTotal metric)
++    {
++        if (metric.Complete) return MiB(metric.CompleteBytes) + $" (copertura {metric.Available}/{metric.Included})";
++        return $"N/D - PARZIALE; somma disponibile {MiB(metric.ObservedBytes)}; copertura {metric.Available}/{metric.Included}";
++    }
++    public void Append(CaptureResult capture)
++    {
++        var total = SampleTotals.Aggregate(capture.Processes, capture.EnumerationComplete);
++        _samples++;
++        if (total.PrivateResident.CompleteBytes is long bytes)
++        {
++            _completeSamples++; _privateSum += bytes;
++            _privatePeak = Math.Max(_privatePeak ?? 0, bytes);
++        }
++        var block = new StringBuilder();
++        block.AppendLine($"=== {capture.EndUtc.ToLocalTime():yyyy-MM-dd HH:mm:ss} | campione {_samples} ===");
++        block.AppendLine("TOTALE RAM PRIVATA RESIDENTE: " + Describe(total.PrivateResident));
++        block.AppendLine("  Dei PID identificati nel perimetro; non comprende tutta la memoria fisica condivisa.");
++        block.AppendLine($"PID inclusi {total.IncludedProcesses}; candidati non risolti {total.UnresolvedCandidates}; fuori perimetro {total.OutsideScope}.");
++        foreach (var row in capture.Processes)
++        {
++            block.AppendLine($"  {(row.Included ? "INCLUSO" : row.Association)} | {row.Name} | PID {row.Pid} | privata {MiB(row.PrivateResidentBytes)} | residente totale {MiB(row.WorkingSetBytes)} | commit {MiB(row.PrivateCommitBytes)}");
++            block.AppendLine($"    Origine: {row.Association}; creazione UTC ticks: {row.StartUtcTicks?.ToString(CultureInfo.InvariantCulture) ?? "N/D"}; percorso: {row.Path ?? "N/D"}");
++            if (row.Errors.Length > 0) block.AppendLine("    Limiti/errori: " + row.Errors);
++        }
++        block.AppendLine("SOMMA WORKING SET (puo duplicare pagine condivise): " + Describe(total.WorkingSet));
++        block.AppendLine("COMMIT PRIVATO (non RAM fisica): " + Describe(total.PrivateCommit));
++        block.AppendLine($"MONITOR ESCLUSO | PID {capture.Monitor.Pid} | privata {MiB(capture.Monitor.PrivateResidentBytes)} | residente totale {MiB(capture.Monitor.WorkingSetBytes)}");
++        if (!capture.EnumerationComplete) block.AppendLine("ENUMERAZIONE PARZIALE/FALLITA: " + capture.EnumerationError);
++        block.AppendLine($"Finestra letture UTC: {capture.BeginUtc:O} - {capture.EndUtc:O}. Campione periodico, non simultaneo.");
++        _text.WriteLine(block);
++        Console.WriteLine(block);
++        object?[] line = { capture.BeginUtc.ToString("O"), capture.EndUtc.ToString("O"), capture.EnumerationComplete,
++            total.IncludedProcesses, total.UnresolvedCandidates, total.OutsideScope,
++            total.PrivateResident.CompleteBytes, total.PrivateResident.ObservedBytes, total.PrivateResident.Available,
++            total.WorkingSet.CompleteBytes, total.WorkingSet.ObservedBytes, total.WorkingSet.Available,
++            total.PrivateCommit.CompleteBytes, total.PrivateCommit.ObservedBytes, total.PrivateCommit.Available,
++            capture.Monitor.PrivateResidentBytes, capture.Monitor.WorkingSetBytes };
++        _totals.WriteLine(string.Join(",", line.Select(Csv)));
++        foreach (var row in capture.Processes.Append(capture.Monitor))
++        {
++            object?[] values = { capture.EndUtc.ToString("O"), row.ReadUtc.ToString("O"), row.Pid, row.ParentPid, row.HandleParentPid,
++                row.StartUtcTicks, row.Name, row.Path, row.Association, row.Included,
++                row.PrivateResidentBytes, row.WorkingSetBytes, row.PrivateCommitBytes, row.Errors };
++            _processes.WriteLine(string.Join(",", values.Select(Csv)));
++        }
++        Flush(); SaveSummary("Running");
++    }
++    public bool LimitReached => _text.BaseStream.Length + _totals.BaseStream.Length + _processes.BaseStream.Length >= _limit;
++    private void Flush() { _text.Flush(); _totals.Flush(); _processes.Flush(); }
++    public void SaveSummary(string status)
++    {
++        string path = Path.Combine(DirectoryPath, "summary.json");
++        File.WriteAllText(path + ".tmp", JsonSerializer.Serialize(new
++        {
++            Status = status, UpdatedUtc = DateTime.UtcNow, Samples = _samples, PrivateCompleteSamples = _completeSamples,
++            MeanCompletePrivateBytes = _completeSamples > 0 ? (decimal?)(_privateSum / _completeSamples) : null,
++            SampledPeakCompletePrivateBytes = _privatePeak,
++            Note = "Mean and peak use only complete private-resident samples; unavailable data is not zero. Sampling can miss peaks. Monitor excluded."
++        }, new JsonSerializerOptions { WriteIndented = true }), new UTF8Encoding(false));
++        File.Move(path + ".tmp", path, true);
++    }
++    public void Dispose() { _text.Dispose(); _totals.Dispose(); _processes.Dispose(); }
++}
+--- /dev/null
++++ b/src/ProcessLens.RamMonitor/Measurement.cs
+@@ -0,0 +1,53 @@
++namespace ProcessLens.RamMonitor;
++
++public sealed record ProcessReading(int Pid, int ParentPid, string Name, string? Path,
++    long? StartUtcTicks, DateTime ReadUtc, string Association, bool Included,
++    long? PrivateResidentBytes, long? WorkingSetBytes, long? PrivateCommitBytes, string Errors)
++{
++    public int? HandleParentPid { get; init; }
++}
++
++public sealed record MetricTotal(long? CompleteBytes, long? ObservedBytes, int Available, int Included, bool Complete);
++public sealed record SampleTotals(MetricTotal PrivateResident, MetricTotal WorkingSet, MetricTotal PrivateCommit,
++    int IncludedProcesses, int UnresolvedCandidates, int OutsideScope, bool EnumerationComplete)
++{
++    public static SampleTotals Aggregate(IReadOnlyList<ProcessReading> rows, bool enumerationComplete)
++    {
++        var members = rows.Where(r => r.Included).GroupBy(r => (r.Pid, r.StartUtcTicks)).Select(g => g.First()).ToArray();
++        int unresolved = rows.Count(r => r.Association == "Unresolved");
++        MetricTotal Sum(Func<ProcessReading, long?> select)
++        {
++            var values = members.Select(select).Where(v => v.HasValue && v.Value >= 0).Select(v => v!.Value).ToArray();
++            long observed = 0;
++            foreach (long value in values) observed = checked(observed + value);
++            bool complete = enumerationComplete && unresolved == 0 && values.Length == members.Length;
++            return new(complete ? observed : null, values.Length > 0 || complete ? observed : null,
++                values.Length, members.Length, complete);
++        }
++        return new(Sum(r => r.PrivateResidentBytes), Sum(r => r.WorkingSetBytes), Sum(r => r.PrivateCommitBytes),
++            members.Length, unresolved, rows.Count(r => r.Association == "OutsideScope"), enumerationComplete);
++    }
++}
++
++public sealed class MonitorScope
++{
++    private readonly HashSet<string> _paths = new(StringComparer.OrdinalIgnoreCase);
++    public static readonly string[] Names = { "ProcessLens.exe", "ProcessLens.Guardian.Service.exe", "ProcessLens.MemoryAgent.exe", "ProcessLensProfiler.exe" };
++    public IReadOnlyCollection<string> Paths => _paths;
++    public MonitorScope(IEnumerable<string> paths)
++    {
++        foreach (string path in paths) _paths.Add(Normalize(path));
++    }
++    public bool IsCandidateName(string name) => Names.Contains(name, StringComparer.OrdinalIgnoreCase) ||
++        _paths.Any(p => System.IO.Path.GetFileName(p).Equals(name, StringComparison.OrdinalIgnoreCase));
++    public bool Contains(string? path) => path is not null && _paths.Contains(Normalize(path));
++    public static string Normalize(string path)
++    {
++        if (path.StartsWith(@"\\?\UNC\", StringComparison.OrdinalIgnoreCase)) path = @"\\" + path[8..];
++        else if (path.StartsWith(@"\\?\", StringComparison.Ordinal)) path = path[4..];
++        return System.IO.Path.GetFullPath(path);
++    }
++    public static bool VerifiedChild(ProcessReading child, ProcessReading parent) =>
++        child.Pid != parent.Pid && child.ParentPid == parent.Pid && child.HandleParentPid == parent.Pid && parent.Included &&
++        child.StartUtcTicks.HasValue && parent.StartUtcTicks.HasValue && child.StartUtcTicks.Value >= parent.StartUtcTicks.Value;
++}
+--- /dev/null
++++ b/src/ProcessLens.RamMonitor/NativeSampler.cs
+@@ -0,0 +1,198 @@
++using System.Runtime.InteropServices;
++using System.Text;
++
++namespace ProcessLens.RamMonitor;
++
++public sealed record CaptureResult(DateTime BeginUtc, DateTime EndUtc, bool EnumerationComplete,
++    string EnumerationError, IReadOnlyList<ProcessReading> Processes, ProcessReading Monitor);
++
++public sealed class NativeSampler
++{
++    private sealed record Entry(int Pid, int ParentPid, string Name);
++    private static readonly QueryBasicDelegate? QueryBasic = LoadQueryBasic();
++    private readonly MonitorScope _scope;
++    private Dictionary<int, ProcessReading> _tracked = new();
++    public NativeSampler(MonitorScope scope) => _scope = scope;
++
++    public CaptureResult Capture()
++    {
++        DateTime begin = DateTime.UtcNow;
++        var entries = Enumerate(out bool complete, out string error);
++        // The meter and all its observed children are excluded, even if launched by the GUI.
++        var excluded = new HashSet<int> { Environment.ProcessId };
++        bool changed;
++        do
++        {
++            changed = false;
++            foreach (var entry in entries)
++                if (excluded.Contains(entry.ParentPid) && excluded.Add(entry.Pid)) changed = true;
++        } while (changed);
++        var reads = new Dictionary<int, ProcessReading>();
++        ProcessReading Read(Entry e)
++        {
++            if (!reads.TryGetValue(e.Pid, out var reading)) reads[e.Pid] = reading = Probe(e);
++            return reading;
++        }
++        var included = new Dictionary<int, ProcessReading>();
++        var reported = new Dictionary<int, ProcessReading>();
++        foreach (var e in entries.Where(e => !excluded.Contains(e.Pid)))
++        {
++            bool candidate = _scope.IsCandidateName(e.Name);
++            if (!candidate && !_tracked.ContainsKey(e.Pid)) continue;
++            var reading = Read(e);
++            bool prior = _tracked.TryGetValue(e.Pid, out var previous) && reading.StartUtcTicks.HasValue &&
++                previous.StartUtcTicks == reading.StartUtcTicks;
++            if (prior || (reading.StartUtcTicks.HasValue && _scope.Contains(reading.Path)))
++            {
++                reading = reading with { Included = true, Association = prior ? previous!.Association : "ExactExecutablePath" };
++                included[e.Pid] = reported[e.Pid] = reading;
++            }
++            else if (candidate || (previous is not null && !reading.StartUtcTicks.HasValue))
++                reported[e.Pid] = reading with { Association = reading.StartUtcTicks.HasValue && reading.Path is not null ? "OutsideScope" : "Unresolved" };
++        }
++        // Same snapshot parent PID plus both creation times. Never join by an executable name alone.
++        do
++        {
++            changed = false;
++            foreach (var e in entries)
++            {
++                if (excluded.Contains(e.Pid) || included.ContainsKey(e.Pid) || !included.TryGetValue(e.ParentPid, out var parent)) continue;
++                var reading = Read(e);
++                if (MonitorScope.VerifiedChild(reading, parent))
++                {
++                    reading = reading with { Included = true, Association = "ObservedDescendant:" + parent.Pid + ":" + parent.StartUtcTicks };
++                    included[e.Pid] = reported[e.Pid] = reading;
++                    changed = true;
++                }
++                else reported[e.Pid] = reading with { Association = "Unresolved" };
++            }
++        } while (changed);
++        var nextTracked = complete ? new Dictionary<int, ProcessReading>() : new Dictionary<int, ProcessReading>(_tracked);
++        foreach (var row in reported.Values)
++            if (row.Association == "Unresolved" && _tracked.TryGetValue(row.Pid, out var old)) nextTracked[row.Pid] = old;
++        foreach (var row in included.Values) nextTracked[row.Pid] = row;
++        _tracked = nextTracked; // Failed reads do not erase an already observed surviving child.
++        var own = Probe(new(Environment.ProcessId, 0, System.IO.Path.GetFileName(Environment.ProcessPath) ?? "")) with { Association = "MonitorExcluded", Included = false };
++        return new(begin, DateTime.UtcNow, complete, error, reported.Values.OrderBy(r => r.Pid).ToArray(), own);
++    }
++
++    private static ProcessReading Probe(Entry entry)
++    {
++        IntPtr handle = OpenProcess(0x1000, false, (uint)entry.Pid);
++        if (handle == IntPtr.Zero) return Missing("OpenProcess=" + Marshal.GetLastWin32Error());
++        try
++        {
++            if (!GetProcessTimes(handle, out ulong created, out _, out _, out _)) return Missing("GetProcessTimes=" + Marshal.GetLastWin32Error());
++            long start = DateTime.FromFileTimeUtc(checked((long)created)).Ticks;
++            var errors = new List<string>();
++            int? handleParent = null;
++            if (QueryBasic is not null)
++            {
++                int status = QueryBasic(handle, 0, out var basic, Marshal.SizeOf<BasicInformation>(), out int returned);
++                if (status >= 0 && returned >= Marshal.SizeOf<BasicInformation>() && basic.Pid.ToUInt64() == (uint)entry.Pid && basic.ParentPid.ToUInt64() <= int.MaxValue)
++                    handleParent = (int)basic.ParentPid.ToUInt64();
++                else errors.Add("ParentQueryStatus=" + status);
++            }
++            else errors.Add("ParentQueryUnavailable");
++            if (entry.ParentPid != 0 && handleParent != entry.ParentPid)
++            {
++                errors.Add("ParentSnapshotNotVerified");
++                handleParent = null;
++            }
++            var pathBuffer = new StringBuilder(32768); uint length = (uint)pathBuffer.Capacity;
++            string? path = QueryFullProcessImageNameW(handle, 0, pathBuffer, ref length) ? pathBuffer.ToString() : null;
++            if (path is null) errors.Add("QueryFullProcessImageName=" + Marshal.GetLastWin32Error());
++            // Reject an enumerated name that no longer matches the object behind this handle.
++            if (path is not null && !System.IO.Path.GetFileName(path).Equals(entry.Name, StringComparison.OrdinalIgnoreCase))
++                return Missing("EnumerationIdentityChanged");
++            var counters = new Counters { Size = (uint)Marshal.SizeOf<Counters>(), PrivateWorkingSet = UIntPtr.MaxValue };
++            bool ex2 = GetProcessMemoryInfo(handle, ref counters, counters.Size);
++            bool memory = ex2;
++            if (!ex2)
++            {
++                errors.Add("EX2=" + Marshal.GetLastWin32Error());
++                counters = new Counters { Size = (uint)Marshal.OffsetOf<Counters>(nameof(Counters.PrivateWorkingSet)).ToInt32(), PrivateWorkingSet = UIntPtr.MaxValue };
++                memory = GetProcessMemoryInfo(handle, ref counters, counters.Size);
++                if (!memory) errors.Add("EX=" + Marshal.GetLastWin32Error());
++            }
++            long? resident = memory ? checked((long)counters.WorkingSet.ToUInt64()) : null;
++            long? commit = memory ? checked((long)counters.PrivateUsage.ToUInt64()) : null;
++            long? privateResident = memory && ex2 && counters.PrivateWorkingSet != UIntPtr.MaxValue &&
++                counters.PrivateWorkingSet.ToUInt64() <= counters.WorkingSet.ToUInt64()
++                ? checked((long)counters.PrivateWorkingSet.ToUInt64()) : null;
++            if (memory && !privateResident.HasValue) errors.Add("PrivateWorkingSetUnavailable");
++            return new(entry.Pid, entry.ParentPid, entry.Name, path, start, DateTime.UtcNow, "Unclassified", false,
++                privateResident, resident, commit, string.Join(";", errors)) { HandleParentPid = handleParent };
++        }
++        finally { CloseHandle(handle); }
++        ProcessReading Missing(string reason) => new(entry.Pid, entry.ParentPid, entry.Name, null, null, DateTime.UtcNow,
++            "Unresolved", false, null, null, null, reason);
++    }
++
++    private static List<Entry> Enumerate(out bool complete, out string error)
++    {
++        complete = false; error = ""; var result = new List<Entry>();
++        IntPtr snapshot = CreateToolhelp32Snapshot(2, 0);
++        if (snapshot == new IntPtr(-1)) { error = "CreateToolhelp32Snapshot=" + Marshal.GetLastWin32Error(); return result; }
++        try
++        {
++            var entry = new ProcessEntry { Size = (uint)Marshal.SizeOf<ProcessEntry>(), Exe = "" };
++            if (!Process32FirstW(snapshot, ref entry))
++            {
++                int code = Marshal.GetLastWin32Error(); complete = code == 18;
++                if (!complete) error = "Process32First=" + code;
++                return result;
++            }
++            do
++            {
++                if (entry.Pid > 0) result.Add(new(checked((int)entry.Pid), checked((int)entry.ParentPid), entry.Exe));
++                entry.Size = (uint)Marshal.SizeOf<ProcessEntry>();
++            } while (Process32NextW(snapshot, ref entry));
++            int last = Marshal.GetLastWin32Error(); complete = last == 18;
++            if (!complete) error = "Process32Next=" + last;
++            return result;
++        }
++        finally { CloseHandle(snapshot); }
++    }
++
++    // The native query is optional and dynamically resolved, as required by its Windows contract.
++    // If unavailable, exact-path roots remain measurable but descendant edges are not asserted.
++    private static QueryBasicDelegate? LoadQueryBasic()
++    {
++        if (!OperatingSystem.IsWindows() || !NativeLibrary.TryLoad("ntdll.dll", out var module)) return null;
++        if (NativeLibrary.TryGetExport(module, "NtQueryInformationProcess", out var address))
++            return Marshal.GetDelegateForFunctionPointer<QueryBasicDelegate>(address);
++        NativeLibrary.Free(module);
++        return null;
++    }
++    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
++    private delegate int QueryBasicDelegate(IntPtr process, int kind, out BasicInformation information, int size, out int returned);
++    [StructLayout(LayoutKind.Sequential)]
++    private struct BasicInformation
++    {
++        public int ExitStatus; public IntPtr Peb; public UIntPtr Affinity; public int Priority; public UIntPtr Pid, ParentPid;
++    }
++    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
++    private struct ProcessEntry
++    {
++        public uint Size, Usage, Pid; public UIntPtr DefaultHeapId; public uint ModuleId, Threads, ParentPid;
++        public int Priority; public uint Flags;
++        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public string Exe;
++    }
++    [StructLayout(LayoutKind.Sequential)]
++    private struct Counters
++    {
++        public uint Size, PageFaults;
++        public UIntPtr PeakWorkingSet, WorkingSet, PeakPaged, Paged, PeakNonPaged, NonPaged, Pagefile, PeakPagefile, PrivateUsage, PrivateWorkingSet;
++        public ulong SharedCommit;
++    }
++    [DllImport("kernel32.dll", SetLastError = true)] private static extern IntPtr CreateToolhelp32Snapshot(uint flags, uint pid);
++    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)] private static extern bool Process32FirstW(IntPtr snapshot, ref ProcessEntry entry);
++    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)] private static extern bool Process32NextW(IntPtr snapshot, ref ProcessEntry entry);
++    [DllImport("kernel32.dll", SetLastError = true)] private static extern IntPtr OpenProcess(uint access, bool inherit, uint pid);
++    [DllImport("kernel32.dll")] private static extern bool CloseHandle(IntPtr handle);
++    [DllImport("kernel32.dll", SetLastError = true)] private static extern bool GetProcessTimes(IntPtr process, out ulong creation, out ulong exit, out ulong kernel, out ulong user);
++    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
++    private static extern bool QueryFullProcessImageNameW(IntPtr process, uint flags, StringBuilder path, ref uint size);
++    [DllImport("psapi.dll", SetLastError = true)] private static extern bool GetProcessMemoryInfo(IntPtr process, ref Counters counters, uint size);
++}
+--- /dev/null
++++ b/src/ProcessLens.RamMonitor/ProcessLens.RamMonitor.csproj
+@@ -0,0 +1,9 @@
++<Project Sdk="Microsoft.NET.Sdk">
++  <PropertyGroup>
++    <OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework>
++    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
++    <AssemblyName>ProcessLens.RamMonitor</AssemblyName>
++    <InformationalVersion>0.19.16-R10-R8-ram-monitor-candidate</InformationalVersion>
++    <ServerGarbageCollection>false</ServerGarbageCollection>
++  </PropertyGroup>
++</Project>
+--- /dev/null
++++ b/src/ProcessLens.RamMonitor/Program.cs
+@@ -0,0 +1,97 @@
++using System.Diagnostics;
++using ProcessLens.RamMonitor;
++
++if (!OperatingSystem.IsWindows()) { Console.Error.WriteLine("Windows richiesto. Nessuna raccolta avviata."); return 2; }
++string root = "", gui = "", output = "";
++int interval = 5, duration = 0, maxMiB = 50;
++var additional = new List<string>();
++try
++{
++    for (int i = 0; i < args.Length; i++)
++    {
++        if (args[i] == "--help")
++        {
++            Console.WriteLine("ProcessLens.RamMonitor --project-root PATH [--gui-exe PATH] [--include-exe PATH] [--output-dir PATH] [--interval-seconds 5] [--duration-seconds 0] [--max-log-mib 50]");
++            return 0;
++        }
++        string option = args[i];
++        if (++i >= args.Length) throw new ArgumentException("Valore mancante: " + option);
++        string value = args[i];
++        switch (option)
++        {
++            case "--project-root": root = Path.GetFullPath(value); break;
++            case "--gui-exe": gui = Path.GetFullPath(value); break;
++            case "--include-exe": additional.Add(Path.GetFullPath(value)); break;
++            case "--output-dir": output = Path.GetFullPath(value); break;
++            case "--interval-seconds": interval = int.Parse(value); break;
++            case "--duration-seconds": duration = int.Parse(value); break;
++            case "--max-log-mib": maxMiB = int.Parse(value); break;
++            default: throw new ArgumentException("Opzione sconosciuta: " + option);
++        }
++    }
++    if (root.Length == 0 || !Directory.Exists(root)) throw new ArgumentException("--project-root deve indicare la cartella del progetto.");
++    if (interval < 1 || interval > 60 || duration < 0 || maxMiB < 1 || maxMiB > 1024) throw new ArgumentException("Intervallo 1..60 s; durata >=0; limite log 1..1024 MiB.");
++    var roots = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { root };
++    if (gui.Length > 0)
++    {
++        if (!File.Exists(gui) || !Path.GetFileName(gui).Equals("ProcessLens.exe", StringComparison.OrdinalIgnoreCase))
++            throw new ArgumentException("GUI attesa: percorso esistente di ProcessLens.exe.");
++        string folder = Path.GetDirectoryName(gui)!;
++        additional.Add(gui); additional.Add(Path.Combine(folder, "Profiler", "ProcessLensProfiler.exe"));
++        var info = new DirectoryInfo(folder);
++        // Standard published GUI layout: <project>/publish/win-x64/ProcessLens.exe.
++        if (info.Name.Equals("win-x64", StringComparison.OrdinalIgnoreCase) && info.Parent?.Name.Equals("publish", StringComparison.OrdinalIgnoreCase) == true)
++            roots.Add(info.Parent.Parent!.FullName);
++    }
++    foreach (string baseRoot in roots)
++    {
++        foreach (string config in new[] { "Release", "Debug" })
++        {
++            additional.Add(Path.Combine(baseRoot, "src", "ProcessLens.App", "bin", config, "net8.0-windows", "ProcessLens.exe"));
++            additional.Add(Path.Combine(baseRoot, "src", "ProcessLens.Guardian.Service", "bin", config, "net8.0-windows", "ProcessLens.Guardian.Service.exe"));
++            additional.Add(Path.Combine(baseRoot, "src", "ProcessLens.MemoryAgent", "bin", config, "net8.0-windows", "ProcessLens.MemoryAgent.exe"));
++            additional.Add(Path.Combine(baseRoot, "src", "ProcessLens.Profiler", "bin", config, "net8.0-windows", "ProcessLensProfiler.exe"));
++        }
++        additional.Add(Path.Combine(baseRoot, "publish", "win-x64", "ProcessLens.exe"));
++        additional.Add(Path.Combine(baseRoot, "publish", "win-x64", "Profiler", "ProcessLensProfiler.exe"));
++        additional.Add(Path.Combine(baseRoot, "publish", "MemoryAgent-win-x64", "ProcessLens.MemoryAgent.exe"));
++        additional.Add(Path.Combine(baseRoot, "dist", "Guardian-win-x64", "ProcessLens.Guardian.Service.exe"));
++    }
++    additional.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "ProcessLens", "Guardian", "ProcessLens.Guardian.Service.exe"));
++    additional.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ProcessLens", "MemoryAgent", "ProcessLens.MemoryAgent.exe"));
++    var scope = new MonitorScope(additional);
++    if (output.Length == 0) output = Path.Combine(root, "verification-r10r8", "ram-monitor");
++    var sampler = new NativeSampler(scope);
++    using var log = new LogSession(output, scope, interval, maxMiB);
++    using var cancel = new CancellationTokenSource();
++    Console.CancelKeyPress += (_, e) => { e.Cancel = true; cancel.Cancel(); };
++    Console.WriteLine("Monitor RAM separato. Ctrl+C arresta solo questo monitor.");
++    Console.WriteLine("Registro: " + log.DirectoryPath);
++    Console.WriteLine("GUI/Guardian/MemoryAgent/profiler gia attivi e discendenti osservabili; nessun componente viene avviato dal misuratore.");
++    Console.WriteLine("Perimetro completo: scope.json. Consumo del monitor registrato separatamente.");
++    string status = "StoppedByUser";
++    var elapsed = Stopwatch.StartNew();
++    try
++    {
++        while (!cancel.IsCancellationRequested)
++        {
++            log.Append(sampler.Capture());
++            if (log.LimitReached) { status = "LogSizeLimitReached"; Console.WriteLine("Limite log raggiunto: monitor arrestato, file conservati."); break; }
++            if (duration > 0 && elapsed.Elapsed.TotalSeconds >= duration) { status = "DurationReached"; break; }
++            int wait = duration > 0 ? (int)Math.Min(interval * 1000, Math.Max(0, (duration - elapsed.Elapsed.TotalSeconds) * 1000)) : interval * 1000;
++            if (cancel.Token.WaitHandle.WaitOne(wait)) break;
++        }
++        log.SaveSummary(status);
++        return 0;
++    }
++    catch (Exception ex)
++    {
++        try { log.SaveSummary("Failed:" + ex.GetType().Name); } catch { }
++        throw;
++    }
++}
++catch (Exception ex)
++{
++    Console.Error.WriteLine("Monitor RAM interrotto: " + ex.Message);
++    return 1;
++}
+--- /dev/null
++++ b/start-processlens-ram-monitor.ps1
+@@ -0,0 +1,41 @@
++[CmdletBinding()]
++param(
++    [string]$GuiExe,
++    [switch]$StartGui,
++    [ValidateRange(1,60)][int]$IntervalSeconds = 5,
++    [ValidateRange(0,2147483647)][int]$DurationSeconds = 0
++)
++$ErrorActionPreference = 'Stop'
++if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) { throw 'Windows richiesto.' }
++# Resolve an exact GUI executable. File selection supports an already built older candidate without rebuilding its GUI.
++if (-not $GuiExe) {
++    foreach ($candidate in @('publish\win-x64\ProcessLens.exe','src\ProcessLens.App\bin\Release\net8.0-windows\ProcessLens.exe')) {
++        $path = Join-Path $PSScriptRoot $candidate
++        if (Test-Path -LiteralPath $path) { $GuiExe = $path; break }
++    }
++}
++if (-not $GuiExe) {
++    Add-Type -AssemblyName System.Windows.Forms
++    $dialog = New-Object System.Windows.Forms.OpenFileDialog
++    try {
++        $dialog.Title = 'Seleziona il ProcessLens.exe da misurare'
++        $dialog.Filter = 'ProcessLens.exe|ProcessLens.exe'
++        $dialog.CheckFileExists = $true
++        if ($dialog.ShowDialog() -ne [System.Windows.Forms.DialogResult]::OK) { Write-Host 'Avvio annullato.'; return }
++        $GuiExe = $dialog.FileName
++    }
++    finally { $dialog.Dispose() }
++}
++$GuiExe = [IO.Path]::GetFullPath($GuiExe)
++if (-not (Test-Path -LiteralPath $GuiExe) -or [IO.Path]::GetFileName($GuiExe) -ine 'ProcessLens.exe') { throw 'Selezionare un percorso esistente di ProcessLens.exe.' }
++$monitor = Join-Path $PSScriptRoot 'publish\RamMonitor-win-x64\ProcessLens.RamMonitor.exe'
++if (-not (Test-Path -LiteralPath $monitor)) { & (Join-Path $PSScriptRoot 'build-ram-monitor.ps1') }
++# Paths are quoted as native Windows arguments; double trailing backslashes before a closing quote.
++$root = $PSScriptRoot -replace '(\\+)$','$1$1'
++$arguments = '--project-root "' + $root + '" --gui-exe "' + $GuiExe + '" --interval-seconds ' + $IntervalSeconds + ' --duration-seconds ' + $DurationSeconds
++Start-Process -FilePath $monitor -ArgumentList $arguments -WorkingDirectory $PSScriptRoot | Out-Null
++Write-Host 'Monitor avviato in una finestra separata. Log: verification-r10r8\ram-monitor.'
++if ($StartGui) {
++    # Explicit user launcher only: no service, agent or profiler is started.
++    Start-Process -FilePath $GuiExe -WorkingDirectory ([IO.Path]::GetDirectoryName($GuiExe)) | Out-Null
++}
+--- a/tests/ProcessLens.CopyTests/ProcessLens.CopyTests.csproj
++++ b/tests/ProcessLens.CopyTests/ProcessLens.CopyTests.csproj
+@@ -9,5 +9,6 @@
+     <Compile Include="../../src/ProcessLens.App/ProcessExitNotice.cs" Link="ProcessExitNotice.cs" />
+     <Compile Include="../../src/ProcessLens.App/WindowLifetimePolicy.cs" Link="WindowLifetimePolicy.cs" />
+     <Compile Include="../../src/ProcessLens.App/AuditLogPresentation.cs" Link="AuditLogPresentation.cs" />
++    <Compile Include="../../src/ProcessLens.App/ServiceNavigation.cs" Link="ServiceNavigation.cs" />
+   </ItemGroup>
+ </Project>
+--- a/tests/ProcessLens.CopyTests/Program.cs
++++ b/tests/ProcessLens.CopyTests/Program.cs
+@@ -108,3 +108,21 @@
+ foreach (string sampleValue in new[] { "44,0", "44.0" })
+     Check(AuditLogPresentation.Parse("[23:31:34.506] [VERIFICA RAM] PSAPI — " + sampleValue + " MiB").Entries[0].Message == sampleValue + " MiB",
+         "audit layout never reparses or reformats measured decimal text " + sampleValue);
++
++var navigationTarget = new MemoryDetailsTarget(12, "svchost", true);
++var navigationTime = DateTime.UnixEpoch;
++Check(ServiceNavigation.Matches(navigationTarget, new(12, "svchost.exe", navigationTime, navigationTime)),
++    "RAM group lookup accepts normalized executable name only with matching creation");
++Check(!ServiceNavigation.Matches(navigationTarget, new(12, "svchost.exe", navigationTime, navigationTime.AddTicks(1))) &&
++    !ServiceNavigation.Matches(navigationTarget, new(12, "svchost.exe", null, null)), "RAM navigation rejects reused or unidentified host");
++Check(!ServiceNavigation.Matches(navigationTarget with { Grouped = false }, new(112, "svchost", navigationTime, navigationTime)),
++    "single PID navigation cannot match a substring PID");
++var navigationScope = new Dictionary<int, DateTime> { [12] = navigationTime };
++Check(ServiceNavigation.Includes(12, navigationScope) && !ServiceNavigation.Includes(112, navigationScope), "SCM scope uses exact host PID");
++Check(ServiceNavigation.Includes(112, null) && !ServiceNavigation.Includes(12, new Dictionary<int, DateTime>()),
++    "all-services and empty scoped views remain distinct");
++
++Check(!ServiceNavigation.Matches(navigationTarget with { FrameStartedUtc = navigationTime.AddTicks(-1) },
++    new(12, "svchost", navigationTime, navigationTime)), "RAM frame cannot acquire a process born after its acquisition began");
++Check(!ServiceNavigation.Matches(navigationTarget with { Grouped = false }, new(12, "other.exe", navigationTime, navigationTime)),
++    "same PID with another executable cannot acquire RAM row navigation");
+--- a/tests/ProcessLens.CopyUiTests/Program.cs
++++ b/tests/ProcessLens.CopyUiTests/Program.cs
+@@ -227,6 +227,15 @@
+             window.FindName("ProcessNoticeText") is SelectableText,
+             "exit notice starts hidden, stays compact and its text can be copied");
+         var memory = new MemoryDashboardView();
++        Check(memory.FindName("CategoryServicesCard") is Button { Tag: "Secondario" } &&
++            memory.FindName("CategoryAppsCard") is Button && memory.FindName("ResidualCategoryDetails") is Expander,
++            "RAM category cards are keyboard-accessible buttons and residual opens limitations");
++        var serviceFixture = new ServiceSnapshot { Name = "fixture", DisplayName = "Servizio di prova", StateCode = 4,
++            ProcessId = 12, ServiceType = 0x10, Description = "Descrizione dichiarata" };
++        var serviceDetails = new ServiceDetailsWindow(serviceFixture);
++        Check(serviceDetails.Content is ScrollViewer && serviceDetails.Title.Contains("Servizio di prova"),
++            "service details window builds read-only chapters without service actions");
++        serviceDetails.Close();
+         var guardian = new GuardianDashboardView();
+         Check(memory.FindName("RefreshStatus") is SelectableText && guardian.FindName("StatusText") is SelectableText,
+             "actual dashboard XAML has selectable status output");
+--- /dev/null
++++ b/tests/ProcessLens.RamMonitorTests/ProcessLens.RamMonitorTests.csproj
+@@ -0,0 +1,8 @@
++<Project Sdk="Microsoft.NET.Sdk">
++  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
++  <ItemGroup>
++    <Compile Include="../../src/ProcessLens.RamMonitor/Measurement.cs" Link="Measurement.cs"/>
++    <Compile Include="../../src/ProcessLens.RamMonitor/NativeSampler.cs" Link="NativeSampler.cs"/>
++    <Compile Include="../../src/ProcessLens.RamMonitor/LogSession.cs" Link="LogSession.cs"/>
++  </ItemGroup>
++</Project>
+--- /dev/null
++++ b/tests/ProcessLens.RamMonitorTests/Program.cs
+@@ -0,0 +1,81 @@
++using ProcessLens.RamMonitor;
++static void Check(bool ok, string name)
++{
++    if (!ok) throw new Exception("FAIL RAM monitor: " + name);
++    Console.WriteLine("PASS RAM monitor: " + name);
++}
++static ProcessReading Row(int pid, long? bytes, bool included = true) =>
++    new(pid, 0, "test.exe", Path.Combine(Path.GetTempPath(), "test.exe"), 100, DateTime.UnixEpoch,
++        included ? "ExactExecutablePath" : "OutsideScope", included, bytes, bytes.HasValue ? bytes.Value + 10 : null, bytes.HasValue ? bytes.Value + 20 : null, "");
++var first = Row(1, 100);
++var second = Row(2, 200);
++var totals = SampleTotals.Aggregate(new[] { first, second }, true);
++Check(totals.PrivateResident.CompleteBytes == 300 && totals.IncludedProcesses == 2, "per-PID private bytes summed without using working set or commit");
++Check(totals.WorkingSet.CompleteBytes == 320 && totals.PrivateCommit.CompleteBytes == 340, "three metrics remain distinct");
++var partial = SampleTotals.Aggregate(new[] { first, Row(2, null) }, true);
++Check(!partial.PrivateResident.Complete && partial.PrivateResident.CompleteBytes is null && partial.PrivateResident.ObservedBytes == 100,
++    "one missing private reading makes total partial, not a complete lower number");
++var noPrivate = SampleTotals.Aggregate(new[] { Row(2, null) with { WorkingSetBytes = 900, PrivateCommitBytes = 500 } }, true);
++Check(noPrivate.PrivateResident.ObservedBytes is null && noPrivate.WorkingSet.CompleteBytes == 900 && noPrivate.PrivateCommit.CompleteBytes == 500,
++    "EX-only fallback cannot turn total resident or commit into private RAM");
++var unknown = SampleTotals.Aggregate(new[] { first, Row(9, null, false) with { Association = "Unresolved" } }, true);
++Check(unknown.UnresolvedCandidates == 1 && unknown.PrivateResident.CompleteBytes is null, "unresolved candidate prevents complete total");
++var failedEnum = SampleTotals.Aggregate(Array.Empty<ProcessReading>(), false);
++Check(failedEnum.PrivateResident.CompleteBytes is null && failedEnum.PrivateResident.ObservedBytes is null, "failed enumeration cannot establish no processes or zero RAM");
++var empty = SampleTotals.Aggregate(Array.Empty<ProcessReading>(), true);
++Check(empty.PrivateResident.CompleteBytes == 0 && empty.IncludedProcesses == 0, "successful empty scope snapshot establishes only zero observed members");
++Check(SampleTotals.Aggregate(new[] { Row(1, 0) }, true).PrivateResident.CompleteBytes == 0, "genuinely read zero remains valid");
++var meter = Row(77, 9000, false) with { Association = "MonitorExcluded" };
++Check(SampleTotals.Aggregate(new[] { first, meter, Row(88, 7000, false) }, true).PrivateResident.CompleteBytes == 100,
++    "monitor and other installations excluded from suite sum");
++Check(SampleTotals.Aggregate(new[] { first, first }, true).PrivateResident.CompleteBytes == 100, "duplicate instance not double counted");
++var parent = first with { StartUtcTicks = 200, Pid = 11 };
++var child = second with { StartUtcTicks = 300, ParentPid = 11, HandleParentPid = 11, Pid = 12 };
++Check(!MonitorScope.VerifiedChild(child with { HandleParentPid = null }, parent), "snapshot parent alone cannot prove descendant after a reuse race");
++Check(MonitorScope.VerifiedChild(child, parent), "observed parent PID plus comparable creation times permits descendant edge");
++Check(!MonitorScope.VerifiedChild(child with { StartUtcTicks = 100 }, parent), "child predating reused parent PID cannot be attributed");
++Check(!MonitorScope.VerifiedChild(child with { StartUtcTicks = null }, parent) && !MonitorScope.VerifiedChild(child, parent with { StartUtcTicks = null }), "missing creation time cannot prove descendant identity");
++Check(!MonitorScope.VerifiedChild(child, parent with { Included = false }) && !MonitorScope.VerifiedChild(child with { ParentPid = 99 }, parent),
++    "unverified parent or different parent PID does not establish suite membership");
++string path = Path.Combine(Path.GetTempPath(), "scope", "ProcessLens.exe");
++var scope = new MonitorScope(new[] { path });
++Check(scope.Contains(path.ToUpperInvariant()) && !scope.Contains(Path.Combine(Path.GetTempPath(), "another", "ProcessLens.exe")),
++    "same executable name at another path cannot prove membership");
++Check(!scope.Contains(null), "unreadable executable path is not accepted");
++if (OperatingSystem.IsWindows())
++{
++    // Read-only census and self-counter checks; no processes launched, ended or profiled.
++    var native = new NativeSampler(new MonitorScope(Array.Empty<string>())).Capture();
++    Check(native.EnumerationComplete, "native process snapshot completes on Windows");
++    Check(native.Monitor.Pid == Environment.ProcessId && native.Monitor.StartUtcTicks.HasValue && native.Monitor.WorkingSetBytes > 0,
++        "native limited-rights self read yields instance identity and working set");
++    Check(!native.Monitor.Included && native.Monitor.Association == "MonitorExcluded", "native meter self read is excluded");
++    using var self = System.Diagnostics.Process.GetCurrentProcess();
++    Check(native.Monitor.StartUtcTicks == self.StartTime.ToUniversalTime().Ticks, "native creation matches independent .NET timestamp");
++}
++else Console.WriteLine("NON ESEGUITO: native Windows sampler tests.");
++
++string logFixture = Path.Combine(Path.GetTempPath(), "ProcessLensRamMonitorTest-" + Guid.NewGuid().ToString("N"));
++try
++{
++    string sessionPath;
++    using (var session = new LogSession(logFixture, scope, 5, 50))
++    {
++        sessionPath = session.DirectoryPath;
++        var sample = new CaptureResult(DateTime.UnixEpoch, DateTime.UnixEpoch.AddSeconds(1), true, "",
++            new[] { first with { Name = "prova, \"perché\"" } }, meter);
++        session.Append(sample);
++        session.Append(sample with { Processes = new[] { Row(2, null) } });
++        session.SaveSummary("TestComplete");
++    }
++    string[] totalLines = File.ReadAllLines(Path.Combine(sessionPath, "totals.csv"));
++    Check(totalLines.Length == 3 && totalLines[2].Split(',')[6] == "\"\"", "incomplete CSV total is empty, not a fabricated zero");
++    string processCsv = File.ReadAllText(Path.Combine(sessionPath, "processes.csv"));
++    Check(processCsv.Contains("\"prova, \"\"perché\"\"\""), "UTF-8 process CSV preserves commas and quoted text");
++    using var summary = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(sessionPath, "summary.json")));
++    Check(summary.RootElement.GetProperty("Samples").GetInt32() == 2 &&
++        summary.RootElement.GetProperty("PrivateCompleteSamples").GetInt32() == 1 &&
++        summary.RootElement.GetProperty("SampledPeakCompletePrivateBytes").GetInt64() == 100,
++        "summary counts partial samples separately and never adds the monitor footprint");
++}
++finally { if (Directory.Exists(logFixture)) Directory.Delete(logFixture, true); }

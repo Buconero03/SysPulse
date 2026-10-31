@@ -1,0 +1,17 @@
+{
+  "literal_rows_inherited": 3406,
+  "original_priority_rows": 41,
+  "glossary_rows": 95,
+  "guarded_edits": 235,
+  "modified_files": 31,
+  "source_coverage_files": 146,
+  "static_checks": 20,
+  "static_pass": 20,
+  "windows_status": "NON ESEGUITO",
+  "priority_decisions": {
+    "CONSERVATO_CON_LIMITE_ESPLICITO": 18,
+    "CORRETTO_R7": 20,
+    "CONSERVATO_COMPONENTE_ESCLUSO": 1,
+    "TEST_CONSERVATO": 2
+  }
+}

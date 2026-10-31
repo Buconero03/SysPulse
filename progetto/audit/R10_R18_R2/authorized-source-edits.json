@@ -1,0 +1,18 @@
+{
+  "baseline_sha256": "066cff3add196c5b25e3e293b1cbac92c89f309930b9f472c45c8ebc25b249a4",
+  "scope": "PowerShell source guard false positive only; project identity. Production C#, XAML, C# tests and build pipeline unchanged.",
+  "files": [
+    {
+      "file": "tests/check-copy-layout-r18r1.ps1",
+      "sha256_before": "e7a9cfb6afd4869816c9a7d0bbdaaa85305563b2970deaf2062befe1cb27cc3e",
+      "sha256_after": "dad1a777257ca583f6a1aeeb4b1669f533cefd57bf490863480b1d76106af1d2",
+      "scope": "Source guard or candidate identity; no runtime behavior changes"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256_before": "b6d34720e9977b1946b7d3a38e58779cd5a536c831df714b88008fe8e96085ee",
+      "sha256_after": "df23c8f069c88452850d4e3fd34aaa7eab2cfd9cbeeb764dbcf307e2aa6ca082",
+      "scope": "Source guard or candidate identity; no runtime behavior changes"
+    }
+  ]
+}

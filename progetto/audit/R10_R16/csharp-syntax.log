@@ -1,0 +1,7 @@
+PASS C# syntax: src/ProcessLens.Core/NativeNetworkEvidence.cs
+PASS C# syntax: src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs
+PASS C# syntax: src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs
+PASS C# syntax: src/ProcessLens.App/NetworkDevicesView.xaml.cs
+PASS C# syntax: tests/ProcessLens.NativeNetworkTests/Program.cs
+PASS C# syntax: tests/ProcessLens.NetworkUiTests/Program.cs
+Syntax parsing only; no WPF type checking or markup compilation.

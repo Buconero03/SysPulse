@@ -1,0 +1,68 @@
+<UserControl x:Class="ProcessLens.App.NetworkCaptureView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:local="clr-namespace:ProcessLens.App">
+ <UserControl.Resources>
+  <Style x:Key="CaptureAction" TargetType="Button">
+   <Setter Property="MinHeight" Value="36"/><Setter Property="Padding" Value="10,7"/><Setter Property="Margin" Value="0,0,8,6"/>
+   <Setter Property="ContentTemplate"><Setter.Value><DataTemplate><TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center"/></DataTemplate></Setter.Value></Setter>
+  </Style>
+  <Style x:Key="CaptureCell" TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/><Setter Property="Margin" Value="6,5"/></Style>
+ </UserControl.Resources>
+ <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><Grid Margin="0,10,0,0">
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*" MinHeight="100"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <StackPanel>
+   <TextBlock Text="Cattura Wireshark / Wi-Fi" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap"/>
+   <local:SelectableText Text="Strumenti separati, avviati solo su richiesta. Limiti: 20 s, 10.000 pacchetti, 10.000 kB; 256 byte per pacchetto." TextWrapping="Wrap" Margin="0,4,0,8"/>
+   <WrapPanel>
+    <Button x:Name="DiscoverCaptureButton" Content="Verifica strumenti" Style="{StaticResource CaptureAction}" Click="Discover_Click"/>
+    <Button x:Name="ChooseToolsButton" Content="Scegli dumpcap.exe…" Style="{StaticResource CaptureAction}" Click="ChooseTools_Click"/>
+    <Button x:Name="ImportCaptureButton" Content="Analizza file…" Style="{StaticResource CaptureAction}" Click="Import_Click" IsEnabled="False"/>
+   </WrapPanel>
+  </StackPanel>
+  <StackPanel Grid.Row="1">
+   <TextBlock Text="Interfaccia locale da usare" TextWrapping="Wrap"/>
+   <ComboBox x:Name="CaptureInterfacesBox" MinHeight="32" Margin="0,4,0,8" SelectionChanged="Interface_Changed">
+    <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Display}" TextWrapping="Wrap"/></DataTemplate></ComboBox.ItemTemplate>
+   </ComboBox>
+   <CheckBox x:Name="CaptureMonitorBox" Content="Usa modalità monitor · può disconnettere il Wi-Fi" Margin="0,0,0,8" Checked="Monitor_Changed" Unchecked="Monitor_Changed"/>
+   <WrapPanel>
+    <Button x:Name="VerifyMonitorButton" Content="Verifica monitor" Style="{StaticResource CaptureAction}" Click="Monitor_Click" IsEnabled="False"/>
+    <Button x:Name="StartCaptureButton" Content="Salva nuova cattura…" Style="{StaticResource CaptureAction}" Click="Capture_Click" IsEnabled="False"/>
+    <Button x:Name="StopCaptureButton" Content="Interrompi operazione" Style="{StaticResource CaptureAction}" Click="Stop_Click" IsEnabled="False"/>
+    <Button x:Name="ReadCaptureButton" Content="Analizza ultima cattura" Style="{StaticResource CaptureAction}" Click="Read_Click" IsEnabled="False"/>
+   </WrapPanel>
+  </StackPanel>
+  <StackPanel Grid.Row="2" Margin="0,0,0,8">
+   <local:SelectableText x:Name="CaptureStatusText" Text="Premi Verifica strumenti. Wireshark e Npcap non vengono installati automaticamente." TextWrapping="Wrap"/>
+   <local:SelectableText x:Name="CaptureFileText" Text="Nessun file selezionato." TextWrapping="Wrap" Foreground="#64748B"/>
+   <local:SelectableText x:Name="CaptureSummaryText" Text="Nessun campione analizzato." TextWrapping="Wrap" FontWeight="SemiBold"/>
+  </StackPanel>
+  <DataGrid x:Name="CaptureObservationsTable" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False"
+    EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"
+    local:GridCopySupport.Enabled="True" HeadersVisibility="Column" MinRowHeight="36" Height="240">
+   <DataGrid.Columns>
+    <DataGridTextColumn Header="Osservazione" Binding="{Binding Kind, Mode=OneWay}" Width="185" ElementStyle="{StaticResource CaptureCell}"/>
+    <DataGridTextColumn Header="MAC" Binding="{Binding Mac, Mode=OneWay}" Width="155" ElementStyle="{StaticResource CaptureCell}"/>
+    <DataGridTextColumn Header="BSSID nel frame" Binding="{Binding Bssid, Mode=OneWay}" Width="155" ElementStyle="{StaticResource CaptureCell}"/>
+    <DataGridTextColumn Header="SSID annunciato" Binding="{Binding Ssid, Mode=OneWay}" Width="160" ElementStyle="{StaticResource CaptureCell}"/>
+    <DataGridTextColumn Header="Frequenza" Binding="{Binding Frequency, Mode=OneWay}" Width="110" ElementStyle="{StaticResource CaptureCell}"/>
+    <DataGridTextColumn Header="Segnale" Binding="{Binding Signal, Mode=OneWay}" Width="100" ElementStyle="{StaticResource CaptureCell}"/>
+    <DataGridTextColumn Header="Frame nel campione" Binding="{Binding Frames, Mode=OneWay}" Width="105" ElementStyle="{StaticResource CaptureCell}"/>
+   </DataGrid.Columns>
+  </DataGrid>
+  <StackPanel Grid.Row="4" Margin="0,10,0,0">
+   <WrapPanel>
+    <Button x:Name="OpenWiresharkButton" Content="Apri file in Wireshark" Style="{StaticResource CaptureAction}" Click="Open_Click" IsEnabled="False"/>
+    <Button x:Name="CopyCaptureButton" Content="Copia rapporto" Style="{StaticResource CaptureAction}" Click="Copy_Click" IsEnabled="False"/>
+   </WrapPanel>
+   <Expander Header="Installazione, limiti e dettagli">
+    <ScrollViewer MaxHeight="140" VerticalScrollBarVisibility="Auto"><StackPanel Margin="0,6,0,0">
+     <local:SelectableText Text="Installa Wireshark con TShark e Npcap. In Npcap abilita Support raw 802.11 traffic (and monitor mode) for wireless adapters. Servono scheda e driver compatibili. Istruzioni: INTEGRAZIONE_WIRESHARK_R13.md." TextWrapping="Wrap" Margin="0,0,0,6"/>
+     <local:SelectableText Text="La verifica monitor può già disconnettere la scheda. Una cattura normale può mostrare solo intestazioni Ethernet. Il monitor riceve sul canale del driver: non è una scansione di tutti i canali. Un BSSID/SSID osservato non prova che sia un hotspot del telefono o che usi la tua LAN." TextWrapping="Wrap" Margin="0,0,0,6"/>
+     <local:SelectableText Text="Dumpcap e TShark consumano risorse come processi separati. Il file può contenere dati di rete anche con snaplen 256: scegli dove salvarlo ed eliminalo quando non serve. Una cattura interrotta può lasciare un file parziale." TextWrapping="Wrap" Margin="0,0,0,6"/>
+     <local:SelectableText x:Name="CaptureDetailsText" Text="Strumenti non ancora verificati." TextWrapping="Wrap"/>
+    </StackPanel></ScrollViewer>
+   </Expander>
+  </StackPanel>
+ </Grid></ScrollViewer>
+</UserControl>

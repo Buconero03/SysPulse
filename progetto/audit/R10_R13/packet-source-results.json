@@ -1,0 +1,142 @@
+[
+  {
+    "test": "packet integration satisfies all source guards",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "only three existing production sources changed since R12",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "all existing collectors Core semantics Guardian profiler and RAM monitor exact to R12",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "all added and modified production sources match exact R13 manifest",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "all XAML and project XML parse",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "capture view names unique and handlers connected",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "capture outputs copied wrapped and virtualized",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "capture buttons wrap with no fixed height",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "all clipboard calls preserve two required arguments",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "independent synthetic CLI parser and owned-process tests supplied",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "real WPF fixture covers selection monitor and late results",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "Windows build runs source gate and packet suite",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject shell enabled",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject unbounded output",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject unbounded child wait",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject foreign PID substitution",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject overwrite capture",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject decoder input not locked",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject missing source hash",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject remote or index input accepted",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject capture duration removed",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject packet cap removed",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject monitor gate bypassed",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject failed decoder becomes success",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject payload SSID fabricated",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject old UI generation accepted",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject hidden capture left running",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  },
+  {
+    "test": "reject first interface auto-selected",
+    "status": "PASS",
+    "kind": "source/XML or source mutation only"
+  }
+]

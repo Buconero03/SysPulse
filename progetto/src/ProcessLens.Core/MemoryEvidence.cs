@@ -1,0 +1,67 @@
+namespace ProcessLens.Core;
+
+/// <summary>A snapshot of one memory metric for one verified PID lifetime.</summary>
+/// <summary>GlobalMemoryStatusEx evidence; system pressure is not a per-process diagnosis.</summary>
+public sealed record SystemMemoryEvidence(ulong TotalBytes, ulong AvailableBytes)
+{
+    public double UsedPercent => TotalBytes == 0 ? 0 :
+        Math.Clamp((TotalBytes - Math.Min(AvailableBytes, TotalBytes)) * 100.0 / TotalBytes, 0, 100);
+    public double TotalMb => TotalBytes / 1048576d;
+    public double AvailableMb => AvailableBytes / 1048576d;
+    public double UsedMb => (TotalBytes >= AvailableBytes ? TotalBytes - AvailableBytes : 0UL) / 1048576d;
+}
+
+public sealed record MemoryObservation(DateTime TimestampUtc, long Bytes);
+
+/// <summary>Summarizes memory trend without converting commit to physical RAM.</summary>
+public sealed record MemoryTrendReport(
+    string Metric, int Samples, double Seconds, double FirstMb, double CurrentMb,
+    double MinimumMb, double PeakMb, double DeltaMb)
+{
+    public bool HasTrend => Samples >= 3 && Seconds >= 20;
+    public double ExcursionMb => Math.Max(0, PeakMb - MinimumMb);
+}
+
+public static class MemoryTrendAnalyzer
+{
+    public static MemoryTrendReport? Analyze(string metric, IReadOnlyList<MemoryObservation> samples)
+    {
+        if (samples.Count == 0) return null;
+        var ordered = samples.OrderBy(x => x.TimestampUtc).ToArray();
+        double scale = 1024d * 1024d;
+        return new MemoryTrendReport(metric, ordered.Length,
+            Math.Max(0, (ordered[^1].TimestampUtc - ordered[0].TimestampUtc).TotalSeconds),
+            ordered[0].Bytes / scale, ordered[^1].Bytes / scale,
+            ordered.Min(x => x.Bytes) / scale, ordered.Max(x => x.Bytes) / scale,
+            (ordered[^1].Bytes - ordered[0].Bytes) / scale);
+    }
+}
+
+/// <summary>VirtualQueryEx COMMITTED ADDRESS SPACE by allocation type and page protection.
+/// These numbers are NOT resident RAM; read-only, selected PID only.</summary>
+public sealed record MemoryMapSnapshot(
+    bool Available, string Note, long PrivateCommittedBytes, long ImageCommittedBytes,
+    long MappedCommittedBytes, long OtherCommittedBytes, int Regions, bool Truncated,
+    long ReadWritePrivateBytes = 0, long ExecutablePrivateBytes = 0,
+    long ReadOnlyPrivateBytes = 0, long GuardStackBytes = 0,
+    long ReservedBytes = 0, int LargeBlocksCount = 0,
+    long LargeBlocksBytes = 0, long LargestSingleBlockBytes = 0)
+{
+    public double PrivateMb => PrivateCommittedBytes / 1048576d;
+    public double ImageMb => ImageCommittedBytes / 1048576d;
+    public double MappedMb => MappedCommittedBytes / 1048576d;
+    public double OtherMb => OtherCommittedBytes / 1048576d;
+    public double TotalCommittedMb => (PrivateCommittedBytes + ImageCommittedBytes + MappedCommittedBytes + OtherCommittedBytes) / 1048576d;
+    public double ReadWritePrivateMb => ReadWritePrivateBytes / 1048576d;
+    public double ExecutablePrivateMb => ExecutablePrivateBytes / 1048576d;
+    public double ReadOnlyPrivateMb => ReadOnlyPrivateBytes / 1048576d;
+    public double GuardStackMb => GuardStackBytes / 1048576d;
+    public double ReservedMb => ReservedBytes / 1048576d;
+    public double LargeBlocksMb => LargeBlocksBytes / 1048576d;
+    public double LargestSingleBlockMb => LargestSingleBlockBytes / 1048576d;
+    public bool HasDetailedBreakdown => ReadWritePrivateBytes > 0 || ExecutablePrivateBytes > 0 ||
+        ReadOnlyPrivateBytes > 0 || GuardStackBytes > 0 || LargeBlocksCount > 0 || ReservedBytes > 0;
+
+    public static MemoryMapSnapshot Unavailable(string why) =>
+        new(false, why, 0, 0, 0, 0, 0, false);
+}

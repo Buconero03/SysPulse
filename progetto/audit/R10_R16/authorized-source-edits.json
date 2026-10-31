@@ -1,0 +1,66 @@
+{
+  "baseline_sha256": "80b42aa8f5a194c43bf66a9e50ab6ddcfaee2853424d8cc1aaed720f1065bf14",
+  "scope": "R16 user-authorized native Windows network evidence: bounded manual local Security history and current audit-policy read. No external program, native driver, audit/firewall change or ongoing subscription. Existing cache and packet integration preserved.",
+  "files": [
+    {
+      "file": "src/ProcessLens.Core/NativeNetworkEvidence.cs",
+      "sha256_before": null,
+      "sha256_after": "341bb0db3ff38e3297a5141192d8bca4ab94e22ebf2fbf9ada3a58b4ca3f1504",
+      "scope": "native evidence source/presentation and independent fixtures or exact navigation/version delta"
+    },
+    {
+      "file": "src/ProcessLens.Windows/WindowsNativeNetworkEvidence.cs",
+      "sha256_before": null,
+      "sha256_after": "1c91fed1bd87507d2d0438a00115615280008792fc36f1f0f8162ceae98231d7",
+      "scope": "native evidence source/presentation and independent fixtures or exact navigation/version delta"
+    },
+    {
+      "file": "src/ProcessLens.App/NativeNetworkEvidenceView.xaml",
+      "sha256_before": null,
+      "sha256_after": "8456bd5920daf4dddc2cfce4ca738421d71bcb28d0b9c04a538a868998267e2a",
+      "scope": "native evidence source/presentation and independent fixtures or exact navigation/version delta"
+    },
+    {
+      "file": "src/ProcessLens.App/NativeNetworkEvidenceView.xaml.cs",
+      "sha256_before": null,
+      "sha256_after": "9ec3dfa1b8bbad6284192163d0570a90d227c6812455f6587b82cfa782fb826d",
+      "scope": "native evidence source/presentation and independent fixtures or exact navigation/version delta"
+    },
+    {
+      "file": "src/ProcessLens.App/NetworkDevicesView.xaml",
+      "sha256_before": "8757ae28e5c6df0bab4f5dbe1eb6d85b58a5cd360485b0bd3075545f0f1a4861",
+      "sha256_after": "59abbdfb2aea2b228fef88dfd0645ccf9b7e22563a86a28a1b602ad12f46fcf0",
+      "scope": "native evidence source/presentation and independent fixtures or exact navigation/version delta"
+    },
+    {
+      "file": "src/ProcessLens.App/NetworkDevicesView.xaml.cs",
+      "sha256_before": "4dd9ff6ce4b46b18ddfd9a5ed868e3289ffc20e6bdee6d14427726c59e89d29f",
+      "sha256_after": "fd0579af2475d3e4bdfc412ed2568af7fa37fc4f7302f9891c1251b18b6b4354",
+      "scope": "native evidence source/presentation and independent fixtures or exact navigation/version delta"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256_before": "a0d806be6cd3297c047ef7fdd3c281c0c7c14d47876bec01f76205b2eebfcd34",
+      "sha256_after": "a6c4457c1c958d85eb7cab2be9f762865b8cfedb0cb3c7b83a71f0ed0d7c325c",
+      "scope": "native evidence source/presentation and independent fixtures or exact navigation/version delta"
+    },
+    {
+      "file": "tests/ProcessLens.NativeNetworkTests/Program.cs",
+      "sha256_before": null,
+      "sha256_after": "2ff225055bbd7f7db17297eb87c8718f07d40765a31c9414c1aad7a9b643c07d",
+      "scope": "native evidence source/presentation and independent fixtures or exact navigation/version delta"
+    },
+    {
+      "file": "tests/ProcessLens.NativeNetworkTests/ProcessLens.NativeNetworkTests.csproj",
+      "sha256_before": null,
+      "sha256_after": "d438a2c2429cad5ff244049cf871d7e28e82b5138307ccda375b4187ad5655da",
+      "scope": "native evidence source/presentation and independent fixtures or exact navigation/version delta"
+    },
+    {
+      "file": "tests/ProcessLens.NetworkUiTests/Program.cs",
+      "sha256_before": "4932a765cedb320f13b3a6cba5f7d4263cab92f07d643856f5955286a8968e39",
+      "sha256_after": "a32ea267de7e804b281febd0ee485004823744329ef350ddec879bb4ad2437e6",
+      "scope": "native evidence source/presentation and independent fixtures or exact navigation/version delta"
+    }
+  ]
+}

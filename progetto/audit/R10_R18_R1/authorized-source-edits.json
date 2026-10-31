@@ -1,0 +1,30 @@
+{
+  "baseline_sha256": "991e0073b8d5cc47e2bcaf52ee0c968f8bf2db2402ab14b7003ecf351c132742",
+  "scope": "Test harness waits for deferred WPF formatting without lowering assertions; production C# and XAML unchanged.",
+  "files": [
+    {
+      "file": "build-dashboard.ps1",
+      "sha256_before": "9a866f50a70afeb608485439ba04b190849bca7530154add0609121c6b4bc77f",
+      "sha256_after": "99f6c7022ead48e2dc61284a2fc149267bc89a20dda9720007b6e0dc65801502",
+      "scope": "R18 R1 bounded WPF copy-test layout only; exact version and source-gate delta"
+    },
+    {
+      "file": "src/ProcessLens.App/ProcessLens.App.csproj",
+      "sha256_before": "d765fc9bfd519ee8b2d74f426498edc6c66cc42e55448b2f364e1332ce653e06",
+      "sha256_after": "b6d34720e9977b1946b7d3a38e58779cd5a536c831df714b88008fe8e96085ee",
+      "scope": "R18 R1 bounded WPF copy-test layout only; exact version and source-gate delta"
+    },
+    {
+      "file": "tests/ProcessLens.CopyUiTests/Program.cs",
+      "sha256_before": "f6fafdc23c06406ae9fdfce3afaeffbc06a59873563caf126afff3ceeed7046e",
+      "sha256_after": "30151ce76361f4b05013f67aaf627f11dc24b6fa8545d93ec696cd56a2001055",
+      "scope": "R18 R1 bounded WPF copy-test layout only; exact version and source-gate delta"
+    },
+    {
+      "file": "tests/check-copy-layout-r18r1.ps1",
+      "sha256_before": null,
+      "sha256_after": "e7a9cfb6afd4869816c9a7d0bbdaaa85305563b2970deaf2062befe1cb27cc3e",
+      "scope": "R18 R1 bounded WPF copy-test layout only; exact version and source-gate delta"
+    }
+  ]
+}

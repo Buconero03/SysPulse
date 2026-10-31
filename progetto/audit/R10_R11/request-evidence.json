@@ -1,0 +1,11 @@
+{
+  "request": "UX writing and concise diagnostic reports/logs, 20 October 2026",
+  "baseline": "ProcessLens-v0.19.16-R10-R10-before-R11.zip",
+  "baseline_sha256": "622664bf767505d06fab1ed76626415296d3b719803a8bbdc667e34170838eda",
+  "chosen_memory_label": "Working Set privato",
+  "redundant_badge": "removed",
+  "textual_request_examples": "Used as writing requirements, not reported as live measurements",
+  "source_boundary": "No collector/service/profiler changes; JSON/CSV identifiers and values retained",
+  "Windows_execution": "NON ESEGUITO",
+  "CPU_RAM_measurement": "NON MISURATO"
+}

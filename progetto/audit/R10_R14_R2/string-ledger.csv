@@ -1,0 +1,18 @@
+file,line,added_or_modified_source_text,context
+src/ProcessLens.App/NetworkDevicesView.xaml,19,"<TabControl x:Name=""NetworkTabs"" SelectedIndex=""0"" SelectionChanged=""NetworkTabs_Changed"">",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,38,"var cacheTabs = (TabControl)view.FindName(""NetworkTabs"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,39,"Check(cacheTabs.SelectedIndex == 0, ""R14 R2 cache tab explicitly selected before Loaded or visual layout"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,48,"Check(((Button)view.FindName(""RefreshNetworkButton"")).IsEnabled,",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,49,"""R14 R2 manual refresh enabled before the control is shown"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,51,"Check(source.Calls == 1, $""first explicit refresh calls fixture once; calls={source.Calls}, tab={cacheTabs.SelectedIndex}"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,52,"Check(grid.Items.Count == 1, $""first explicit refresh binds one row; rows={grid.Items.Count}, status={indicator.Text}, notice={notice.Text}"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,53,"Check(notice.Text == """", $""first explicit refresh establishes baseline without a false new-device notice; notice={notice.Text}"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,123,"?? throw new Exception(""FAIL network UI: expected NetworkDevicesView in network host"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,136,"var tabView = new NetworkDevicesView(tabSource, new DeviceRecognitionStore(Path.Combine(root, ""tabs.json"")));",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,137,"var tabs = (TabControl)tabView.FindName(""NetworkTabs"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,138,"var captureHost = (ContentControl)tabView.FindName(""NetworkCaptureHost"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,141,"""R14 R2 selecting the initial cache tab does not query data or eagerly create packet capture"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,144,"Check(tabSource.Calls == 0, ""R14 R2 Wireshark tab cannot refresh the cache source"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,146,"Check(tabSource.Calls == 0, ""R14 R2 returning to cache tab does not automatically refresh"");",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,148,"Check(tabSource.Calls == 1 && ((DataGrid)tabView.FindName(""NetworkDevicesTable"")).Items.Count == 1,",UI/report or technical source context
+tests/ProcessLens.NetworkUiTests/Program.cs,149,"""R14 R2 explicit cache refresh works after switching tabs before Loaded"");",UI/report or technical source context

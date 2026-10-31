@@ -1,0 +1,10 @@
+﻿before,after,scope,reason_limit
+Processi:,Rilevati:,Counter label,Count still equals enumerated rows; tooltip explains snapshot
+No explicit initial chapter,QUADRO GENERALE,Query and evidence panels,"Organizational heading, no new diagnosis"
+Long native string header,Numbered wrapped chapter header,RAM reports and evidence groups,Existing heading text retained
+Dense consecutive API lines,Separate labelled API blocks,Report body,Source numbers and units retained
+PSAPI fields separated by middle dot,PSAPI visual fields on separate lines,Report body,Original complete-copy text unchanged
+Altre osservazioni: DLL lists,Moduli e librerie,Evidence chapter,Original evidence still available
+Altre osservazioni: window classes,Finestre osservate,Evidence chapter,No new network/window acquisition
+Altre osservazioni: deep inspection status,Esito delle letture,Evidence chapter,Original status retained
+Unheaded paragraphs may be omitted visually,Unheaded paragraphs remain in chapter,Heading parser,Complete-copy original remains unchanged

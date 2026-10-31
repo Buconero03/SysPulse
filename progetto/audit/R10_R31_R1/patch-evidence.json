@@ -1,0 +1,6 @@
+{
+  "git_apply_check": "PASS",
+  "actual_apply_and_byte_comparison": "PASS",
+  "patch_sha256": "e4df94b53cec00b2b5f36c17f8518bc0d78fc4578bd787c12ecb1ddf4ad4da81",
+  "excluded_from_diff_only": "current R31 audit and recursive manifests; all included in final ZIP"
+}

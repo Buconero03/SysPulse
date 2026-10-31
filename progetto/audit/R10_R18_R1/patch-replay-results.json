@@ -1,0 +1,7 @@
+{
+  "git_apply_check": "PASS",
+  "actual_apply_and_byte_comparison": "PASS",
+  "delta_files": 19,
+  "patch_sha256": "94c19d2a676bc954277ef8bf22788311ca37d1283b088c9faecb39195e10e07a",
+  "excluded": "Current audit metadata and current manifest only; excluded for self-reference."
+}

@@ -1,0 +1,67 @@
+[
+  {
+    "test": "candidate satisfies monitor and navigation source guards",
+    "status": "PASS",
+    "scope": "Source only, no C# execution"
+  },
+  {
+    "test": "reject partial becomes total",
+    "status": "PASS",
+    "scope": "Source only, no C# execution"
+  },
+  {
+    "test": "reject snapshot parent accepted alone",
+    "status": "PASS",
+    "scope": "Source only, no C# execution"
+  },
+  {
+    "test": "reject PID reuse allowed",
+    "status": "PASS",
+    "scope": "Source only, no C# execution"
+  },
+  {
+    "test": "reject root name substitutes path",
+    "status": "PASS",
+    "scope": "Source only, no C# execution"
+  },
+  {
+    "test": "reject full process access",
+    "status": "PASS",
+    "scope": "Source only, no C# execution"
+  },
+  {
+    "test": "reject EX prefix becomes private RAM",
+    "status": "PASS",
+    "scope": "Source only, no C# execution"
+  },
+  {
+    "test": "reject sampling history accumulates",
+    "status": "PASS",
+    "scope": "Source only, no C# execution"
+  },
+  {
+    "test": "reject RAM category truncated before filter",
+    "status": "PASS",
+    "scope": "Source only, no C# execution"
+  },
+  {
+    "test": "reject substring PID service scope",
+    "status": "PASS",
+    "scope": "Source only, no C# execution"
+  },
+  {
+    "test": "reject new PID born after RAM frame accepted",
+    "status": "PASS",
+    "scope": "Source only, no C# execution"
+  },
+  {
+    "test": "reject stale navigation result accepted",
+    "status": "PASS",
+    "scope": "Source only, no C# execution"
+  },
+  {
+    "test": "reject service details could stop service",
+    "status": "PASS",
+    "scope": "Source only, no C# execution"
+  }
+]

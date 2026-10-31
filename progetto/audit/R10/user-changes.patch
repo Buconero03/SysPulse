@@ -1,0 +1,2156 @@
+--- previous/publish-release.ps1
++++ current/publish-release.ps1
+@@ -7,6 +7,8 @@
+ }
+ 
+ & (Join-Path $PSScriptRoot 'tests\check-elevation.ps1')
++Get-Process -Name 'ProcessLens' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
++Start-Sleep -Milliseconds 400
+ $out = Join-Path $PSScriptRoot 'publish\win-x64'
+ if (Test-Path $out) { Remove-Item $out -Recurse -Force }
+ New-Item -ItemType Directory -Path $out -Force | Out-Null
+--- previous/run-release.ps1
++++ current/run-release.ps1
+@@ -1,3 +1,5 @@
++Get-Process -Name 'ProcessLens' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
++Start-Sleep -Milliseconds 300
+ $ErrorActionPreference = 'Stop'
+ Set-Location $PSScriptRoot
+ 
+--- previous/src/ProcessLens.App/MainWindow.xaml
++++ current/src/ProcessLens.App/MainWindow.xaml
+@@ -254,7 +254,7 @@
+                     <StackPanel Margin="2,0,2,12">
+                         <TextBlock Text="Processi" FontSize="20" FontWeight="SemiBold"/>
+                         <TextBlock x:Name="ListExplanationText"
+-                                   Text="I processi piu' recenti sono mostrati per primi. Seleziona un processo per analizzarlo."
++                                   Text="I processi più recenti sono mostrati per primi. Seleziona un processo per analizzarlo."
+                                    Foreground="#667085" FontSize="12" TextWrapping="Wrap" Margin="0,3,0,6"/>
+                         <WrapPanel Orientation="Horizontal">
+                             <TextBlock x:Name="CurrentFilterText" Text="Vista: tutti i processi" Foreground="#667085"
+@@ -677,7 +677,14 @@
+ 
+                         <Border Style="{StaticResource DetailCard}">
+                             <StackPanel>
+-                                <TextBlock Text="MEMORIA · MISURE SEPARATE" Style="{StaticResource SectionLabel}"/>
++                                <Grid>
++                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
++                                    <TextBlock Text="MEMORIA · MISURE SEPARATE" Style="{StaticResource SectionLabel}" VerticalAlignment="Center" Margin="0"/>
++                                    <Button x:Name="AnalyzeRamDirectButton" Grid.Column="1" Content="Analizza RAM ora ▾"
++                                            Click="AnalyzeRamDirectButton_Click" Padding="9,3" FontSize="11" FontWeight="SemiBold"
++                                            Background="#E0F2FE" BorderBrush="#7DD3FC" Foreground="#0369A1" Cursor="Hand"
++                                            ToolTip="Esegue subito la diagnosi anatomica completa della RAM per questo processo"/>
++                                </Grid>
+                                 <Grid Margin="0,9,0,8">
+                                     <Grid.ColumnDefinitions>
+                                         <ColumnDefinition Width="*"/>
+--- previous/src/ProcessLens.App/MainWindow.xaml.cs
++++ current/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -96,6 +96,8 @@
+             }
+         };
+ 
++        MemoryDashboard.InspectProcessRequested += pid => _ = InspectPidMemoryFromDashboardAsync(pid);
++
+         Loaded += async (_, _) =>
+         {
+             AppDiagnostics.Record("Interfaccia caricata: prima lettura processi in corso");
+@@ -997,6 +999,56 @@
+             while (queue.Count > 40 || (queue.Count > 0 && (now - queue.Peek().TimestampUtc) > TimeSpan.FromSeconds(90)))
+                 queue.Dequeue();
+         }
++    }
++
++
++    private string BuildRelatedMemoryEvidence(ProcessRow selectedRow, SystemMemoryEvidence? systemMemory)
++    {
++        var p = selectedRow.Process;
++        var related = _allRows
++            .Where(r => r.Name.Equals(p.Name, StringComparison.OrdinalIgnoreCase) ||
++                        (!string.IsNullOrWhiteSpace(selectedRow.OwnerApp) &&
++                         !selectedRow.OwnerApp.Equals("Windows", StringComparison.OrdinalIgnoreCase) &&
++                         r.OwnerApp.Equals(selectedRow.OwnerApp, StringComparison.OrdinalIgnoreCase)))
++            .ToArray();
++
++        if (related.Length <= 1)
++            return "■ IMPATTO COMPLESSIVO DELL'APPLICAZIONE (PROCESSO SINGOLO)\n" +
++                   $"Non risultano altri processi attivi associati a {selectedRow.FriendlyName} ({p.Name}): " +
++                   "l'intero consumo dell'applicazione coincide con quello di questo singolo PID.";
++
++        var withPrivateWs = related.Where(r => r.Process.PrivateWorkingSetAvailable).ToArray();
++        double totalPrivateMb = withPrivateWs.Sum(r => r.Process.PrivateWorkingSetMb);
++        double totalCommitMb = related.Where(r => r.Process.PrivateCommitAvailable).Sum(r => r.Process.PrivateMb);
++        double singleSharePct = totalPrivateMb > 0 && p.PrivateWorkingSetAvailable
++            ? Math.Clamp(100.0 * p.PrivateWorkingSetMb / totalPrivateMb, 0, 100)
++            : 0;
++        string sysPctText = systemMemory is { TotalBytes: > 0 } && totalPrivateMb > 0
++            ? $" ({100.0 * (totalPrivateMb * 1048576.0) / systemMemory.TotalBytes:F1}% della RAM fisica totale del PC)"
++            : "";
++
++        var topSiblings = related
++            .OrderByDescending(r => r.Process.PrivateWorkingSetAvailable ? r.Process.PrivateWorkingSetMb : r.Process.WorkingSetMb)
++            .Take(6)
++            .Select(r =>
++            {
++                string marker = r.Pid == p.Pid ? " [PID selezionato]" : "";
++                string mem = r.Process.PrivateWorkingSetAvailable
++                    ? $"{r.Process.PrivateWorkingSetMb:F1} MiB privati"
++                    : $"{r.Process.WorkingSetMb:F1} MiB tot.";
++                return $"• PID {r.Pid}{marker} ({r.Role}): {mem} — commit {(r.Process.PrivateCommitAvailable ? $"{r.Process.PrivateMb:F1} MiB" : "N/D")}";
++            });
++
++        return "■ IMPATTO COMPLESSIVO DELL'APPLICAZIONE (" + related.Length + " PROCESSI CORRELATI)\n" +
++               $"• Processi attivi del gruppo «{selectedRow.OwnerApp} / {p.Name}»: {related.Length} istanze.\n" +
++               $"• RAM privata residente sommata dell'intero gruppo: {totalPrivateMb:F1} MiB{sysPctText} " +
++               $"(somma esatta delle sole pagine private esclusive, senza duplicare le DLL condivise).\n" +
++               $"• Commit privato sommato dell'intero gruppo: {totalCommitMb:F1} MiB.\n" +
++               (singleSharePct > 0
++                   ? $"• Peso di questo singolo PID ({p.Pid}) sul totale dell'app: {singleSharePct:F0}%.\n"
++                   : "") +
++               "Principali processi del gruppo per consumo di RAM:\n" +
++               string.Join("\n", topSiblings);
+     }
+ 
+     private string DescribeRelatedProcessCpu(ProcessSnapshot selected)
+@@ -1297,9 +1349,12 @@
+                 memoryMap,
+                 systemMemory));
+ 
+-            if (isMemoryAnalysis && allocationReport is not null)
+-                result = result with { Answer = result.Answer.TrimEnd() +
+-                    "\n\n" + allocationReport.ToEvidenceText() };
++            if (isMemoryAnalysis)
++            {
++                string familySection = BuildRelatedMemoryEvidence(row, systemMemory);
++                string allocSection = allocationReport is not null ? "\n\n" + allocationReport.ToEvidenceText() : "";
++                result = result with { Answer = result.Answer.TrimEnd() + "\n\n" + familySection + allocSection };
++            }
+ 
+             if (result.ProgressSample is not null)
+                 _progressSamples[row.Pid] = result.ProgressSample;
+@@ -1721,6 +1776,29 @@
+         SetWorkspaceMode("memory");
+     }
+ 
++    private async void AnalyzeRamDirectButton_Click(object sender, RoutedEventArgs e)
++    {
++        await AskSelectedProcessAsync("Perché consuma così tanta RAM o memoria?");
++        ProcessQueryAnswerCard.BringIntoView();
++    }
++
++    private async Task InspectPidMemoryFromDashboardAsync(int pid)
++    {
++        if (_allRows.FirstOrDefault(r => r.Pid == pid) is null)
++            await RefreshAsync();
++        var target = _allRows.FirstOrDefault(r => r.Pid == pid);
++        if (target is null) return;
++        _activeFilter = "Tutti";
++        _selectedPid = pid;
++        SetFilterButtonState();
++        SetWorkspaceMode("processes");
++        ApplyFilter(pid);
++        if (ProcessList.SelectedItem is not null)
++            ProcessList.ScrollIntoView(ProcessList.SelectedItem);
++        await AskSelectedProcessAsync("Perché consuma così tanta RAM o memoria?");
++        ProcessQueryAnswerCard.BringIntoView();
++    }
++
+     private void NavGuardianButton_Click(object sender, RoutedEventArgs e)
+     {
+         SetWorkspaceMode("guardian");
+--- previous/src/ProcessLens.App/MemoryDashboardView.xaml
++++ current/src/ProcessLens.App/MemoryDashboardView.xaml
+@@ -15,6 +15,17 @@
+         <Style x:Key="MemoryNumericCell" TargetType="TextBlock" BasedOn="{StaticResource MemoryGridCell}">
+             <Setter Property="TextAlignment" Value="Right"/>
+             <Setter Property="FontWeight" Value="SemiBold"/>
++        </Style>
++        <Style x:Key="MemoryModeButton" TargetType="Button">
++            <Setter Property="Background" Value="White"/>
++            <Setter Property="Foreground" Value="#334155"/>
++            <Setter Property="BorderBrush" Value="#CBD5E1"/>
++            <Setter Property="BorderThickness" Value="1"/>
++            <Setter Property="Padding" Value="11,5"/>
++            <Setter Property="Margin" Value="0,0,6,0"/>
++            <Setter Property="FontSize" Value="12"/>
++            <Setter Property="FontWeight" Value="SemiBold"/>
++            <Setter Property="Cursor" Value="Hand"/>
+         </Style>
+         <!-- Indicatore personalizzato: il colore viene da Foreground,
+              quindi il valore e il livello di uso comunicano lo stesso stato. -->
+@@ -43,114 +54,218 @@
+             <RowDefinition Height="*"/>
+         </Grid.RowDefinitions>
+ 
+-        <!-- 1. Stato attuale: separato dalla configurazione degli avvisi. -->
++        <!-- 1. Stato attuale + Censimento e Suddivisione per Macro-Categorie -->
+         <Border Grid.Row="0" Background="White" BorderBrush="#E2E5E9"
+-                BorderThickness="1" CornerRadius="12" Padding="17" Margin="0,0,0,10">
++                BorderThickness="1" CornerRadius="12" Padding="15,13" Margin="0,0,0,8">
+             <StackPanel>
+                 <Grid>
+                     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+-                        <TextBlock Text="Memoria fisica del sistema" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
++                        <TextBlock Text="Analizzatore Memoria RAM Fisica e Suddivisione per Categorie" FontSize="19" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                     </StackPanel>
+-                    <Button Grid.Column="1" Content="Aggiorna ora" Click="RefreshMemory_Click"
+-                            Padding="13,6" Margin="12,0,0,0" ToolTip="Rileggi lo stato della RAM e aggiorna la classifica dei processi"/>
++                    <Button Grid.Column="1" Content="Aggiorna analisi RAM" Click="RefreshMemory_Click"
++                            Padding="13,6" Margin="12,0,0,0" FontWeight="SemiBold"
++                            Background="#EFF6FF" BorderBrush="#93C5FD" Foreground="#1E40AF"
++                            ToolTip="Rileggi tutti i processi del PC, ricalcola le categorie e aggiorna la classifica"/>
+                 </Grid>
+                 <Border x:Name="PressureBadge" Background="#E2E8F0" CornerRadius="7"
+-                        HorizontalAlignment="Left" Padding="9,4" Margin="0,9,0,7">
++                        HorizontalAlignment="Left" Padding="9,4" Margin="0,7,0,6">
+                     <TextBlock x:Name="PressureText" Text="Lettura in corso" FontSize="12" FontWeight="SemiBold"
+                                Foreground="#334155"/>
+                 </Border>
+-                <Grid Margin="0,1,0,11">
++                <Grid Margin="0,1,0,9">
+                     <Grid.ColumnDefinitions>
+                         <ColumnDefinition Width="*"/>
+-                        <ColumnDefinition Width="10"/>
+-                        <ColumnDefinition Width="*"/>
+-                        <ColumnDefinition Width="10"/>
++                        <ColumnDefinition Width="8"/>
++                        <ColumnDefinition Width="*"/>
++                        <ColumnDefinition Width="8"/>
+                         <ColumnDefinition Width="*"/>
+                     </Grid.ColumnDefinitions>
+-                    <Border Grid.Column="0" Background="#F8FAFC" CornerRadius="8" Padding="12,9">
++                    <Border Grid.Column="0" Background="#F8FAFC" CornerRadius="8" Padding="11,7">
+                         <StackPanel>
+                             <TextBlock Text="RAM utilizzata" Style="{StaticResource MemoryMetricLabel}"/>
+-                            <TextBlock x:Name="UsageText" Text="--%" FontSize="27" FontWeight="Bold" Foreground="#334155"/>
+-                            <TextBlock x:Name="UsedText" Text="Dati non ancora disponibili" Foreground="#64748B" FontSize="12" TextWrapping="Wrap"/>
+-                        </StackPanel>
+-                    </Border>
+-                    <Border Grid.Column="2" Background="#F8FAFC" CornerRadius="8" Padding="12,9">
++                            <TextBlock x:Name="UsageText" Text="--%" FontSize="24" FontWeight="Bold" Foreground="#334155"/>
++                            <TextBlock x:Name="UsedText" Text="Dati non ancora disponibili" Foreground="#64748B" FontSize="11.5" TextWrapping="Wrap"/>
++                        </StackPanel>
++                    </Border>
++                    <Border Grid.Column="2" Background="#F8FAFC" CornerRadius="8" Padding="11,7">
+                         <StackPanel>
+                             <TextBlock Text="RAM disponibile" Style="{StaticResource MemoryMetricLabel}"/>
+-                            <TextBlock x:Name="AvailableText" Text="-- GiB" FontSize="24" FontWeight="SemiBold" Foreground="#0F172A"/>
+-                            <TextBlock Text="Memoria fisica disponibile" Foreground="#64748B" FontSize="12" TextWrapping="Wrap"/>
+-                        </StackPanel>
+-                    </Border>
+-                    <Border Grid.Column="4" Background="#F8FAFC" CornerRadius="8" Padding="12,9">
++                            <TextBlock x:Name="AvailableText" Text="-- GiB" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A"/>
++                            <TextBlock Text="Memoria fisica libera subito utilizzabile" Foreground="#64748B" FontSize="11.5" TextWrapping="Wrap"/>
++                        </StackPanel>
++                    </Border>
++                    <Border Grid.Column="4" Background="#F8FAFC" CornerRadius="8" Padding="11,7">
+                         <StackPanel>
+                             <TextBlock Text="RAM fisica totale" Style="{StaticResource MemoryMetricLabel}" TextWrapping="Wrap"/>
+-                            <TextBlock x:Name="TotalText" Text="-- GiB" FontSize="24" FontWeight="SemiBold" Foreground="#0F172A"/>
+-                            <TextBlock Text="Totale fisico rilevato da Windows" Foreground="#64748B" FontSize="12" TextWrapping="Wrap"/>
++                            <TextBlock x:Name="TotalText" Text="-- GiB" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A"/>
++                            <TextBlock x:Name="CommitSummaryText" Text="Totale fisico rilevato da Windows" Foreground="#64748B" FontSize="11.5" TextWrapping="Wrap"/>
+                         </StackPanel>
+                     </Border>
+                 </Grid>
+                 <ProgressBar x:Name="MemoryBar" Style="{StaticResource PhysicalMemoryProgress}"
+                              Minimum="0" Maximum="100" Value="0"/>
+                 <TextBlock x:Name="PressureExplanation" Text="Attendo i dati di Windows."
+-                           Foreground="#475569" FontSize="12" TextWrapping="Wrap" Margin="0,8,0,0"/>
++                           Foreground="#475569" FontSize="11.5" TextWrapping="Wrap" Margin="0,6,0,0"/>
++
++                <!-- Suddivisione esatta per Macro-Categorie (basata su RAM privata esclusiva, senza doppi conteggi) -->
++                <TextBlock Text="COME È SUDDIVISA LA RAM IN USO (PER MACRO-CATEGORIA)"
++                           FontSize="11" FontWeight="SemiBold" Foreground="#475569" Margin="0,10,0,5"/>
++                <Grid>
++                    <Grid.ColumnDefinitions>
++                        <ColumnDefinition Width="*"/>
++                        <ColumnDefinition Width="6"/>
++                        <ColumnDefinition Width="*"/>
++                        <ColumnDefinition Width="6"/>
++                        <ColumnDefinition Width="*"/>
++                        <ColumnDefinition Width="6"/>
++                        <ColumnDefinition Width="*"/>
++                        <ColumnDefinition Width="6"/>
++                        <ColumnDefinition Width="1.15*"/>
++                    </Grid.ColumnDefinitions>
++                    <Border Grid.Column="0" Background="#F0F7FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="8" Padding="9,6">
++                        <StackPanel>
++                            <TextBlock Text="Applicazioni e Browser" FontSize="11" FontWeight="SemiBold" Foreground="#1E40AF"/>
++                            <TextBlock x:Name="CatAppsValueText" Text="-- MiB" FontSize="15" FontWeight="Bold" Foreground="#1E3A8A" Margin="0,2,0,1"/>
++                            <TextBlock x:Name="CatAppsMetaText" Text="--% RAM · -- processi" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
++                        </StackPanel>
++                    </Border>
++                    <Border Grid.Column="2" Background="#F5F3FF" BorderBrush="#DDD6FE" BorderThickness="1" CornerRadius="8" Padding="9,6">
++                        <StackPanel>
++                            <TextBlock Text="Sviluppo e Runtime" FontSize="11" FontWeight="SemiBold" Foreground="#5B21B6"/>
++                            <TextBlock x:Name="CatDevValueText" Text="-- MiB" FontSize="15" FontWeight="Bold" Foreground="#4C1D95" Margin="0,2,0,1"/>
++                            <TextBlock x:Name="CatDevMetaText" Text="--% RAM · -- processi" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
++                        </StackPanel>
++                    </Border>
++                    <Border Grid.Column="4" Background="#ECFEFF" BorderBrush="#A5F3FC" BorderThickness="1" CornerRadius="8" Padding="9,6">
++                        <StackPanel>
++                            <TextBlock Text="Sistema Windows" FontSize="11" FontWeight="SemiBold" Foreground="#0E7490"/>
++                            <TextBlock x:Name="CatWinValueText" Text="-- MiB" FontSize="15" FontWeight="Bold" Foreground="#155E75" Margin="0,2,0,1"/>
++                            <TextBlock x:Name="CatWinMetaText" Text="--% RAM · -- processi" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
++                        </StackPanel>
++                    </Border>
++                    <Border Grid.Column="6" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="8" Padding="9,6">
++                        <StackPanel>
++                            <TextBlock Text="Servizi e Secondari" FontSize="11" FontWeight="SemiBold" Foreground="#334155"/>
++                            <TextBlock x:Name="CatBgValueText" Text="-- MiB" FontSize="15" FontWeight="Bold" Foreground="#1E293B" Margin="0,2,0,1"/>
++                            <TextBlock x:Name="CatBgMetaText" Text="--% RAM · -- processi" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
++                        </StackPanel>
++                    </Border>
++                    <Border Grid.Column="8" Background="#FFFBEB" BorderBrush="#FDE68A" BorderThickness="1" CornerRadius="8" Padding="9,6"
++                            ToolTip="Differenza tra la RAM fisica totale in uso (GlobalMemoryStatusEx) e la somma delle RAM private esclusive dei processi: comprende Kernel Windows, driver, cache e DLL condivise tra più processi">
++                        <StackPanel>
++                            <TextBlock Text="Kernel, Driver e DLL Condivise" FontSize="11" FontWeight="SemiBold" Foreground="#92400E"/>
++                            <TextBlock x:Name="CatKernelValueText" Text="-- GiB" FontSize="15" FontWeight="Bold" Foreground="#78350F" Margin="0,2,0,1"/>
++                            <TextBlock x:Name="CatKernelMetaText" Text="--% RAM fisica" FontSize="10.5" Foreground="#78350F" TextWrapping="Wrap"/>
++                        </StackPanel>
++                    </Border>
++                </Grid>
++
+                 <TextBlock x:Name="RefreshStatus" Text="Lettura Windows in corso"
+-                           Foreground="#64748B" FontSize="11" Margin="0,5,0,0" TextWrapping="Wrap"/>
++                           Foreground="#64748B" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"/>
+             </StackPanel>
+         </Border>
+ 
+-        <!-- 2. Avvisi: la presenza nel registro non significa agente in esecuzione. -->
++        <!-- 2. Avvisi automatici compatti -->
+         <Border Grid.Row="1" Background="#EFF6FF" BorderBrush="#BFDBFE"
+-                BorderThickness="1" CornerRadius="10" Padding="12,10" Margin="0,0,0,10">
++                BorderThickness="1" CornerRadius="10" Padding="12,7" Margin="0,0,0,8">
+             <Grid>
+                 <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+-                <StackPanel>
+-                    <TextBlock Text="Avvisi automatici RAM" FontWeight="SemiBold" FontSize="14"/>
++                <WrapPanel VerticalAlignment="Center">
++                    <TextBlock Text="Avvisi automatici RAM: " FontWeight="SemiBold" FontSize="12.5" Foreground="#1E3A8A"/>
+                     <TextBlock x:Name="AgentStatus" Text="Verifica configurazione agente..."
+-                               FontWeight="SemiBold" Foreground="#1D4ED8" FontSize="12" Margin="0,3,0,0" TextWrapping="Wrap"/>
++                               FontWeight="SemiBold" Foreground="#1D4ED8" FontSize="12.5" Margin="0,0,8,0"/>
+                     <TextBlock x:Name="AgentExplanation" Text="Avviso al raggiungimento dell'85%; nuovo avviso solo dopo il ritorno sotto l'80%."
+-                               Foreground="#475569" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"/>
+-                </StackPanel>
+-                <TextBlock Grid.Column="1" Text="85% / 80%" Foreground="#1E40AF"
+-                           FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center"
++                               Foreground="#475569" FontSize="11.5"/>
++                </WrapPanel>
++                <TextBlock Grid.Column="1" Text="Soglia 85% / 80%" Foreground="#1E40AF"
++                           FontWeight="SemiBold" FontSize="11.5" VerticalAlignment="Center"
+                            Margin="12,0,0,0" ToolTip="Soglia primo avviso / soglia di riarmo, non valori della RAM attuale"/>
+             </Grid>
+         </Border>
+ 
+-        <!-- 3. Classifica: la RAM residente include pagine condivisibili. -->
++        <!-- 3. Tabella interattiva: Raggruppamento per Programma (Multi-processo) oppure per Singolo PID + Filtri Categoria -->
+         <Border Grid.Row="2" Background="White" BorderBrush="#E2E5E9"
+-                BorderThickness="1" CornerRadius="12" Padding="14" MinHeight="0">
++                BorderThickness="1" CornerRadius="12" Padding="14,11" MinHeight="0">
+             <Grid>
+                 <Grid.RowDefinitions>
++                    <RowDefinition Height="Auto"/>
+                     <RowDefinition Height="Auto"/>
+                     <RowDefinition Height="*"/>
+                     <RowDefinition Height="Auto"/>
+                 </Grid.RowDefinitions>
+-                <StackPanel Margin="0,0,0,8">
+-                    <TextBlock Text="Processi con più RAM residente" FontSize="17" FontWeight="SemiBold"/>
+-                    <TextBlock x:Name="TopProcessesCaption" Text="Fino a 20 processi, ordinati dal consumo residente maggiore al minore."
+-                               Foreground="#64748B" FontSize="12" Margin="0,3,0,0" TextWrapping="Wrap"/>
+-                </StackPanel>
+-                <DataGrid Grid.Row="1" x:Name="TopMemoryProcesses" AutoGenerateColumns="False" IsReadOnly="True"
++
++                <Grid Grid.Row="0" Margin="0,0,0,6">
++                    <Grid.ColumnDefinitions>
++                        <ColumnDefinition Width="*"/>
++                        <ColumnDefinition Width="Auto"/>
++                    </Grid.ColumnDefinitions>
++                    <StackPanel>
++                        <TextBlock x:Name="TableHeaderTitleText" Text="Chi consuma più RAM (Programmi raggruppati e Processi)" FontSize="16" FontWeight="SemiBold"/>
++                        <TextBlock x:Name="TopProcessesCaption" Text="Processi raggruppati per programma e ordinati per RAM privata esclusiva."
++                                   Foreground="#64748B" FontSize="11.5" Margin="0,2,0,0" TextWrapping="Wrap"/>
++                    </StackPanel>
++                    <Button x:Name="InspectSelectedMemoryButton" Grid.Column="1"
++                            Content="Ispeziona anatomia RAM del selezionato →"
++                            Click="InspectSelectedMemory_Click"
++                            Padding="12,6" FontWeight="SemiBold" FontSize="12"
++                            Background="#E0F2FE" BorderBrush="#7DD3FC" Foreground="#0369A1"
++                            VerticalAlignment="Center" Cursor="Hand"
++                            ToolTip="Apre la scheda del processo selezionato ed esegue subito l'analisi anatomica completa della sua RAM (VirtualQueryEx + Working Set + Albero)"/>
++                </Grid>
++
++                <!-- Selettore modalità vista e filtro categoria -->
++                <WrapPanel Grid.Row="1" Margin="0,0,0,8" VerticalAlignment="Center">
++                    <TextBlock Text="Vista:" FontSize="12" FontWeight="SemiBold" Foreground="#475569" VerticalAlignment="Center" Margin="0,0,6,0"/>
++                    <Button x:Name="ModeGroupedButton" Content="Per Programma (Multi-processo uniti)"
++                            Style="{StaticResource MemoryModeButton}" Click="ModeGroupedButton_Click"
++                            ToolTip="Unisce tutti i processi dello stesso programma (es. tutte le schede di Chrome/Edge) sommando solo la RAM privata esclusiva"/>
++                    <Button x:Name="ModeSinglePidButton" Content="Per Singolo Processo (PID)"
++                            Style="{StaticResource MemoryModeButton}" Click="ModeSinglePidButton_Click"
++                            ToolTip="Mostra ogni singolo PID separatamente con RAM privata, RAM condivisa, Working Set e Commit"/>
++
++                    <TextBlock Text="  Categoria:" FontSize="12" FontWeight="SemiBold" Foreground="#475569" VerticalAlignment="Center" Margin="10,0,6,0"/>
++                    <Button x:Name="CatFilterAllButton" Content="Tutte" Tag="ALL"
++                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
++                    <Button x:Name="CatFilterAppsButton" Content="Applicazioni" Tag="Applicazioni"
++                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
++                    <Button x:Name="CatFilterDevButton" Content="Sviluppo" Tag="Sviluppo"
++                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
++                    <Button x:Name="CatFilterWinButton" Content="Windows" Tag="Windows"
++                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
++                    <Button x:Name="CatFilterBgButton" Content="Servizi" Tag="Secondario"
++                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
++                </WrapPanel>
++
++                <DataGrid Grid.Row="2" x:Name="TopMemoryProcesses" AutoGenerateColumns="False" IsReadOnly="True"
+                           SelectionMode="Single" SelectionUnit="FullRow" CanUserAddRows="False" CanUserDeleteRows="False"
+                           CanUserSortColumns="False" EnableRowVirtualization="True" EnableColumnVirtualization="True"
+                           HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E2E8F0"
+                           AlternatingRowBackground="#F8FAFC" RowBackground="White" RowHeight="30"
+                           ColumnHeaderHeight="30" BorderThickness="0" FontSize="12"
++                          MouseDoubleClick="TopMemoryProcesses_MouseDoubleClick"
+                           ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                     <DataGrid.Columns>
+-                        <DataGridTextColumn Header="Processo" Binding="{Binding Name}" Width="2*"
++                        <DataGridTextColumn Header="Programma / Processo" Binding="{Binding Name}" Width="2.1*"
+                                             ElementStyle="{StaticResource MemoryGridCell}"/>
+-                        <DataGridTextColumn Header="PID" Binding="{Binding Pid}" Width="76"
+-                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
+-                        <DataGridTextColumn Header="RAM residente (MiB)" Binding="{Binding WorkingSetMiB}" Width="160"
+-                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
+-                        <DataGridTextColumn Header="Commit privato (MiB)" Binding="{Binding CommitMiB}" Width="180"
++                        <DataGridTextColumn Header="Categoria" Binding="{Binding CategoryLabel}" Width="110"
++                                            ElementStyle="{StaticResource MemoryGridCell}"/>
++                        <DataGridTextColumn Header="Istanze / PID" Binding="{Binding InstancesOrPid}" Width="125"
++                                            ElementStyle="{StaticResource MemoryGridCell}"/>
++                        <DataGridTextColumn Header="RAM privata (MiB)" Binding="{Binding PrivateWorkingSetMiB}" Width="135"
++                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
++                        <DataGridTextColumn Header="Condivisa (MiB)" Binding="{Binding SharedWorkingSetMiB}" Width="120"
++                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
++                        <DataGridTextColumn Header="RAM totale (MiB)" Binding="{Binding WorkingSetMiB}" Width="130"
++                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
++                        <DataGridTextColumn Header="Commit privato (MiB)" Binding="{Binding CommitMiB}" Width="140"
++                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
++                        <DataGridTextColumn Header="Quota RAM PC" Binding="{Binding SystemShare}" Width="105"
+                                             ElementStyle="{StaticResource MemoryNumericCell}"/>
+                     </DataGrid.Columns>
+                 </DataGrid>
+-                <TextBlock Grid.Row="2" Text="RAM residente: include pagine condivisibili; non sommare le righe. Commit privato: memoria impegnata, non RAM fisica. Nessun processo viene modificato."
+-                           Foreground="#64748B" FontSize="11" TextWrapping="Wrap" Margin="0,9,0,0"/>
++                <TextBlock Grid.Row="3" Text="RAM privata: memoria fisica esclusiva del processo o gruppo (sommabile senza doppi conteggi). Condivisa: DLL di sistema/runtime in comune con altri programmi. Doppio clic su una riga per l'analisi anatomica."
++                           Foreground="#64748B" FontSize="11" TextWrapping="Wrap" Margin="0,7,0,0"/>
+             </Grid>
+         </Border>
+     </Grid>
+--- previous/src/ProcessLens.App/MemoryDashboardView.xaml.cs
++++ current/src/ProcessLens.App/MemoryDashboardView.xaml.cs
+@@ -1,6 +1,7 @@
+ using System.Diagnostics;
+ using System.Windows;
+ using System.Windows.Controls;
++using System.Windows.Input;
+ using System.Windows.Media;
+ using System.Windows.Threading;
+ using Microsoft.Win32;
+@@ -14,12 +15,27 @@
+     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(10) };
+     private bool _refreshing;
+     private bool _active;
+-
+-    private sealed record MemoryRow(string Name, int Pid, string WorkingSetMiB, string CommitMiB);
++    private bool _groupByProgram = true;
++    private string _categoryFilter = "ALL";
++    private WindowsPhysicalMemoryReader.FullMemoryAnalysisSnapshot? _lastSnapshot;
++
++    public event Action<int>? InspectProcessRequested;
++
++    private sealed record MemoryRow(
++        string Name,
++        string CategoryLabel,
++        string InstancesOrPid,
++        string PrivateWorkingSetMiB,
++        string SharedWorkingSetMiB,
++        string WorkingSetMiB,
++        string CommitMiB,
++        string SystemShare,
++        int TargetPid);
+ 
+     public MemoryDashboardView()
+     {
+         InitializeComponent();
++        UpdateButtonStyles();
+         _timer.Tick += async (_, _) => await RefreshAsync();
+         Unloaded += (_, _) => { _timer.Stop(); _active = false; };
+     }
+@@ -36,6 +52,69 @@
+     }
+ 
+     private async void RefreshMemory_Click(object sender, RoutedEventArgs e) => await RefreshAsync();
++
++    private void ModeGroupedButton_Click(object sender, RoutedEventArgs e)
++    {
++        _groupByProgram = true;
++        UpdateButtonStyles();
++        PopulateTable();
++    }
++
++    private void ModeSinglePidButton_Click(object sender, RoutedEventArgs e)
++    {
++        _groupByProgram = false;
++        UpdateButtonStyles();
++        PopulateTable();
++    }
++
++    private void CategoryFilterButton_Click(object sender, RoutedEventArgs e)
++    {
++        if (sender is Button btn && btn.Tag is string tag)
++        {
++            _categoryFilter = tag;
++            UpdateButtonStyles();
++            PopulateTable();
++        }
++    }
++
++    private void InspectSelectedMemory_Click(object sender, RoutedEventArgs e)
++    {
++        if (TopMemoryProcesses.SelectedItem is MemoryRow row && row.TargetPid > 0)
++            InspectProcessRequested?.Invoke(row.TargetPid);
++        else if (TopMemoryProcesses.Items.Count > 0 && TopMemoryProcesses.Items[0] is MemoryRow first && first.TargetPid > 0)
++            InspectProcessRequested?.Invoke(first.TargetPid);
++    }
++
++    private void TopMemoryProcesses_MouseDoubleClick(object sender, MouseButtonEventArgs e)
++    {
++        if (TopMemoryProcesses.SelectedItem is MemoryRow row && row.TargetPid > 0)
++            InspectProcessRequested?.Invoke(row.TargetPid);
++    }
++
++    private void UpdateButtonStyles()
++    {
++        var activeBg = (SolidColorBrush)new BrushConverter().ConvertFromString("#DBEAFE")!;
++        var activeBorder = (SolidColorBrush)new BrushConverter().ConvertFromString("#3B82F6")!;
++        var activeFg = (SolidColorBrush)new BrushConverter().ConvertFromString("#1E3A8A")!;
++        var normalBg = Brushes.White;
++        var normalBorder = (SolidColorBrush)new BrushConverter().ConvertFromString("#CBD5E1")!;
++        var normalFg = (SolidColorBrush)new BrushConverter().ConvertFromString("#334155")!;
++
++        void ApplyStyle(Button btn, bool isSelected)
++        {
++            btn.Background = isSelected ? activeBg : normalBg;
++            btn.BorderBrush = isSelected ? activeBorder : normalBorder;
++            btn.Foreground = isSelected ? activeFg : normalFg;
++        }
++
++        ApplyStyle(ModeGroupedButton, _groupByProgram);
++        ApplyStyle(ModeSinglePidButton, !_groupByProgram);
++        ApplyStyle(CatFilterAllButton, _categoryFilter == "ALL");
++        ApplyStyle(CatFilterAppsButton, _categoryFilter == "Applicazioni");
++        ApplyStyle(CatFilterDevButton, _categoryFilter == "Sviluppo");
++        ApplyStyle(CatFilterWinButton, _categoryFilter == "Windows");
++        ApplyStyle(CatFilterBgButton, _categoryFilter == "Secondario");
++    }
+ 
+     private async Task RefreshAsync()
+     {
+@@ -43,10 +122,9 @@
+         _refreshing = true;
+         try
+         {
+-            var snapshot = await Task.Run(() =>
+-                (Memory: WindowsPhysicalMemoryReader.Read(),
+-                 Top: WindowsPhysicalMemoryReader.ReadTopProcesses(20)));
++            var snapshot = await Task.Run(() => WindowsPhysicalMemoryReader.ReadFullAnalysis(80));
+             if (!_active) return;
++            _lastSnapshot = snapshot;
+ 
+             double percent = snapshot.Memory.UsedPercent;
+             var presentation = MemoryDashboardPresentation.ForUsage(percent);
+@@ -55,9 +133,10 @@
+ 
+             UsageText.Text = $"{percent:F1}%";
+             UsageText.Foreground = accent;
+-            UsedText.Text = $"{snapshot.Memory.UsedBytes / 1073741824d:F2} GiB in uso";
++            UsedText.Text = $"{snapshot.Memory.UsedBytes / 1073741824d:F2} GiB in uso ({snapshot.TotalProcessPrivateWorkingSetBytes / 1073741824d:F2} GiB privata processi)";
+             AvailableText.Text = $"{snapshot.Memory.AvailableBytes / 1073741824d:F2} GiB";
+             TotalText.Text = $"{snapshot.Memory.TotalBytes / 1073741824d:F2} GiB";
++            CommitSummaryText.Text = $"Commit privato processi: {snapshot.TotalProcessPrivateCommitBytes / 1073741824d:F2} GiB";
+             PressureBadge.Background = pale;
+             PressureText.Foreground = accent;
+             PressureText.Text = presentation.Label;
+@@ -65,13 +144,11 @@
+             MemoryBar.Foreground = accent;
+             MemoryBar.Value = percent;
+ 
+-            var rows = snapshot.Top.Select(p => new MemoryRow(p.Name, p.Pid,
+-                (p.WorkingSetBytes / 1048576d).ToString("F1"),
+-                (p.PrivateCommitBytes / 1048576d).ToString("F1"))).ToArray();
+-            TopMemoryProcesses.ItemsSource = rows;
+-            TopProcessesCaption.Text = $"{rows.Length} processi leggibili, ordinati per RAM residente decrescente (massimo 20).";
+-            RefreshStatus.Text = "Ultimo aggiornamento: " + DateTime.Now.ToString("HH:mm:ss") +
+-                " · Dati letti da Windows; classifica aggiornata solo in questa scheda.";
++            UpdateCategoryCards(snapshot);
++            PopulateTable();
++
++            RefreshStatus.Text = $"Ultimo aggiornamento: {DateTime.Now:HH:mm:ss} · Censiti {snapshot.TotalAccessibleProcesses} processi attivi " +
++                (snapshot.UnreadableProcessesCount > 0 ? $"({snapshot.UnreadableProcessesCount} processi protetti di sistema non espongono contatori utente)." : "(tutti i processi hanno risposto).");
+ 
+             // La chiave Run attesta una configurazione di avvio, NON che il programma sia in esecuzione.
+             try
+@@ -103,4 +180,93 @@
+         }
+         finally { _refreshing = false; }
+     }
++
++    private void UpdateCategoryCards(WindowsPhysicalMemoryReader.FullMemoryAnalysisSnapshot s)
++    {
++        ulong totalRam = s.Memory.TotalBytes;
++        void FillCard(string catName, TextBlock valBlock, TextBlock metaBlock)
++        {
++            var c = s.Categories.FirstOrDefault(x => x.Category == catName);
++            if (c is null) return;
++            double mib = c.PrivateWorkingSetBytes / 1048576d;
++            valBlock.Text = mib >= 1024 ? $"{mib / 1024d:F2} GiB ({mib:F0} MiB)" : $"{mib:F1} MiB";
++            double pct = totalRam > 0 ? 100.0 * c.PrivateWorkingSetBytes / totalRam : 0;
++            metaBlock.Text = $"{pct:F1}% RAM PC · {c.ProcessCount} proc. ({c.GroupCount} app)";
++        }
++
++        FillCard("Applicazioni", CatAppsValueText, CatAppsMetaText);
++        FillCard("Sviluppo", CatDevValueText, CatDevMetaText);
++        FillCard("Windows", CatWinValueText, CatWinMetaText);
++        FillCard("Secondario", CatBgValueText, CatBgMetaText);
++
++        double kernelGib = s.KernelAndSharedPhysicalBytes / 1073741824d;
++        double kernelPct = totalRam > 0 ? 100.0 * s.KernelAndSharedPhysicalBytes / totalRam : 0;
++        CatKernelValueText.Text = $"{kernelGib:F2} GiB ({s.KernelAndSharedPhysicalBytes / 1048576d:F0} MiB)";
++        CatKernelMetaText.Text = $"{kernelPct:F1}% RAM PC · Kernel, driver e DLL condivise";
++    }
++
++    private void PopulateTable()
++    {
++        if (_lastSnapshot is null) return;
++        var s = _lastSnapshot;
++        ulong totalRam = s.Memory.TotalBytes;
++
++        static string FormatCatLabel(string cat) => cat == "Secondario" ? "Servizi / Sec." : cat;
++
++        if (_groupByProgram)
++        {
++            var filtered = _categoryFilter == "ALL"
++                ? s.Groups
++                : s.Groups.Where(g => g.Category == _categoryFilter).ToArray();
++
++            var rows = filtered.Select(g =>
++            {
++                long eff = g.EffectiveResidentBytes;
++                string share = totalRam > 0 ? $"{(100.0 * eff / totalRam):F1}%" : "N/D";
++                string instText = g.InstanceCount == 1
++                    ? $"1 proc. (PID {g.LargestPid})"
++                    : $"{g.InstanceCount} proc. (max PID {g.LargestPid})";
++                return new MemoryRow(
++                    g.GroupName,
++                    FormatCatLabel(g.Category),
++                    instText,
++                    g.PrivateAvailable ? (g.TotalPrivateWorkingSetBytes / 1048576d).ToString("F1") : "N/D",
++                    g.PrivateAvailable ? (g.SharedWorkingSetBytes / 1048576d).ToString("F1") : "N/D",
++                    (g.TotalWorkingSetBytes / 1048576d).ToString("F1"),
++                    (g.TotalPrivateCommitBytes / 1048576d).ToString("F1"),
++                    share,
++                    g.LargestPid);
++            }).ToArray();
++
++            TopMemoryProcesses.ItemsSource = rows;
++            string catDesc = _categoryFilter == "ALL" ? "tutte le categorie" : $"categoria {FormatCatLabel(_categoryFilter)}";
++            TopProcessesCaption.Text = $"Vista per Programma ({catDesc}): {rows.Length} programmi attivi, ordinati per RAM privata esclusiva sommata.";
++        }
++        else
++        {
++            var filtered = _categoryFilter == "ALL"
++                ? s.Processes
++                : s.Processes.Where(p => p.Category == _categoryFilter).ToArray();
++
++            var rows = filtered.Select(p =>
++            {
++                long eff = p.EffectiveResidentBytes;
++                string share = totalRam > 0 ? $"{(100.0 * eff / totalRam):F1}%" : "N/D";
++                return new MemoryRow(
++                    p.FriendlyName,
++                    FormatCatLabel(p.Category),
++                    $"PID {p.Pid}",
++                    p.PrivateWorkingSetAvailable ? (p.PrivateWorkingSetBytes / 1048576d).ToString("F1") : "N/D",
++                    p.PrivateWorkingSetAvailable ? (p.SharedWorkingSetBytes / 1048576d).ToString("F1") : "N/D",
++                    (p.WorkingSetBytes / 1048576d).ToString("F1"),
++                    (p.PrivateCommitBytes / 1048576d).ToString("F1"),
++                    share,
++                    p.Pid);
++            }).ToArray();
++
++            TopMemoryProcesses.ItemsSource = rows;
++            string catDesc = _categoryFilter == "ALL" ? "tutte le categorie" : $"categoria {FormatCatLabel(_categoryFilter)}";
++            TopProcessesCaption.Text = $"Vista per Singolo Processo ({catDesc}): {rows.Length} processi, ordinati per RAM privata esclusiva decrescente.";
++        }
++    }
+ }
+--- previous/src/ProcessLens.Core/MemoryEvidence.cs
++++ current/src/ProcessLens.Core/MemoryEvidence.cs
+@@ -8,6 +8,7 @@
+         Math.Clamp((TotalBytes - Math.Min(AvailableBytes, TotalBytes)) * 100.0 / TotalBytes, 0, 100);
+     public double TotalMb => TotalBytes / 1048576d;
+     public double AvailableMb => AvailableBytes / 1048576d;
++    public double UsedMb => (TotalBytes >= AvailableBytes ? TotalBytes - AvailableBytes : 0UL) / 1048576d;
+ }
+ 
+ public sealed record MemoryObservation(DateTime TimestampUtc, long Bytes);
+@@ -18,6 +19,7 @@
+     double MinimumMb, double PeakMb, double DeltaMb)
+ {
+     public bool HasTrend => Samples >= 3 && Seconds >= 20;
++    public double ExcursionMb => Math.Max(0, PeakMb - MinimumMb);
+ }
+ 
+ public static class MemoryTrendAnalyzer
+@@ -35,16 +37,31 @@
+     }
+ }
+ 
+-/// <summary>VirtualQueryEx COMMITTED ADDRESS SPACE by allocation type.
++/// <summary>VirtualQueryEx COMMITTED ADDRESS SPACE by allocation type and page protection.
+ /// These numbers are NOT resident RAM; read-only, selected PID only.</summary>
+ public sealed record MemoryMapSnapshot(
+     bool Available, string Note, long PrivateCommittedBytes, long ImageCommittedBytes,
+-    long MappedCommittedBytes, long OtherCommittedBytes, int Regions, bool Truncated)
++    long MappedCommittedBytes, long OtherCommittedBytes, int Regions, bool Truncated,
++    long ReadWritePrivateBytes = 0, long ExecutablePrivateBytes = 0,
++    long ReadOnlyPrivateBytes = 0, long GuardStackBytes = 0,
++    long ReservedBytes = 0, int LargeBlocksCount = 0,
++    long LargeBlocksBytes = 0, long LargestSingleBlockBytes = 0)
+ {
+     public double PrivateMb => PrivateCommittedBytes / 1048576d;
+     public double ImageMb => ImageCommittedBytes / 1048576d;
+     public double MappedMb => MappedCommittedBytes / 1048576d;
+     public double OtherMb => OtherCommittedBytes / 1048576d;
++    public double TotalCommittedMb => (PrivateCommittedBytes + ImageCommittedBytes + MappedCommittedBytes + OtherCommittedBytes) / 1048576d;
++    public double ReadWritePrivateMb => ReadWritePrivateBytes / 1048576d;
++    public double ExecutablePrivateMb => ExecutablePrivateBytes / 1048576d;
++    public double ReadOnlyPrivateMb => ReadOnlyPrivateBytes / 1048576d;
++    public double GuardStackMb => GuardStackBytes / 1048576d;
++    public double ReservedMb => ReservedBytes / 1048576d;
++    public double LargeBlocksMb => LargeBlocksBytes / 1048576d;
++    public double LargestSingleBlockMb => LargestSingleBlockBytes / 1048576d;
++    public bool HasDetailedBreakdown => ReadWritePrivateBytes > 0 || ExecutablePrivateBytes > 0 ||
++        ReadOnlyPrivateBytes > 0 || GuardStackBytes > 0 || LargeBlocksCount > 0 || ReservedBytes > 0;
++
+     public static MemoryMapSnapshot Unavailable(string why) =>
+         new(false, why, 0, 0, 0, 0, 0, false);
+ }
+--- previous/src/ProcessLens.Core/WindowsAllocationEvidence.cs
++++ current/src/ProcessLens.Core/WindowsAllocationEvidence.cs
+@@ -14,16 +14,20 @@
+ 
+ public sealed record WindowsAllocationGroup(
+     ulong AllocationBase, string Kind, long CommittedBytes, int RegionCount,
+-    int SampledPages, int ResidentSampledPages, int SharedResidentSampledPages)
++    int SampledPages, int ResidentSampledPages, int SharedResidentSampledPages,
++    string? ModuleOrPurpose = null)
+ {
+     public double CommittedMiB => CommittedBytes / 1048576d;
++    public int PrivateResidentSampledPages => Math.Max(0, ResidentSampledPages - SharedResidentSampledPages);
+ }
+ 
+ public sealed record WindowsAllocationReport(
+     bool Available, string Note, int EnumeratedRegions, int CommittedGroups,
+     long CommittedBytes, int SampledPages, int ResidentSampledPages,
+     int SharedResidentSampledPages, bool SamplesAvailable, bool Truncated,
+-    IReadOnlyList<WindowsAllocationGroup> LargestGroups)
++    IReadOnlyList<WindowsAllocationGroup> LargestGroups,
++    long PeakWorkingSetBytes = 0, long PeakCommitBytes = 0,
++    uint PageFaultCount = 0, long PagedPoolBytes = 0, long NonPagedPoolBytes = 0)
+ {
+     public static WindowsAllocationReport Unavailable(string note) =>
+         new(false, note, 0, 0, 0, 0, 0, 0, false, false,
+@@ -34,31 +38,51 @@
+         if (!Available) return "■ ANALISI DELLE ALLOCAZIONI WINDOWS\n" + Note +
+             " Non sono state ricavate cause interne o dimensioni degli oggetti.";
+         string limit = Truncated ? "SCANSIONE PARZIALE: raggiunto limite di tempo o regioni." :
+-            "Scansione delle regioni terminata secondo le API Windows.";
++            "Scansione delle regioni completata tramite le API native di Windows.";
+         var result = new System.Text.StringBuilder();
+-        result.AppendLine("■ ALLOCAZIONI WINDOWS — PROVE NATIVE");
++        result.AppendLine("■ ALLOCAZIONI WINDOWS — PROVE NATIVE E PICCHI STORICI");
+         result.AppendLine($"VirtualQueryEx: {EnumeratedRegions} regioni interrogate; " +
+             $"{CommittedGroups} gruppi di allocazione impegnati; " +
+             $"{CommittedBytes / 1048576d:F1} MiB virtuali impegnati. {limit}");
++
++        if (PeakWorkingSetBytes > 0 || PeakCommitBytes > 0 || PagedPoolBytes > 0 || NonPagedPoolBytes > 0)
++        {
++            result.AppendLine($"Contatori storici e Kernel Pool (PSAPI EX2): " +
++                $"Picco RAM fisica toccato {PeakWorkingSetBytes / 1048576d:F1} MiB · " +
++                $"Picco commit toccato {PeakCommitBytes / 1048576d:F1} MiB · " +
++                $"Page Fault totali {PageFaultCount:N0} · " +
++                $"Kernel Paged Pool {PagedPoolBytes / 1048576d:F2} MiB · " +
++                $"Kernel Non-Paged Pool {NonPagedPoolBytes / 1048576d:F2} MiB.");
++        }
++
+         if (SamplesAvailable && SampledPages > 0)
+-            result.AppendLine($"QueryWorkingSetEx: {SampledPages} pagine CAMPIONATE, " +
+-                $"di cui {ResidentSampledPages} residenti nel working set e " +
+-                $"{SharedResidentSampledPages} residenti con flag Shared (condivisibili, non necessariamente condivise). " +
++        {
++            int privatePages = Math.Max(0, ResidentSampledPages - SharedResidentSampledPages);
++            double residentPct = 100.0 * ResidentSampledPages / SampledPages;
++            result.AppendLine($"QueryWorkingSetEx: {SampledPages} pagine CAMPIONATE nei blocchi principali, " +
++                $"di cui {ResidentSampledPages} residenti in RAM fisica ({residentPct:F0}% del campione: " +
++                $"{privatePages} private esclusive e {SharedResidentSampledPages} con flag Shared/condivisibili). " +
+                 "Non rappresentano un totale RAM misurato sull'intero processo.");
++        }
+         else
+             result.AppendLine("QueryWorkingSetEx: campione non disponibile; residenza delle pagine non verificata.");
+-        result.AppendLine("Principali gruppi per allocation base (memoria virtuale impegnata):");
+-        foreach (var group in LargestGroups.Take(6))
+-            result.AppendLine($"• {group.Kind}, base 0x{group.AllocationBase:X}, " +
+-                $"{group.CommittedMiB:F1} MiB impegnati, {group.RegionCount} regioni" +
+-                (group.SampledPages > 0 && SamplesAvailable
+-                    ? $", campione {group.ResidentSampledPages}/{group.SampledPages} pagine residenti"
+-                    : string.Empty) + ".");
+-        result.Append("Interpretazione: MEM_PRIVATE indica spazio virtuale privato impegnato, " +
+-            "MEM_IMAGE immagini caricate, MEM_MAPPED mappature di file o sezioni. " +
+-            "Questa scansione non identifica oggetti interni, cache, singoli heap o funzioni " +
+-            "responsabili delle allocazioni. Per attribuire le cause occorre un profiler " +
+-            "specifico del runtime. Le pagine campionate non equivalgono alla RAM fisica " +
++
++        result.AppendLine("Principali blocchi di memoria per indirizzo base (ordinati per dimensione impegnata):");
++        foreach (var group in LargestGroups.Take(8))
++        {
++            string purpose = !string.IsNullOrWhiteSpace(group.ModuleOrPurpose)
++                ? $" [{group.ModuleOrPurpose}]"
++                : string.Empty;
++            string residency = group.SampledPages > 0 && SamplesAvailable
++                ? $", campione in RAM: {group.ResidentSampledPages}/{group.SampledPages} pagine residenti ({group.PrivateResidentSampledPages} private, {group.SharedResidentSampledPages} condivisibili)"
++                : string.Empty;
++            result.AppendLine($"• {group.Kind}{purpose}, base 0x{group.AllocationBase:X}, " +
++                $"{group.CommittedMiB:F1} MiB impegnati ({group.RegionCount} regioni{residency}).");
++        }
++        result.Append("Guida tecnica: MEM_PRIVATE indica memoria privata del processo (heap, buffer, stack, codice JIT), " +
++            "MEM_IMAGE indica eseguibili e librerie DLL caricate, MEM_MAPPED indica file mappati o sezioni condivise. " +
++            "Questa scansione non identifica i singoli nomi delle variabili interne; per ispezionare le singole classi " +
++            "usa la voce 'Profilazione heap .NET' dal menu Analisi approfondita. Le pagine campionate non equivalgono alla RAM fisica " +
+             "totale del processo.");
+         return result.ToString();
+     }
+--- previous/src/ProcessLens.Semantics/IdentityResolver.cs
++++ current/src/ProcessLens.Semantics/IdentityResolver.cs
+@@ -9,10 +9,36 @@
+         string exe = Path.GetFileNameWithoutExtension(p.Name);
+         string? product = Clean(p.ProductName);
+         string? description = Clean(p.FileDescription);
++        string cmd = p.CommandLine ?? string.Empty;
+ 
+-        string friendly = UsefulProduct(product) ? product! :
+-                          UsefulDescription(description, exe) ? description! :
+-                          Humanize(exe);
++        string friendly;
++        if (exe.Equals("dotnet", StringComparison.OrdinalIgnoreCase))
++        {
++            if (cmd.Contains("VBCSCompiler.dll", StringComparison.OrdinalIgnoreCase))
++                friendly = "Compilatore .NET Roslyn (VBCSCompiler)";
++            else if (cmd.Contains("MSBuild.dll", StringComparison.OrdinalIgnoreCase))
++                friendly = "Motore di build .NET (MSBuild)";
++            else
++                friendly = UsefulProduct(product) ? product! : ".NET Host";
++        }
++        else if (exe.Equals("ProcessLens.MemoryAgent", StringComparison.OrdinalIgnoreCase))
++        {
++            friendly = "ProcessLens — Monitor Avvisi RAM";
++        }
++        else if (exe.Equals("ProcessLens.Guardian.Service", StringComparison.OrdinalIgnoreCase))
++        {
++            friendly = "ProcessLens — Servizio Guardian ETW";
++        }
++        else if (exe.Equals("ProcessLensProfiler", StringComparison.OrdinalIgnoreCase))
++        {
++            friendly = "ProcessLens — Profiler Heap .NET";
++        }
++        else
++        {
++            friendly = UsefulProduct(product) ? product! :
++                       UsefulDescription(description, exe) ? description! :
++                       Humanize(exe);
++        }
+ 
+         int confidence = 55;
+         var reasons = new List<string>();
+--- previous/src/ProcessLens.Semantics/ProcessQueryEngine.cs
++++ current/src/ProcessLens.Semantics/ProcessQueryEngine.cs
+@@ -80,231 +80,274 @@
+         {
+             return Result("Perché occupa RAM?",
+                 "■ DIAGNOSI IN BREVE\n" +
+-                $"Il processo {p.Name} (PID {p.Pid}) non espone contatori di memoria leggibili. " +
+-                "Non sarebbe corretto attribuirgli un consumo pari a zero o individuare una causa specifica.\n\n" +
++                $"Il processo {p.Name} (PID {p.Pid}) è protetto da Windows o non espone contatori di memoria leggibili. " +
++                "L'assenza del dato indica un limite di accesso del sistema operativo, non un consumo pari a zero.\n\n" +
+                 "■ COME APPROFONDIRE\n" +
+-                "Verificare se il PID è ancora attivo e se Windows permette di leggerne i contatori. " +
+-                "Non è possibile identificare heap o cache senza strumenti compatibili con l'applicazione.",
++                "Verifica che il PID sia ancora attivo e che ProcessLens disponga dei permessi necessari.",
+                 "DATI INSUFFICIENTI", evidence);
+         }
+ 
+         var blocks = new List<string>();
+-        string resident = p.PrivateWorkingSetAvailable
+-            ? $"{p.PrivateWorkingSetMb:F1} MiB di RAM privata residente"
+-            : p.WorkingSetAvailable
+-                ? $"{p.WorkingSetMb:F1} MiB di RAM residente totale (comprende memoria condivisa)"
+-                : "solo il dato di commit privato, senza misura della RAM residente";
+         string processLabel = string.IsNullOrWhiteSpace(p.Name) ? $"PID {p.Pid}" : $"{p.Name} (PID {p.Pid})";
+         string roleLabel = string.IsNullOrWhiteSpace(i.Role) ? "ruolo non identificato" : i.Role;
+         string roleText = $"{p.Name} {i.Role} {i.Summary} {i.Framework}".ToLowerInvariant();
+ 
++        // Calcolo indicatori tecnici reali (quota su sistema, quota condivisa, rapporto RAM/Commit)
++        string systemShareInfo = "";
++        if (systemMemory is { TotalBytes: > 0 } && (p.PrivateWorkingSetAvailable || p.WorkingSetAvailable))
++        {
++            double activeBytes = p.PrivateWorkingSetAvailable ? p.PrivateWorkingSetBytes : p.WorkingSetBytes;
++            double pctOfRam = 100.0 * activeBytes / systemMemory.TotalBytes;
++            systemShareInfo = $" ({pctOfRam:F2}% della RAM fisica del PC)";
++        }
++
++        string residentHeadline = p.PrivateWorkingSetAvailable
++            ? $"{p.PrivateWorkingSetMb:F1} MiB di RAM privata residente{systemShareInfo}"
++            : p.WorkingSetAvailable
++                ? $"{p.WorkingSetMb:F1} MiB di RAM residente totale{systemShareInfo} (include pagine condivisibili)"
++                : $"solo contatore di commit privato ({p.PrivateMb:F1} MiB)";
++
++        string trendSummary = trend?.HasTrend == true
++            ? trend.DeltaMb >= 5
++                ? $"Negli ultimi {trend.Seconds / 60d:F1} min la {trend.Metric.ToLowerInvariant()} è salita di +{trend.DeltaMb:F1} MiB (da {trend.FirstMb:F1} a {trend.CurrentMb:F1} MiB)."
++                : trend.DeltaMb <= -5
++                    ? $"Negli ultimi {trend.Seconds / 60d:F1} min la {trend.Metric.ToLowerInvariant()} è scesa di {Math.Abs(trend.DeltaMb):F1} MiB (da {trend.FirstMb:F1} a {trend.CurrentMb:F1} MiB)."
++                    : $"Negli ultimi {trend.Seconds / 60d:F1} min la {trend.Metric.ToLowerInvariant()} ha una variazione netta inferiore a 5 MiB ({trend.DeltaMb:+0.0;-0.0;0.0} MiB; escursione min/picco {trend.ExcursionMb:F1} MiB con possibili oscillazioni intermedie)."
++            : "Raccolta storica in corso (servono almeno 3 campioni in 20 secondi per calcolare il trend).";
++
++        string primaryDriver = "";
++        if (map?.Available == true && map.TotalCommittedMb > 0)
++        {
++            if (map.PrivateMb >= map.ImageMb && map.PrivateMb >= map.MappedMb)
++            {
++                string detail = map.ReadWritePrivateMb > 0
++                    ? $" (di cui {map.ReadWritePrivateMb:F1} MiB in heap/strutture dati dinamiche RW" +
++                      (map.LargeBlocksCount > 0 ? $" e {map.LargeBlocksCount} grandi blocchi ≥4 MiB per {map.LargeBlocksMb:F1} MiB)" : ")")
++                    : "";
++                primaryDriver = $" La quota principale dello spazio impegnato è costituita da allocazioni private ({map.PrivateMb:F1} MiB{detail}).";
++            }
++            else if (map.ImageMb >= map.PrivateMb && map.ImageMb >= map.MappedMb)
++            {
++                primaryDriver = $" La quota principale dello spazio virtuale è occupata da moduli eseguibili e librerie DLL ({map.ImageMb:F1} MiB).";
++            }
++            else
++            {
++                primaryDriver = $" Una parte rilevante dello spazio virtuale è costituita da file mappati e sezioni condivise ({map.MappedMb:F1} MiB).";
++            }
++        }
++
++        blocks.Add("■ DIAGNOSI IN BREVE\n" +
++                   $"Il processo {processLabel} [{roleLabel}, {i.Framework}] occupa attualmente {residentHeadline}. " +
++                   (p.WorkingSetAvailable && p.PrivateWorkingSetAvailable
++                       ? $"Working Set complessivo: {p.WorkingSetMb:F1} MiB | Commit privato: {(p.PrivateCommitAvailable ? $"{p.PrivateMb:F1} MiB" : "N/D")}. "
++                       : "") +
++                   $"{trendSummary}{primaryDriver}");
++
++        // Sezione Valutazione
++        string pressureDetail;
++        if (systemMemory is { TotalBytes: > 0 })
++        {
++            double used = systemMemory.UsedPercent;
++            double availableGiB = systemMemory.AvailableMb / 1024d;
++            double totalGiB = systemMemory.TotalMb / 1024d;
++            pressureDetail = $"Stato RAM del sistema: {used:F1}% in uso ({availableGiB:F2} GiB liberi su {totalGiB:F2} GiB totali). ";
++            pressureDetail += used >= 85
++                ? "La pressione complessiva è elevata (oltre la soglia dell'85%): valuta l'insieme dei processi attivi e non attribuire il problema automaticamente a questo singolo PID."
++                : used >= 75
++                    ? "Il carico globale sulla memoria è moderatamente alto: tieni monitorata la RAM libera se apri altri carichi pesanti."
++                    : "Non emerge una pressione elevata sulla RAM fisica complessiva del computer.";
++            evidence.Add($"GlobalMemoryStatusEx: RAM totale {systemMemory.TotalBytes} byte, disponibile {systemMemory.AvailableBytes} byte");
++        }
++        else
++            pressureDetail = "Misura della RAM globale di sistema non disponibile.";
++
++        bool growing = trend?.HasTrend == true && trend.Seconds >= 60 && trend.DeltaMb >= 20 &&
++                       trend.FirstMb > 0 && trend.DeltaMb / trend.FirstMb >= 0.20;
++        string judgment = growing
++            ? $"IN CRESCITA RILEVANTE (+{trend!.DeltaMb:F1} MiB in {trend.Seconds / 60d:F1} min): il processo sta accumulando memoria rapidamente; tienilo sotto osservazione per verificare se si stabilizza."
++            : trend?.HasTrend == true && trend.DeltaMb <= -5
++                ? $"SALDO IN DIMINUZIONE ({trend.DeltaMb:F1} MiB nella finestra): il processo ha rilasciato parte della memoria rispetto all'inizio dell'osservazione."
++                : trend?.HasTrend == true && Math.Abs(trend.DeltaMb) < 5
++                    ? $"SALDO QUASI INVARIATO ({trend.DeltaMb:+0.0;-0.0;0.0} MiB tra inizio e fine finestra; minimo {trend.MinimumMb:F1} MiB, picco {trend.PeakMb:F1} MiB)."
++                    : "IN OSSERVAZIONE: raccolta campioni in corso per determinare se l'allocazione è stabile o in aumento.";
++
++        string commitVsRamRatio = "";
++        if (p.PrivateWorkingSetAvailable && p.PrivateCommitAvailable && p.PrivateBytes > 0)
++        {
++            double residencyPct = Math.Clamp(100.0 * p.PrivateWorkingSetBytes / p.PrivateBytes, 0, 100);
++            double nonResidentCommitMb = Math.Max(0, p.PrivateMb - p.PrivateWorkingSetMb);
++            commitVsRamRatio = $"\nRapporto RAM fisica / Commit: il {residencyPct:F0}% della memoria privata impegnata ({p.PrivateWorkingSetMb:F1} su {p.PrivateMb:F1} MiB) risiede attivamente in RAM fisica, mentre {nonResidentCommitMb:F1} MiB sono impegnati ma non occupano pagine fisiche in questo istante.";
++        }
++
++        blocks.Add("■ VALUTAZIONE: È UN CONSUMO ECCESSIVO?\n" +
++                   judgment + "\n" + pressureDetail + commitVsRamRatio);
++
++        // Sezione Come si distribuisce la memoria
++        var metrics = new List<string>();
++        if (p.PrivateWorkingSetAvailable)
++        {
++            metrics.Add($"• RAM privata residente (Private Working Set): {p.PrivateWorkingSetMb:F1} MiB — È la memoria fisica esclusiva di questo processo (la quota che si libera chiudendolo).");
++            evidence.Add($"Private Working Set: {p.PrivateWorkingSetBytes} byte");
++        }
++        else metrics.Add("• RAM privata residente: contatore non disponibile.");
++
++        if (p.WorkingSetAvailable)
++        {
++            metrics.Add($"• RAM residente totale (Working Set): {p.WorkingSetMb:F1} MiB — Include sia la RAM privata sia le pagine di DLL e risorse condivisibili con altri processi.");
++            evidence.Add($"Working Set: {p.WorkingSetBytes} byte");
++            if (p.PrivateWorkingSetAvailable && p.WorkingSetBytes >= p.PrivateWorkingSetBytes)
++            {
++                double sharedMb = p.WorkingSetMb - p.PrivateWorkingSetMb;
++                double sharedPct = p.WorkingSetBytes > 0 ? 100.0 * sharedMb / p.WorkingSetMb : 0;
++                metrics.Add($"• Quota residente condivisibile (DLL di sistema / runtime): {sharedMb:F1} MiB ({sharedPct:F0}% del Working Set totale).");
++            }
++        }
++        if (p.PrivateCommitAvailable)
++        {
++            metrics.Add($"• Memoria privata impegnata (Private Commit): {p.PrivateMb:F1} MiB — Spazio virtuale allocato dal processo per cui Windows garantisce copertura (in RAM o su file di paging).");
++            evidence.Add($"Private Commit: {p.PrivateBytes} byte");
++        }
++        blocks.Add("■ COME SI DISTRIBUISCE LA MEMORIA\n" + string.Join("\n", metrics) +
++                   "\nNota contabile: il Working Set totale include già la RAM privata residente; i tre valori misurano viste diverse e non vanno sommati tra loro.");
++
++        // Sezione Andamento nel tempo
++        if (trend?.HasTrend == true)
++        {
++            double minutes = trend.Seconds / 60d;
++            double rate = minutes > 0 ? trend.DeltaMb / minutes : 0;
++            double pctChange = trend.FirstMb > 0 ? 100.0 * trend.DeltaMb / trend.FirstMb : 0;
++            string assessment = trend.DeltaMb >= 15
++                ? "Si osserva un incremento netto: verifica se il processo sta eseguendo un'elaborazione attiva o se continua a crescere anche a riposo."
++                : trend.DeltaMb <= -15
++                    ? "Si osserva un rilascio netto di memoria (es. svuotamento cache o garbage collection completata)."
++                    : "Le variazioni rientrano nelle normali fluttuazioni operative dei buffer in memoria.";
++            blocks.Add("■ ANDAMENTO MISURATO NEL TEMPO\n" +
++                       $"• Contatore tracciato: {trend.Metric} ({trend.Samples} letture in {minutes:F1} minuti).\n" +
++                       $"• Valore iniziale: {trend.FirstMb:F1} MiB → Valore attuale: {trend.CurrentMb:F1} MiB " +
++                       $"(Δ {trend.DeltaMb:+0.0;-0.0;0.0} MiB, {pctChange:+0.0;-0.0;0.0}%, velocità media {rate:+0.0;-0.0;0.0} MiB/min).\n" +
++                       $"• Range osservato: minimo {trend.MinimumMb:F1} MiB · picco {trend.PeakMb:F1} MiB (escursione {trend.ExcursionMb:F1} MiB).\n" +
++                       assessment + " Una sola finestra non dimostra un memory leak.");
++            evidence.Add($"Trend: {trend.Samples} campioni in {trend.Seconds:F0} secondi ({trend.Metric})");
++        }
++        else
++            blocks.Add("■ ANDAMENTO MISURATO NEL TEMPO\n" +
++                       "Servono almeno tre letture distribuite su almeno 20 secondi per calcolare velocità di crescita e picchi. " +
++                       "Attendi qualche secondo e riesegui l'analisi.");
++
++        // Sezione Mappa della memoria virtuale (arricchita con scomposizione per permessi e grandi blocchi!)
++        if (map?.Available == true)
++        {
++            double totalVm = Math.Max(0.1, map.TotalCommittedMb);
++            var vmLines = new List<string>
++            {
++                $"• Dati e Allocazioni Private (MEM_PRIVATE): {map.PrivateMb:F1} MiB ({100.0 * map.PrivateMb / totalVm:F0}% del totale impegnato).",
++                $"• Moduli Eseguibili e Librerie DLL (MEM_IMAGE): {map.ImageMb:F1} MiB ({100.0 * map.ImageMb / totalVm:F0}%).",
++                $"• File Mappati e Sezioni Condivise (MEM_MAPPED): {map.MappedMb:F1} MiB ({100.0 * map.MappedMb / totalVm:F0}%)."
++            };
++            if (map.OtherMb > 0.05)
++                vmLines.Add($"• Altre regioni impegnate: {map.OtherMb:F1} MiB.");
++
++            if (map.HasDetailedBreakdown)
++            {
++                vmLines.Add("Scomposizione anatomica della memoria privata (per permessi di pagina):");
++                if (map.ReadWritePrivateMb > 0)
++                    vmLines.Add($"  ◦ Heap, strutture dati e buffer attivi (READWRITE): {map.ReadWritePrivateMb:F1} MiB");
++                if (map.ExecutablePrivateMb > 0)
++                    vmLines.Add($"  ◦ Codice compilato in tempo reale / JIT (EXECUTE): {map.ExecutablePrivateMb:F1} MiB");
++                if (map.ReadOnlyPrivateMb > 0)
++                    vmLines.Add($"  ◦ Tabelle e costanti private (READONLY): {map.ReadOnlyPrivateMb:F1} MiB");
++                if (map.GuardStackMb > 0)
++                    vmLines.Add($"  ◦ Pagine di guardia / Stack dei thread (PAGE_GUARD): {map.GuardStackMb:F1} MiB");
++                if (map.LargeBlocksCount > 0)
++                    vmLines.Add($"  ◦ Grandi allocazioni contigue (≥ 4 MiB): {map.LargeBlocksCount} blocchi per un totale di {map.LargeBlocksMb:F1} MiB (blocco singolo max: {map.LargestSingleBlockMb:F1} MiB).");
++                if (map.ReservedMb > 0)
++                    vmLines.Add($"  ◦ Spazio di indirizzamento prenotato ma non impegnato (MEM_RESERVE): {map.ReservedMb:F1} MiB (non occupa RAM né file di paging).");
++            }
++            vmLines.Add($"• Totale regioni ispezionate: {map.Regions:N0} ({(map.Truncated ? "scansione parziale per limite di tempo" : "scansione completa")}).");
++            vmLines.Add("Nota: questi valori descrivono lo spazio virtuale impegnato (MEM_COMMIT). Non devono essere sommati ai MiB residenti.");
++
++            blocks.Add("■ MAPPA DELLA MEMORIA VIRTUALE (SCOMPOSIZIONE ANATOMICA)\n" + string.Join("\n", vmLines));
++            evidence.Add($"VirtualQueryEx: {map.Regions} regioni; parziale={map.Truncated}");
++        }
++        else
++            blocks.Add("■ MAPPA DELLA MEMORIA VIRTUALE\n" +
++                       (map is null
++                           ? "Mappa virtuale non richiesta in questa lettura."
++                           : "Mappa virtuale non accessibile: " + map.Note));
++
++        // Sezione Componenti tipici per architettura/runtime
+         string[] plausibleReasons;
+         string profiler;
+         if (ContainsAny(roleText, "renderer", "chromium", "electron", "webview", "render", "browser", "interfaccia"))
+         {
+             plausibleReasons = new[]
+             {
+-                "Heap JavaScript e oggetti della pagina/interfaccia (se il processo contiene un runtime Web).",
+-                "Strutture di rendering, risorse decodificate, cache e librerie condivise."
++                "Heap JavaScript (V8), albero DOM/CSS e stato dell'interfaccia web ospitata nel processo.",
++                "Superfici grafiche decodificate, cache delle risorse web e librerie condivise Chromium."
+             };
+-            profiler = "DevTools del processo interessato: Memory/Heap Snapshot e Performance; confrontare snapshot ripetuti. " +
+-                       "Le allocazioni native o GPU possono richiedere strumenti ulteriori.";
++            profiler = "Apri i DevTools del programma (scheda Memory → Heap Snapshot) per vedere i singoli oggetti JavaScript/DOM.";
+         }
+         else if (ContainsAny(roleText, "python", "interprete python"))
+         {
+             plausibleReasons = new[]
+             {
+-                "Oggetti Python, moduli importati e cache dell'interprete.",
+-                "Buffer di librerie native e dati dell'applicazione, non sempre visibili ai profiler dell'heap Python."
++                "Oggetti nell'heap dell'interprete Python, dizionari, liste e moduli caricati in memoria.",
++                "Array numerici/tensori allocati da librerie C/C++ native (NumPy, Pandas, PyTorch) nei blocchi MEM_PRIVATE RW."
+             };
+-            profiler = "tracemalloc o un profiler compatibile con Python; per memoria nativa servono strumenti dedicati. " +
+-                       "L'analisi deve avvenire con il consenso dell'utente e senza modificare il processo.";
++            profiler = "Usa tracemalloc o memory_profiler dentro lo script Python per vedere la riga di codice che alloca più memoria.";
+         }
+         else if (ContainsAny(roleText, "node", "javascript", "typescript", "v8"))
+         {
+             plausibleReasons = new[]
+             {
+-                "Heap JavaScript/V8, oggetti applicativi e cache dei moduli.",
+-                "Buffer e allocazioni native, che possono crescere indipendentemente dall'heap JavaScript."
++                "Heap gestito dal motore V8 (oggetti JS/TS, chiusure, AST del codice se è un language server o bundler).",
++                "Buffer nativi (ArrayBuffer / Buffer Node.js) e cache dei moduli importati."
+             };
+-            profiler = "Heap snapshot e contatori del runtime Node/V8; confrontare più misure durante il carico.";
++            profiler = "Avvia Node.js con --heapsnapshot-signal o usa Chrome DevTools collegato all'inspector V8.";
+         }
+         else if (ContainsAny(roleText, ".net", "dotnet", "clr", "c#"))
+         {
+             plausibleReasons = new[]
+             {
+-                "Heap gestito dal garbage collector, oggetti e cache dell'applicazione.",
+-                "Assembly caricati, JIT, buffer e allocazioni native non riconducibili al solo heap gestito."
++                "Heap gestito dal Garbage Collector .NET (Generazioni 0/1/2 e Large Object Heap per array > 85 KB).",
++                "Codice nativo compilato dal JIT, metadati degli assembly caricati e buffer non gestiti."
+             };
+-            profiler = "Strumenti di diagnostica .NET, ad esempio dotnet-counters e un profiler di memoria; " +
+-                       "gli snapshot possono essere costosi e vanno richiesti separatamente.";
++            profiler = "Usa direttamente la voce 'Profilazione heap .NET · oggetti reali' qui nel menu Analisi approfondita di ProcessLens.";
+         }
+         else if (ContainsAny(roleText, "java", "jvm"))
+         {
+             plausibleReasons = new[]
+             {
+-                "Heap JVM, oggetti e cache applicative.",
+-                "Metaspace, thread stack e buffer nativi: il processo occupa anche memoria fuori dall'heap Java."
++                "Heap della Java Virtual Machine (Young/Old Generation) e cache applicative.",
++                "Metaspace delle classi, stack dei thread e memoria Direct ByteBuffer fuori dall'heap."
+             };
+-            profiler = "Java Flight Recorder o strumenti JVM compatibili; separare heap, memoria nativa e cache.";
+-        }
+-        else if (ContainsAny(roleText, "database", "sql", "redis", "cache", "server"))
++            profiler = "Usa Java Flight Recorder (JFR) o jcmd GC.class_histogram sul PID selezionato.";
++        }
++        else
+         {
+             plausibleReasons = new[]
+             {
+-                "Buffer per richieste e dati temporanei dell'applicazione.",
+-                "Cache e strutture di indicizzazione possono essere mantenute per ridurre letture future."
++                "Strutture dati nell'heap nativo del processo, buffer di lavoro e stato interno dell'applicazione.",
++                "Cache mantenute in RAM per velocizzare le operazioni successive e librerie DLL mappate."
+             };
+-            profiler = "Consultare i contatori di memoria del servizio o del database: cache, buffer e dati attivi " +
+-                       "sono distinguibili soltanto con metriche specifiche.";
+-        }
+-        else
+-        {
+-            plausibleReasons = new[]
+-            {
+-                "Codice e librerie caricate, heap e strutture dati dell'applicazione.",
+-                "Buffer e cache che possono essere conservati anche durante i periodi di inattività."
+-            };
+-            profiler = "Usare strumenti di profilazione del runtime specifico: i soli contatori di Windows " +
+-                       "non identificano il contenuto degli heap.";
+-        }
+-
+-        string trendSummary = trend?.HasTrend == true
+-            ? trend.DeltaMb >= 5
+-                ? $"Nella finestra disponibile la {trend.Metric.ToLowerInvariant()} è aumentata di {trend.DeltaMb:F1} MiB."
+-                : trend.DeltaMb <= -5
+-                    ? $"Nella finestra disponibile la {trend.Metric.ToLowerInvariant()} è diminuita di {Math.Abs(trend.DeltaMb):F1} MiB."
+-                    : $"Nella finestra disponibile la {trend.Metric.ToLowerInvariant()} ha una variazione netta inferiore a 5 MiB; possono esserci oscillazioni intermedie."
+-            : "Non esiste ancora una serie temporale sufficiente per descrivere la tendenza.";
+-        blocks.Add("■ DIAGNOSI IN BREVE\n" +
+-                   $"Misura Windows effettuata per {processLabel}: {resident}. {trendSummary} " +
+-                   $"Il ruolo suggerito dalle evidenze disponibili è: {roleLabel}. " +
+-                   "La valutazione seguente considera andamento e pressione fisica complessiva, " +
+-                   "ma senza un profilo del runtime non identifica i singoli oggetti in memoria.");
+-
+-        var metrics = new List<string>();
+-        if (p.PrivateWorkingSetAvailable)
+-        {
+-            metrics.Add($"• RAM privata residente: {p.PrivateWorkingSetMb:F1} MiB. Pagine fisiche non condivisibili con altri processi in questa lettura.");
+-            evidence.Add($"Private Working Set: {p.PrivateWorkingSetBytes} byte");
+-        }
+-        else metrics.Add("• RAM privata residente: contatore non disponibile.");
+-        if (p.WorkingSetAvailable)
+-        {
+-            metrics.Add($"• RAM residente totale (Working Set): {p.WorkingSetMb:F1} MiB; comprende anche pagine condivisibili.");
+-            evidence.Add($"Working Set: {p.WorkingSetBytes} byte");
+-            if (p.PrivateWorkingSetAvailable && p.WorkingSetBytes >= p.PrivateWorkingSetBytes)
+-                metrics.Add($"• Componente residente non privata: circa {(p.WorkingSetMb - p.PrivateWorkingSetMb):F1} MiB " +
+-                            "(differenza tra i due contatori, non un costo esclusivo addizionale).");
+-        }
+-        if (p.PrivateCommitAvailable)
+-        {
+-            metrics.Add($"• Commit privato: {p.PrivateMb:F1} MiB. Memoria impegnata dal processo, " +
+-                        "che può essere in RAM, paginata o non ancora residente.");
+-            evidence.Add($"Private Commit: {p.PrivateBytes} byte");
+-        }
+-        blocks.Add("■ COME SI DISTRIBUISCE LA MEMORIA\n" + string.Join("\n", metrics) +
+-                   "\nNon sommare Working Set, parte privata e commit: misurano aspetti diversi della stessa attività.");
+-        // Il verdetto descrive solo i segnali osservati; non esiste una soglia RAM
+-        // universale che certifichi che il singolo programma usa troppa memoria.
+-        string pressureDetail;
+-        if (systemMemory is { TotalBytes: > 0 })
+-        {
+-            double used = systemMemory.UsedPercent;
+-            double availableGiB = systemMemory.AvailableMb / 1024d;
+-            pressureDetail = $"RAM fisica totale: {used:F1}% in uso; disponibile: {availableGiB:F2} GiB. ";
+-            pressureDetail += used >= 85
+-                ? "La pressione complessiva è elevata (soglia avviso 85%): verificare tutti i processi, non attribuire il problema automaticamente a questo PID."
+-                : used >= 75
+-                    ? "La RAM di sistema è relativamente impegnata; controllare se diminuisce la memoria disponibile."
+-                    : "Non emerge una pressione elevata sulla RAM fisica complessiva in questa lettura.";
+-            evidence.Add($"GlobalMemoryStatusEx: RAM totale {systemMemory.TotalBytes} byte, disponibile {systemMemory.AvailableBytes} byte");
+-        }
+-        else
+-            pressureDetail = "Non è disponibile una misura della pressione RAM totale: impossibile stabilire l'impatto sul sistema.";
+-
+-        bool growing = trend?.HasTrend == true && trend.Seconds >= 60 && trend.DeltaMb >= 20 &&
+-                       trend.FirstMb > 0 && trend.DeltaMb / trend.FirstMb >= 0.20;
+-        string judgment = growing
+-            ? "DA MONITORARE: la memoria è aumentata in modo apprezzabile nella finestra disponibile."
+-            : trend?.HasTrend == true && trend.DeltaMb <= -5
+-                ? "SALDO IN DIMINUZIONE in questa finestra: il valore finale è inferiore a quello iniziale; non prova una discesa continua."
+-                : trend?.HasTrend == true && Math.Abs(trend.DeltaMb) < 5
+-                    ? "SALDO QUASI INVARIATO nella finestra disponibile; verificare anche minimo e picco."
+-                    : "VALUTAZIONE PARZIALE: lo storico non consente un giudizio sull'evoluzione della memoria.";
+-        blocks.Add("■ VALUTAZIONE: È UN CONSUMO ECCESSIVO?\n" +
+-                   "Giudizio basato su contatori Windows e andamento, non su un confronto certificato per questa applicazione.\n" +
+-                   judgment + "\n" + pressureDetail +
+-                   "\nNon disponiamo di una baseline del programma sotto carico equivalente né di misure interne dell'heap: " +
+-                   "non possiamo affermare che un valore in MiB sia normale o eccessivo per questo eseguibile. " +
+-                   "Le cause specifiche rimangono ipotesi finché non si esamina il runtime.");
+-
+-
+-        if (trend?.HasTrend == true)
+-        {
+-            double minutes = trend.Seconds / 60d;
+-            double rate = minutes > 0 ? trend.DeltaMb / minutes : 0;
+-            string assessment = trend.DeltaMb >= 15
+-                ? "La crescita osservata richiede un confronto più lungo, a parità di attività, prima di sospettare una perdita."
+-                : trend.DeltaMb <= -15
+-                    ? "Il valore finale è inferiore a quello iniziale; possono esserci aumenti intermedi e non si escludono fenomeni in altri momenti."
+-                    : "Una variazione di questa entità può dipendere dal normale ciclo di allocazione e rilascio.";
+-            blocks.Add("■ ANDAMENTO MISURATO NEL TEMPO\n" +
+-                       $"• Metrica confrontabile: {trend.Metric}.\n" +
+-                       $"• Durata: {minutes:F1} minuti; campioni: {trend.Samples}.\n" +
+-                       $"• Inizio {trend.FirstMb:F1} MiB → adesso {trend.CurrentMb:F1} MiB " +
+-                       $"(variazione {trend.DeltaMb:+0.0;-0.0;0.0} MiB, circa {rate:+0.0;-0.0;0.0} MiB/min).\n" +
+-                       $"• Minimo: {trend.MinimumMb:F1} MiB; massimo osservato: {trend.PeakMb:F1} MiB.\n" +
+-                       assessment + " Una sola finestra non dimostra un memory leak.");
+-            evidence.Add($"Trend: {trend.Samples} campioni in {trend.Seconds:F0} secondi ({trend.Metric})");
+-        }
+-        else
+-            blocks.Add("■ ANDAMENTO MISURATO NEL TEMPO\n" +
+-                       "Non sono disponibili almeno tre campioni confrontabili su almeno 20 secondi " +
+-                       "per la stessa istanza del processo. Attendere e ripetere la domanda per valutare l'evoluzione.");
+-
+-        if (map?.Available == true)
+-        {
+-            blocks.Add("■ MAPPA DELLA MEMORIA VIRTUALE (NON È LA RAM FISICA)\n" +
+-                       $"• MEM_COMMIT / PRIVATE: {map.PrivateMb:F1} MiB.\n" +
+-                       $"• MEM_COMMIT / IMAGE: {map.ImageMb:F1} MiB.\n" +
+-                       $"• MEM_COMMIT / MAPPED: {map.MappedMb:F1} MiB.\n" +
+-                       $"• Altre regioni: {map.OtherMb:F1} MiB.\n" +
+-                       $"• Regioni analizzate: {map.Regions}; " + (map.Truncated ? "scansione parziale." : "scansione completata entro i limiti della raccolta.") +
+-                       "\nQuesti valori descrivono regioni virtuali impegnate, non singoli oggetti, " +
+-                       "cache o pagine fisiche attribuibili univocamente. Non devono essere sommati ai MiB residenti.");
+-            evidence.Add($"VirtualQueryEx: {map.Regions} regioni; parziale={map.Truncated}");
+-        }
+-        else
+-            blocks.Add("■ MAPPA DELLA MEMORIA VIRTUALE\n" +
+-                       (map is null
+-                           ? "La mappa non è stata richiesta in questa osservazione."
+-                           : "Impossibile acquisire la mappa: " + map.Note));
+-
+-        blocks.Add("■ CAUSE INTERNE: IPOTESI, NON MISURE\n" +
+-                   $"Per questo PID sono stati letti contatori Windows e, se accessibile, la mappa di memoria virtuale. " +
+-                   "Nessuno di questi strumenti vede l'identita' degli oggetti allocati o assegna MiB a cache, heap JavaScript o funzioni. " +
+-                   $"Ruolo dedotto: {roleLabel}. Le seguenti sono ipotesi tecniche, NON allocazioni misurate:\n" +
++            profiler = "Se è un processo .NET usa il profiler integrato di ProcessLens; per processi nativi usa Windows Performance Recorder (ETW VirtualAlloc/Heap).";
++        }
++
++        blocks.Add("■ CAUSE INTERNE: IPOTESI, NON MISURE DI SINGOLI OGGETTI\n" +
++                   $"In base all'architettura rilevata ({roleLabel} · {i.Framework}), i blocchi di memoria misurati sopra ospitano tipicamente:\n" +
+                    string.Join("\n", plausibleReasons.Select(x => "• " + x)) +
+                    (p.CpuSampleAvailable
+-                       ? $"\nCPU nel campione: {p.CpuPercent:F1}%. " +
++                       ? $"\nNota attività: la CPU attuale è {p.CpuPercent:F1}%. " +
+                          (p.CpuPercent < 0.3
+-                             ? "Un campione di CPU molto basso non implica che il programma debba rilasciare la RAM: molti dati possono restare disponibili per il riuso."
+-                             : "L'attività CPU non consente di individuare quali allocazioni siano responsabili della RAM.")
+-                       : "\nNon ci sono campioni CPU comparabili per spiegare l'attività recente."));
+-
+-        blocks.Add("■ QUANDO APPROFONDIRE E COME VERIFICARE\n" +
+-                   "• Un consumo elevato non equivale automaticamente a un problema. Cercare crescita sostenuta a carico simile, " +
+-                   "pressione sulla RAM fisica totale e rallentamenti o paginazione osservabili.\n" +
+-                   "• Non usare la sola quantità di MiB per decidere di terminare il processo o forzare lo svuotamento del working set.\n" +
+-                   "• Per attribuire la memoria a funzioni, oggetti o cache specifici: " + profiler);
+-        blocks.Add("■ COSA NON POSSIAMO DIMOSTRARE\n" +
+-                   "Queste misure non identificano gli oggetti nell'heap, l'origine di ciascuna allocazione " +
+-                   "né un difetto di memory leak. Il ruolo è inferito; servono dati interni dell'applicazione " +
+-                   "o profiler dedicati per assegnare una causa precisa.");
+-
+-        // Dopo la sintesi, mostra subito la valutazione: evita di nasconderla
+-        // dietro le metriche e i dettagli tecnici espandibili.
++                             ? "Anche con CPU a riposo è normale che un programma mantenga allocata la propria RAM per riutilizzarla rapidamente."
++                             : "Il processo sta eseguendo lavoro attivo sulla CPU, il che può comportare allocazioni temporanee.")
++                       : ""));
++
++        blocks.Add("■ QUANDO APPROFONDIRE E STRUMENTI CONSIGLIATI\n" +
++                   "• Quando intervenire: preoccupati solo se la RAM privata cresce senza sosta a parità di lavoro E la RAM fisica del PC supera l'85%.\n" +
++                   "• Evita forzature esterne (EmptyWorkingSet): svuotare forzatamente la RAM di un processo attivo costringe Windows a rileggerla dal disco rallentando il programma.\n" +
++                   "• Strumento per vedere i singoli oggetti interni: " + profiler);
++
+         int evaluationIndex = blocks.FindIndex(x => x.StartsWith("■ VALUTAZIONE:", StringComparison.Ordinal));
+         if (evaluationIndex > 1)
+         {
+@@ -313,7 +356,7 @@
+             blocks.Insert(1, evaluation);
+         }
+         return Result("Perché occupa RAM?", string.Join("\n\n", blocks),
+-            "MISURE DIRETTE; CAUSE POSSIBILI, NON CONFERMATE", evidence);
++            "ANALISI COMPLETA CONTATORI, REGIONI VIRTUALI E CAMPIONE WORKING SET", evidence);
+     }
+ 
+     private static ProcessQueryResult Cpu(ProcessSnapshot p, ProcessInsight insight, List<string> evidence)
+--- previous/src/ProcessLens.Semantics/RoleClassifier.cs
++++ current/src/ProcessLens.Semantics/RoleClassifier.cs
+@@ -349,6 +349,119 @@
+ 
+     private static RoleAssessment? ClassifyByGenericNameSignals(ProcessSnapshot p, OwnershipAssessment owner, FrameworkAssessment fw)
+     {
++        string cleanExe = Path.GetFileNameWithoutExtension(p.Name).ToLowerInvariant();
++        switch (cleanExe)
++        {
++            case "processlens.memoryagent":
++                return R("Agente avvisi RAM ProcessLens", "Monitora la soglia RAM (85% / 80%) nella sessione utente",
++                    "Controlla periodicamente la pressione della RAM fisica e mostra una notifica se supera l'85%.",
++                    p.ParentName is null ? "Avviato nella sessione utente per il monitoraggio della RAM." : $"Padre riportato: {p.ParentName}; il nome non dimostra il motivo dell’avvio.",
++                    "Chiude gli avvisi automatici sulla soglia RAM finché non viene riavviato.", "BASSO", "Background", 98,
++                    "eseguibile ProcessLens.MemoryAgent riconosciuto");
++            case "processlens.guardian.service":
++                return R("Servizio diagnostico ProcessLens Guardian", "Raccoglie telemetria ETW locale su avvii e chiusure processi",
++                    "Servizio locale di ProcessLens per registrare la cronologia di avvio dei processi e l'uso risorse.",
++                    "Servizio in background associato a ProcessLens Guardian; motivo puntuale non osservato.",
++                    "Interrompe la raccolta storica ETW di Guardian.", "BASSO / MEDIO", "Background", 98,
++                    "eseguibile ProcessLens.Guardian.Service riconosciuto");
++            case "processlensprofiler":
++                return R("Profiler heap .NET di ProcessLens", "Acquisisce su richiesta i tipi di oggetti nell'heap .NET",
++                    "Strumento esterno on-demand avviato da ProcessLens per ispezionare l'heap .NET di un PID selezionato.",
++                    p.ParentName is null ? "Avviato su richiesta per profilazione .NET." : $"Padre riportato: {p.ParentName}; il nome non dimostra il motivo dell’avvio.",
++                    "Annulla la sessione di profilazione heap .NET in corso.", "BASSO", "Sviluppo", 98,
++                    "eseguibile ProcessLensProfiler riconosciuto");
++            case "conhost" or "openconsole":
++                return R("Host finestra console di Windows", "Gestisce finestra, buffer di testo e I/O per programmi a riga di comando",
++                    "Windows affianca conhost.exe a ogni applicazione console (PowerShell, CMD, .NET, Python) per gestire l'input/output testuale.",
++                    p.ParentName is null ? "Associato a una sessione console; processo originario non determinato." : $"Padre riportato: {p.ParentName}; il nome non dimostra il motivo dell’avvio.",
++                    "Può chiudere la finestra terminale o interrompere il programma console collegato.", "MEDIO", "Windows", 96,
++                    "eseguibile console host di Windows (conhost/openconsole)");
++            case "dwm":
++                return R("Gestione finestre desktop (DWM)", "Compone e disegna le finestre del desktop tramite GPU",
++                    "Desktop Window Manager gestisce la composizione grafica di tutte le finestre di Windows.",
++                    "Componente grafico di sessione di Windows; motivo dell’avvio non osservato.",
++                    "Sconsigliato terminarlo: causa il riavvio dello schermo e possibili blocchi grafici.", "ALTO", "Windows", 98,
++                    "eseguibile Desktop Window Manager (dwm.exe)");
++            case "explorer":
++                return R("Esplora risorse e shell di Windows", "Gestisce desktop, barra delle applicazioni e finestre cartelle",
++                    "Fornisce l'interfaccia grafica principale di Windows (taskbar, menu Start, Esplora file).",
++                    "Shell grafica della sessione utente Windows; motivo dell’avvio non osservato.",
++                    "Scompaiono temporaneamente barra delle applicazioni e cartelle aperte.", "MEDIO", "Windows", 98,
++                    "eseguibile shell Windows (explorer.exe)");
++            case "sihost":
++                return R("Host infrastruttura shell (sihost)", "Supporta menu Start, centro notifiche e funzioni moderne della shell",
++                    "Shell Infrastructure Host coordina componenti moderni dell'interfaccia utente di Windows.",
++                    "Componente di sessione dell'interfaccia Windows; motivo dell’avvio non osservato.",
++                    "Può bloccare menu Start, barra delle applicazioni e scorciatoie di sistema.", "ALTO", "Windows", 96,
++                    "eseguibile Shell Infrastructure Host (sihost.exe)");
++            case "taskhostw":
++                return R("Host attività pianificate di Windows", "Ospita attività di manutenzione e task di sistema pianificati",
++                    "Esegue in background task registrati nell'Utilità di pianificazione di Windows.",
++                    "Ospita task pianificati di Windows; il singolo task attivo non è esposto nel nome.",
++                    "Interrompe le attività pianificate attualmente ospitate in questo processo.", "MEDIO", "Windows", 96,
++                    "eseguibile Task Host Windows (taskhostw.exe)");
++            case "runtimebroker":
++                return R("Runtime Broker di Windows", "Media permessi e risorse di sistema per le app pacchettizzate",
++                    "Gestisce le autorizzazioni e i contratti di sistema per le applicazioni Windows/UWP.",
++                    "Avviato da Windows per mediare i permessi delle app; l'app specifica non è indicata nel nome.",
++                    "Le app Windows collegate possono chiudersi o perdere accesso alle risorse.", "BASSO / MEDIO", "Windows", 96,
++                    "eseguibile Runtime Broker (RuntimeBroker.exe)");
++            case "searchhost" or "searchapp":
++                return R("Interfaccia di ricerca Windows", "Gestisce il pannello di ricerca di Windows e i risultati rapidi",
++                    "Fornisce l'interfaccia di ricerca nella barra delle applicazioni di Windows.",
++                    "Componente di ricerca della shell Windows; rimane pronto o in sospensione in memoria.",
++                    "Chiude il pannello di ricerca; Windows lo ricrea automaticamente alla successiva ricerca.", "BASSO", "Windows", 96,
++                    "eseguibile ricerca Windows (SearchHost/SearchApp)");
++            case "searchindexer" or "searchprotocolhost" or "searchfilterhost":
++                return R("Indicizzatore di Windows Search", "Indicizza file e contenuti per la ricerca rapida locale",
++                    "Aggiorna e interroga il catalogo di ricerca di Windows.",
++                    "Servizio/worker di indicizzazione di Windows Search.",
++                    "Interrompe temporaneamente l'indicizzazione o le ricerche sui file.", "BASSO / MEDIO", "Background", 96,
++                    "componente indicizzazione Windows Search");
++            case "msmpeng" or "mpdefendercoreservice" or "securityhealthservice" or "securityhealthsystray":
++                return R("Sicurezza di Windows / Microsoft Defender", "Protezione antivirus e controllo sicurezza di sistema",
++                    "Componente di sicurezza e scansione antimalware integrato in Windows.",
++                    "Servizio o interfaccia di sicurezza di Windows; operazione puntuale non osservata.",
++                    "Protetto dal sistema o sconsigliato da chiudere per non ridurre la protezione.", "ALTO", "Windows", 98,
++                    "componente Microsoft Defender / Sicurezza di Windows");
++            case "ctfmon" or "textinputhost":
++                return R("Servizio input di testo e tastiera", "Gestisce layout tastiera, pannello emoji, dettatura e metodi di input",
++                    "Coordina l'inserimento del testo e i servizi linguistici nelle applicazioni Windows.",
++                    "Componente di input della sessione utente Windows.",
++                    "Può impedire la digitazione nelle app moderne o nel menu Start finché non si riavvia.", "MEDIO", "Windows", 95,
++                    "componente input testo Windows (ctfmon/TextInputHost)");
++            case "dllhost":
++                return R("Host componenti COM (dllhost)", "Ospita librerie COM o generatori di anteprime in un processo isolato",
++                    "COM Surrogate carica DLL e componenti COM fuori dal processo chiamante per isolarne la memoria.",
++                    p.ParentName is null ? "Ospita un componente COM su richiesta." : $"Padre riportato: {p.ParentName}; il CLSID specifico richiede ispezione dei parametri.",
++                    "Interrompe l'operazione COM o la generazione di miniature in corso.", "BASSO / MEDIO", "Windows", 94,
++                    "eseguibile COM Surrogate (dllhost.exe)");
++            case "audiodg":
++                return R("Motore audio di Windows (audiodg)", "Elaborazione del segnale audio ed effetti sonori in processo isolato",
++                    "Windows Audio Device Graph Isolation elabora i flussi audio separatamente dai programmi.",
++                    "Attivato dal sottosistema audio di Windows.",
++                    "Interrompe temporaneamente la riproduzione o acquisizione audio.", "MEDIO", "Windows", 96,
++                    "eseguibile Windows Audio Device Graph Isolation (audiodg.exe)");
++            case "wmiprvse":
++                return R("Provider WMI di Windows", "Risponde alle interrogazioni di diagnostica e gestione WMI",
++                    "Esegue le query WMI richieste da strumenti di monitoraggio, script o servizi di sistema.",
++                    "Avviato dal servizio WMI quando un programma interroga i dati di gestione di Windows.",
++                    "Può far fallire le query WMI in corso; Windows lo riavvia se necessario.", "BASSO / MEDIO", "Background", 95,
++                    "eseguibile WMI Provider Host (WmiPrvSE.exe)");
++            case "spoolsv":
++                return R("Spooler di stampa Windows", "Gestisce code di stampa e comunicazione con le stampanti",
++                    "Servizio di sistema per la gestione dei processi di stampa locali e di rete.",
++                    "Servizio di stampa di Windows.",
++                    "Blocca le stampe fino al riavvio del servizio Spooler.", "BASSO / MEDIO", "Background", 96,
++                    "eseguibile Spooler di stampa (spoolsv.exe)");
++            case "fontdrvhost":
++                return R("Host driver caratteri (fontdrvhost)", "Renderizza i caratteri tipografici in modalità utente isolata",
++                    "Usermode Font Driver Host elabora i font fuori dal kernel per maggiore sicurezza.",
++                    "Componente grafico di sistema avviato da Windows.",
++                    "Non terminare: può compromettere la visualizzazione del testo nelle applicazioni.", "ALTO", "Windows", 96,
++                    "eseguibile Usermode Font Driver Host (fontdrvhost.exe)");
++        }
++
+         string signal = $"{p.Name} {p.FileDescription} {p.ProductName}".ToLowerInvariant();
+ 
+         if (signal.Contains("language server") || signal.Contains("language_server") || signal.Contains("languageserver"))
+--- previous/src/ProcessLens.Windows/WindowsAllocationInspector.cs
++++ current/src/ProcessLens.Windows/WindowsAllocationInspector.cs
+@@ -1,6 +1,8 @@
+ using System.ComponentModel;
+ using System.Diagnostics;
++using System.IO;
+ using System.Runtime.InteropServices;
++using System.Text;
+ using ProcessLens.Core;
+ 
+ namespace ProcessLens.Windows;
+@@ -8,7 +10,7 @@
+ /// <summary>
+ /// On-demand, read-only Windows allocation-group inspector. Uses OS APIs, no memory
+ /// content reads, code injection, suspend, decommit, write or remote executable.
+-/// Bounded scan and bounded page samples; no full-heap or object attribution.
++/// Bounded scan and bounded page samples; resolves mapped file/DLL basenames and page protection roles.
+ /// </summary>
+ public sealed class WindowsAllocationInspector
+ {
+@@ -16,6 +18,14 @@
+     private const uint MEM_PRIVATE = 0x20000;
+     private const uint MEM_MAPPED = 0x40000;
+     private const uint MEM_IMAGE = 0x1000000;
++    private const uint PAGE_READONLY = 0x02;
++    private const uint PAGE_READWRITE = 0x04;
++    private const uint PAGE_WRITECOPY = 0x08;
++    private const uint PAGE_EXECUTE = 0x10;
++    private const uint PAGE_EXECUTE_READ = 0x20;
++    private const uint PAGE_EXECUTE_READWRITE = 0x40;
++    private const uint PAGE_EXECUTE_WRITECOPY = 0x80;
++    private const uint PAGE_GUARD = 0x100;
+     private const int MaxRegions = 25000;
+     private const int MaxGroupsToSample = 12;
+     private const int MaxSampledPages = 2500;
+@@ -33,12 +43,29 @@
+         public uint Type;
+     }
+ 
+-    // PSAPI_WORKING_SET_EX_INFORMATION: two pointer-sized fields. No managed bools.
+     [StructLayout(LayoutKind.Sequential)]
+     private struct WorkingSetExInformation
+     {
+         public IntPtr VirtualAddress;
+         public nuint VirtualAttributes;
++    }
++
++    [StructLayout(LayoutKind.Sequential)]
++    private struct ProcessMemoryCountersEx2
++    {
++        public uint cb;
++        public uint PageFaultCount;
++        public nuint PeakWorkingSetSize;
++        public nuint WorkingSetSize;
++        public nuint QuotaPeakPagedPoolUsage;
++        public nuint QuotaPagedPoolUsage;
++        public nuint QuotaPeakNonPagedPoolUsage;
++        public nuint QuotaNonPagedPoolUsage;
++        public nuint PagefileUsage;
++        public nuint PeakPagefileUsage;
++        public nuint PrivateUsage;
++        public nuint PrivateWorkingSetSize;
++        public ulong SharedCommitUsage;
+     }
+ 
+     private sealed class AllocationAccumulator
+@@ -47,6 +74,11 @@
+         public string Kind = "OTHER";
+         public long CommittedBytes;
+         public int Regions;
++        public long ReadWriteBytes;
++        public long ExecutableBytes;
++        public long ReadOnlyBytes;
++        public long GuardBytes;
++        public string? ModuleOrPurpose;
+         public List<(ulong Address, ulong Size)> Ranges = new();
+         public int SampledPages;
+         public int ResidentPages;
+@@ -66,6 +98,15 @@
+     [return: MarshalAs(UnmanagedType.Bool)]
+     private static extern bool QueryWorkingSetEx(IntPtr process,
+         [In, Out] WorkingSetExInformation[] information, uint byteSize);
++
++    [DllImport("psapi.dll", EntryPoint = "GetProcessMemoryInfo", SetLastError = true)]
++    [return: MarshalAs(UnmanagedType.Bool)]
++    private static extern bool GetProcessMemoryInfo(
++        IntPtr process, ref ProcessMemoryCountersEx2 counters, uint size);
++
++    [DllImport("psapi.dll", EntryPoint = "GetMappedFileNameW", CharSet = CharSet.Unicode, SetLastError = true)]
++    private static extern uint GetMappedFileNameW(
++        IntPtr process, IntPtr address, StringBuilder fileName, uint size);
+ 
+     public WindowsAllocationReport Capture(int pid, DateTime? expectedStartTime)
+     {
+@@ -87,6 +128,18 @@
+             if (!GetProcessTimes(handle, out long creation, out _, out _, out _) ||
+                 DateTime.FromFileTimeUtc(creation).ToLocalTime() != expectedStartTime.Value)
+                 return WindowsAllocationReport.Unavailable("Istanza non verificata tramite handle: risultato scartato.");
++
++            long peakWs = 0, peakCommit = 0, pagedPool = 0, nonPagedPool = 0;
++            uint pageFaults = 0;
++            var counters = new ProcessMemoryCountersEx2 { cb = (uint)Marshal.SizeOf<ProcessMemoryCountersEx2>() };
++            if (GetProcessMemoryInfo(handle, ref counters, counters.cb))
++            {
++                peakWs = (long)counters.PeakWorkingSetSize;
++                peakCommit = (long)counters.PeakPagefileUsage;
++                pageFaults = counters.PageFaultCount;
++                pagedPool = (long)counters.QuotaPagedPoolUsage;
++                nonPagedPool = (long)counters.QuotaNonPagedPoolUsage;
++            }
+ 
+             var stopwatch = Stopwatch.StartNew();
+             var map = new Dictionary<(ulong Base, uint Type), AllocationAccumulator>();
+@@ -127,12 +180,59 @@
+                 group.CommittedBytes = group.CommittedBytes > long.MaxValue - amount
+                     ? long.MaxValue : group.CommittedBytes + amount;
+                 group.Ranges.Add((address, length));
++
++                uint prot = v.Protect;
++                if ((prot & PAGE_GUARD) != 0) group.GuardBytes += amount;
++                else if ((prot & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY)) != 0)
++                    group.ExecutableBytes += amount;
++                else if ((prot & (PAGE_READWRITE | PAGE_WRITECOPY)) != 0)
++                    group.ReadWriteBytes += amount;
++                else if ((prot & PAGE_READONLY) != 0)
++                    group.ReadOnlyBytes += amount;
+             }
+             if (regions == 0)
+                 return WindowsAllocationReport.Unavailable("VirtualQueryEx non ha fornito regioni accessibili.");
+ 
+             var largest = map.Values.OrderByDescending(g => g.CommittedBytes)
+                 .Take(MaxGroupsToSample).ToArray();
++
++            // Resolve file/DLL basenames or memory protection roles for the largest allocation groups.
++            var pathBuffer = new StringBuilder(512);
++            foreach (var group in largest)
++            {
++                if (group.Kind is "MEM_IMAGE" or "MEM_MAPPED")
++                {
++                    pathBuffer.Clear();
++                    ulong probeAddr = group.Ranges.Count > 0 ? group.Ranges[0].Address : group.BaseAddress;
++                    uint len = GetMappedFileNameW(handle, new IntPtr((long)probeAddr), pathBuffer, (uint)pathBuffer.Capacity);
++                    if (len > 0)
++                    {
++                        string fileName = Path.GetFileName(pathBuffer.ToString().Trim());
++                        if (!string.IsNullOrWhiteSpace(fileName) && fileName.Length <= 80)
++                        {
++                            group.ModuleOrPurpose = group.Kind == "MEM_IMAGE"
++                                ? $"Modulo: {fileName}"
++                                : $"File mappato: {fileName}";
++                            continue;
++                        }
++                    }
++                    group.ModuleOrPurpose = group.Kind == "MEM_IMAGE" ? "Modulo eseguibile/DLL" : "Sezione/file mappato";
++                }
++                else if (group.Kind == "MEM_PRIVATE")
++                {
++                    if (group.ExecutableBytes > group.CommittedBytes / 4)
++                        group.ModuleOrPurpose = "Codice compilato JIT / Runtime (RX/RWX)";
++                    else if (group.GuardBytes > 0 && group.CommittedBytes <= 8 * 1024 * 1024)
++                        group.ModuleOrPurpose = "Stack di esecuzione thread";
++                    else if (group.ReadWriteBytes >= group.ReadOnlyBytes)
++                        group.ModuleOrPurpose = group.CommittedBytes >= 16 * 1024 * 1024
++                            ? "Grande buffer / Heap primario (RW)"
++                            : "Heap / Strutture dati dinamiche (RW)";
++                    else
++                        group.ModuleOrPurpose = "Tabelle / Dati privati sola lettura (R)";
++                }
++            }
++
+             int pageSize = Environment.SystemPageSize;
+             var samples = new List<(AllocationAccumulator Owner, WorkingSetExInformation Info)>();
+             if (stopwatch.Elapsed < MaxDuration && pageSize > 0)
+@@ -213,7 +313,9 @@
+                 largest.Select(g => new WindowsAllocationGroup(g.BaseAddress, g.Kind,
+                     g.CommittedBytes, g.Regions, sampleSuccess ? g.SampledPages : 0,
+                     sampleSuccess ? g.ResidentPages : 0,
+-                    sampleSuccess ? g.SharedResidentPages : 0)).ToArray());
++                    sampleSuccess ? g.SharedResidentPages : 0,
++                    g.ModuleOrPurpose)).ToArray(),
++                peakWs, peakCommit, pageFaults, pagedPool, nonPagedPool);
+         }
+         catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or
+             Win32Exception or UnauthorizedAccessException or OverflowException)
+--- previous/src/ProcessLens.Windows/WindowsPhysicalMemoryReader.cs
++++ current/src/ProcessLens.Windows/WindowsPhysicalMemoryReader.cs
+@@ -3,9 +3,11 @@
+ 
+ namespace ProcessLens.Windows;
+ 
+-/// <summary>Physical RAM from GlobalMemoryStatusEx (not commit, not process sums).</summary>
++/// <summary>Physical RAM from GlobalMemoryStatusEx and full process/category RAM census via PSAPI EX2.</summary>
+ public static class WindowsPhysicalMemoryReader
+ {
++    private const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
++
+     [StructLayout(LayoutKind.Sequential)]
+     private struct MemoryStatusEx
+     {
+@@ -20,19 +22,157 @@
+         public ulong ExtendedVirtual;
+     }
+ 
++    [StructLayout(LayoutKind.Sequential)]
++    private struct ProcessMemoryCountersEx2
++    {
++        public uint cb;
++        public uint PageFaultCount;
++        public nuint PeakWorkingSetSize;
++        public nuint WorkingSetSize;
++        public nuint QuotaPeakPagedPoolUsage;
++        public nuint QuotaPagedPoolUsage;
++        public nuint QuotaPeakNonPagedPoolUsage;
++        public nuint QuotaNonPagedPoolUsage;
++        public nuint PagefileUsage;
++        public nuint PeakPagefileUsage;
++        public nuint PrivateUsage;
++        public nuint PrivateWorkingSetSize;
++        public ulong SharedCommitUsage;
++    }
++
+     [DllImport("kernel32.dll", EntryPoint = "GlobalMemoryStatusEx", SetLastError = true)]
+     [return: MarshalAs(UnmanagedType.Bool)]
+     private static extern bool GlobalMemoryStatusEx(ref MemoryStatusEx status);
+ 
+-    public sealed record PhysicalMemory(ulong TotalBytes, ulong AvailableBytes)
++    [DllImport("kernel32.dll", SetLastError = true)]
++    private static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, uint dwProcessId);
++
++    [DllImport("kernel32.dll", SetLastError = true)]
++    [return: MarshalAs(UnmanagedType.Bool)]
++    private static extern bool CloseHandle(IntPtr hObject);
++
++    [DllImport("psapi.dll", EntryPoint = "GetProcessMemoryInfo", SetLastError = true)]
++    [return: MarshalAs(UnmanagedType.Bool)]
++    private static extern bool GetProcessMemoryInfo(
++        IntPtr process, ref ProcessMemoryCountersEx2 counters, uint size);
++
++    public sealed record PhysicalMemory(
++        ulong TotalBytes, ulong AvailableBytes,
++        ulong TotalPageFileBytes = 0, ulong AvailablePageFileBytes = 0)
+     {
+         public ulong UsedBytes => TotalBytes >= AvailableBytes ? TotalBytes - AvailableBytes : 0;
+         public double UsedPercent => TotalBytes == 0 ? 0 : Math.Clamp(
+             UsedBytes * 100.0 / TotalBytes, 0, 100);
+-    }
+-
+-    public sealed record ProcessMemory(int Pid, string Name, long WorkingSetBytes,
+-        long PrivateCommitBytes);
++        public ulong UsedPageFileBytes => TotalPageFileBytes >= AvailablePageFileBytes
++            ? TotalPageFileBytes - AvailablePageFileBytes : 0;
++    }
++
++    public sealed record ProcessMemory(
++        int Pid, string Name, long WorkingSetBytes, long PrivateCommitBytes,
++        long PrivateWorkingSetBytes = 0, bool PrivateWorkingSetAvailable = false,
++        string Category = "Applicazioni", string FriendlyName = "", long PeakWorkingSetBytes = 0)
++    {
++        public long SharedWorkingSetBytes => PrivateWorkingSetAvailable && WorkingSetBytes >= PrivateWorkingSetBytes
++            ? WorkingSetBytes - PrivateWorkingSetBytes : 0;
++        public long EffectiveResidentBytes => PrivateWorkingSetAvailable ? PrivateWorkingSetBytes : WorkingSetBytes;
++    }
++
++    public sealed record AppMemoryGroup(
++        string GroupName, string ExecutableName, string Category, int InstanceCount, int LargestPid,
++        long TotalPrivateWorkingSetBytes, long TotalWorkingSetBytes, long TotalPrivateCommitBytes,
++        long MaxPeakWorkingSetBytes, bool PrivateAvailable)
++    {
++        public long EffectiveResidentBytes => PrivateAvailable ? TotalPrivateWorkingSetBytes : TotalWorkingSetBytes;
++        public long SharedWorkingSetBytes => PrivateAvailable && TotalWorkingSetBytes >= TotalPrivateWorkingSetBytes
++            ? TotalWorkingSetBytes - TotalPrivateWorkingSetBytes : 0;
++    }
++
++    public sealed record CategoryMemorySummary(
++        string Category, int ProcessCount, int GroupCount,
++        long PrivateWorkingSetBytes, long WorkingSetBytes, long PrivateCommitBytes);
++
++    public sealed record FullMemoryAnalysisSnapshot(
++        PhysicalMemory Memory,
++        IReadOnlyList<ProcessMemory> Processes,
++        IReadOnlyList<AppMemoryGroup> Groups,
++        IReadOnlyList<CategoryMemorySummary> Categories,
++        long TotalProcessPrivateWorkingSetBytes,
++        long TotalProcessPrivateCommitBytes,
++        long KernelAndSharedPhysicalBytes,
++        int TotalAccessibleProcesses,
++        int UnreadableProcessesCount);
++
++    private static readonly HashSet<string> DevNames = new(StringComparer.OrdinalIgnoreCase)
++    {
++        "dotnet", "vbcscompiler", "msbuild", "csc", "vbc", "devenv", "rider64", "code", "cursor",
++        "windsurf", "python", "pythonw", "python3", "conda", "pip", "uv", "node", "deno", "bun",
++        "java", "javaw", "gradle", "mvn", "rustc", "cargo", "go", "gcc", "clang", "cmake", "ninja",
++        "git", "bash", "sh", "wsl", "wslservice", "wslhost", "vmmem", "vmmemwsl", "docker",
++        "com.docker.backend", "powershell", "pwsh", "processlensprofiler", "adb", "emulator"
++    };
++
++    private static readonly HashSet<string> WindowsCoreNames = new(StringComparer.OrdinalIgnoreCase)
++    {
++        "system", "registry", "smss", "csrss", "wininit", "winlogon", "services", "lsass", "lsaiso",
++        "fontdrvhost", "dwm", "explorer", "sihost", "taskhostw", "runtimebroker", "applicationframehost",
++        "startmenuexperiencehost", "shellexperiencehost", "searchhost", "textinputhost", "ctfmon",
++        "conhost", "openconsole", "lockapp", "logonui", "smartscreen", "securityhealthservice",
++        "securityhealthsystray", "msmpeng", "mpdefendercoreservice", "nissrv", "audiodg",
++        "systemsettings", "taskmgr", "mmc", "dllhost", "rundll32", "werfault", "wermgr",
++        "tiworker", "trustedinstaller", "gamebar", "gamebarftserver"
++    };
++
++    private static readonly HashSet<string> ServiceBgNames = new(StringComparer.OrdinalIgnoreCase)
++    {
++        "svchost", "spoolsv", "wmiprvse", "unsecapp", "dashost", "wlanext", "vds", "vssvc",
++        "msiexec", "wuauclt", "usoclient", "mousocoreworker", "compattelrunner", "backgroundtaskhost",
++        "settingsynchost", "sgrmbroker", "searchindexer", "searchprotocolhost", "searchfilterhost",
++        "searchapp", "widgets", "widgetservice", "phoneexperiencehost", "crossdeviceservice",
++        "filecoauth", "processlens.memoryagent", "processlens.guardian.service"
++    };
++
++    private static readonly Dictionary<string, string> KnownFriendlyNames = new(StringComparer.OrdinalIgnoreCase)
++    {
++        ["chrome"] = "Google Chrome",
++        ["msedge"] = "Microsoft Edge",
++        ["msedgewebview2"] = "Microsoft Edge WebView2",
++        ["firefox"] = "Mozilla Firefox",
++        ["brave"] = "Brave Browser",
++        ["opera"] = "Opera Browser",
++        ["code"] = "Visual Studio Code",
++        ["devenv"] = "Visual Studio",
++        ["dotnet"] = "Runtime / Compilatore .NET",
++        ["powershell"] = "Windows PowerShell",
++        ["pwsh"] = "PowerShell 7",
++        ["python"] = "Interprete Python",
++        ["node"] = "Runtime Node.js",
++        ["java"] = "Java Virtual Machine",
++        ["javaw"] = "Java Virtual Machine",
++        ["wsl"] = "Windows Subsystem for Linux",
++        ["vmmem"] = "Macchina virtuale WSL / Hyper-V",
++        ["vmmemwsl"] = "Macchina virtuale WSL 2",
++        ["dwm"] = "Gestione finestre desktop (DWM)",
++        ["explorer"] = "Esplora risorse Windows",
++        ["svchost"] = "Host servizi di Windows (svchost)",
++        ["msmpeng"] = "Antivirus Microsoft Defender",
++        ["searchhost"] = "Ricerca di Windows (SearchHost)",
++        ["searchindexer"] = "Indicizzatore Windows Search",
++        ["runtimebroker"] = "Runtime Broker di Windows",
++        ["sihost"] = "Host infrastruttura shell",
++        ["taskhostw"] = "Host attività di Windows",
++        ["conhost"] = "Host finestra console",
++        ["dllhost"] = "Host componenti COM (dllhost)",
++        ["wmiprvse"] = "Provider WMI di Windows",
++        ["audiodg"] = "Motore audio di Windows",
++        ["spoolsv"] = "Spooler di stampa Windows",
++        ["ctfmon"] = "Servizio input e tastiera (CTF)",
++        ["textinputhost"] = "Servizio input di testo Windows",
++        ["windowsterminal"] = "Terminale Windows",
++        ["processlens"] = "ProcessLens (Interfaccia)",
++        ["processlens.memoryagent"] = "ProcessLens — Monitor Avvisi RAM",
++        ["processlens.guardian.service"] = "ProcessLens — Servizio Guardian",
++        ["processlensprofiler"] = "ProcessLens — Profiler Heap .NET"
++    };
+ 
+     public static PhysicalMemory Read()
+     {
+@@ -40,41 +180,202 @@
+         if (!GlobalMemoryStatusEx(ref state) || state.TotalPhysical == 0)
+             throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(),
+                 "GlobalMemoryStatusEx non disponibile");
+-        return new PhysicalMemory(state.TotalPhysical, state.AvailablePhysical);
+-    }
+-
+-    /// <summary>Bounded top process inventory, only on explicit dashboard refresh.</summary>
++        return new PhysicalMemory(state.TotalPhysical, state.AvailablePhysical,
++            state.TotalPageFile, state.AvailablePageFile);
++    }
++
++    /// <summary>Bounded top process inventory for backwards compatibility.</summary>
+     public static IReadOnlyList<ProcessMemory> ReadTopProcesses(int count = 20)
+     {
+-        count = Math.Clamp(count, 1, 30);
+-        var top = new List<ProcessMemory>(count);
++        count = Math.Clamp(count, 1, 50);
++        var full = ReadFullAnalysis(count);
++        return full.Processes.Take(count).ToArray();
++    }
++
++    /// <summary>Full system RAM census: classifies all readable processes, groups multi-process apps, and computes category totals.</summary>
++    public static FullMemoryAnalysisSnapshot ReadFullAnalysis(int maxRows = 60)
++    {
++        maxRows = Math.Clamp(maxRows, 10, 150);
++        var memory = Read();
++        var rawList = new List<(int Pid, string Name, long Ws, long Commit, int SessionId, bool HasWindow)>(256);
++        var namesWithWindows = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
++        int unreadable = 0;
++
+         foreach (var process in Process.GetProcesses())
+         {
+             using (process)
+             {
+                 try
+                 {
+-                    long workingSet = process.WorkingSet64;
+-                    if (workingSet <= 0) continue;
+-                    var row = new ProcessMemory(process.Id, process.ProcessName,
+-                        workingSet, process.PrivateMemorySize64);
+-                    int place = top.FindIndex(x => x.WorkingSetBytes < workingSet);
+-                    if (place < 0)
+-                    {
+-                        if (top.Count >= count) continue;
+-                        top.Add(row);
+-                    }
+-                    else
+-                        top.Insert(place, row);
+-                    if (top.Count > count) top.RemoveAt(top.Count - 1);
++                    int pid = process.Id;
++                    if (pid <= 0) continue;
++                    long ws = process.WorkingSet64;
++                    if (ws <= 0) continue;
++                    string name = process.ProcessName;
++                    long commit = process.PrivateMemorySize64;
++                    int sessionId = 1;
++                    try { sessionId = process.SessionId; } catch { }
++                    bool hasWin = false;
++                    try { hasWin = process.MainWindowHandle != IntPtr.Zero; } catch { }
++                    if (hasWin) namesWithWindows.Add(name);
++                    rawList.Add((pid, name, ws, commit, sessionId, hasWin));
+                 }
+                 catch (Exception ex) when (ex is InvalidOperationException or
+                     System.ComponentModel.Win32Exception or System.UnauthorizedAccessException)
+                 {
+-                    // Protected or exited processes: don't invent zeros.
++                    unreadable++;
+                 }
+             }
+         }
+-        return top;
++
++        var allProcesses = new List<ProcessMemory>(rawList.Count);
++        long totalPrivWs = 0;
++        long totalPrivCommit = 0;
++
++        foreach (var item in rawList)
++        {
++            string category = ClassifyCategory(item.Name, item.SessionId, item.HasWindow || namesWithWindows.Contains(item.Name));
++            string friendly = ResolveFriendlyGroupName(item.Name);
++            if (TryReadEx2(item.Pid, out long ws, out long privWs, out long commit, out long peakWs))
++            {
++                long finalWs = ws > 0 ? ws : item.Ws;
++                long finalCommit = commit > 0 ? commit : item.Commit;
++                totalPrivWs = checked(totalPrivWs + privWs);
++                totalPrivCommit = checked(totalPrivCommit + finalCommit);
++                allProcesses.Add(new ProcessMemory(
++                    item.Pid, item.Name, finalWs, finalCommit,
++                    privWs, true, category, friendly, peakWs));
++            }
++            else
++            {
++                totalPrivCommit = checked(totalPrivCommit + item.Commit);
++                allProcesses.Add(new ProcessMemory(
++                    item.Pid, item.Name, item.Ws, item.Commit,
++                    0, false, category, friendly, 0));
++            }
++        }
++
++        var groups = allProcesses
++            .GroupBy(p => p.Name, StringComparer.OrdinalIgnoreCase)
++            .Select(g =>
++            {
++                var items = g.ToArray();
++                var largest = items.OrderByDescending(x => x.EffectiveResidentBytes).First();
++                bool anyPriv = items.Any(x => x.PrivateWorkingSetAvailable);
++                long sumPrivWs = items.Where(x => x.PrivateWorkingSetAvailable).Sum(x => x.PrivateWorkingSetBytes);
++                long sumWs = items.Sum(x => x.WorkingSetBytes);
++                long sumCommit = items.Sum(x => x.PrivateCommitBytes);
++                long maxPeak = items.Max(x => x.PeakWorkingSetBytes);
++                return new AppMemoryGroup(
++                    largest.FriendlyName,
++                    largest.Name,
++                    largest.Category,
++                    items.Length,
++                    largest.Pid,
++                    sumPrivWs,
++                    sumWs,
++                    sumCommit,
++                    maxPeak,
++                    anyPriv);
++            })
++            .OrderByDescending(g => g.EffectiveResidentBytes)
++            .ToArray();
++
++        string[] categoryOrder = new[] { "Applicazioni", "Sviluppo", "Windows", "Secondario" };
++        var categories = categoryOrder
++            .Select(cat =>
++            {
++                var catProcs = allProcesses.Where(p => p.Category == cat).ToArray();
++                int grpCount = groups.Count(g => g.Category == cat);
++                return new CategoryMemorySummary(
++                    cat,
++                    catProcs.Length,
++                    grpCount,
++                    catProcs.Where(p => p.PrivateWorkingSetAvailable).Sum(p => p.PrivateWorkingSetBytes),
++                    catProcs.Sum(p => p.WorkingSetBytes),
++                    catProcs.Sum(p => p.PrivateCommitBytes));
++            })
++            .ToArray();
++
++        long usedPhysical = (long)Math.Min(memory.UsedBytes, (ulong)long.MaxValue);
++        long kernelAndShared = Math.Max(0L, usedPhysical - totalPrivWs);
++
++        var sortedProcesses = allProcesses
++            .OrderByDescending(p => p.EffectiveResidentBytes)
++            .Take(maxRows)
++            .ToArray();
++
++        return new FullMemoryAnalysisSnapshot(
++            memory,
++            sortedProcesses,
++            groups.Take(maxRows).ToArray(),
++            categories,
++            totalPrivWs,
++            totalPrivCommit,
++            kernelAndShared,
++            allProcesses.Count,
++            unreadable);
++    }
++
++    private static string ClassifyCategory(string processName, int sessionId, bool appHasVisibleWindow)
++    {
++        string clean = processName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
++            ? processName[..^4] : processName;
++
++        if (DevNames.Contains(clean)) return "Sviluppo";
++        if (WindowsCoreNames.Contains(clean)) return "Windows";
++        if (ServiceBgNames.Contains(clean)) return "Secondario";
++
++        if (clean.Contains("updater", StringComparison.OrdinalIgnoreCase) ||
++            clean.Contains("crashpad", StringComparison.OrdinalIgnoreCase) ||
++            clean.EndsWith("service", StringComparison.OrdinalIgnoreCase) ||
++            clean.EndsWith("svc", StringComparison.OrdinalIgnoreCase))
++            return "Secondario";
++
++        if (appHasVisibleWindow) return "Applicazioni";
++        if (sessionId == 0) return "Secondario";
++        return "Applicazioni";
++    }
++
++    private static string ResolveFriendlyGroupName(string processName)
++    {
++        string clean = processName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
++            ? processName[..^4] : processName;
++        if (KnownFriendlyNames.TryGetValue(clean, out string? friendly))
++            return $"{friendly} ({clean})";
++        return clean;
++    }
++
++    private static bool TryReadEx2(int pid, out long ws, out long privateWs, out long commit, out long peakWs)
++    {
++        ws = 0;
++        privateWs = 0;
++        commit = 0;
++        peakWs = 0;
++        if (pid <= 0) return false;
++        IntPtr handle = IntPtr.Zero;
++        try
++        {
++            handle = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, (uint)pid);
++            if (handle == IntPtr.Zero) return false;
++            var counters = new ProcessMemoryCountersEx2
++            {
++                cb = (uint)Marshal.SizeOf<ProcessMemoryCountersEx2>()
++            };
++            if (!GetProcessMemoryInfo(handle, ref counters, counters.cb)) return false;
++            ws = checked((long)counters.WorkingSetSize);
++            privateWs = checked((long)counters.PrivateWorkingSetSize);
++            commit = checked((long)counters.PrivateUsage);
++            peakWs = checked((long)counters.PeakWorkingSetSize);
++            return privateWs >= 0 && privateWs <= ws;
++        }
++        catch
++        {
++            return false;
++        }
++        finally
++        {
++            if (handle != IntPtr.Zero) CloseHandle(handle);
++        }
+     }
+ }
+--- previous/src/ProcessLens.Windows/WindowsVirtualMemoryInspector.cs
++++ current/src/ProcessLens.Windows/WindowsVirtualMemoryInspector.cs
+@@ -12,9 +12,19 @@
+ public sealed class WindowsVirtualMemoryInspector
+ {
+     private const uint MEM_COMMIT = 0x1000;
++    private const uint MEM_RESERVE = 0x2000;
+     private const uint MEM_PRIVATE = 0x20000;
+     private const uint MEM_MAPPED = 0x40000;
+     private const uint MEM_IMAGE = 0x1000000;
++    private const uint PAGE_READONLY = 0x02;
++    private const uint PAGE_READWRITE = 0x04;
++    private const uint PAGE_WRITECOPY = 0x08;
++    private const uint PAGE_EXECUTE = 0x10;
++    private const uint PAGE_EXECUTE_READ = 0x20;
++    private const uint PAGE_EXECUTE_READWRITE = 0x40;
++    private const uint PAGE_EXECUTE_WRITECOPY = 0x80;
++    private const uint PAGE_GUARD = 0x100;
++    private const long LargeBlockThresholdBytes = 4L * 1024 * 1024;
+     private const int MaxRegions = 100000;
+ 
+     [StructLayout(LayoutKind.Sequential)]
+@@ -66,6 +76,9 @@
+             ulong ceiling = IntPtr.Size == 8 ? 0x00007FFFFFFFFFFFUL : (ulong)int.MaxValue;
+             int regions = 0;
+             long privateBytes = 0, imageBytes = 0, mappedBytes = 0, otherBytes = 0;
++            long rwPrivateBytes = 0, execPrivateBytes = 0, roPrivateBytes = 0, guardStackBytes = 0;
++            long reservedBytes = 0, largeBlocksBytes = 0, largestSingleBlock = 0;
++            int largeBlocksCount = 0;
+             bool truncated = false;
+             var watch = Stopwatch.StartNew();
+             nuint structSize = (nuint)Marshal.SizeOf<MemoryBasicInformation>();
+@@ -87,11 +100,37 @@
+                 ulong next = baseAddress + size;
+                 if (next <= position) break;
+                 position = next;
++
++                long amount = size > (ulong)long.MaxValue ? long.MaxValue : (long)size;
++                if (region.State == MEM_RESERVE)
++                {
++                    reservedBytes = reservedBytes > long.MaxValue - amount ? long.MaxValue : reservedBytes + amount;
++                    continue;
++                }
+                 if (region.State != MEM_COMMIT) continue;
+-                long amount = size > (ulong)long.MaxValue ? long.MaxValue : (long)size;
++
+                 switch (region.Type)
+                 {
+-                    case MEM_PRIVATE: privateBytes = checked(privateBytes + amount); break;
++                    case MEM_PRIVATE:
++                        privateBytes = checked(privateBytes + amount);
++                        uint prot = region.Protect;
++                        if ((prot & PAGE_GUARD) != 0)
++                            guardStackBytes = checked(guardStackBytes + amount);
++                        else if ((prot & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY)) != 0)
++                            execPrivateBytes = checked(execPrivateBytes + amount);
++                        else if ((prot & (PAGE_READWRITE | PAGE_WRITECOPY)) != 0)
++                            rwPrivateBytes = checked(rwPrivateBytes + amount);
++                        else if ((prot & PAGE_READONLY) != 0)
++                            roPrivateBytes = checked(roPrivateBytes + amount);
++
++                        if (amount >= LargeBlockThresholdBytes)
++                        {
++                            largeBlocksCount++;
++                            largeBlocksBytes = checked(largeBlocksBytes + amount);
++                        }
++                        if (amount > largestSingleBlock)
++                            largestSingleBlock = amount;
++                        break;
+                     case MEM_IMAGE: imageBytes = checked(imageBytes + amount); break;
+                     case MEM_MAPPED: mappedBytes = checked(mappedBytes + amount); break;
+                     default: otherBytes = checked(otherBytes + amount); break;
+@@ -101,9 +140,11 @@
+                 return MemoryMapSnapshot.Unavailable("Windows non ha restituito regioni della memoria virtuale.");
+             string note = truncated
+                 ? "Scansione limitata per tempi/numero di regioni: i totali sono parziali."
+-                : "Regioni MEM_COMMIT per tipo VirtualQueryEx; non sono pagine residenti, heap o oggetti identificati.";
++                : "Regioni MEM_COMMIT classificate per tipo e permessi di pagina tramite VirtualQueryEx.";
+             return new MemoryMapSnapshot(true, note,
+-                privateBytes, imageBytes, mappedBytes, otherBytes, regions, truncated);
++                privateBytes, imageBytes, mappedBytes, otherBytes, regions, truncated,
++                rwPrivateBytes, execPrivateBytes, roPrivateBytes, guardStackBytes,
++                reservedBytes, largeBlocksCount, largeBlocksBytes, largestSingleBlock);
+         }
+         catch (Exception ex) when (ex is ArgumentException or InvalidOperationException
+             or System.ComponentModel.Win32Exception or OverflowException or UnauthorizedAccessException)
+--- previous/start-processlens-all.ps1
++++ current/start-processlens-all.ps1
+@@ -86,7 +86,9 @@
+     }
+ 
+     Write-Step '4/5 - Avvio interfaccia ProcessLens'
+-    Write-Host 'Apro la GUI. Se Windows chiede UAC, conferma per utilizzare le funzioni avanzate.'
++    Get-Process -Name 'ProcessLens' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
++    Start-Sleep -Milliseconds 400
++    Write-Host 'Apro la GUI aggiornata. Se Windows chiede UAC, conferma per utilizzare le funzioni avanzate.'
+     $guiProcess = Start-Process -FilePath $guiExe -WorkingDirectory (Split-Path -Path $guiExe) -PassThru -ErrorAction Stop
+     Start-Sleep -Seconds 3
+     $guiProcess.Refresh()

@@ -1,0 +1,88 @@
+PASS presentation: R19 system RAM uses physical used and total with a consistent percentage [it-IT]: 10,0 / 16,0 GiB · 62,5 %
+PASS presentation: R19 genuinely available entire RAM is measured zero usage [it-IT]: 0,0 / 8,0 GiB · 0,0 %
+PASS presentation: R19 no available RAM is full usage [it-IT]: 8,0 / 8,0 GiB · 100,0 %
+PASS presentation: R19 missing or inconsistent RAM cannot become zero [it-IT]: N/D
+PASS presentation: R19 missing or inconsistent RAM cannot become zero [it-IT]: N/D
+PASS presentation: R19 missing or inconsistent RAM cannot become zero [it-IT]: N/D
+PASS presentation: R19 missing or inconsistent RAM cannot become zero [it-IT]: N/D
+PASS presentation: R19 missing or inconsistent RAM cannot become zero [it-IT]: N/D
+PASS presentation: R19 large unsigned RAM counters do not overflow [it-IT]
+PASS presentation: percent with separated unit [it-IT]: 26,0 %
+PASS presentation: sample interval with culture and unit [it-IT]: 16,5 s
+PASS presentation: screenshot CPU time, rounded display [it-IT]: 10 min 36,063 s
+PASS presentation: genuinely measured zero [it-IT]: 0 ms
+PASS presentation: positive sub-millisecond is not zero [it-IT]: < 1 ms
+PASS presentation: one millisecond [it-IT]: 1 ms
+PASS presentation: ten milliseconds, no leading zero [it-IT]: 10 ms
+PASS presentation: sub-second rounding [it-IT]: 63 ms
+PASS presentation: one second, no tick suffix [it-IT]: 1 s
+PASS presentation: fractional seconds [it-IT]: 16,5 s
+PASS presentation: carry into a second [it-IT]: 1 s
+PASS presentation: carry into a minute [it-IT]: 1 min 0 s
+PASS presentation: carry into an hour [it-IT]: 1 h 0 s
+PASS presentation: carry into a day [it-IT]: 1 g 0 s
+PASS presentation: multi-day CPU time [it-IT]: 1 g 1 h 1 min 1,125 s
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid duration is not zero [it-IT]: N/D
+PASS presentation: invalid interval is unavailable [it-IT]: N/D
+PASS presentation: invalid CPU percentage is unavailable [it-IT]: N/D
+PASS presentation: invalid interval is unavailable [it-IT]: N/D
+PASS presentation: invalid CPU percentage is unavailable [it-IT]: N/D
+PASS presentation: invalid interval is unavailable [it-IT]: N/D
+PASS presentation: invalid CPU percentage is unavailable [it-IT]: N/D
+PASS presentation: pending inspection has no invented zero [it-IT]
+PASS presentation: partial acquisition retains error and limits [it-IT]
+PASS presentation: direct counters and ports have separate lines [it-IT]
+PASS presentation: group counters separated from selected PID [it-IT]
+PASS presentation: role and related socket owner preserved [it-IT]
+PASS presentation: layout does not invent delegation or absence [it-IT]
+PASS presentation: related-process fallback and missing note [it-IT]
+PASS presentation: presentation preserves source counters and errors [it-IT]
+PASS presentation: R19 system RAM uses physical used and total with a consistent percentage [en-US]: 10.0 / 16.0 GiB · 62.5 %
+PASS presentation: R19 genuinely available entire RAM is measured zero usage [en-US]: 0.0 / 8.0 GiB · 0.0 %
+PASS presentation: R19 no available RAM is full usage [en-US]: 8.0 / 8.0 GiB · 100.0 %
+PASS presentation: R19 missing or inconsistent RAM cannot become zero [en-US]: N/D
+PASS presentation: R19 missing or inconsistent RAM cannot become zero [en-US]: N/D
+PASS presentation: R19 missing or inconsistent RAM cannot become zero [en-US]: N/D
+PASS presentation: R19 missing or inconsistent RAM cannot become zero [en-US]: N/D
+PASS presentation: R19 missing or inconsistent RAM cannot become zero [en-US]: N/D
+PASS presentation: R19 large unsigned RAM counters do not overflow [en-US]
+PASS presentation: percent with separated unit [en-US]: 26.0 %
+PASS presentation: sample interval with culture and unit [en-US]: 16.5 s
+PASS presentation: screenshot CPU time, rounded display [en-US]: 10 min 36.063 s
+PASS presentation: genuinely measured zero [en-US]: 0 ms
+PASS presentation: positive sub-millisecond is not zero [en-US]: < 1 ms
+PASS presentation: one millisecond [en-US]: 1 ms
+PASS presentation: ten milliseconds, no leading zero [en-US]: 10 ms
+PASS presentation: sub-second rounding [en-US]: 63 ms
+PASS presentation: one second, no tick suffix [en-US]: 1 s
+PASS presentation: fractional seconds [en-US]: 16.5 s
+PASS presentation: carry into a second [en-US]: 1 s
+PASS presentation: carry into a minute [en-US]: 1 min 0 s
+PASS presentation: carry into an hour [en-US]: 1 h 0 s
+PASS presentation: carry into a day [en-US]: 1 g 0 s
+PASS presentation: multi-day CPU time [en-US]: 1 g 1 h 1 min 1.125 s
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid duration is not zero [en-US]: N/D
+PASS presentation: invalid interval is unavailable [en-US]: N/D
+PASS presentation: invalid CPU percentage is unavailable [en-US]: N/D
+PASS presentation: invalid interval is unavailable [en-US]: N/D
+PASS presentation: invalid CPU percentage is unavailable [en-US]: N/D
+PASS presentation: invalid interval is unavailable [en-US]: N/D
+PASS presentation: invalid CPU percentage is unavailable [en-US]: N/D
+PASS presentation: pending inspection has no invented zero [en-US]
+PASS presentation: partial acquisition retains error and limits [en-US]
+PASS presentation: direct counters and ports have separate lines [en-US]
+PASS presentation: group counters separated from selected PID [en-US]
+PASS presentation: role and related socket owner preserved [en-US]
+PASS presentation: layout does not invent delegation or absence [en-US]
+PASS presentation: related-process fallback and missing note [en-US]
+PASS presentation: presentation preserves source counters and errors [en-US]
+Presentation regressions complete (it-IT + en-US).
+

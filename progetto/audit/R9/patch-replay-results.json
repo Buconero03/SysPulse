@@ -1,0 +1,7 @@
+{
+  "git_apply_check": "PASS",
+  "actual_git_apply": "PASS",
+  "changed_files_exact": 16,
+  "unchanged_files_exact": 315,
+  "scope": "All changed source, tests, scripts, docs and portable check. audit/R9 and manifest excluded to avoid self-reference."
+}

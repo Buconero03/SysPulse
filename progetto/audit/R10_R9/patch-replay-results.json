@@ -1,0 +1,12 @@
+{
+  "git_apply_check": "PASS",
+  "actual_git_apply": "PASS",
+  "exact_changed_files": 5,
+  "existing_source_files_retained_exact": 114,
+  "existing_source_files_changed": [
+    "src/ProcessLens.App/MainWindow.xaml.cs",
+    "src/ProcessLens.App/ProcessLens.App.csproj"
+  ],
+  "new_source_files": [],
+  "scope": "One clipboard invocation and GUI version; docs and portable regression. Audit and manifest excluded for self-reference."
+}

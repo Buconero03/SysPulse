@@ -1,0 +1,1409 @@
+diff --git a/LEGGIMI.txt b/LEGGIMI.txt
+index 5d41003..4bc62aa 100644
+--- a/LEGGIMI.txt
++++ b/LEGGIMI.txt
+@@ -1,9 +1,9 @@
+-﻿ProcessLens R23 R1 - Correzione validazione Windows
++﻿ProcessLens R24 - Riduci a icona e RAM aggiornata
+ 
+ Esci dalla precedente versione: icona -> Esci da ProcessLens. La X la riduce soltanto.
+ Estrai TUTTO lo ZIP in una cartella nuova e apri AVVIA_PROCESSLENS.cmd.
+ Al primo avvio vengono eseguiti test e compilazione della nuova candidata.
+-Poi lo stesso comando apre direttamente R23 R1. Non apre il vecchio eseguibile R20.
++Poi lo stesso comando apre direttamente R24. Non apre il vecchio eseguibile R20.
+ 
+ Non sono inclusi SDK o pacchetti NuGet: ZIP leggero, nessuna nuova installazione.
+ Se R20 e stata installata correttamente, riusa lo SDK e la cache presenti in
+@@ -12,6 +12,25 @@ Altrimenti serve uno SDK .NET compatibile gia installato; la compilazione usa
+ il normale ripristino NuGet. Non vengono scaricati automaticamente SDK o driver.
+ Se manca una dipendenza il comando si ferma e mostra l'errore.
+ 
++Novita R24:
++- Pulsante Riduci a icona in alto; anche la X riduce la finestra.
++- Riapri dalla barra applicazioni o dall'icona ProcessLens accanto all'orologio.
++  Tasto destro sull'icona: Mostra ProcessLens, Riduci a icona, Esci da ProcessLens.
++- CPU e RAM per PID aggiornate con intervallo nominale di 1 secondo nella scheda
++  Processi, finche la finestra e visibile. Nessun nuovo timer o servizio.
++- Elenco e metadati restano ogni 15 secondi, 45 sotto carico: nuovi processi e
++  processi terminati possono comparire/scomparire con quel ritardo.
++- Elenco, ordine per Memoria e contatori dell'analisi usano i campioni rapidi.
++- Working Set privato, totale e commit restano distinti. Letture fallite o dati
++  scaduti diventano N/D; la RAM non viene inventata a zero.
++- Durante la riduzione il campionamento rapido e sospeso e riprende alla riapertura.
++- Lo storico resta limitato a 160 campioni per PID e a un massimo di 5 minuti;
++  a 1 campione/s contiene circa 2 minuti e 40 secondi. Nessun buffer illimitato.
++
++Un confronto con Gestione attivita va fatto sullo stesso PID e contatore, senza
++aspettarsi letture simultanee. Prestazioni e RAM effettiva non misurate su Windows
++in questa preparazione. Le prove native/WPF sono incluse nella compilazione Windows.
++
+ Correzione R23 R1: NUL e altri controlli rifiutati PRIMA di espandere
+ le variabili ambiente, anche su Windows. Test NUL originali mantenuti.
+ 
+@@ -41,5 +60,5 @@ Nessun nuovo timer, driver o monitor in background. RAM reale non misurata qui.
+ 
+ Validazione candidata: test portabili e controlli sorgente eseguiti su Linux.
+ Compilazione WPF reale, avvio e resa DPI richiedono la verifica Windows al primo avvio.
+-Dettagli in progetto/audit/R10_R23. Per ricompilare dopo modifiche ai sorgenti,
+-elimina soltanto supporto/build-r23r1.ok e riapri AVVIA_PROCESSLENS.cmd.
++Dettagli in progetto/audit/R10_R24. Per ricompilare dopo modifiche ai sorgenti,
++elimina soltanto supporto/build-r24.ok e riapri AVVIA_PROCESSLENS.cmd.
+diff --git a/progetto/audit/tools/check_live_metrics_r24.ps1 b/progetto/audit/tools/check_live_metrics_r24.ps1
+new file mode 100644
+index 0000000..7e23047
+--- /dev/null
++++ b/progetto/audit/tools/check_live_metrics_r24.ps1
+@@ -0,0 +1,19 @@
++$ErrorActionPreference = 'Stop'
++$root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
++$main = Get-Content -LiteralPath (Join-Path $root 'src/ProcessLens.App/MainWindow.xaml.cs') -Raw -Encoding UTF8
++$tray = Get-Content -LiteralPath (Join-Path $root 'src/ProcessLens.App/TrayWindowController.cs') -Raw -Encoding UTF8
++$native = Get-Content -LiteralPath (Join-Path $root 'src/ProcessLens.Windows/WindowsLiveCpuSampler.cs') -Raw -Encoding UTF8
++foreach ($token in @('MonitorRefreshPolicy.LiveMetricsInterval','ApplyLiveMemorySamples(result.Cpu.Memory)','row.UpdateMemory(RecentMemory(row.Pid))','RefreshMemoryDetails(detail)','_sortMode == "Memoria"','MemorySampledAtMonotonicSeconds = current.MemorySampledAtMonotonicSeconds')) {
++    if (-not $main.Contains($token)) { throw ('Missing R24 live-memory wiring: ' + $token) }
++}
++if (-not $native.Contains('WindowsMemorySampler.Capture(handle)')) { throw 'R24 must reuse the CPU handle for PSAPI.' }
++$closing = [regex]::Match($tray, '(?s)private void Closing\(.*?(?=public void RequestMinimize)').Value
++if (-not $closing.Contains('e.Cancel = true') -or -not $closing.Contains('RequestMinimize()') -or $closing.Contains('WindowState =')) { throw 'Closing must defer minimize until WPF returns.' }
++[xml]$view = Get-Content -LiteralPath (Join-Path $root 'src/ProcessLens.App/MainWindow.xaml') -Raw -Encoding UTF8
++$button = $view.SelectSingleNode("//*[@*[local-name()='Name']='MinimizeWindowButton']")
++if (-not $button -or $button.GetAttribute('Click') -ne 'MinimizeWindow_Click' -or -not $button.GetAttribute('Style')) { throw 'Missing explicit styled minimize action.' }
++$build = Get-Content -LiteralPath (Join-Path $root 'build-dashboard.ps1') -Raw -Encoding UTF8
++foreach ($suite in @('LiveMetricsTests','LiveMetricsUiTests')) {
++    if (-not $build.Contains('Tests.ProcessLens.' + $suite)) { throw ('Missing Windows build test: ' + $suite) }
++}
++Write-Host 'PASS R24 source: one-second CPU/RAM wiring, same native handle, timestamp overlay, memory sort and deferred minimize. Windows runtime checks are separate.'
+diff --git a/progetto/audit/tools/check_powershell_r24.py b/progetto/audit/tools/check_powershell_r24.py
+new file mode 100644
+index 0000000..ecce5bb
+--- /dev/null
++++ b/progetto/audit/tools/check_powershell_r24.py
+@@ -0,0 +1,17 @@
++"""Run PowerShell source preflight and isolated launcher fixtures, never a build or installation."""
++import argparse,json,hashlib,subprocess
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--shell',type=Path,required=True);p.add_argument('--pwsh',type=Path,required=True);a=p.parse_args()
++r=a.project.resolve();shell=a.shell.resolve();audit=r/'audit/R10_R24';sha=lambda b:hashlib.sha256(b).hexdigest()
++# Same 30 authorized baseline source stages, plus the R24 wiring gate.
++stages=[x['file'] for x in json.loads((r/'audit/R10_R23_R1/powershell-evidence.json').read_text())['stages']]+['audit/tools/check_live_metrics_r24.ps1'];results=[];logs=[]
++for n in stages:
++ x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(r/n)],cwd=r,capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;logs.append(n+'\n'+log)
++ if x.returncode:(audit/'preflight.log').write_text('\n'.join(logs));raise SystemExit(log)
++ results.append({'file':n,'sha256':sha((r/n).read_bytes()),'status':'PASS'})
++(audit/'preflight.log').write_text('\n'.join(logs))
++fixture=r/'audit/tools/test_launcher_r24.ps1';launcher=shell/'supporto/avvia.ps1'
++x=subprocess.run([str(a.pwsh.resolve()),'-NoLogo','-NoProfile','-File',str(fixture),'-Launcher',str(launcher)],capture_output=True,text=True,timeout=60);log=x.stdout+x.stderr;(audit/'launcher-fixture.log').write_text(log)
++if x.returncode:raise SystemExit(log)
++count=sum(line.startswith('PASS R24 launcher:') for line in log.splitlines());assert count==17,count
++(audit/'powershell-evidence.json').write_text(json.dumps({'PowerShell':'7.4.21 Linux; no Windows runtime execution','stages':results,'launcher_fixture_checks':count,'launcher_sha256':sha(launcher.read_bytes()),'fixture_sha256':sha(fixture.read_bytes())},indent=2)+'\n');print('PASS',len(results),'source stages;',count,'launcher checks')
+diff --git a/progetto/audit/tools/live_resource_rules.py b/progetto/audit/tools/live_resource_rules.py
+index 3eae967..474238f 100644
+--- a/progetto/audit/tools/live_resource_rules.py
++++ b/progetto/audit/tools/live_resource_rules.py
+@@ -13,15 +13,15 @@ def violations(files):
+     cache=files['src/ProcessLens.Core/BoundedMetadataCache.cs']
+     self_memory=files['src/ProcessLens.Windows/WindowsSelfResources.cs']
+     measure=files['measure-processlens-resources.ps1']
+-    need('_window.ShowInTaskbar = true;' in closing and '_window.WindowState = WindowState.Minimized;' in closing and
++    need('RequestMinimize();' in closing and 'e.Cancel = true;' in closing and '_actions.Minimize();' in closing and '_window.ShowInTaskbar = true;' in closing and '_window.WindowState = WindowState.Minimized;' in closing and
+          '_window.Hide()' not in closing and 'exitRequested ? WindowCloseAction.Exit : WindowCloseAction.MinimizeToTaskbar' in policy,
+          'X must preserve taskbar route independently of tray')
+     need('Mostra ProcessLens' in tray and 'Shell_NotifyIconW(1, ref existing)' in tray and
+          'TaskbarCreated' in tray and '_window.Show();' in tray and '_window.WindowState = restoreState;' in tray,
+          'explicit restore and lost tray entry recovery')
+-    need('Interval = TimeSpan.FromSeconds(2)' in ui and '_cpuTimer.Tick +=' in ui and
++    need('Interval = MonitorRefreshPolicy.LiveMetricsInterval' in ui and 'LiveMetricsInterval = TimeSpan.FromSeconds(1)' in files['src/ProcessLens.Core/MonitorRefreshPolicy.cs'] and '_cpuTimer.Tick +=' in ui and
+          not any(t in fast for t in ['_collector.Capture(', 'BuildRow(', 'ApplyFilter(', 'ShowDetails(', '_deepInspector.Inspect(']),
+-         'two-second CPU-only tick must not repeat expensive metadata or detail rebuilding')
++         'one-second CPU/RAM tick must not repeat expensive metadata or detail rebuilding')
+     need('_cpuRefreshing || _windowClosed || !IsVisible || WindowState == WindowState.Minimized' in fast and
+          'generation != _cpuGeneration' in fast and '_cpuTimer.Stop();' in ui and '_liveCpu.Reset();' in fast,
+          'coalescing pause generation and baseline reset')
+diff --git a/progetto/audit/tools/mutate_live_metrics_r24.py b/progetto/audit/tools/mutate_live_metrics_r24.py
+new file mode 100644
+index 0000000..49af2b5
+--- /dev/null
++++ b/progetto/audit/tools/mutate_live_metrics_r24.py
+@@ -0,0 +1,21 @@
++"""Prove runtime regressions reject false private zero, synchronous minimize and older memory overlays."""
++import argparse,hashlib,json,subprocess
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.project.resolve();sdk=a.sdk.resolve();work=a.work.resolve();out=work/'mutants';out.mkdir(exist_ok=True);audit=r/'audit/R10_R24';sha=lambda b:hashlib.sha256(b).hexdigest();refs=sorted((sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll'))
++globals=work/'runtime/GlobalUsings.cs';core=work/'runtime/ProcessLens.Core.dll'
++sources=[r/'tests/ProcessLens.LiveMetricsTests/Program.cs']+[r/'src/ProcessLens.Windows'/n for n in ['WindowsMemorySampler.cs','WindowsLiveCpuSampler.cs','NativeMethods.cs']]+[r/'src/ProcessLens.App'/n for n in ['WindowLifetimePolicy.cs','MemoryObservationBuffer.cs']]
++results=[]
++for name,file,before,after,expected in [
++ ('false-private-zero','src/ProcessLens.Windows/WindowsMemorySampler.cs','PrivateWorkingSetSize = nuint.MaxValue','PrivateWorkingSetSize = 0','success with only EX prefix cannot invent zero private WS'),
++ ('synchronous-minimize','src/ProcessLens.App/WindowLifetimePolicy.cs','_pending = action;','action(); _pending = null;','Closing only queues one minimize after returning'),
++]:
++ original=r/file;data=original.read_text();assert before in data;mutated=out/(name+'.cs');mutated.write_text(data.replace(before,after,1));dll=out/(name+'.dll')
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-target:exe','-out:'+str(dll)]+['-r:'+str(f) for f in [*refs,core]]+[str(globals)]+[str(mutated if f==original else f) for f in sources]
++ x=subprocess.run(args,capture_output=True,text=True,timeout=60);assert x.returncode==0,x.stdout+x.stderr
++ dll.with_suffix('.runtimeconfig.json').write_text(json.dumps({'runtimeOptions':{'tfm':'net8.0','framework':{'name':'Microsoft.NETCore.App','version':'8.0.32'}}}))
++ (out/'ProcessLens.Core.dll').write_bytes(core.read_bytes())
++ x=subprocess.run([str(sdk/'dotnet'),str(dll)],capture_output=True,text=True,timeout=30);log=x.stdout+x.stderr;(audit/(name+'-expected-failure.log')).write_text(log)
++ assert x.returncode!=0 and 'FAIL R24 '+expected in log,log
++ results.append({'mutation':name,'expected_runtime_failure_observed':True,'status':'PASS','production_file':file,'production_sha256':sha(original.read_bytes()),'test_sha256':sha(sources[0].read_bytes())})
++(audit/'mutation-evidence.json').write_text(json.dumps(results,indent=2)+'\n');print('PASS',len(results),'independent runtime mutation checks')
+diff --git a/progetto/audit/tools/package_live_metrics_r24.py b/progetto/audit/tools/package_live_metrics_r24.py
+new file mode 100644
+index 0000000..044199f
+--- /dev/null
++++ b/progetto/audit/tools/package_live_metrics_r24.py
+@@ -0,0 +1,93 @@
++"""Package the complete lightweight R23 source candidate and verify exact scope, evidence, patch and hashes."""
++import argparse,csv,difflib,hashlib,json,shutil,subprocess,tempfile,zipfile
++from pathlib import Path
++import xml.etree.ElementTree as ET
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,required=True);p.add_argument('--shell',type=Path,required=True);p.add_argument('--baseline-zip',type=Path,required=True);p.add_argument('--output-directory',type=Path,required=True);a=p.parse_args()
++r=a.project.resolve();shell=a.shell.resolve();audit=r/'audit/R10_R24';sha=lambda b:hashlib.sha256(b).hexdigest()
++assert sha(a.baseline_zip.read_bytes())=='0ad04666380c489391c39230aa3998969358989fa69aaa7a2ed604f6be1b7f36'
++with zipfile.ZipFile(a.baseline_zip) as z:before={n.split('/',1)[1]:z.read(n) for n in z.namelist() if not n.endswith('/')}
++for base in [r,shell]:
++ for d in sorted(base.rglob('__pycache__'),reverse=True):shutil.rmtree(d)
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file()}
++old={n[len('progetto/'):]:b for n,b in before.items() if n.startswith('progetto/')}
++allowed = {
++'src/ProcessLens.App/App.xaml.cs','src/ProcessLens.App/CopyTestVisibility.cs','src/ProcessLens.App/MainWindow.xaml',
++'src/ProcessLens.App/MainWindow.xaml.cs','src/ProcessLens.App/MemoryObservationBuffer.cs','src/ProcessLens.App/ProcessRow.cs',
++'src/ProcessLens.App/TrayWindowController.cs','src/ProcessLens.App/WindowLifetimePolicy.cs','src/ProcessLens.App/ProcessLens.App.csproj',
++'src/ProcessLens.Core/LiveMemorySample.cs','src/ProcessLens.Core/MonitorRefreshPolicy.cs','src/ProcessLens.Core/ProcessSnapshot.cs',
++'src/ProcessLens.Windows/WindowsMemorySampler.cs','src/ProcessLens.Windows/WindowsLiveCpuSampler.cs','src/ProcessLens.Windows/WindowsProcessCollector.cs',
++ 'tests/ProcessLens.LiveMetricsTests/Program.cs','tests/ProcessLens.LiveMetricsTests/ProcessLens.LiveMetricsTests.csproj',
++ 'tests/ProcessLens.LiveMetricsUiTests/Program.cs','tests/ProcessLens.LiveMetricsUiTests/ProcessLens.LiveMetricsUiTests.csproj',
++ 'tests/ProcessLens.RefreshPolicyTests/Program.cs','tests/check-ui-readability.ps1','tests/check-copy-ui-r10.ps1'}
++changes={n for n,b in current.items() if n.startswith(('src/','tests/')) and old.get(n)!=b}
++assert changes==allowed,(changes,allowed)
++assert current['src/ProcessLens.Core/NewTaskLaunch.cs']==old['src/ProcessLens.Core/NewTaskLaunch.cs'], 'R23 R1 NUL fix must remain byte identical'
++assert current['tests/ProcessLens.NewTaskTests/Program.cs']==old['tests/ProcessLens.NewTaskTests/Program.cs']
++assert b'Tests.ProcessLens.NewTaskTests' in current['build-dashboard.ps1'] and b'Tests.ProcessLens.NewTaskUiTests' in current['build-dashboard.ps1']
++assert all(n in current for n in old), 'No R23 project file may disappear'
++assert all(current[n]==b for n,b in old.items() if n not in allowed and n.startswith(('src/ProcessLens.Windows/','src/ProcessLens.Guardian/','src/ProcessLens.MemoryAgent/','src/ProcessLens.Profiler/','src/ProcessLens.RamMonitor/')))
++for n,b in current.items():
++ if n.endswith(('.xaml','.csproj')):ET.fromstring(b)
++for name,key in [('runtime-evidence.json','source_hashes'),('wpf-typecheck-evidence.json','inputs')]:
++ e=json.loads((audit/name).read_text());assert e[key]
++ assert all(sha(current[n])==h for n,h in e[key].items()), name
++runtime=json.loads((audit/'runtime-evidence.json').read_text());assert [x['assertions'] for x in runtime['outcomes']]==[103,22,48,27,20,17,9,46,52]
++types=json.loads((audit/'wpf-typecheck-evidence.json').read_text());assert len(types['assemblies'])==8 and all(x['status']=='PASS' for x in types['assemblies'])
++e=json.loads((audit/'powershell-evidence.json').read_text());assert e['launcher_fixture_checks']==17 and len(e['stages'])==31
++assert sha((shell/'supporto/avvia.ps1').read_bytes())==e['launcher_sha256']
++assert all(x['status']=='PASS' and sha(current[x['file']])==x['sha256'] for x in e['stages'])
++assert sha(current['audit/tools/test_launcher_r24.ps1'])==e['fixture_sha256']
++(audit/'scope-evidence.json').write_text(json.dumps({'baseline_sha256':sha(a.baseline_zip.read_bytes()),'changed_production_and_test_files':sorted(changes),'protected_components':'Guardian, MemoryAgent, profiler, RAM monitor and other native acquisitions BYTE IDENTICAL TO R23 R1; only the three listed native memory/CPU files change','new_dependencies':0,'new_binary':'NOT INCLUDED; full Windows build required once','WPF_runtime_DPI_UAC_RAM':'NOT EXECUTED / NOT MEASURED'},indent=2)+'\n')
++negative=json.loads((audit/'mutation-evidence.json').read_text());assert len(negative)==2
++for item in negative:
++ assert item['expected_runtime_failure_observed'] and item['status']=='PASS'
++ assert item['production_sha256']==sha(current[item['production_file']])
++ assert item['test_sha256']==sha(current['tests/ProcessLens.LiveMetricsTests/Program.cs'])
++guards=json.loads((audit/'live-resource-guards.json').read_text());assert len(guards)==14 and all(x['status']=='PASS' for x in guards)
++with (audit/'string-ledger.csv').open('w',newline='') as f:
++ w=csv.writer(f);w.writerow(['file','line','before_or_after','changed_text'])
++ for n in sorted(changes):
++  for line in difflib.unified_diff(old.get(n,b'').decode('utf-8-sig').splitlines(),current[n].decode('utf-8-sig').splitlines(),n,n,n=0):
++   if line.startswith(('+','-')) and not line.startswith(('+++','---')):w.writerow([n,'see patch','after' if line[0]=='+' else 'before',line[1:]])
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file()}
++after={**{f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file() and f.name!='SHA256SUMS.txt'},**{'progetto/'+n:b for n,b in current.items()}}
++include=lambda n:not n.startswith('progetto/audit/R10_R24/') and n not in {'SHA256SUMS.txt','progetto/SHA256SUMS_R10.txt'}
++delta=sorted(n for n in set(before)|set(after) if include(n) and before.get(n)!=after.get(n))
++with (audit/'files-changed.csv').open('w',newline='') as f:
++ w=csv.writer(f);w.writerow(['file','kind','sha256_before','sha256_after'])
++ for n in delta:w.writerow([n,'removed' if n not in after else 'added' if n not in before else 'modified',sha(before[n]) if n in before else '',sha(after[n]) if n in after else ''])
++with tempfile.TemporaryDirectory(prefix='patch-r23r1-',dir=r.parent.parent/'test') as d:
++ t=Path(d);bdir=t/'before';adir=t/'after';bdir.mkdir();adir.mkdir()
++ for base,values in [(bdir,before),(adir,after)]:
++  for n,b in values.items():
++   if include(n):f=base/n;f.parent.mkdir(parents=True,exist_ok=True);f.write_bytes(b)
++ x=subprocess.run(['git','diff','--no-index','--no-renames','--binary','--src-prefix=a/','--dst-prefix=b/','before','after'],cwd=t,capture_output=True);assert x.returncode==1
++ lines=[]
++ for line in x.stdout.splitlines(keepends=True):
++  if line.startswith((b'diff --git ',b'--- ',b'+++ ')):
++   for prefix in [b'a/before/',b'a/after/']:line=line.replace(prefix,b'a/')
++   for prefix in [b'b/before/',b'b/after/']:line=line.replace(prefix,b'b/')
++  lines.append(line)
++ patch=b''.join(lines);path=audit/'R23_R1_to_R24.patch';path.write_bytes(patch)
++ x=subprocess.run(['git','apply','--check',str(path)],cwd=bdir,capture_output=True);assert x.returncode==0,x.stderr
++ subprocess.run(['git','apply',str(path)],cwd=bdir,capture_output=True,check=True)
++ assert {f.relative_to(bdir).as_posix():f.read_bytes() for f in bdir.rglob('*') if f.is_file()}=={n:b for n,b in after.items() if include(n)}
++(audit/'patch-evidence.json').write_text(json.dumps({'git_apply_check':'PASS','actual_apply_and_byte_comparison':'PASS','delta_files':len(delta),'patch_sha256':sha(patch),'qualification':'Current audit folder and recursive manifests excluded from diff only, included in final full ZIP'},indent=2)+'\n')
++current={f.relative_to(r).as_posix():f.read_bytes() for f in r.rglob('*') if f.is_file() and f.name!='SHA256SUMS_R10.txt'}
++(r/'SHA256SUMS_R10.txt').write_text(''.join(sha(b)+'  '+n+'\n' for n,b in sorted(current.items())))
++current['SHA256SUMS_R10.txt']=(r/'SHA256SUMS_R10.txt').read_bytes()
++files={**{f.relative_to(shell).as_posix():f.read_bytes() for f in shell.rglob('*') if f.is_file() and f.name!='SHA256SUMS.txt'},**{'progetto/'+n:b for n,b in current.items()}}
++assert not any(n.endswith(('.nupkg','.deb','.dll','.exe','.pdb')) or '/setup/payload/' in n or n.endswith('build-r24.ok') for n in files)
++assert not any(n.startswith(('sdk/','runtime/','app/')) for n in files)
++assert all(len(b)<10*1024*1024 for b in files.values())
++manifest=''.join(sha(b)+'  '+n+'\n' for n,b in sorted(files.items()));files['SHA256SUMS.txt']=manifest.encode()
++out=a.output_directory.resolve();out.mkdir(exist_ok=True,parents=True);target=out/'ProcessLens-R24-icona-RAM-live.zip'
++with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
++ for n,b in sorted(files.items()):z.writestr('ProcessLens-Leggero/'+n,b)
++with zipfile.ZipFile(target) as z:
++ assert z.testzip() is None
++ for line in manifest.splitlines():
++  h,n=line.split('  ',1);assert sha(z.read('ProcessLens-Leggero/'+n))==h
++ assert {n.split('/')[1] for n in z.namelist()}=={'AVVIA_PROCESSLENS.cmd','LEGGIMI.txt','supporto','progetto','SHA256SUMS.txt'}
++result={'zip':str(target),'bytes':target.stat().st_size,'sha256':sha(target.read_bytes()),'manifest_entries':len(files)-1,'portable_assertions':344,'PowerShell_fixtures':17,'source_preflight_stages':31,'WPF_CSharp_typechecked_assemblies':8,'WPF_runtime_DPI_RAM':'NOT EXECUTED / NOT MEASURED'}
++(out/'verification-r24.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
+diff --git a/progetto/audit/tools/run_live_metrics_r24.py b/progetto/audit/tools/run_live_metrics_r24.py
+new file mode 100644
+index 0000000..4726c5f
+--- /dev/null
++++ b/progetto/audit/tools/run_live_metrics_r24.py
+@@ -0,0 +1,31 @@
++"""Run actual portable component and native-parser regressions; no WPF/native Windows acquisition."""
++import argparse,hashlib,json,subprocess
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();work.mkdir(parents=True,exist_ok=True);audit=r/'audit/R10_R24';audit.mkdir(exist_ok=True)
++refs=sorted((sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll'));sha=lambda b:hashlib.sha256(b).hexdigest()
++globals=work/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))
++hashes={};outcomes=[]
++def compile(name,sources,extra=(),library=False):
++ hashes.update({f.relative_to(r).as_posix():sha(f.read_bytes()) for f in sources})
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(work/(name+'.dll'))]
++ args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
++ args+=['-r:'+str(f) for f in [*refs,*extra]]+[str(globals)]+[str(f) for f in sources]
++ x=subprocess.run(args,capture_output=True,text=True,timeout=60);(audit/(name+'-build.log')).write_text(x.stdout+x.stderr)
++ if x.returncode:raise SystemExit(x.stdout+x.stderr)
++compile('ProcessLens.Core',sorted((r/'src/ProcessLens.Core').glob('*.cs')),library=True)
++compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),extra=[work/'ProcessLens.Core.dll'],library=True)
++for suite in ['WindowsComponentTests','SystemProcessTests','NewTaskTests','CpuTests','MemoryTests','MemoryEfficiencyTests','RefreshPolicyTests','LiveMetricsTests','CopyTests']:
++ name='ProcessLens.'+suite;sources=[r/'tests'/name/'Program.cs']
++ if suite=='SystemProcessTests':sources+=[r/'src/ProcessLens.Windows/WindowsSystemProcessSource.cs']
++ if suite=='LiveMetricsTests':sources += [r/'src/ProcessLens.Windows'/f for f in ['WindowsMemorySampler.cs','WindowsLiveCpuSampler.cs','NativeMethods.cs']] + [r/'src/ProcessLens.App'/f for f in ['WindowLifetimePolicy.cs','MemoryObservationBuffer.cs']]
++ if suite=='MemoryEfficiencyTests':sources += [r/'src/ProcessLens.App'/f for f in ['BoundedCache.cs','MemoryObservationBuffer.cs']]
++ if suite=='CopyTests':sources += [r/'src/ProcessLens.App'/f for f in ['CopyTextFormat.cs','ReportLayout.cs','ProcessExitNotice.cs','WindowLifetimePolicy.cs','AuditLogPresentation.cs','ServiceNavigation.cs']]
++ if suite=='NewTaskTests':sources+=[r/'src/ProcessLens.Windows/WindowsNewTaskLauncher.cs']
++ compile(name,sources,extra=[work/'ProcessLens.Core.dll',work/'ProcessLens.Semantics.dll'])
++ (work/(name+'.runtimeconfig.json')).write_text(json.dumps({'runtimeOptions':{'tfm':'net8.0','framework':{'name':'Microsoft.NETCore.App','version':'8.0.32'}}}))
++ x=subprocess.run([str(sdk/'dotnet'),str(work/(name+'.dll'))],capture_output=True,text=True,timeout=45);log=x.stdout+x.stderr;(audit/(name+'-run.log')).write_text(log)
++ if x.returncode:raise SystemExit(log)
++ outcomes.append({'suite':name,'status':'PASS','assertions':sum(l.startswith('PASS ') for l in log.splitlines())})
++e={'environment':'Linux x64; direct Roslyn SDK 8.0.426 / .NET 8.0.32; no MSBuild or WPF; synthetic fixtures only','outcomes':outcomes,'source_hashes':hashes}
++(audit/'runtime-evidence.json').write_text(json.dumps(e,indent=2)+'\n');print(json.dumps(outcomes,indent=2))
+diff --git a/progetto/audit/tools/test_launcher_r24.ps1 b/progetto/audit/tools/test_launcher_r24.ps1
+new file mode 100644
+index 0000000..70e56be
+--- /dev/null
++++ b/progetto/audit/tools/test_launcher_r24.ps1
+@@ -0,0 +1,76 @@
++﻿param([string] $Launcher)
++$ErrorActionPreference = 'Stop'
++. $Launcher -FunctionsOnly
++$count = 0
++function Check([bool] $Ok, [string] $Label) {
++    if (-not $Ok) { throw ('FAIL R24 launcher: ' + $Label) }
++    Write-Host ('PASS R24 launcher: ' + $Label); $script:count++
++}
++function Touch([string] $Path) {
++    New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
++    Set-Content -LiteralPath $Path -Value 'fixture only' -Encoding ASCII
++}
++function Make-Runtime([string] $Path, [string] $Version='8.0.32') {
++    Touch (Join-Path $Path 'dotnet.exe')
++    New-Item -ItemType Directory -Path (Join-Path $Path 'shared/Microsoft.NETCore.App/8.0.32') -Force | Out-Null
++    New-Item -ItemType Directory -Path (Join-Path $Path ('shared/Microsoft.WindowsDesktop.App/' + $Version)) -Force | Out-Null
++}
++$temporary = Join-Path ([IO.Path]::GetTempPath()) ('processlens-r23-' + [Guid]::NewGuid().ToString('N'))
++$saved = @{}
++foreach ($name in @('PATH','DOTNET_ROOT','DOTNET_ROOT_X64','NUGET_PACKAGES')) { $saved[$name] = [Environment]::GetEnvironmentVariable($name) }
++try {
++    $root = Join-Path $temporary 'bundle with space'; $profile = Join-Path $temporary 'profile with space'
++    New-Item -ItemType Directory -Path $root,$profile,(Join-Path $root 'supporto') -Force | Out-Null
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'empty package has no runnable GUI'
++    $installed = Join-Path $profile 'Programs/ProcessLens/R20'
++    Touch (Join-Path $installed 'app/win-x64/ProcessLens.exe'); Touch (Join-Path $installed 'start-installed.ps1')
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'completed old installation cannot silently substitute its old GUI'
++    $exe = Join-Path $root 'progetto/publish/win-x64/ProcessLens.exe'; Touch $exe
++    $receipt = Join-Path $root 'supporto/build-r24.ok'
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'publication without successful R24 receipt is not accepted'
++    Set-Content -LiteralPath $receipt -Value 'older version'
++    Check ($null -eq (Resolve-ProcessLensLaunch $root $profile)) 'receipt for another revision is rejected'
++    Remove-Item -LiteralPath $receipt
++    $sdk = Join-Path $installed 'dotnet'; Make-Runtime $sdk
++    New-Item -ItemType Directory -Path (Join-Path $sdk 'sdk/8.0.426'),(Join-Path $installed 'packages') -Force | Out-Null
++    # Stub only the compiler entry point and project build script; no dotnet, app or service is launched.
++    function global:dotnet { throw 'fixture must not launch a real compiler' }
++    $build = Join-Path $root 'progetto/build-dashboard.ps1'
++    Set-Content -LiteralPath $build -Value 'throw "synthetic failed tests"'
++    $failed = $false
++    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('synthetic failed tests') }
++    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'failed tests cannot issue a build receipt or launch a stale publication'
++    Check ($env:NUGET_PACKAGES -eq (Join-Path $installed 'packages')) 'completed R20 cache reused without copying packages into ZIP'
++    [xml]$config = Get-Content -LiteralPath (Join-Path $root 'progetto/NuGet.Config') -Raw
++    Check ($config.configuration.packageSources.clear -ne $null -and -not $config.configuration.packageSources.add) 'R20 cache build has no configured network feed'
++    Remove-Item -LiteralPath $exe
++    Set-Content -LiteralPath $build -Value '# fixture successful script but no executable'
++    $failed = $false
++    try { Invoke-ProcessLensBuild $root $profile } catch { $failed = $_.Exception.Message.Contains('senza eseguibile') }
++    Check ($failed -and -not (Test-Path -LiteralPath $receipt)) 'missing executable after build remains an error'
++    Set-Content -LiteralPath $build -Value 'New-Item -ItemType Directory -Path "publish/win-x64" -Force | Out-Null; Set-Content -LiteralPath "publish/win-x64/ProcessLens.exe" -Value "fixture"'
++    Invoke-ProcessLensBuild $root $profile
++    $target = Resolve-ProcessLensLaunch $root $profile
++    Check ($target.Kind -eq 'Exe' -and $target.Entry -eq $exe -and $target.Runtime -eq $sdk) 'successful owned build resolves new publication with existing private runtime'
++    Set-Content -LiteralPath $build -Value 'throw "fast path must not rebuild"'
++    Check ((Resolve-ProcessLensLaunch $root $profile).Entry -eq $exe) 'subsequent resolution needs no build or SDK command'
++    $incomplete = Join-Path $temporary 'incomplete'; Touch (Join-Path $incomplete 'dotnet.exe')
++    Check (-not (Test-DesktopRuntime8 $incomplete)) 'missing desktop runtime is not accepted'
++    Make-Runtime $incomplete '9.0.1'
++    Check (-not (Test-DesktopRuntime8 $incomplete)) 'wrong desktop runtime major is not accepted'
++    Check ((Quote-LaunchArgument 'C:\Program Files\ProcessLens\ProcessLens.exe') -eq '"C:\Program Files\ProcessLens\ProcessLens.exe"') 'paths with spaces remain one UAC argument'
++    foreach ($bad in @('C:\bad"path', "C:\bad`npath")) {
++        $failed = $false; try { Quote-LaunchArgument $bad | Out-Null } catch { $failed = $true }
++        Check $failed 'quotes and newlines cannot create extra launch arguments'
++    }
++    $tokens = $null; $errors = $null
++    $ast = [System.Management.Automation.Language.Parser]::ParseFile($Launcher,[ref]$tokens,[ref]$errors)
++    Check ($errors.Count -eq 0) 'real PowerShell parser accepts complete launcher'
++    $commands = @($ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] },$true) | ForEach-Object { $_.GetCommandName() })
++    Check (@($commands | Where-Object { $_ -in @('Expand-Archive','Invoke-WebRequest','Install-Package','Install-Module','Set-Service','Start-Service','Stop-Service','Stop-Process') }).Count -eq 0) 'launcher installs no dependencies and changes no services or running processes'
++    Write-Host ('R24 launcher fixture complete: ' + $count + ' checks; synthetic files only, no Windows app or UAC.')
++} finally {
++    Remove-Item function:global:dotnet -ErrorAction SilentlyContinue
++    foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name,$saved[$name]) }
++    if (Test-Path -LiteralPath $temporary) { Remove-Item -LiteralPath $temporary -Recurse -Force }
++}
+diff --git a/progetto/audit/tools/test_live_resource_r10r7.py b/progetto/audit/tools/test_live_resource_r10r7.py
+index 29287bb..a2b3296 100644
+--- a/progetto/audit/tools/test_live_resource_r10r7.py
++++ b/progetto/audit/tools/test_live_resource_r10r7.py
+@@ -11,7 +11,7 @@ check('candidate satisfies all resource guards',not violations(files))
+ mutations=[
+  ('hidden only restore route','src/ProcessLens.App/WindowLifetimePolicy.cs','exitRequested ? WindowCloseAction.Exit : WindowCloseAction.MinimizeToTaskbar','exitRequested ? WindowCloseAction.Exit : WindowCloseAction.HideToTray'),
+  ('lost icon detection removed','src/ProcessLens.App/TrayWindowController.cs','Shell_NotifyIconW(1, ref existing)','NoIconCheck()'),
+- ('CPU tick becomes busy loop','src/ProcessLens.App/MainWindow.xaml.cs','Interval = TimeSpan.FromSeconds(2)','Interval = TimeSpan.FromMilliseconds(2)'),
++ ('CPU tick becomes busy loop','src/ProcessLens.Core/MonitorRefreshPolicy.cs','LiveMetricsInterval = TimeSpan.FromSeconds(1)','LiveMetricsInterval = TimeSpan.FromMilliseconds(1)'),
+  ('stale generation accepted','src/ProcessLens.App/MainWindow.xaml.cs','generation != _cpuGeneration','false'),
+  ('handle not released','src/ProcessLens.Windows/WindowsLiveCpuSampler.cs','NativeMethods.CloseHandle(handle);','KeepHandle(handle);'),
+  ('partial processor group labelled total','src/ProcessLens.Windows/WindowsLiveCpuSampler.cs','cpus is > 0 and <= 64','cpus > 0'),
+diff --git a/progetto/audit/tools/typecheck_wpf_sources_r24.py b/progetto/audit/tools/typecheck_wpf_sources_r24.py
+new file mode 100644
+index 0000000..0f6252d
+--- /dev/null
++++ b/progetto/audit/tools/typecheck_wpf_sources_r24.py
+@@ -0,0 +1,44 @@
++"""Type-check real C# against WindowsDesktop reference assemblies with explicit generated-field stubs.
++This is NOT WPF markup compilation, BAML, MSBuild, or runtime validation. Stubs live outside the deliverable.
++"""
++import argparse,hashlib,json,subprocess,xml.etree.ElementTree as ET
++from pathlib import Path
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--candidate',type=Path,required=True);p.add_argument('--sdk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
++r=a.candidate.resolve();sdk=a.sdk.resolve();work=a.work.resolve();out=work/'typecheck';out.mkdir(exist_ok=True);audit=r/'audit/R10_R24';sha=lambda b:hashlib.sha256(b).hexdigest()
++base={p.name:p for p in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/ref/net8.0').glob('*.dll')};desktop=list((work/'wpf-ref').glob('*.dll'))
++assert len(desktop)>20
++for f in desktop:base[f.name]=f
++refs=list(base.values());event=sdk/'packs/Microsoft.AspNetCore.App.Ref/8.0.32/ref/net8.0/System.Diagnostics.EventLog.dll';sqlite=work/'Microsoft.Data.Sqlite.dll'
++globals=out/'GlobalUsings.cs';globals.write_text(''.join('global using '+s+';\n' for s in ['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks']))
++x='{http://schemas.microsoft.com/winfx/2006/xaml}';stubs=[];inputs={}
++for path in (r/'src/ProcessLens.App').glob('*.xaml'):
++ tree=ET.parse(path).getroot();cls=tree.get(x+'Class');assert cls
++ fields=[]
++ for e in tree.iter():
++  name=e.get(x+'Name')
++  if not name:continue
++  tag=e.tag.split('}',1)[1]
++  if e.tag.startswith('{clr-namespace:ProcessLens.App}'):typ='ProcessLens.App.'+tag
++  elif tag=='Polyline':typ='System.Windows.Shapes.Polyline'
++  else:typ='System.Windows.Controls.'+tag
++  fields.append('internal '+typ+' '+name+' = null!;')
++ ns,short=cls.rsplit('.',1);stubs.append('namespace '+ns+' { public partial class '+short+' { '+ ' '.join(fields)+' private void InitializeComponent() {} } }')
++ inputs[path.relative_to(r).as_posix()]=sha(path.read_bytes())
++stub=out/'MarkupFieldStubs.cs';stub.write_text('\n'.join(stubs));results=[]
++def compile(name,sources,extra=(),library=True):
++ for f in sources:
++  if f.is_relative_to(r):inputs[f.relative_to(r).as_posix()]=sha(f.read_bytes())
++ args=[str(sdk/'dotnet'),str(sdk/'sdk/8.0.426/Roslyn/bincore/csc.dll'),'-nologo','-nullable:enable','-langversion:12','-deterministic+','-target:'+('library' if library else 'exe'),'-out:'+str(out/(name+'.dll'))]
++ args+=['-analyzer:'+str(f) for f in (sdk/'packs/Microsoft.NETCore.App.Ref/8.0.32/analyzers/dotnet/cs').glob('*.dll')]
++ args+=['-r:'+str(f) for f in [*refs,event,*extra]]+[str(globals)]+[str(f) for f in sources]
++ result=subprocess.run(args,capture_output=True,text=True);log=result.stdout+result.stderr;(audit/(name+'-typecheck.log')).write_text(log)
++ print(name, 'PASS' if result.returncode==0 else 'FAIL');results.append({'assembly':name,'status':'PASS' if result.returncode==0 else 'FAIL','warning_count':log.count('warning CS')})
++ if result.returncode:raise SystemExit(log)
++core=work/'runtime/ProcessLens.Core.dll';assert core.is_file()
++compile('ProcessLens.Windows',sorted((r/'src/ProcessLens.Windows').glob('*.cs')),[core])
++compile('ProcessLens.Semantics',sorted((r/'src/ProcessLens.Semantics').glob('*.cs')),[core])
++extra=[core,out/'ProcessLens.Windows.dll',out/'ProcessLens.Semantics.dll',sqlite]
++compile('ProcessLens',sorted((r/'src/ProcessLens.App').rglob('*.cs'))+[stub],extra)
++for name in ['NetworkUiTests','CopyUiTests','SystemProcessUiTests','NewTaskUiTests','LiveMetricsUiTests']:
++ compile('ProcessLens.'+name,[r/'tests'/('ProcessLens.'+name)/'Program.cs'],extra+[out/'ProcessLens.dll'],False)
++(audit/'wpf-typecheck-evidence.json').write_text(json.dumps({'qualification':'C# type checking with generated-field stubs only; NOT actual WPF markup compilation or runtime','assemblies':results,'inputs':inputs,'stub_sha256':sha(stub.read_bytes()),'reference_hashes':{f.name:sha(f.read_bytes()) for f in [*desktop,event,sqlite]}},indent=2)+'\n')
+diff --git a/progetto/build-dashboard.ps1 b/progetto/build-dashboard.ps1
+index 500cdd9..ce33b7f 100644
+--- a/progetto/build-dashboard.ps1
++++ b/progetto/build-dashboard.ps1
+@@ -1,4 +1,4 @@
+-﻿$ErrorActionPreference = 'Stop'
++$ErrorActionPreference = 'Stop'
+ Set-Location $PSScriptRoot
+ . (Join-Path $PSScriptRoot 'build-diagnostics.ps1')
+ if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
+@@ -37,6 +37,7 @@ Write-Host 'Controllo sintassi di tutti gli script PowerShell...' -ForegroundCol
+ & (Join-Path $PSScriptRoot 'tests\check-profiler-isolation.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-profiler-fixture-v01912.ps1')
+ & (Join-Path $PSScriptRoot 'tests\check-diagnostics-v01913.ps1')
++& (Join-Path $PSScriptRoot 'audit\tools\check_live_metrics_r24.ps1')
+ Write-Host 'Test catalogo eventi, struttura JSONL e privacy...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.DiagnosticsTests' -Project '.\tests\ProcessLens.DiagnosticsTests\ProcessLens.DiagnosticsTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.DiagnosticsTests\ProcessLens.DiagnosticsTests.csproj','-c','Release')
+ Write-Host 'Test del lettore SQLite (solo lettura, dati sintetici)...' -ForegroundColor Cyan
+@@ -45,6 +46,10 @@ Write-Host 'Test Memory Alert Policy 85/80...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.MemoryAlertTests' -Project '.\tests\ProcessLens.MemoryAlertTests\ProcessLens.MemoryAlertTests.csproj' -Arguments @('run', '--project', '.\tests\ProcessLens.MemoryAlertTests\ProcessLens.MemoryAlertTests.csproj', '-c', 'Release')
+ Write-Host 'Test CPU: intervalli monotoni, identita e ripresa...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.CpuTests' -Project '.\tests\ProcessLens.CpuTests\ProcessLens.CpuTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.CpuTests\ProcessLens.CpuTests.csproj','-c','Release')
++Write-Host 'Test R24: RAM live, identita, letture PSAPI simulate e riduzione differita...' -ForegroundColor Cyan
++Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.LiveMetricsTests' -Project '.\tests\ProcessLens.LiveMetricsTests\ProcessLens.LiveMetricsTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.LiveMetricsTests\ProcessLens.LiveMetricsTests.csproj','-c','Release')
++Write-Host 'Test WPF R24: righe RAM e comando Riduci a icona con fixture...' -ForegroundColor Cyan
++Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.LiveMetricsUiTests' -Project '.\tests\ProcessLens.LiveMetricsUiTests\ProcessLens.LiveMetricsUiTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.LiveMetricsUiTests\ProcessLens.LiveMetricsUiTests.csproj','-c','Release')
+ Write-Host '[FASE 2] Test RAM: separazione memoria fisica/virtuale, campioni e culture it-IT/en-US...' -ForegroundColor Cyan
+ Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.MemoryTests' -Project '.\tests\ProcessLens.MemoryTests\ProcessLens.MemoryTests.csproj' -Arguments @('run', '--project', '.\tests\ProcessLens.MemoryTests\ProcessLens.MemoryTests.csproj', '-c', 'Release')
+ Write-Host 'Test interpretazione approfondita dei processi...' -ForegroundColor Cyan
+diff --git a/progetto/src/ProcessLens.App/App.xaml.cs b/progetto/src/ProcessLens.App/App.xaml.cs
+index 66d7ff9..a94eab0 100644
+--- a/progetto/src/ProcessLens.App/App.xaml.cs
++++ b/progetto/src/ProcessLens.App/App.xaml.cs
+@@ -58,6 +58,7 @@ public partial class App : Application
+             var window = new MainWindow();
+             MainWindow = window;
+             _windowController = new TrayWindowController(window, () => Shutdown(), window.SetDashboardWindowVisibility);
++            window.MinimizeRequested += _windowController.RequestMinimize;
+             AppDiagnostics.Record("Finestra principale creata: apertura in corso");
+             window.Show();
+             AppDiagnostics.Record("Richiesta apertura finestra completata (visibilita da verificare)");
+diff --git a/progetto/src/ProcessLens.App/CopyTestVisibility.cs b/progetto/src/ProcessLens.App/CopyTestVisibility.cs
+index b96dd10..cb2ff79 100644
+--- a/progetto/src/ProcessLens.App/CopyTestVisibility.cs
++++ b/progetto/src/ProcessLens.App/CopyTestVisibility.cs
+@@ -5,3 +5,5 @@ using System.Runtime.CompilerServices;
+ 
+ [assembly: InternalsVisibleTo("ProcessLens.SystemProcessUiTests")]
+ [assembly: InternalsVisibleTo("ProcessLens.NewTaskUiTests")]
++
++[assembly: InternalsVisibleTo("ProcessLens.LiveMetricsUiTests")]
+diff --git a/progetto/src/ProcessLens.App/MainWindow.xaml b/progetto/src/ProcessLens.App/MainWindow.xaml
+index f6693ae..cf665ea 100644
+--- a/progetto/src/ProcessLens.App/MainWindow.xaml
++++ b/progetto/src/ProcessLens.App/MainWindow.xaml
+@@ -1,4 +1,4 @@
+-﻿<Window x:Class="ProcessLens.App.MainWindow"
++<Window x:Class="ProcessLens.App.MainWindow"
+         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:local="clr-namespace:ProcessLens.App"
+@@ -188,8 +188,13 @@
+                            FontSize="12"/>
+             </StackPanel>
+ 
+-            <Button x:Name="NewTaskButton" Grid.Column="1" Content="Esegui nuova attività" Margin="12,0,12,0"
+-                    Style="{StaticResource ActionButtonStyle}" VerticalAlignment="Center" Click="NewTask_Click"/>
++            <WrapPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,8,0" MaxWidth="310">
++                <Button x:Name="MinimizeWindowButton" Content="Riduci a icona" Margin="2"
++                        ToolTip="Riapri dalla barra applicazioni o dall’icona ProcessLens accanto all’orologio."
++                        Style="{StaticResource ActionButtonStyle}" Click="MinimizeWindow_Click"/>
++                <Button x:Name="NewTaskButton" Content="Esegui nuova attività" Margin="2"
++                        Style="{StaticResource ActionButtonStyle}" Click="NewTask_Click"/>
++            </WrapPanel>
+             <Border Grid.Column="2" Style="{StaticResource PanelStyle}" Padding="12,9">
+                 <Grid>
+                     <Grid.ColumnDefinitions>
+diff --git a/progetto/src/ProcessLens.App/MainWindow.xaml.cs b/progetto/src/ProcessLens.App/MainWindow.xaml.cs
+index 2fa492a..0fa3651 100644
+--- a/progetto/src/ProcessLens.App/MainWindow.xaml.cs
++++ b/progetto/src/ProcessLens.App/MainWindow.xaml.cs
+@@ -1,4 +1,4 @@
+-﻿using System.Diagnostics;
++using System.Diagnostics;
+ using System.Windows;
+ using System.Windows.Controls;
+ using System.Windows.Input;
+@@ -36,8 +36,9 @@ public partial class MainWindow : Window
+     private readonly WindowsVirtualMemoryInspector _memoryInspector = new();
+     private readonly WindowsAllocationInspector _allocationInspector = new();
+     private readonly DispatcherTimer _timer;
+-    private readonly DispatcherTimer _cpuTimer = new() { Interval = TimeSpan.FromSeconds(2) };
++    private readonly DispatcherTimer _cpuTimer = new() { Interval = MonitorRefreshPolicy.LiveMetricsInterval };
+     private readonly WindowsLiveCpuSampler _liveCpu = new();
++    private IReadOnlyDictionary<int, LiveMemorySample> _latestMemory = new Dictionary<int, LiveMemorySample>();
+     private IReadOnlyDictionary<int, LiveCpuSample> _latestCpu = new Dictionary<int, LiveCpuSample>();
+     private bool _cpuRefreshing;
+     private bool _resetCpu = true;
+@@ -192,7 +193,8 @@ public partial class MainWindow : Window
+             if (_windowClosed) return;
+             // Metadata refresh must never overwrite recent fast CPU with a 15/45-second sample.
+             var snapshots = captured.Select(p => RecentCpu(p.Pid) is { } cpu && cpu.Matches(p)
+-                ? cpu.Apply(p) : LiveCpuSample.Unavailable(p)).ToArray();
++                ? cpu.Apply(p) : LiveCpuSample.Unavailable(p))
++                .Select(p => RecentMemory(p.Pid) is { } memory ? memory.Apply(p) : p).ToArray();
+             elapsed.Stop();
+             TrackMemoryHistory(snapshots);
+ 
+@@ -266,6 +268,7 @@ public partial class MainWindow : Window
+             _selfResourceReport = string.Empty;
+             CopySelfResourcesButton.IsEnabled = false;
+             SelfResourcesText.Text = "Risorse GUI: campionamento sospeso mentre la finestra è ridotta.";
++            ApplyLiveMemorySamples(new Dictionary<int, LiveMemorySample>());
+             foreach (var row in _allRows) row.UpdateCpu(null);
+             SystemCpuText.Text = "Sospeso";
+             SystemCpuAverageText.Text = "N/D";
+@@ -286,6 +289,23 @@ public partial class MainWindow : Window
+         return age is >= 0 and <= CpuIntervalTracker.MaximumGapSeconds ? sample : null;
+     }
+ 
++    private LiveMemorySample? RecentMemory(int pid) =>
++        _latestMemory.TryGetValue(pid, out var sample) &&
++        sample.IsFresh(Stopwatch.GetTimestamp() / (double)Stopwatch.Frequency) ? sample : null;
++
++    internal void ApplyLiveMemorySamples(IReadOnlyDictionary<int, LiveMemorySample> samples)
++    {
++        Dispatcher.VerifyAccess();
++        _latestMemory = samples;
++        foreach (var row in _allRows) row.UpdateMemory(RecentMemory(row.Pid));
++        TrackMemoryHistory(_allRows.Select(r => r.Process).ToArray());
++        if (_currentDetailRow is { } detail && _selectedPid == detail.Pid)
++        {
++            if (!_allRows.Contains(detail)) detail.UpdateMemory(RecentMemory(detail.Pid));
++            RefreshMemoryDetails(detail);
++        }
++    }
++
+     private static SystemMemoryEvidence? ReadHeaderMemory()
+     {
+         // One small system counter read; no per-process inventory or retained history.
+@@ -332,8 +352,10 @@ public partial class MainWindow : Window
+             UpdateSystemRam(result.SystemMemory);
+             _latestCpu = result.Cpu.Processes;
+             foreach (var row in _allRows) row.UpdateCpu(RecentCpu(row.Pid));
+-            TrackCpuHistory(_allRows.Select(r => r.Process).ToArray());
+-            if (_sortMode == "CPU" && !_servicesMode && !_guardianMode && !_memoryMode && !_networkMode && !_systemMode && ProcessList.ItemsSource is not null)
++            ApplyLiveMemorySamples(result.Cpu.Memory);
++            var liveSnapshots = _allRows.Select(r => r.Process).ToArray();
++            TrackCpuHistory(liveSnapshots);
++            if ((_sortMode == "CPU" || _sortMode == "Memoria") && !_servicesMode && !_guardianMode && !_memoryMode && !_networkMode && !_systemMode && ProcessList.ItemsSource is not null)
+             {
+                 _suppressSelectionEvents = true;
+                 try { CollectionViewSource.GetDefaultView(ProcessList.ItemsSource).Refresh(); }
+@@ -372,18 +394,21 @@ public partial class MainWindow : Window
+         {
+             _resetCpu = true;
+             _latestCpu = new Dictionary<int, LiveCpuSample>();
++            ApplyLiveMemorySamples(new Dictionary<int, LiveMemorySample>());
+             foreach (var row in _allRows) row.UpdateCpu(null);
+             if (_currentDetailRow is { } failedDetail)
+             {
+                 failedDetail.UpdateCpu(null);
++                failedDetail.UpdateMemory(null);
+                 RefreshCpuDetails(failedDetail);
++                RefreshMemoryDetails(failedDetail);
+             }
+             SystemCpuText.Text = "N/D"; SystemCpuAverageText.Text = "N/D";
+             UpdateSystemRam(null);
+             SelfResourcesText.Text = "Risorse GUI: lettura non disponibile.";
+             _selfResourceReport = string.Empty;
+             CopySelfResourcesButton.IsEnabled = false;
+-            AppDiagnostics.Record("Campionamento CPU rapido non riuscito", ex);
++            AppDiagnostics.Record("Campionamento CPU/RAM rapido non riuscito", ex);
+         }
+         finally { _cpuRefreshing = false; }
+     }
+@@ -508,6 +533,8 @@ public partial class MainWindow : Window
+         PrivateWorkingSetAvailable = current.PrivateWorkingSetAvailable,
+         PrivateBytes = current.PrivateBytes,
+         PrivateCommitAvailable = current.PrivateCommitAvailable,
++        MemorySampledAtMonotonicSeconds = current.MemorySampledAtMonotonicSeconds,
++        MemorySampledUtc = current.MemorySampledUtc,
+         ThreadCount = current.ThreadCount,
+         HandleCount = current.HandleCount,
+         IsCritical = current.IsCritical
+@@ -563,6 +590,16 @@ public partial class MainWindow : Window
+                     cpuView.SortDescriptions.Add(new SortDescription(nameof(ProcessRow.MemoryDisplayMb), ListSortDirection.Descending));
+                 }
+             }
++            if (_sortMode == "Memoria")
++            {
++                var memoryView = CollectionViewSource.GetDefaultView(ProcessList.ItemsSource);
++                using (memoryView.DeferRefresh())
++                {
++                    memoryView.SortDescriptions.Add(new SortDescription("Process.PrivateWorkingSetAvailable", ListSortDirection.Descending));
++                    memoryView.SortDescriptions.Add(new SortDescription(nameof(ProcessRow.MemoryAvailable), ListSortDirection.Descending));
++                    memoryView.SortDescriptions.Add(new SortDescription(nameof(ProcessRow.MemoryDisplayMb), ListSortDirection.Descending));
++                }
++            }
+             VisibleCountText.Text = visible.Count.ToString();
+             CurrentFilterText.Text = _activeFilter == "Tutti" ? "Vista: tutti i processi" : $"Vista: {_activeFilter}";
+ 
+@@ -827,6 +864,13 @@ public partial class MainWindow : Window
+         _processNoticeTimer.Start();
+     }
+ 
++    internal event Action? MinimizeRequested;
++    private void MinimizeWindow_Click(object sender, RoutedEventArgs e)
++    {
++        if (MinimizeRequested is { } minimize) minimize();
++        else Dispatcher.BeginInvoke(new Action(() => { if (!_windowClosed) WindowState = WindowState.Minimized; }));
++    }
++
+     private void NewTask_Click(object sender, RoutedEventArgs e)
+     {
+         if (_newTaskWindow is not null) { _newTaskWindow.Activate(); return; }
+@@ -971,8 +1015,27 @@ public partial class MainWindow : Window
+         ApplyRiskBadge(i.CloseRisk);
+ 
+         RefreshCpuDetails(row);
++        RefreshMemoryDetails(row);
++        DetailProjectShortText.Text = i.ProjectRoot is null ? "Non identificato" : ShortenPath(i.ProjectRoot, 34);
++        DetailNetworkStateText.Text = ProcessNetworkPresentation.Describe(p);
++
++        DetailWindowStateText.Text = p.IsDeepInspected
++            ? (p.HasVisibleWindow
++                ? $"Interfaccia: possiede almeno una finestra visibile{(p.WindowTitles.Count > 0 ? $" — {p.WindowTitles[0]}" : string.Empty)}"
++                : "Interfaccia: nessuna finestra top-level visibile rilevata nelle letture disponibili.")
++            : "Interfaccia: verrà controllata nell'analisi approfondita.";
++
++        if (DetailTechnicalSectionsExpander.IsExpanded)
++            UpdateTechnicalDetails(row);
++    }
++
++    private void RefreshMemoryDetails(ProcessRow row)
++    {
++        var p = row.Process;
+         DetailMemoryLabel.Text = ProcessRow.CompactMemoryLabel(p);
+-        DetailMemoryLabel.ToolTip = p.MemoryDescription;
++        DetailMemoryLabel.ToolTip = p.MemoryDescription + (p.MemorySampledUtc.HasValue
++            ? $"\nCampione: {p.MemorySampledUtc.Value.ToLocalTime():HH:mm:ss}. CPU/RAM: intervallo nominale 1 s; elenco e metadati: 15–45 s."
++            : "\nOra del campione RAM non disponibile.");
+         DetailMemoryText.Text = p.MemoryDisplayText;
+         DetailPrivateWorkingSetText.Text = p.PrivateWorkingSetAvailable ? $"{p.PrivateWorkingSetMb:F1} MiB" : "N/D";
+         DetailWorkingSetText.Text = p.WorkingSetAvailable ? $"{p.WorkingSetMb:F1} MiB" : "N/D";
+@@ -984,17 +1047,6 @@ public partial class MainWindow : Window
+             ? $"Ultimi {memoryTrend.Seconds / 60:F1} min · {memoryTrend.Metric}: " +
+               $"Δ {memoryTrend.DeltaMb:+0.0;-0.0;0.0} MiB · min {memoryTrend.MinimumMb:F1} · picco {memoryTrend.PeakMb:F1} MiB ({memoryTrend.Samples} campioni)"
+             : "Andamento memoria non disponibile: servono almeno tre campioni confrontabili in almeno 20 s.";
+-        DetailProjectShortText.Text = i.ProjectRoot is null ? "Non identificato" : ShortenPath(i.ProjectRoot, 34);
+-        DetailNetworkStateText.Text = ProcessNetworkPresentation.Describe(p);
+-
+-        DetailWindowStateText.Text = p.IsDeepInspected
+-            ? (p.HasVisibleWindow
+-                ? $"Interfaccia: possiede almeno una finestra visibile{(p.WindowTitles.Count > 0 ? $" — {p.WindowTitles[0]}" : string.Empty)}"
+-                : "Interfaccia: nessuna finestra top-level visibile rilevata nelle letture disponibili.")
+-            : "Interfaccia: verrà controllata nell'analisi approfondita.";
+-
+-        if (DetailTechnicalSectionsExpander.IsExpanded)
+-            UpdateTechnicalDetails(row);
+     }
+ 
+     private void UpdateTechnicalDetails(ProcessRow row)
+@@ -1304,9 +1356,9 @@ public partial class MainWindow : Window
+ 
+     private void TrackMemoryHistory(IReadOnlyList<ProcessSnapshot> snapshots)
+     {
+-        DateTime now = DateTime.UtcNow;
+         foreach (var p in snapshots)
+         {
++            DateTime now = p.MemorySampledUtc ?? DateTime.UtcNow;
+             // Do not merge histories for a recycled PID when StartTime is unknown.
+             if (!p.StartTime.HasValue) { _memoryHistory.Remove(p.Pid); continue; }
+             bool privateResident = p.PrivateWorkingSetAvailable;
+diff --git a/progetto/src/ProcessLens.App/MemoryObservationBuffer.cs b/progetto/src/ProcessLens.App/MemoryObservationBuffer.cs
+index 32ad081..21768d2 100644
+--- a/progetto/src/ProcessLens.App/MemoryObservationBuffer.cs
++++ b/progetto/src/ProcessLens.App/MemoryObservationBuffer.cs
+@@ -6,10 +6,13 @@ namespace ProcessLens.App;
+ internal sealed class MemoryObservationBuffer
+ {
+     private readonly Queue<(DateTime TimestampUtc, long Bytes)> _samples = new();
++    private DateTime? _lastTimestamp;
+     public int Count => _samples.Count;
+ 
+     public void Add(DateTime timestampUtc, long bytes)
+     {
++        if (bytes < 0 || (_lastTimestamp.HasValue && timestampUtc <= _lastTimestamp.Value)) return;
++        _lastTimestamp = timestampUtc;
+         _samples.Enqueue((timestampUtc, bytes));
+         DateTime cutoff = timestampUtc - TimeSpan.FromMinutes(5);
+         while (_samples.Count > 0 && (_samples.Peek().TimestampUtc < cutoff || _samples.Count > 160))
+diff --git a/progetto/src/ProcessLens.App/ProcessLens.App.csproj b/progetto/src/ProcessLens.App/ProcessLens.App.csproj
+index 67cf0b0..528764a 100644
+--- a/progetto/src/ProcessLens.App/ProcessLens.App.csproj
++++ b/progetto/src/ProcessLens.App/ProcessLens.App.csproj
+@@ -8,7 +8,7 @@
+     <Nullable>enable</Nullable>
+     <AssemblyName>ProcessLens</AssemblyName>
+     <Version>0.19.16</Version>
+-    <InformationalVersion>0.19.16-R10-R23-R1-raw-input-fix-candidate</InformationalVersion>
++    <InformationalVersion>0.19.16-R10-R24-minimize-live-memory-candidate</InformationalVersion>
+     <UseAppHost>true</UseAppHost>
+     <AssemblyTitle>ProcessLens</AssemblyTitle>
+     <Product>ProcessLens</Product>
+diff --git a/progetto/src/ProcessLens.App/ProcessRow.cs b/progetto/src/ProcessLens.App/ProcessRow.cs
+index 301155d..cdd9379 100644
+--- a/progetto/src/ProcessLens.App/ProcessRow.cs
++++ b/progetto/src/ProcessLens.App/ProcessRow.cs
+@@ -18,6 +18,18 @@ public sealed class ProcessRow(ProcessSnapshot process, ProcessInsight insight)
+         Process = sample?.Matches(Process) == true ? sample.Apply(Process) : LiveCpuSample.Unavailable(Process);
+         foreach (var change in CpuChanges) PropertyChanged?.Invoke(this, change);
+     }
++    private static readonly PropertyChangedEventArgs[] MemoryChanges =
++        new[] { nameof(Process), nameof(WorkingSetMb), nameof(MemoryDisplayMb), nameof(MemoryDisplayText),
++            nameof(MemoryDisplayLabel), nameof(MemoryShortLabel), nameof(MemoryDescription), nameof(MemoryAvailable) }
++            .Select(n => new PropertyChangedEventArgs(n)).ToArray();
++    public bool MemoryAvailable => Process.PrivateWorkingSetAvailable || Process.WorkingSetAvailable;
++    public void UpdateMemory(LiveMemorySample? sample)
++    {
++        var next = sample is null ? LiveMemorySample.Unavailable(Process) : sample.Apply(Process);
++        if (ReferenceEquals(next, Process)) return;
++        Process = next;
++        foreach (var change in MemoryChanges) PropertyChanged?.Invoke(this, change);
++    }
+     public string Name => Process.Name;
+     public ImageSource? IconSource => ProcessIconResolver.GetIcon(Process.ExecutablePath, Process.Name);
+     public string FriendlyName => Insight.FriendlyName;
+diff --git a/progetto/src/ProcessLens.App/TrayWindowController.cs b/progetto/src/ProcessLens.App/TrayWindowController.cs
+index 1152a0a..bf97c73 100644
+--- a/progetto/src/ProcessLens.App/TrayWindowController.cs
++++ b/progetto/src/ProcessLens.App/TrayWindowController.cs
+@@ -20,6 +20,7 @@ internal sealed class TrayWindowController : IDisposable
+     private readonly ContextMenu _menu;
+     private readonly Action _shutdown;
+     private readonly Action<bool> _activity;
++    private readonly DeferredWindowActions _actions;
+     private WindowState _restoreState = WindowState.Normal;
+     private bool _trayPresent, _exitRequested, _disposed;
+     private bool? _lastActive;
+@@ -27,15 +28,18 @@ internal sealed class TrayWindowController : IDisposable
+     public TrayWindowController(Window window, Action shutdown, Action<bool> activity)
+     {
+         _window = window; _shutdown = shutdown; _activity = activity;
++        _actions = new(action => window.Dispatcher.BeginInvoke(action), Minimize, Restore);
+         _hwnd = new WindowInteropHelper(window).EnsureHandle();
+         _source = HwndSource.FromHwnd(_hwnd) ?? throw new InvalidOperationException("Finestra Windows non disponibile.");
+         _source.AddHook(WindowMessage);
+         _menu = new ContextMenu { Placement = PlacementMode.MousePoint };
+         var open = new MenuItem { Header = "Mostra ProcessLens" };
+         open.Click += (_, _) => RequestRestore();
++        var minimize = new MenuItem { Header = "Riduci a icona" };
++        minimize.Click += (_, _) => RequestMinimize();
+         var exit = new MenuItem { Header = "Esci da ProcessLens" };
+         exit.Click += (_, _) => { AllowExit(); _shutdown(); };
+-        _menu.Items.Add(open); _menu.Items.Add(new Separator()); _menu.Items.Add(exit);
++        _menu.Items.Add(open); _menu.Items.Add(minimize); _menu.Items.Add(new Separator()); _menu.Items.Add(exit);
+         window.Closing += Closing;
+         window.Closed += Closed;
+         window.StateChanged += StateChanged;
+@@ -43,17 +47,31 @@ internal sealed class TrayWindowController : IDisposable
+         EnsureTray();
+     }
+ 
+-    public void AllowExit() => _exitRequested = true;
++    public void AllowExit() { _exitRequested = true; _actions.Dispose(); }
+ 
+     private void Closing(object? sender, CancelEventArgs e)
+     {
+         var action = WindowLifetimePolicy.Close(_exitRequested, _exitRequested || EnsureTray());
+         if (action == WindowCloseAction.Exit) return;
+         e.Cancel = true;
+-        // Keep a second restore route even if Explorer loses the tray icon or its callbacks.
++        RequestMinimize();
++    }
++
++    public void RequestMinimize()
++    {
++        if (_disposed || _exitRequested || _window.Dispatcher.HasShutdownStarted) return;
++        EnsureTray();
++        _actions.Minimize();
++    }
++
++    private void Minimize()
++    {
++        if (_disposed || _exitRequested) return;
++        _menu.IsOpen = false;
++        // Always retain the taskbar route if Explorer hides or loses the tray entry.
+         _window.ShowInTaskbar = true;
+         _window.WindowState = WindowState.Minimized;
+-        AppDiagnostics.Record("X: finestra ridotta; ripristino dalla barra applicazioni o Mostra ProcessLens nell’icona.");
++        AppDiagnostics.Record("Finestra ridotta; riapri dalla barra applicazioni o dall’icona ProcessLens.");
+         UpdateActivity();
+     }
+ 
+@@ -89,7 +107,7 @@ internal sealed class TrayWindowController : IDisposable
+     {
+         if (_disposed || _exitRequested || _window.Dispatcher.HasShutdownStarted) return;
+         // Do not call Show reentrantly from a native message received during WPF Closing.
+-        _window.Dispatcher.BeginInvoke(new Action(Restore));
++        _actions.Restore();
+     }
+ 
+     private IntPtr WindowMessage(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
+@@ -150,6 +168,7 @@ internal sealed class TrayWindowController : IDisposable
+     {
+         if (_disposed) return;
+         _disposed = true;
++        _actions.Dispose();
+         _menu.IsOpen = false;
+         _window.Closing -= Closing; _window.Closed -= Closed;
+         _window.StateChanged -= StateChanged; _window.IsVisibleChanged -= VisibilityChanged;
+diff --git a/progetto/src/ProcessLens.App/WindowLifetimePolicy.cs b/progetto/src/ProcessLens.App/WindowLifetimePolicy.cs
+index d917fce..7bd6974 100644
+--- a/progetto/src/ProcessLens.App/WindowLifetimePolicy.cs
++++ b/progetto/src/ProcessLens.App/WindowLifetimePolicy.cs
+@@ -8,3 +8,26 @@ internal static class WindowLifetimePolicy
+         exitRequested ? WindowCloseAction.Exit : WindowCloseAction.MinimizeToTaskbar;
+     public static bool PollingActive(bool visible, bool minimized) => visible && !minimized;
+ }
++
++/// <summary>Coalesces window commands after the current Closing/native callback returns.</summary>
++internal sealed class DeferredWindowActions(Action<Action> post, Action minimize, Action restore) : IDisposable
++{
++    private Action? _pending;
++    private bool _posted, _disposed;
++    public void Minimize() => Schedule(minimize);
++    public void Restore() => Schedule(restore);
++    private void Schedule(Action action)
++    {
++        if (_disposed) return;
++        _pending = action;
++        if (_posted) return;
++        _posted = true;
++        post(() =>
++        {
++            _posted = false;
++            var next = _pending; _pending = null;
++            if (!_disposed) next?.Invoke();
++        });
++    }
++    public void Dispose() { _disposed = true; _pending = null; }
++}
+diff --git a/progetto/src/ProcessLens.Core/LiveMemorySample.cs b/progetto/src/ProcessLens.Core/LiveMemorySample.cs
+new file mode 100644
+index 0000000..6936e15
+--- /dev/null
++++ b/progetto/src/ProcessLens.Core/LiveMemorySample.cs
+@@ -0,0 +1,34 @@
++namespace ProcessLens.Core;
++
++/// <summary>Resident memory and commit read from the same process handle, with its creation time.</summary>
++public sealed record LiveMemorySample(int Pid, DateTime? StartUtc, long WorkingSetBytes,
++    bool WorkingSetAvailable, long PrivateWorkingSetBytes, bool PrivateWorkingSetAvailable,
++    long PrivateCommitBytes, bool PrivateCommitAvailable, double CapturedAtMonotonicSeconds, DateTime CapturedUtc)
++{
++    public bool Matches(ProcessSnapshot p) => p.Pid == Pid && StartUtc.HasValue &&
++        p.StartTime.HasValue && StartUtc.Value == p.StartTime.Value.ToUniversalTime();
++    public bool IsFresh(double now) => double.IsFinite(now) && double.IsFinite(CapturedAtMonotonicSeconds) &&
++        now - CapturedAtMonotonicSeconds is >= 0 and <= CpuIntervalTracker.MaximumGapSeconds;
++    public ProcessSnapshot Apply(ProcessSnapshot p)
++    {
++        if (!Matches(p)) return Unavailable(p);
++        if (p.MemorySampledAtMonotonicSeconds > CapturedAtMonotonicSeconds) return p;
++        bool ws = WorkingSetAvailable && WorkingSetBytes >= 0;
++        bool privateWs = PrivateWorkingSetAvailable && ws && PrivateWorkingSetBytes >= 0 && PrivateWorkingSetBytes <= WorkingSetBytes;
++        bool commit = PrivateCommitAvailable && PrivateCommitBytes >= 0;
++        return p with
++        {
++            WorkingSetBytes = ws ? WorkingSetBytes : 0, WorkingSetAvailable = ws,
++            PrivateWorkingSetBytes = privateWs ? PrivateWorkingSetBytes : 0, PrivateWorkingSetAvailable = privateWs,
++            PrivateBytes = commit ? PrivateCommitBytes : 0, PrivateCommitAvailable = commit,
++            MemorySampledAtMonotonicSeconds = CapturedAtMonotonicSeconds, MemorySampledUtc = CapturedUtc
++        };
++    }
++    public static ProcessSnapshot Unavailable(ProcessSnapshot p) => p with
++    {
++        WorkingSetBytes = 0, WorkingSetAvailable = false,
++        PrivateWorkingSetBytes = 0, PrivateWorkingSetAvailable = false,
++        PrivateBytes = 0, PrivateCommitAvailable = false,
++        MemorySampledAtMonotonicSeconds = 0, MemorySampledUtc = null
++    };
++}
+diff --git a/progetto/src/ProcessLens.Core/MonitorRefreshPolicy.cs b/progetto/src/ProcessLens.Core/MonitorRefreshPolicy.cs
+index d51e0a4..56b9f89 100644
+--- a/progetto/src/ProcessLens.Core/MonitorRefreshPolicy.cs
++++ b/progetto/src/ProcessLens.Core/MonitorRefreshPolicy.cs
+@@ -6,6 +6,7 @@ namespace ProcessLens.Core;
+ /// </summary>
+ public static class MonitorRefreshPolicy
+ {
++    public static readonly TimeSpan LiveMetricsInterval = TimeSpan.FromSeconds(1);
+     public static readonly TimeSpan NormalProcessInterval = TimeSpan.FromSeconds(15);
+     public static readonly TimeSpan HighLoadProcessInterval = TimeSpan.FromSeconds(45);
+     public static readonly TimeSpan ServiceCatalogInterval = TimeSpan.FromSeconds(120);
+diff --git a/progetto/src/ProcessLens.Core/ProcessSnapshot.cs b/progetto/src/ProcessLens.Core/ProcessSnapshot.cs
+index e9f7261..e5fe2b5 100644
+--- a/progetto/src/ProcessLens.Core/ProcessSnapshot.cs
++++ b/progetto/src/ProcessLens.Core/ProcessSnapshot.cs
+@@ -66,6 +66,8 @@ public sealed record ProcessSnapshot
+     // PrivateBytes is private COMMITTED memory, not resident RAM.
+     public long PrivateBytes { get; init; }
+     public bool PrivateCommitAvailable { get; init; }
++    public double MemorySampledAtMonotonicSeconds { get; init; }
++    public DateTime? MemorySampledUtc { get; init; }
+     public int ThreadCount { get; init; }
+     public int HandleCount { get; init; }
+     public DateTime? StartTime { get; init; }
+diff --git a/progetto/src/ProcessLens.Windows/WindowsLiveCpuSampler.cs b/progetto/src/ProcessLens.Windows/WindowsLiveCpuSampler.cs
+index 8a27113..ca514e8 100644
+--- a/progetto/src/ProcessLens.Windows/WindowsLiveCpuSampler.cs
++++ b/progetto/src/ProcessLens.Windows/WindowsLiveCpuSampler.cs
+@@ -4,10 +4,13 @@ using ProcessLens.Core;
+ 
+ namespace ProcessLens.Windows;
+ 
+-/// <summary>Cheap CPU-only reads. Not thread-safe; callers serialize capture/reset.</summary>
++/// <summary>Cheap CPU and memory reads on one handle per PID. Not thread-safe; callers serialize capture/reset.</summary>
+ public sealed class WindowsLiveCpuSampler
+ {
+-    public sealed record Batch(IReadOnlyDictionary<int, LiveCpuSample> Processes, CpuTelemetry System);
++    public sealed record Batch(IReadOnlyDictionary<int, LiveCpuSample> Processes, CpuTelemetry System)
++    {
++        public IReadOnlyDictionary<int, LiveMemorySample> Memory { get; init; } = new Dictionary<int, LiveMemorySample>();
++    }
+     private readonly Dictionary<int, CpuIntervalTracker> _processes = new();
+     private readonly CpuIntervalTracker _system = new();
+     private (ulong Idle, ulong Total)? _oldSystem;
+@@ -21,6 +24,7 @@ public sealed class WindowsLiveCpuSampler
+         var requested = pids.Where(x => x > 0).ToHashSet();
+         foreach (int pid in _processes.Keys.Where(x => !requested.Contains(x)).ToArray()) _processes.Remove(pid);
+         var result = new Dictionary<int, LiveCpuSample>(requested.Count);
++        var memory = new Dictionary<int, LiveMemorySample>(requested.Count);
+         foreach (int pid in requested)
+         {
+             IntPtr handle = NativeMethods.OpenProcess(NativeMethods.PROCESS_QUERY_LIMITED_INFORMATION, false, (uint)pid);
+@@ -32,8 +36,13 @@ public sealed class WindowsLiveCpuSampler
+                     // Timestamp adjacent to this PID's read; no shared denominator from another scan.
+                     result[pid] = tracker.Sample(pid, DateTime.FromFileTimeUtc(checked((long)creation)),
+                         checked((long)(kernel + user)), Clock(), cpus);
++                    var m = WindowsMemorySampler.Capture(handle);
++                    memory[pid] = new(pid, result[pid].StartUtc, m.WorkingSetBytes, m.WorkingSetAvailable,
++                        m.PrivateWorkingSetBytes, m.PrivateWorkingSetAvailable, m.PrivateCommitBytes,
++                        m.PrivateCommitAvailable, m.SampledAt, m.SampledUtc);
+                     continue;
+                 }
++                memory[pid] = new(pid, null, 0, false, 0, false, 0, false, Clock(), DateTime.UtcNow);
+                 _processes.Remove(pid); // A failed read breaks continuity, never becomes zero CPU.
+                 result[pid] = new(pid, null, false, 0, 0, 0, 0, 0, false, cpus);
+             }
+@@ -57,7 +66,7 @@ public sealed class WindowsLiveCpuSampler
+         int sampled = result.Values.Count(x => x.Available);
+         return new(result, new(system?.Available == true, system?.Percent ?? 0,
+             system?.Average ?? 0, system?.Peak ?? 0, system?.IntervalSeconds ?? 0,
+-            cpus, sampled, result.Count - sampled));
++            cpus, sampled, result.Count - sampled)) { Memory = memory };
+     }
+ 
+     private static double Clock() => Stopwatch.GetTimestamp() / (double)Stopwatch.Frequency;
+diff --git a/progetto/src/ProcessLens.Windows/WindowsMemorySampler.cs b/progetto/src/ProcessLens.Windows/WindowsMemorySampler.cs
+index bce417b..a5b2f90 100644
+--- a/progetto/src/ProcessLens.Windows/WindowsMemorySampler.cs
++++ b/progetto/src/ProcessLens.Windows/WindowsMemorySampler.cs
+@@ -1,4 +1,5 @@
+-﻿using System.Runtime.InteropServices;
++using System.Runtime.InteropServices;
++using System.Diagnostics;
+ 
+ namespace ProcessLens.Windows;
+ 
+@@ -11,10 +12,15 @@ internal static class WindowsMemorySampler
+     internal readonly record struct Sample(
+         long WorkingSetBytes, bool WorkingSetAvailable,
+         long PrivateWorkingSetBytes, bool PrivateWorkingSetAvailable,
+-        long PrivateCommitBytes, bool PrivateCommitAvailable);
++        long PrivateCommitBytes, bool PrivateCommitAvailable)
++    {
++        public DateTime? StartUtc { get; init; }
++        public double SampledAt { get; init; }
++        public DateTime SampledUtc { get; init; }
++    }
+ 
+     [StructLayout(LayoutKind.Sequential)]
+-    private struct ProcessMemoryCountersEx2
++    internal struct ProcessMemoryCountersEx2
+     {
+         public uint cb;
+         public uint PageFaultCount;
+@@ -45,19 +51,9 @@ internal static class WindowsMemorySampler
+             handle = NativeMethods.OpenProcess(
+                 NativeMethods.PROCESS_QUERY_LIMITED_INFORMATION, false, (uint)pid);
+             if (handle == IntPtr.Zero) return default;
+-            var counters = new ProcessMemoryCountersEx2
+-            {
+-                cb = (uint)Marshal.SizeOf<ProcessMemoryCountersEx2>()
+-            };
+-            if (!GetProcessMemoryInfo(handle, ref counters, counters.cb)) return default;
+-
+-            long ws = checked((long)counters.WorkingSetSize);
+-            long privateWs = checked((long)counters.PrivateWorkingSetSize);
+-            long commit = checked((long)counters.PrivateUsage);
+-            // An invalid relationship means we must NOT display an invented private WS.
+-            bool reliablePrivateWs = privateWs <= ws && privateWs >= 0;
+-            return new Sample(ws, true, reliablePrivateWs ? privateWs : 0,
+-                reliablePrivateWs, commit, true);
++            DateTime? start = GetProcessTimes(handle, out long creation, out _, out _, out _)
++                ? DateTime.FromFileTimeUtc(creation) : null;
++            return Capture(handle) with { StartUtc = start };
+         }
+         catch (Exception ex) when (ex is DllNotFoundException or EntryPointNotFoundException
+                                        or OverflowException or SEHException)
+@@ -69,4 +65,45 @@ internal static class WindowsMemorySampler
+             if (handle != IntPtr.Zero) NativeMethods.CloseHandle(handle);
+         }
+     }
++    [DllImport("kernel32.dll", SetLastError = true)]
++    [return: MarshalAs(UnmanagedType.Bool)]
++    private static extern bool GetProcessTimes(IntPtr process, out long creation, out long exit, out long kernel, out long user);
++
++    internal delegate bool CounterReader(IntPtr process, ref ProcessMemoryCountersEx2 counters, uint size);
++    // The caller owns the handle. No second OpenProcess and no page-table walk in the live path.
++    internal static Sample Capture(IntPtr handle) => Capture(handle, GetProcessMemoryInfo);
++    internal static Sample Capture(IntPtr handle, CounterReader reader)
++    {
++        double at = Stopwatch.GetTimestamp() / (double)Stopwatch.Frequency;
++        DateTime utc = DateTime.UtcNow;
++        Sample Missing() => new() { SampledAt = at, SampledUtc = utc };
++        if (handle == IntPtr.Zero) return Missing();
++        try
++        {
++            var counters = new ProcessMemoryCountersEx2
++            {
++                cb = (uint)Marshal.SizeOf<ProcessMemoryCountersEx2>(),
++                // Older systems may fill only the EX prefix even when the call succeeds.
++                PrivateWorkingSetSize = nuint.MaxValue
++            };
++            if (!reader(handle, ref counters, counters.cb))
++            {
++                counters = new() { cb = (uint)Marshal.OffsetOf<ProcessMemoryCountersEx2>(nameof(ProcessMemoryCountersEx2.PrivateWorkingSetSize)),
++                    PrivateWorkingSetSize = nuint.MaxValue };
++                if (!reader(handle, ref counters, counters.cb)) return Missing();
++                // EX has no private Working Set member, regardless of the buffer contents.
++                counters.PrivateWorkingSetSize = nuint.MaxValue;
++            }
++            bool ws = counters.WorkingSetSize <= long.MaxValue;
++            bool privateWs = ws && counters.PrivateWorkingSetSize != nuint.MaxValue &&
++                counters.PrivateWorkingSetSize <= counters.WorkingSetSize;
++            bool commit = counters.PrivateUsage <= long.MaxValue;
++            return new(ws ? (long)counters.WorkingSetSize : 0, ws,
++                privateWs ? (long)counters.PrivateWorkingSetSize : 0, privateWs,
++                commit ? (long)counters.PrivateUsage : 0, commit) { SampledAt = at, SampledUtc = utc };
++        }
++        catch (Exception ex) when (ex is DllNotFoundException or EntryPointNotFoundException or OverflowException or SEHException)
++        { return Missing(); }
++    }
++
+ }
+diff --git a/progetto/src/ProcessLens.Windows/WindowsProcessCollector.cs b/progetto/src/ProcessLens.Windows/WindowsProcessCollector.cs
+index 6cfb76d..7077b3e 100644
+--- a/progetto/src/ProcessLens.Windows/WindowsProcessCollector.cs
++++ b/progetto/src/ProcessLens.Windows/WindowsProcessCollector.cs
+@@ -1,4 +1,4 @@
+-﻿using System.Diagnostics;
++using System.Diagnostics;
+ using System.Runtime.InteropServices;
+ using System.Text;
+ using ProcessLens.Core;
+@@ -94,6 +94,12 @@ public sealed class WindowsProcessCollector : IProcessCollector, ICpuTelemetrySo
+             // walk over the process page tables and works without elevation for
+             // ordinary processes. No guessed values when access is denied.
+             var memory = WindowsMemorySampler.Capture(entry.Pid);
++            // The native counter read must belong to the same process lifetime as this row.
++            if (memory.StartUtc.HasValue && startTime.HasValue && memory.StartUtc != startTime.Value.ToUniversalTime())
++            {
++                workingSetAvailable = privateWorkingSetAvailable = privateCommitAvailable = false;
++                memory = default;
++            }
+             if (memory.WorkingSetAvailable)
+             {
+                 workingSet = memory.WorkingSetBytes;
+@@ -193,6 +199,8 @@ public sealed class WindowsProcessCollector : IProcessCollector, ICpuTelemetrySo
+                 PrivateWorkingSetAvailable = privateWorkingSetAvailable,
+                 PrivateBytes = privateBytes,
+                 PrivateCommitAvailable = privateCommitAvailable,
++                MemorySampledAtMonotonicSeconds = memory.SampledAt,
++                MemorySampledUtc = memory.SampledUtc == default ? null : memory.SampledUtc,
+                 ThreadCount = entry.Threads,
+                 HandleCount = handleCount,
+                 StartTime = startTime,
+diff --git a/progetto/tests/ProcessLens.LiveMetricsTests/ProcessLens.LiveMetricsTests.csproj b/progetto/tests/ProcessLens.LiveMetricsTests/ProcessLens.LiveMetricsTests.csproj
+new file mode 100644
+index 0000000..036434e
+--- /dev/null
++++ b/progetto/tests/ProcessLens.LiveMetricsTests/ProcessLens.LiveMetricsTests.csproj
+@@ -0,0 +1,9 @@
++<Project Sdk="Microsoft.NET.Sdk">
++<PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
++<ItemGroup><ProjectReference Include="../../src/ProcessLens.Core/ProcessLens.Core.csproj"/>
++<Compile Include="../../src/ProcessLens.Windows/WindowsMemorySampler.cs" Link="WindowsMemorySampler.cs"/>
++<Compile Include="../../src/ProcessLens.Windows/WindowsLiveCpuSampler.cs" Link="WindowsLiveCpuSampler.cs"/>
++<Compile Include="../../src/ProcessLens.Windows/NativeMethods.cs" Link="NativeMethods.cs"/>
++<Compile Include="../../src/ProcessLens.App/WindowLifetimePolicy.cs" Link="WindowLifetimePolicy.cs"/>
++<Compile Include="../../src/ProcessLens.App/MemoryObservationBuffer.cs" Link="MemoryObservationBuffer.cs"/>
++</ItemGroup></Project>
+diff --git a/progetto/tests/ProcessLens.LiveMetricsTests/Program.cs b/progetto/tests/ProcessLens.LiveMetricsTests/Program.cs
+new file mode 100644
+index 0000000..258ff01
+--- /dev/null
++++ b/progetto/tests/ProcessLens.LiveMetricsTests/Program.cs
+@@ -0,0 +1,127 @@
++using System.Globalization;
++using System.Runtime.InteropServices;
++using ProcessLens.Core;
++using ProcessLens.App;
++using ProcessLens.Windows;
++
++static void Check(bool ok, string label)
++{ if (!ok) throw new Exception("FAIL R24 " + label); Console.WriteLine("PASS R24 " + label); }
++var start = new DateTime(2026, 10, 23, 12, 0, 0, DateTimeKind.Utc);
++var original = new ProcessSnapshot { Pid = 42, ParentPid = 1, Name = "fixture.exe", StartTime = start,
++    WorkingSetBytes = 999, WorkingSetAvailable = true, PrivateWorkingSetBytes = 888, PrivateWorkingSetAvailable = true,
++    PrivateBytes = 7000, PrivateCommitAvailable = true, CpuPercent = 23, CpuSampleAvailable = true,
++    CommandLine = "fixture --secret=preserved", IsDeepInspected = true, TcpListeningCount = 2 };
++var live = new LiveMemorySample(42, start, 400, true, 200, true, 900, true, 100, start.AddSeconds(100));
++foreach (string culture in new[] { "it-IT", "en-US" })
++{
++    CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(culture);
++    var updated = live.Apply(original);
++    Check(updated.WorkingSetBytes == 400 && updated.PrivateWorkingSetBytes == 200 && updated.PrivateBytes == 900,
++        "resident, private resident and commit stay distinct [" + culture + "]");
++    Check(updated.CpuPercent == 23 && updated.CpuSampleAvailable && updated.SemanticIdentityKey == original.SemanticIdentityKey &&
++        updated.CommandLine == original.CommandLine && original.WorkingSetBytes == 999,
++        "memory update preserves CPU, evidence and original snapshot [" + culture + "]");
++    Check(updated.MemorySampledUtc == live.CapturedUtc && updated.MemorySampledAtMonotonicSeconds == 100, "exact sample time retained [" + culture + "]");
++    Check(live.IsFresh(100) && live.IsFresh(106) && !live.IsFresh(106.001) && !live.IsFresh(99) &&
++        !live.IsFresh(double.NaN) && !(live with { CapturedAtMonotonicSeconds = double.NaN }).IsFresh(100), "stale and invalid clocks rejected [" + culture + "]");
++    foreach (var other in new[] { original with { Pid = 43 }, original with { StartTime = start.AddSeconds(1) }, original with { StartTime = null } })
++        Check(!live.Apply(other).WorkingSetAvailable && !live.Apply(other).PrivateCommitAvailable, "PID and known creation time required [" + culture + "]");
++    Check(!(live with { StartUtc = null }).Apply(original).WorkingSetAvailable, "unknown sample identity cannot attach [" + culture + "]");
++    Check(ReferenceEquals((live with { CapturedAtMonotonicSeconds = 99 }).Apply(updated), updated), "older fast sample cannot overwrite newer inventory read [" + culture + "]");
++    Check((live with { CapturedAtMonotonicSeconds = 101, PrivateWorkingSetBytes = 100 }).Apply(updated).PrivateWorkingSetBytes == 100,
++        "newer fast sample supersedes slow inventory [" + culture + "]");
++    var missing = LiveMemorySample.Unavailable(updated);
++    Check(missing.MemoryDisplayText == "N/D" && !missing.PrivateCommitAvailable && missing.MemorySampledUtc is null,
++        "failed or suspended acquisition clears old data without measured zero [" + culture + "]");
++    var zero = (live with { WorkingSetBytes = 0, PrivateWorkingSetBytes = 0, PrivateCommitBytes = 0 }).Apply(original);
++    Check(zero.PrivateWorkingSetAvailable && zero.MemoryDisplayText != "N/D" && zero.MemoryDisplayMb == 0, "genuine zero retained [" + culture + "]");
++    var bad = (live with { PrivateWorkingSetBytes = 401, PrivateCommitBytes = -1 }).Apply(original);
++    Check(!bad.PrivateWorkingSetAvailable && bad.WorkingSetAvailable && !bad.PrivateCommitAvailable, "invalid private value falls back to explicitly total WS [" + culture + "]");
++}
++Check(MonitorRefreshPolicy.LiveMetricsInterval == TimeSpan.FromSeconds(1) && MonitorRefreshPolicy.NormalProcessInterval == TimeSpan.FromSeconds(15) &&
++    MonitorRefreshPolicy.HighLoadProcessInterval == TimeSpan.FromSeconds(45), "one-second counters independent of bounded metadata scheduling");
++var history = new MemoryObservationBuffer();
++history.Add(start, 1); history.Add(start, 999); history.Add(start.AddSeconds(-1), 999); history.Add(start.AddSeconds(1), -1);
++Check(history.Count == 1 && history.ToArray()[0].Bytes == 1, "duplicate, out-of-order and invalid trend inputs ignored");
++for (int i = 1; i <= 10000; i++) history.Add(start.AddSeconds(i), i);
++Check(history.Count == 160 && history.ToArray()[0].Bytes == 9841, "one-second history remains bounded at 160 samples");
++var callbacks = new Queue<Action>(); int minimized = 0, restored = 0;
++using (var actions = new DeferredWindowActions(a => callbacks.Enqueue(a), () => minimized++, () => restored++))
++{
++    actions.Minimize(); actions.Minimize();
++    Check(minimized == 0 && callbacks.Count == 1, "Closing only queues one minimize after returning");
++    callbacks.Dequeue()(); Check(minimized == 1, "queued minimize executes once");
++    actions.Minimize(); actions.Restore(); callbacks.Dequeue()();
++    Check(minimized == 1 && restored == 1, "restore supersedes pending minimize without losing reopen");
++    actions.Restore(); actions.Minimize(); callbacks.Dequeue()();
++    Check(minimized == 2 && restored == 1, "latest explicit minimize wins a pending restore");
++    actions.Minimize(); actions.Dispose(); callbacks.Dequeue()(); actions.Restore();
++    Check(minimized == 2 && callbacks.Count == 0, "real exit or disposal cancels queued changes");
++}
++Check(WindowLifetimePolicy.Close(false, true) == WindowCloseAction.MinimizeToTaskbar &&
++    WindowLifetimePolicy.Close(false, false) == WindowCloseAction.MinimizeToTaskbar &&
++    WindowLifetimePolicy.Close(true, false) == WindowCloseAction.Exit, "X keeps taskbar fallback and explicit exit remains possible");
++// SDK layout is an independent fixture, not computed from the structure under test.
++if (IntPtr.Size == 8)
++    Check(Marshal.SizeOf<WindowsMemorySampler.ProcessMemoryCountersEx2>() == 96 &&
++        Marshal.OffsetOf<WindowsMemorySampler.ProcessMemoryCountersEx2>("WorkingSetSize").ToInt32() == 16 &&
++        Marshal.OffsetOf<WindowsMemorySampler.ProcessMemoryCountersEx2>("PrivateUsage").ToInt32() == 72 &&
++        Marshal.OffsetOf<WindowsMemorySampler.ProcessMemoryCountersEx2>("PrivateWorkingSetSize").ToInt32() == 80,
++        "PSAPI EX2 x64 size and offsets match Windows SDK fixture");
++var handle = new IntPtr(123); int calls = 0;
++bool Full(IntPtr h, ref WindowsMemorySampler.ProcessMemoryCountersEx2 c, uint size)
++{
++    calls++; Check(h == handle && size == Marshal.SizeOf<WindowsMemorySampler.ProcessMemoryCountersEx2>(), "same borrowed handle and explicit EX2 size");
++    c.WorkingSetSize = 400; c.PrivateWorkingSetSize = 200; c.PrivateUsage = 900; return true;
++}
++var sample = WindowsMemorySampler.Capture(handle, Full);
++Check(calls == 1 && sample.WorkingSetBytes == 400 && sample.PrivateWorkingSetBytes == 200 && sample.PrivateCommitBytes == 900,
++    "one read yields all three native counters without another process open");
++bool PrefixOnly(IntPtr h, ref WindowsMemorySampler.ProcessMemoryCountersEx2 c, uint size)
++{ c.WorkingSetSize = 400; c.PrivateUsage = 900; return true; }
++sample = WindowsMemorySampler.Capture(handle, PrefixOnly);
++Check(sample.WorkingSetAvailable && !sample.PrivateWorkingSetAvailable && sample.PrivateCommitBytes == 900,
++    "success with only EX prefix cannot invent zero private WS");
++calls = 0;
++bool Fallback(IntPtr h, ref WindowsMemorySampler.ProcessMemoryCountersEx2 c, uint size)
++{
++    calls++; if (calls == 1) return false;
++    Check(size == (IntPtr.Size == 8 ? 80 : 44), "fallback uses SDK EX byte count");
++    c.WorkingSetSize = 123; c.PrivateUsage = 456; c.PrivateWorkingSetSize = 0; return true;
++}
++sample = WindowsMemorySampler.Capture(handle, Fallback);
++Check(calls == 2 && sample.WorkingSetBytes == 123 && !sample.PrivateWorkingSetAvailable && sample.PrivateCommitBytes == 456,
++    "EX fallback retains total WS and commit without false private zero");
++bool Denied(IntPtr h, ref WindowsMemorySampler.ProcessMemoryCountersEx2 c, uint size) => false;
++sample = WindowsMemorySampler.Capture(handle, Denied);
++Check(!sample.WorkingSetAvailable && !sample.PrivateWorkingSetAvailable && !sample.PrivateCommitAvailable && sample.SampledUtc != default,
++    "denied acquisition stays unavailable with its attempted sample time");
++sample = WindowsMemorySampler.Capture(IntPtr.Zero, Full);
++Check(!sample.WorkingSetAvailable && calls == 2, "invalid handle cannot reach the counter reader");
++bool NativeZero(IntPtr h, ref WindowsMemorySampler.ProcessMemoryCountersEx2 c, uint size)
++{ c.WorkingSetSize = c.PrivateWorkingSetSize = c.PrivateUsage = 0; return true; }
++sample = WindowsMemorySampler.Capture(handle, NativeZero);
++Check(sample.WorkingSetAvailable && sample.PrivateWorkingSetAvailable && sample.PrivateWorkingSetBytes == 0, "native explicit zero is measured");
++bool NativeInvalid(IntPtr h, ref WindowsMemorySampler.ProcessMemoryCountersEx2 c, uint size)
++{ c.WorkingSetSize = 100; c.PrivateWorkingSetSize = 101; c.PrivateUsage = 900; return true; }
++sample = WindowsMemorySampler.Capture(handle, NativeInvalid);
++Check(sample.WorkingSetAvailable && !sample.PrivateWorkingSetAvailable && sample.PrivateCommitBytes == 900,
++    "native private WS above total cannot become a valid private counter");
++if (IntPtr.Size == 8)
++{
++    bool Overflow(IntPtr h, ref WindowsMemorySampler.ProcessMemoryCountersEx2 c, uint size)
++    { c.WorkingSetSize = nuint.MaxValue; c.PrivateWorkingSetSize = 1; c.PrivateUsage = 900; return true; }
++    sample = WindowsMemorySampler.Capture(handle, Overflow);
++    Check(!sample.WorkingSetAvailable && !sample.PrivateWorkingSetAvailable && sample.PrivateCommitAvailable && sample.PrivateCommitBytes == 900,
++        "unsigned overflow invalidates resident counters without losing valid commit");
++}
++if (OperatingSystem.IsWindows())
++{
++    var own = System.Diagnostics.Process.GetCurrentProcess();
++    var batch = new WindowsLiveCpuSampler().Capture(new[] { own.Id });
++    Check(batch.Memory.TryGetValue(own.Id, out var m) && m.StartUtc == own.StartTime.ToUniversalTime() &&
++        m.WorkingSetAvailable && m.WorkingSetBytes > 0 && m.CapturedUtc != default,
++        "WINDOWS owned-process native CPU/RAM batch identifies exact creation and samples memory");
++}
++else Console.WriteLine("NOT RUN: real Windows handles, PSAPI, tray, WPF and Task Manager comparison (Linux host).");
++Console.WriteLine("R24 live metrics and window command regressions complete.");
+diff --git a/progetto/tests/ProcessLens.LiveMetricsUiTests/ProcessLens.LiveMetricsUiTests.csproj b/progetto/tests/ProcessLens.LiveMetricsUiTests/ProcessLens.LiveMetricsUiTests.csproj
+new file mode 100644
+index 0000000..0182c44
+--- /dev/null
++++ b/progetto/tests/ProcessLens.LiveMetricsUiTests/ProcessLens.LiveMetricsUiTests.csproj
+@@ -0,0 +1,4 @@
++<Project Sdk="Microsoft.NET.Sdk">
++ <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
++ <ItemGroup><ProjectReference Include="../../src/ProcessLens.App/ProcessLens.App.csproj"/></ItemGroup>
++</Project>
+diff --git a/progetto/tests/ProcessLens.LiveMetricsUiTests/Program.cs b/progetto/tests/ProcessLens.LiveMetricsUiTests/Program.cs
+new file mode 100644
+index 0000000..356cf22
+--- /dev/null
++++ b/progetto/tests/ProcessLens.LiveMetricsUiTests/Program.cs
+@@ -0,0 +1,56 @@
++using System.Diagnostics;
++using System.Reflection;
++using System.Windows;
++using System.Windows.Controls;
++using System.Windows.Threading;
++using ProcessLens.App;
++using ProcessLens.Core;
++using ProcessLens.Semantics;
++
++internal static class Program
++{
++    static void Check(bool ok, string label)
++    { if (!ok) throw new Exception("FAIL R24 WPF " + label); Console.WriteLine("PASS R24 WPF " + label); }
++    static void Set(object target, string field, object value) =>
++        typeof(MainWindow).GetField(field, BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(target, value);
++    static void Drain()
++    {
++        var frame = new DispatcherFrame();
++        Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() => frame.Continue = false));
++        Dispatcher.PushFrame(frame);
++    }
++    [STAThread]
++    public static void Main()
++    {
++        _ = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
++        var main = new MainWindow(); // no Loaded, no polling, no tray registration.
++        var start = DateTime.UtcNow.AddMinutes(-1);
++        var process = new ProcessSnapshot { Pid = 42, ParentPid = 1, Name = "fixture.exe", StartTime = start,
++            PrivateWorkingSetBytes = 900, PrivateWorkingSetAvailable = true, WorkingSetBytes = 1000, WorkingSetAvailable = true };
++        var row = new ProcessRow(process, new ProcessIntelligenceAnalyzer().Analyze(process));
++        var list = new List<ProcessRow> { row };
++        var processList = (ListBox)main.FindName("ProcessList"); processList.ItemsSource = list;
++        Set(main, "_allRows", list); Set(main, "_currentDetailRow", row); Set(main, "_selectedPid", (int?)42!);
++        var changes = new HashSet<string>(); row.PropertyChanged += (_, e) => changes.Add(e.PropertyName!);
++        double now = Stopwatch.GetTimestamp() / (double)Stopwatch.Frequency;
++        var sample = new LiveMemorySample(42, start, 4 * 1048576, true, 2 * 1048576, true, 9 * 1048576, true, now, DateTime.UtcNow);
++        main.ApplyLiveMemorySamples(new Dictionary<int, LiveMemorySample> { [42] = sample }); Drain();
++        Check(ReferenceEquals(processList.ItemsSource, list) && ReferenceEquals(list[0], row), "refresh retains list and row identity");
++        Check(row.MemoryDisplayMb == 2 && changes.Contains("MemoryDisplayText") && changes.Contains("MemoryShortLabel"), "bindings notified without metadata rebuild");
++        Check(((SelectableText)main.FindName("DetailMemoryText")).Text == row.MemoryDisplayText &&
++            ((SelectableText)main.FindName("DetailPrivateCommitText")).Text.Contains("9"), "selected detail updates physical RAM and separate commit");
++        main.ApplyLiveMemorySamples(new Dictionary<int, LiveMemorySample> { [42] = sample with { StartUtc = start.AddSeconds(1) } });
++        Check(row.MemoryDisplayText == "N/D" && ((SelectableText)main.FindName("DetailMemoryText")).Text == "N/D", "recycled PID invalidates list and selected detail");
++        main.ApplyLiveMemorySamples(new Dictionary<int, LiveMemorySample> { [42] = sample with { CapturedAtMonotonicSeconds = now - 7 } });
++        Check(row.MemoryDisplayText == "N/D", "expired sample is not republished");
++        main.ApplyLiveMemorySamples(new Dictionary<int, LiveMemorySample>());
++        Check(((SelectableText)main.FindName("DetailWorkingSetText")).Text == "N/D", "missing acquisition clears selected counters");
++        int minimizeRequests = 0; main.MinimizeRequested += () => minimizeRequests++;
++        var button = (Button)main.FindName("MinimizeWindowButton");
++        Check(button.Content.ToString() == "Riduci a icona" && button.Style is not null, "explicit styled minimize action exists");
++        button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
++        Check(minimizeRequests == 1, "header click routes to tray controller rather than closing window");
++        main.Close(); Application.Current.Shutdown();
++        Console.WriteLine("R24 WPF fixture complete: no live acquisition, user programs, clipboard or tray icon. Real shell/DPI verification is separate.");
++    }
++}
+diff --git a/progetto/tests/ProcessLens.RefreshPolicyTests/Program.cs b/progetto/tests/ProcessLens.RefreshPolicyTests/Program.cs
+index 38ab47e..30d931b 100644
+--- a/progetto/tests/ProcessLens.RefreshPolicyTests/Program.cs
++++ b/progetto/tests/ProcessLens.RefreshPolicyTests/Program.cs
+@@ -20,3 +20,5 @@ Check(MonitorRefreshPolicy.ForProcesses(null, null) == MonitorRefreshPolicy.Norm
+ Check(MonitorRefreshPolicy.ForProcesses(double.NaN, double.NaN) == MonitorRefreshPolicy.NormalProcessInterval,
+     "invalid counters ignored");
+ Console.WriteLine("Refresh policy checks passed.");
++
++Check(MonitorRefreshPolicy.LiveMetricsInterval == TimeSpan.FromSeconds(1), "R24 live counters have their own one-second interval");
+diff --git a/progetto/tests/check-copy-ui-r10.ps1 b/progetto/tests/check-copy-ui-r10.ps1
+index fd84e0e..e6342b0 100644
+--- a/progetto/tests/check-copy-ui-r10.ps1
++++ b/progetto/tests/check-copy-ui-r10.ps1
+@@ -72,8 +72,8 @@ foreach ($token in @('FontSize = 12.5', 'Padding = new Thickness(10)', 'Margin =
+ }
+ Write-Host 'PASS R10 R6 audit layout: timestamp/stage/message cards, spacing, append and original copy wired. Source checks only.'
+ 
+-foreach ($token in @('Interval = TimeSpan.FromSeconds(2)', 'generation != _cpuGeneration',
++foreach ($token in @('Interval = MonitorRefreshPolicy.LiveMetricsInterval', 'generation != _cpuGeneration',
+     'RecentCpu(int pid)', 'row.UpdateCpu(', 'CopySelfResourcesButton_Click')) {
+     if (-not $code.Contains($token)) { throw ('FAIL R10 R7 resources: ' + $token) }
+ }
+-Write-Host 'PASS R10 R7 resources: CPU tick, stale generation, sample age and self-resource copy wired. Source checks only.'
++Write-Host 'PASS R10 R7 resources: CPU/RAM tick, stale generation, sample age and self-resource copy wired. Source checks only.'
+diff --git a/progetto/tests/check-ui-readability.ps1 b/progetto/tests/check-ui-readability.ps1
+index 3decdae..c8dbd6e 100644
+--- a/progetto/tests/check-ui-readability.ps1
++++ b/progetto/tests/check-ui-readability.ps1
+@@ -29,7 +29,7 @@ if (-not $content.Contains('Text="{Binding MemoryShortLabel}"') -or
+     throw 'FAIL UI readability: compact memory label with full metric explanation missing.'
+ }
+ if (-not $content.Contains('x:Name="DetailMemoryLabel" Text="WS PRIVATO"') -or
+-    -not $windowSource.Contains('DetailMemoryLabel.ToolTip = p.MemoryDescription;')) {
++    -not $windowSource.Contains('DetailMemoryLabel.ToolTip = p.MemoryDescription')) {
+     throw 'FAIL UI readability: memory metric details are not labelled accessibly.'
+ }
+ if (-not $content.Contains('TextWrapping="Wrap" MinHeight="27"') -or
+diff --git a/supporto/avvia.ps1 b/supporto/avvia.ps1
+index 2de8c98..2aa4775 100644
+--- a/supporto/avvia.ps1
++++ b/supporto/avvia.ps1
+@@ -16,9 +16,9 @@ function Resolve-ProcessLensLaunch([string] $Root, [string] $UserLocalAppData) {
+         if (Test-DesktopRuntime8 $candidate) { $runtime = $candidate; break }
+     }
+     $exe = Join-Path $Root 'progetto/publish/win-x64/ProcessLens.exe'
+-    $receipt = Join-Path $Root 'supporto/build-r23r1.ok'
++    $receipt = Join-Path $Root 'supporto/build-r24.ok'
+     if ((Test-Path -LiteralPath $exe -PathType Leaf) -and (Test-Path -LiteralPath $receipt -PathType Leaf) -and
+-        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R23-R1-raw-input') {
++        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R24-live-memory') {
+         return [PSCustomObject]@{ Kind='Exe'; Entry=$exe; Runtime=$runtime }
+     }
+     return $null
+@@ -47,14 +47,14 @@ function Invoke-ProcessLensBuild([string] $Root, [string] $UserLocalAppData) {
+     if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
+         throw 'SDK .NET non trovato. Usa lo SDK 8 gia installato oppure quello della precedente installazione R20. Nessun download automatico.'
+     }
+-    Write-Host 'Primo avvio R23 R1: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
++    Write-Host 'Primo avvio R24: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
+     Write-Host 'Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.'
+     Push-Location -LiteralPath $project
+     try { & (Join-Path $project 'build-dashboard.ps1') }
+     finally { Pop-Location }
+     $exe = Join-Path $project 'publish/win-x64/ProcessLens.exe'
+     if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { throw 'Compilazione senza eseguibile R23. Avvio interrotto.' }
+-    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r23r1.ok') -Value 'ProcessLens-R23-R1-raw-input' -Encoding ASCII
++    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r24.ok') -Value 'ProcessLens-R24-live-memory' -Encoding ASCII
+ }
+ function Quote-LaunchArgument([string] $Value) {
+     if ($Value.Contains('"') -or $Value -match "[`r`n]") { throw 'Percorso non valido.' }

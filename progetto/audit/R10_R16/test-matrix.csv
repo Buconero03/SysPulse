@@ -1,0 +1,12 @@
+test,kind,status,details
+NativeNetworkTests,direct Roslyn + .NET 8 Linux,PASS,40 assertions; synthetic XML and owned fake API; no live Windows acquisition
+WindowsComponentTests,direct Roslyn + .NET 8 Linux,PASS,58 assertions
+SystemProcessTests,direct Roslyn + .NET 8 Linux,PASS PORTABLE,22 assertions; live Windows branch skipped
+NetworkDeviceTests,direct Roslyn + .NET 8 Linux,PASS,81 assertions
+Changed C# syntax,Roslyn syntax parser,PASS,Six files; not WPF type or markup compilation
+NetworkUiTests including native pane,WPF injected fixture,NOT EXECUTED,"Lazy activation, results, table copy, coalescing, unavailable log and late-result rejection supplied"
+Native API calls and ABI on Windows,live Windows,NOT EXECUTED,"AuditQuerySystemPolicy, EvtQuery, EvtNext, EvtRender require Windows"
+Complete build and PowerShell syntax,Windows pipeline,NOT EXECUTED,Run build-dashboard.ps1
+DPI and GUI RAM/CPU measurements,manual Windows,NOT EXECUTED,No memory saving or total-duration guarantee asserted
+Current R16 source and evidence guards,Python source/XML/mutations,PASS,149 checks; no C# execution
+R15 to R16 patch replay,git apply and byte comparison,PASS,24 changed or added files; audit metadata and manifest excluded

@@ -1,0 +1,31 @@
+{
+  "baseline_sha256": "0ad04666380c489391c39230aa3998969358989fa69aaa7a2ed604f6be1b7f36",
+  "changed_production_and_test_files": [
+    "src/ProcessLens.App/App.xaml.cs",
+    "src/ProcessLens.App/CopyTestVisibility.cs",
+    "src/ProcessLens.App/MainWindow.xaml",
+    "src/ProcessLens.App/MainWindow.xaml.cs",
+    "src/ProcessLens.App/MemoryObservationBuffer.cs",
+    "src/ProcessLens.App/ProcessLens.App.csproj",
+    "src/ProcessLens.App/ProcessRow.cs",
+    "src/ProcessLens.App/TrayWindowController.cs",
+    "src/ProcessLens.App/WindowLifetimePolicy.cs",
+    "src/ProcessLens.Core/LiveMemorySample.cs",
+    "src/ProcessLens.Core/MonitorRefreshPolicy.cs",
+    "src/ProcessLens.Core/ProcessSnapshot.cs",
+    "src/ProcessLens.Windows/WindowsLiveCpuSampler.cs",
+    "src/ProcessLens.Windows/WindowsMemorySampler.cs",
+    "src/ProcessLens.Windows/WindowsProcessCollector.cs",
+    "tests/ProcessLens.LiveMetricsTests/ProcessLens.LiveMetricsTests.csproj",
+    "tests/ProcessLens.LiveMetricsTests/Program.cs",
+    "tests/ProcessLens.LiveMetricsUiTests/ProcessLens.LiveMetricsUiTests.csproj",
+    "tests/ProcessLens.LiveMetricsUiTests/Program.cs",
+    "tests/ProcessLens.RefreshPolicyTests/Program.cs",
+    "tests/check-copy-ui-r10.ps1",
+    "tests/check-ui-readability.ps1"
+  ],
+  "protected_components": "Guardian, MemoryAgent, profiler, RAM monitor and other native acquisitions BYTE IDENTICAL TO R23 R1; only the three listed native memory/CPU files change",
+  "new_dependencies": 0,
+  "new_binary": "NOT INCLUDED; full Windows build required once",
+  "WPF_runtime_DPI_UAC_RAM": "NOT EXECUTED / NOT MEASURED"
+}

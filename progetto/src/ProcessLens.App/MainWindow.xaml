@@ -1,0 +1,1235 @@
+<Window x:Class="ProcessLens.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ProcessLens.App"
+        Title="ProcessLens"
+        Width="1180"
+        Height="800"
+        MinWidth="950"
+        MinHeight="680"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F6F8"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        FontFamily="Segoe UI"
+        Foreground="#202124">
+
+    <Window.Resources>
+        <Style x:Key="PanelStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E2E5E9"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+        </Style>
+
+        <Style x:Key="SectionLabel" TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+        <Style x:Key="SelectableSectionLabel" TargetType="local:SelectableText">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+
+        <Style x:Key="DetailCard" TargetType="Border">
+            <Setter Property="Background" Value="#F8F9FB"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="13"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <!-- Text content wraps inside the native WPF button without a fixed height. -->
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="MinHeight" Value="36"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="20"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="FilterButtonStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="MinHeight" Value="36"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="BorderBrush" Value="#D9DDE3"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="13,7"/>
+            <Setter Property="Margin" Value="0,0,8,6"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="RootBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="RootBorder" Property="Background" Value="#F1F5F9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ProcessListItemStyle" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,0,0,7"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <EventSetter Event="PreviewMouseRightButtonDown" Handler="ProcessItem_RightMouseDown"/>
+            <EventSetter Event="Loaded" Handler="ProcessItem_Loaded"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border x:Name="ItemBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="9"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#F8FAFC"/>
+                                <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#C9D2DE"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#EAF2FF"/>
+                                <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#77A7E8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ServiceListItemStyle" TargetType="ListViewItem">
+            <EventSetter Event="PreviewMouseRightButtonDown" Handler="ServiceItem_RightMouseDown"/>
+            <EventSetter Event="MouseDoubleClick" Handler="ServiceItem_MouseDoubleClick"/>
+            <EventSetter Event="KeyDown" Handler="ServiceItem_KeyDown"/>
+            <EventSetter Event="Loaded" Handler="ServiceItem_Loaded"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,0,0,7"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border x:Name="ServiceItemBorder" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="9" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ServiceItemBorder" Property="Background" Value="#F8FAFC"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ServiceItemBorder" Property="Background" Value="#EAF2FF"/>
+                                <Setter TargetName="ServiceItemBorder" Property="BorderBrush" Value="#77A7E8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+                            <DataTemplate x:Key="ProcessCardTemplate">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="44"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <!-- Compact metrics reserve their own bounded columns. -->
+                                        <ColumnDefinition Width="72"/>
+                                        <ColumnDefinition Width="98"/>
+                                        <ColumnDefinition Width="84"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0"
+                                            Width="34"
+                                            Height="34"
+                                            CornerRadius="7"
+                                            Background="#F3F5F8"
+                                            BorderBrush="#E1E5EA"
+                                            BorderThickness="1"
+                                            VerticalAlignment="Top"
+                                            Margin="0,1,10,0">
+                                        <Grid>
+                                            <TextBlock Text="▣"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="#A5ADB8"
+                                                       FontSize="15"/>
+                                            <Image Source="{Binding IconSource}" ToolTip="{Binding IconDescription}"
+                                                   Width="26"
+                                                   Height="26"
+                                                   Stretch="Uniform"
+                                                   SnapsToDevicePixels="True"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Nome e badge hanno righe proprie; troncamento soltanto con tooltip. -->
+                                    <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                        <TextBlock Text="{Binding FriendlyName}" FontSize="15" FontWeight="SemiBold"
+                                                   TextTrimming="CharacterEllipsis" ToolTip="{Binding FriendlyName}"/>
+                                        <WrapPanel Margin="0,4,0,0">
+                                            <Border Background="#EEF1F5" CornerRadius="5" Padding="6,2" Margin="0,0,6,3">
+                                                <TextBlock Text="{Binding CategoryLabel}" FontSize="10" FontWeight="SemiBold" Foreground="#5B6470"/>
+                                            </Border>
+                                            <Border Background="#EAF7EE" CornerRadius="5" Padding="6,2" Margin="0,0,0,3">
+                                                <TextBlock Text="{Binding DetectionLabel}" FontSize="10" FontWeight="SemiBold" Foreground="#27613B"/>
+                                            </Border>
+                                        </WrapPanel>
+                                        <TextBlock Text="{Binding Activity}" FontSize="13" FontWeight="SemiBold"
+                                                   Foreground="#303846" Margin="0,3,0,0" TextWrapping="Wrap"
+                                                   ToolTip="{Binding Activity}"/>
+                                        <TextBlock Text="{Binding ParentContext}" FontSize="11" Foreground="#7A8491"
+                                                   Margin="0,3,0,0" TextWrapping="Wrap"/>
+                                        <WrapPanel Margin="0,4,0,0">
+                                            <TextBlock Text="{Binding StartTimeLabel}" FontSize="11" FontWeight="SemiBold"
+                                                       Foreground="#46566B" Margin="0,0,12,2"/>
+                                            <TextBlock Text="{Binding UptimeLabel}" FontSize="11" Foreground="#46566B"
+                                                       Margin="0,0,0,2"/>
+                                        </WrapPanel>
+                                    </StackPanel>
+
+                                    <!-- A short visible label and full tooltip avoid overlap at compact widths. -->
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,8,0">
+                                        <TextBlock Text="CPU" FontSize="10" Foreground="#7A8491" TextAlignment="Right"
+                                                   ToolTip="Quota della CPU complessiva attribuita al processo."/>
+                                        <TextBlock Text="{Binding CpuDisplay}" FontSize="15" FontWeight="SemiBold"
+                                                   TextAlignment="Right" TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,8,0">
+                                        <TextBlock Text="{Binding MemoryShortLabel}" FontSize="10" Foreground="#7A8491"
+                                                   TextAlignment="Right" TextWrapping="Wrap" ToolTip="{Binding MemoryDescription}"/>
+                                        <TextBlock Text="{Binding MemoryDisplayText}" ToolTip="{Binding MemoryDescription}"
+                                                   FontSize="15" FontWeight="SemiBold" TextAlignment="Right"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                        <TextBlock Text="{Binding NetworkShortLabel}" FontSize="10" Foreground="#7A8491"
+                                                   TextAlignment="Right" TextWrapping="Wrap" ToolTip="{Binding NetworkDescription}"/>
+                                        <TextBlock Text="{Binding NetworkDisplayText}" ToolTip="{Binding NetworkDescription}"
+                                                   FontSize="15" FontWeight="SemiBold" TextAlignment="Right"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+
+        <DataTemplate x:Key="ProcessMemberTemplate">
+            <Grid Margin="12,0,0,0" ToolTip="{Binding Process.ExecutablePath}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="26"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="68"/>
+                    <ColumnDefinition Width="92"/>
+                    <ColumnDefinition Width="76"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Source="{Binding IconSource}" ToolTip="{Binding IconDescription}"
+                       Width="20" Height="20" Stretch="Uniform" SnapsToDevicePixels="True"
+                       VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                    <TextBlock Text="{Binding FriendlyName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding MemberLabel}" FontSize="11" TextWrapping="Wrap" Foreground="#667085"/>
+                </StackPanel>
+                <TextBlock Grid.Column="2" Text="{Binding CpuDisplay}" TextAlignment="Right" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <StackPanel Grid.Column="3" VerticalAlignment="Center" Margin="0,0,6,0">
+                    <TextBlock Text="{Binding MemoryShortLabel}" FontSize="9" TextAlignment="Right"/>
+                    <TextBlock Text="{Binding MemoryDisplayText}" TextAlignment="Right" ToolTip="{Binding MemoryDescription}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="4" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding NetworkShortLabel}" FontSize="9" TextAlignment="Right" Foreground="#667085"/>
+                    <TextBlock Text="{Binding NetworkDisplayText}" TextAlignment="Right" ToolTip="{Binding NetworkDescription}"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+        <Style x:Key="ApplicationGroupStyle" TargetType="{x:Type GroupItem}">
+            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="{x:Type GroupItem}">
+                <Expander IsExpanded="{Binding Name.IsExpanded, Mode=TwoWay}" Margin="0,0,0,7" Background="#F4F7FC">
+                    <Expander.Header><Grid ToolTip="{Binding Name.Description}" Margin="2,8,2,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="28"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="72"/>
+                            <ColumnDefinition Width="98"/>
+                            <ColumnDefinition Width="84"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Source="{Binding Name.IconSource}" ToolTip="{Binding Name.IconDescription}" Width="22" Height="22"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Name.Title}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="5,0,6,0"/>
+                        <StackPanel Grid.Column="2" Margin="0,0,6,0"><TextBlock Text="CPU" FontSize="9" TextAlignment="Right"/><TextBlock Text="{Binding Name.CpuDisplay}" TextWrapping="Wrap" FontWeight="SemiBold" TextAlignment="Right"/></StackPanel>
+                        <StackPanel Grid.Column="3" Margin="0,0,6,0"><TextBlock Text="{Binding Name.MemoryLabel}" TextWrapping="Wrap" FontSize="10" TextAlignment="Right"/><TextBlock Text="{Binding Name.MemoryDisplayText}" TextWrapping="Wrap" FontWeight="SemiBold" TextAlignment="Right"/></StackPanel>
+                        <StackPanel Grid.Column="4"><TextBlock Text="{Binding Name.NetworkLabel}" TextWrapping="Wrap" FontSize="9" TextAlignment="Right"/><TextBlock Text="{Binding Name.NetworkDisplayText}" ToolTip="{Binding Name.NetworkDescription}" TextWrapping="Wrap" FontWeight="SemiBold" TextAlignment="Right"/></StackPanel>
+                    </Grid></Expander.Header>
+                    <ItemsPresenter/>
+                </Expander>
+            </ControlTemplate></Setter.Value></Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header: title + search -->
+        <Grid Grid.Row="0" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="330"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="ProcessLens" FontSize="24" FontWeight="SemiBold"/>
+                <local:SelectableText Text="Dati Windows e analisi del processo" ToolTip="La X riduce la finestra; per riaprirla usa la barra applicazioni o Mostra ProcessLens nell’icona."
+                           TextWrapping="Wrap"
+                           Margin="1,3,0,0"
+                           Foreground="#667085"
+                           FontSize="12"/>
+            </StackPanel>
+
+            <WrapPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,8,0" MaxWidth="310">
+                <Button x:Name="MinimizeWindowButton" Content="Nascondi accanto all’orologio" Margin="2"
+                        ToolTip="Nasconde la finestra e il log. Per riaprire: clic sull’icona ProcessLens accanto all’orologio, anche nel menu ^. Il trattino in alto riduce invece nella barra delle applicazioni."
+                        Style="{StaticResource ActionButtonStyle}" Click="MinimizeWindow_Click"/>
+                <Button x:Name="WindowLogButton" Content="Log finestra" Margin="2" Style="{StaticResource ActionButtonStyle}" Click="WindowLog_Click" ToolTip="Mostra e copia i passaggi di riduzione e ripristino della finestra."/>
+                <Button x:Name="ExitApplicationButton" Content="Esci" Margin="2" Style="{StaticResource ActionButtonStyle}" Click="ExitApplication_Click" ToolTip="Chiude ProcessLens, senza ridurlo a icona."/>
+                <Button x:Name="NewTaskButton" Content="Esegui nuova attività" Margin="2"
+                        Style="{StaticResource ActionButtonStyle}" Click="NewTask_Click"/>
+            </WrapPanel>
+            <Border x:Name="SearchSurface" Grid.Column="2" Style="{StaticResource PanelStyle}" Padding="12,9" MouseLeftButtonDown="SearchSurface_MouseLeftButtonDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Cerca" FontWeight="SemiBold" Foreground="#667085" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBox x:Name="SearchBox"
+                             Grid.Column="1"
+                             Height="34"
+                             BorderThickness="1" BorderBrush="#98A2B3" Padding="6,0"
+                             Background="White" Foreground="#101828" CaretBrush="#175CD3"
+                             FontSize="14"
+                             VerticalContentAlignment="Center"
+                             ToolTip="Cerca per nome visualizzato, eseguibile o PID esatto. Ctrl+F per scrivere."
+                             TextChanged="SearchBox_TextChanged"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Barra adattiva: navigazione, filtri e indicatori su righe indipendenti. -->
+        <Border Grid.Row="1" Style="{StaticResource PanelStyle}" Padding="10,7" Margin="0,0,0,8">
+            <StackPanel>
+                <WrapPanel Orientation="Horizontal">
+                    <Button x:Name="NavProcessesButton" Content="Processi" Style="{StaticResource FilterButtonStyle}" Click="NavProcessesButton_Click"/>
+                    <Button x:Name="NavSystemButton" Content="Sistema Windows" Style="{StaticResource FilterButtonStyle}" Click="NavSystemButton_Click"/>
+                    <Button x:Name="NavServicesButton" Content="Servizi" Style="{StaticResource FilterButtonStyle}" Click="NavServicesButton_Click"/>
+                    <Button x:Name="NavGuardianButton" Content="Guardian" Style="{StaticResource FilterButtonStyle}" Click="NavGuardianButton_Click"/>
+                    <Button x:Name="NavNetworkButton" Content="Rete" Style="{StaticResource FilterButtonStyle}" Click="NavNetworkButton_Click"/>
+                    <Button x:Name="NavMemoryButton" Content="Memoria RAM" Style="{StaticResource FilterButtonStyle}" Click="NavMemoryButton_Click"/>
+                    <Border Width="1" Background="#D9DDE3" Margin="2,4,10,4"/>
+                    <WrapPanel x:Name="ProcessFilters" Orientation="Horizontal">
+                    <Button x:Name="FilterAllButton" Content="Tutti" Style="{StaticResource FilterButtonStyle}" Click="FilterAllButton_Click"/>
+                    <Button x:Name="FilterAppsButton" Content="App" Style="{StaticResource FilterButtonStyle}" Click="FilterAppsButton_Click"/>
+                    <Button x:Name="FilterDevButton" Content="Sviluppo" Style="{StaticResource FilterButtonStyle}" Click="FilterDevButton_Click"/>
+                    <Button x:Name="FilterWindowsButton" Content="Windows" Style="{StaticResource FilterButtonStyle}" Click="FilterWindowsButton_Click"/>
+                    <Button x:Name="FilterBackgroundButton" Content="Secondari" ToolTip="Categoria stimata dalle regole; non indica inattività." Style="{StaticResource FilterButtonStyle}" Click="FilterBackgroundButton_Click"/>
+                    <Button x:Name="FilterWslButton" Content="WSL" Style="{StaticResource FilterButtonStyle}" Click="FilterWslButton_Click"/>
+                    </WrapPanel>
+                    <WrapPanel x:Name="ServiceFilters" Orientation="Horizontal" Visibility="Collapsed">
+                        <Button x:Name="ServiceFilterAllButton" Content="Tutti" Style="{StaticResource FilterButtonStyle}" Click="ServiceFilterAll_Click"/>
+                        <Button x:Name="ServiceFilterRunningButton" Content="Attivi" Style="{StaticResource FilterButtonStyle}" Click="ServiceFilterRunning_Click"/>
+                        <Button x:Name="ServiceFilterStoppedButton" Content="Arrestati" Style="{StaticResource FilterButtonStyle}" Click="ServiceFilterStopped_Click"/>
+                    </WrapPanel>
+                </WrapPanel>
+                <!-- Gli indicatori non possono piu' sovrapporsi ai filtri. -->
+                <WrapPanel Margin="0,11,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <StackPanel x:Name="ProcessDetectedCounter" Orientation="Horizontal" Margin="0,0,17,5">
+                        <TextBlock Text="Rilevati: " Foreground="#667085"
+                                   ToolTip="Processi dell’ultimo rilevamento. Gli avvii brevi possono sfuggire."/>
+                        <local:SelectableText x:Name="ProcessCountText" Text="-" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <StackPanel x:Name="ProcessVisibleCounter" Orientation="Horizontal" Margin="0,0,17,5">
+                        <TextBlock Text="Mostrati: " Foreground="#667085" ToolTip="Righe dopo filtri e ricerca."/>
+                        <local:SelectableText x:Name="VisibleCountText" Text="-" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,17,5">
+                        <TextBlock Text="CPU sistema: " Foreground="#667085"/>
+                        <local:SelectableText x:Name="SystemCpuText" Text="In attesa…" FontWeight="Bold" Foreground="#124E87"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,17,5">
+                        <TextBlock Text="Media fino a 30 s: " Foreground="#667085"/>
+                        <local:SelectableText x:Name="SystemCpuAverageText" Text="-" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,17,5">
+                        <TextBlock Text="CPU logici: " Foreground="#667085"/>
+                        <local:SelectableText x:Name="LogicalCpuText" Text="-" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,17,5"
+                                ToolTip="RAM fisica in uso / totale. Aggiornamento con il campione CPU; sospeso quando la finestra è ridotta.">
+                        <TextBlock Text="RAM sistema: " Foreground="#667085"/>
+                        <local:SelectableText x:Name="SystemRamText" Text="In attesa…" FontWeight="Bold" Foreground="#124E87"/>
+                    </StackPanel>
+
+                </WrapPanel>
+                <Expander x:Name="GuiResourcesExpander" Header="Risorse di ProcessLens · CPU e RAM della GUI" IsExpanded="False" Margin="0,3,0,0">
+                <DockPanel Margin="0,7,0,0" LastChildFill="True">
+                    <Button x:Name="CopySelfResourcesButton" IsEnabled="False" DockPanel.Dock="Right" Content="Copia risorse GUI"
+                            Style="{StaticResource ActionButtonStyle}" Margin="12,0,0,0"
+                            Click="CopySelfResourcesButton_Click"/>
+                    <local:SelectableText x:Name="SelfResourcesText" Text="Risorse GUI: in attesa del primo campione…"
+                                          FontSize="11" Foreground="#667085" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                </DockPanel>
+                </Expander>
+            </StackPanel>
+        </Border>
+
+        <ContentControl x:Name="GuardianDashboardHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Row="2" Visibility="Collapsed"/>
+        <ContentControl x:Name="MemoryDashboardHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Row="2" Visibility="Collapsed"/>
+
+        <ContentControl x:Name="NetworkDevicesHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Row="2" Visibility="Collapsed"/>
+
+        <ContentControl x:Name="SystemProcessesHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Row="2" Visibility="Collapsed"/>
+
+        <!-- Main area -->
+        <Grid x:Name="ProcessWorkspace" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" MinWidth="420"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="1.25*" MinWidth="400"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Process list -->
+            <Border x:Name="ProcessListPanel" Grid.Column="0" Style="{StaticResource PanelStyle}" Padding="14">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Intestazione a piu' righe: testo descrittivo e ordinamento non si sovrappongono. -->
+                    <StackPanel Margin="2,0,2,12">
+                        <TextBlock Text="Processi" FontSize="20" FontWeight="SemiBold"/>
+                        <local:SelectableText x:Name="ListExplanationText"
+                                   Text="Seleziona un processo per analizzarlo."
+                                   Foreground="#667085" FontSize="12" TextWrapping="Wrap" Margin="0,3,0,6"/>
+                        <WrapPanel Orientation="Horizontal">
+                            <local:SelectableText x:Name="CurrentFilterText" Text="Vista: tutti i processi" Foreground="#667085"
+                                       VerticalAlignment="Center" Margin="0,0,14,4"/>
+                            <TextBlock Text="Ordina" Foreground="#667085" VerticalAlignment="Center" Margin="0,0,7,4"/>
+                            <CheckBox x:Name="GroupApplicationsCheckBox" Content="Raggruppa app" IsChecked="True" Margin="0,0,10,4" VerticalAlignment="Center"
+                                      Checked="GroupApplications_Changed" Unchecked="GroupApplications_Changed" ToolTip="Stesso eseguibile e catena di avvio; espandi per scegliere un PID."/>
+                            <ComboBox x:Name="SortModeComboBox" Width="135" SelectedIndex="0" Margin="0,0,0,4"
+                                      SelectionChanged="SortModeComboBox_SelectionChanged">
+                                <ComboBoxItem Content="Più recenti"/>
+                                <ComboBoxItem Content="Più vecchi"/>
+                                <ComboBoxItem Content="CPU"/>
+                                <ComboBoxItem Content="Memoria"/>
+                                <ComboBoxItem Content="Rete"/>
+                                <ComboBoxItem Content="Nome"/>
+                            </ComboBox>
+                        </WrapPanel>
+                    </StackPanel>
+
+                    <ListView x:Name="ProcessList"
+                              Grid.Row="1"
+                              BorderThickness="0"
+                              Background="Transparent"
+                              SelectionChanged="ProcessList_SelectionChanged"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.VirtualizationMode="Recycling"
+                              VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                              ItemContainerStyle="{StaticResource ProcessListItemStyle}">
+                        <ListView.GroupStyle><GroupStyle ContainerStyle="{StaticResource ApplicationGroupStyle}"/></ListView.GroupStyle>
+                    </ListView>
+                </Grid>
+            </Border>
+
+            <GridSplitter x:Name="ProcessDetailsSplitter" Grid.Column="1" Width="8" HorizontalAlignment="Center"
+                          VerticalAlignment="Stretch" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext"
+                          Background="#D8E1EC" ShowsPreview="True" Focusable="True"
+                          ToolTip="Trascina per dare più spazio all'elenco o ai dettagli; usa le frecce da tastiera."/>
+            <!-- Human-readable details -->
+            <Border Grid.Column="2" Style="{StaticResource PanelStyle}" Padding="12">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <DockPanel Margin="0,0,0,10">
+                        <Button x:Name="ToggleDetailsFocusButton" DockPanel.Dock="Right" Content="Espandi dettagli"
+                                Style="{StaticResource ActionButtonStyle}" Click="ToggleDetailsFocus_Click" Margin="10,0,0,0"
+                                ToolTip="Usa tutta la larghezza della finestra per il processo selezionato; premi Mostra elenco per tornare."/>
+                        <TextBlock Text="Analisi del processo" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                    </DockPanel>
+                <ScrollViewer x:Name="ProcessDetailsScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <TextBlock Text="CPU, memoria, rete e dettagli del processo."
+                                   Foreground="#667085"
+                                   FontSize="12"
+                                   Margin="0,3,0,5"/>
+                        <Button Style="{StaticResource ActionButtonStyle}" Content="Mostra servizi Windows ospitati dal PID" Margin="0,0,0,14"
+                                HorizontalAlignment="Left" Padding="9,6" Click="ProcessShowServices_Click"/>
+
+                        <Border Background="#EEF4FF" BorderBrush="#C9DBF6" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="52"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Width="42" Height="42" CornerRadius="9" Background="White" BorderBrush="#D4E0F2" BorderThickness="1" VerticalAlignment="Top">
+                                    <Grid>
+                                        <TextBlock Text="▣" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#9AA6B5" FontSize="18"/>
+                                        <Image x:Name="DetailProcessIcon" Width="34" Height="34" Stretch="Uniform" SnapsToDevicePixels="True"/>
+                                    </Grid>
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <local:SelectableText x:Name="DetailFriendlyNameText" Text="Nessun processo selezionato" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                    <local:SelectableText x:Name="DetailProcessIdentityText" Text="" Foreground="#5F6B7A" Margin="0,3,0,0" TextWrapping="Wrap"/>
+                                    <local:SelectableText x:Name="DeepInspectionStatusText" Text="" Foreground="#315B8A" FontSize="11" FontWeight="SemiBold" Margin="0,5,0,0" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Expander x:Name="WindowsComponentContextExpander" Header="Componente Windows · ruolo e dati"
+                                  IsExpanded="False" Visibility="Collapsed" Margin="0,0,0,10" Padding="10"
+                                  Background="#F3F7FD" BorderBrush="#D8E4F4" BorderThickness="1">
+                            <StackPanel>
+                                <local:SelectableText x:Name="WindowsComponentContextText" FontSize="12.5" Margin="0,9,0,0"/>
+                                <Button Content="Apri rapporto Windows completo" Style="{StaticResource ActionButtonStyle}"
+                                        Click="ShowWindowsContext_Click" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                            </StackPanel>
+                        </Expander>
+
+                        <Border Style="{StaticResource DetailCard}" Background="#F1F7FF" BorderBrush="#C9DBF6">
+                            <StackPanel>
+                                <TextBlock Text="CHIEDI A PROCESSLENS" Style="{StaticResource SectionLabel}"/>
+                                <local:SelectableText Text="Scegli una domanda sul processo selezionato."
+                                           Foreground="#5F6B7A"
+                                           FontSize="12"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,0,9"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="ProcessQuestionBox"
+                                             MinHeight="36"
+                                             Padding="10,7"
+                                             VerticalContentAlignment="Center"
+                                             BorderBrush="#C7D2E2"
+                                             BorderThickness="1"
+                                             Background="White"
+                                             KeyDown="ProcessQuestionBox_KeyDown"
+                                             ToolTip="Esempio: Cosa sta facendo? Ha porte aperte? Ha connessioni di rete? Quando finirà?"/>
+                                    <Button Style="{StaticResource ActionButtonStyle}" x:Name="AskProcessButton"
+                                            Grid.Column="1"
+                                            Content="Chiedi"
+                                            Margin="8,0,0,0"
+                                            Padding="15,7"
+                                            Click="AskProcessButton_Click"
+                                            Background="#E1ECFC"
+                                            BorderBrush="#7AA2D8"
+                                            BorderThickness="1"/>
+                                </Grid>
+
+                                <!-- Menu nativo WPF: apre al passaggio del mouse, funziona anche con clic/tastiera. -->
+                                <StackPanel Margin="0,10,0,9">
+                                    <Menu x:Name="QuickQuestionMenu" HorizontalAlignment="Stretch"
+                                          Background="Transparent" BorderThickness="0" FontSize="13">
+                                        <MenuItem x:Name="QuickQuestionRoot" Header="Analisi approfondita ▾"
+                                                  Padding="14,8" MinHeight="36" FontWeight="SemiBold"
+                                                  Background="#E5EEFF" Foreground="#244E84"
+                                                  BorderBrush="#BFD2EA" BorderThickness="1"
+                                                  MouseEnter="QuickQuestionRoot_MouseEnter"
+                                                  ToolTip="Passa il mouse, clicca o usa la tastiera per scegliere un'analisi">
+                                            <MenuItem.HeaderTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" TextWrapping="Wrap" LineHeight="20"/>
+                                                </DataTemplate>
+                                            </MenuItem.HeaderTemplate>
+                                            <MenuItem Header="INFORMAZIONI GENERALI" IsEnabled="False" FontWeight="SemiBold"/>
+                                            <MenuItem Header="Che cosa sta facendo?" Tag="Cosa sta facendo?"
+                                                      Click="QuickQuestionMenuItem_Click"/>
+                                            <MenuItem Header="A che punto è?" Tag="A che punto è?"
+                                                      Click="QuickQuestionMenuItem_Click"/>
+                                            <MenuItem Header="Quando terminerà?" Tag="Quando finirà?"
+                                                      Click="QuickQuestionMenuItem_Click"/>
+                                            <MenuItem Header="È bloccato?" Tag="È bloccato?"
+                                                      Click="QuickQuestionMenuItem_Click"/>
+                                            <Separator/>
+                                            <MenuItem Header="RISORSE E DIAGNOSTICA" IsEnabled="False" FontWeight="SemiBold"/>
+                                            <MenuItem Header="Perché occupa RAM? · Rapporto dettagliato"
+                                                      Tag="Perché consuma così tanta RAM o memoria?"
+                                                      Click="QuickQuestionMenuItem_Click"/>
+                                            <MenuItem Header="Profilazione heap .NET · oggetti reali (su richiesta)"
+                                                      ToolTip="Esegue ProcessLensProfiler separato; richiede consenso e dotnet-gcdump installato"
+                                                      Click="RunManagedProfiler_Click"/>
+                                            <MenuItem Header="Perché utilizza CPU?" Tag="Perché usa tanta CPU?"
+                                                      Click="QuickQuestionMenuItem_Click"/>
+                                            <MenuItem Header="Porte e connessioni" Tag="Ha porte aperte? Chi sta gestendo la rete? Ha connessioni esterne?"
+                                                      Click="QuickQuestionMenuItem_Click"/>
+                                            <Separator/>
+                                            <MenuItem Header="ORIGINE E IMPATTO DELLA CHIUSURA" IsEnabled="False" FontWeight="SemiBold"/>
+                                            <MenuItem Header="Componente Windows: ruolo e dati" Click="ShowWindowsContext_Click"/>
+                                            <MenuItem Header="Processo padre e origine" Tag="Chi lo ha avviato? Da dove è partito?"
+                                                      Click="QuickQuestionMenuItem_Click"/>
+                                            <MenuItem Header="Posso chiuderlo?" Tag="Posso chiuderlo?"
+                                                      Click="QuickQuestionMenuItem_Click"/>
+                                        </MenuItem>
+                                    </Menu>
+                                    <local:SelectableText Text="Scegli un’analisi dal menu."
+                                               Margin="2,5,0,0" Foreground="#667085" FontSize="11" TextWrapping="Wrap"/>
+                                </StackPanel>
+
+                                <Border x:Name="ProcessQueryAnswerCard"
+                                        Visibility="Collapsed"
+                                        Background="White"
+                                        BorderBrush="#D9E2EF"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="11"
+                                        Margin="0,5,0,0">
+                                    <StackPanel>
+                                        <Button x:Name="CopyQueryReportButton" Content="Copia rapporto completo"
+                                                Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Right"
+                                                Margin="0,0,0,8" Click="CopyQueryReport_Click" IsEnabled="False"
+                                                ToolTip="Copia anche le sezioni espandibili e il registro verifiche del rapporto corrente"/>
+                                        <TextBlock Text="Seleziona e premi Ctrl+C. Tasto destro: copia tutto."
+                                                   TextWrapping="Wrap" FontSize="11" Foreground="#667085" Margin="0,0,0,8"/>
+                                        <Button Style="{StaticResource ActionButtonStyle}" x:Name="CancelProfilerButton" Content="Annulla profilazione" Visibility="Collapsed"
+                                                HorizontalAlignment="Right" Margin="0,0,0,8" Padding="12,6"
+                                                Background="#FCEBEB" BorderBrush="#D79B9B"
+                                                Click="CancelProfiler_Click"/>
+                                        <local:SelectableText x:Name="ProcessQueryAnswerTitleText" FontSize="14" FontWeight="SemiBold"/>
+                                        <local:SelectableText x:Name="ProcessQueryOverviewLabel" Text="QUADRO GENERALE" Visibility="Collapsed"
+                                                              FontSize="11" FontWeight="Bold" Foreground="#315B8A" Margin="0,14,0,4"/>
+                                        <local:SelectableText x:Name="ProcessQueryOverviewSourceText" FontSize="11.5" Foreground="#667085"/>
+                                        <local:SelectableText x:Name="ProcessQueryAnswerText" FontSize="13" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                                        <!-- Rapporto RAM: sintesi subito visibile, sezioni tecniche espandibili. -->
+                                        <StackPanel x:Name="ProcessQuerySectionsPanel" Margin="0,10,0,0" Visibility="Collapsed"/>
+                                        <local:SelectableText x:Name="ProcessQueryConfidenceText" FontSize="11" FontWeight="SemiBold" Foreground="#315B8A" Margin="0,7,0,0"/>
+                                        <local:SelectableText x:Name="ProcessQueryEvidenceText" FontSize="10.5" Foreground="#667085" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                                        <Expander x:Name="ProcessQueryAuditPanel" Visibility="Collapsed"
+                                                  Header="Registro analisi RAM"
+                                                  IsExpanded="True" Margin="0,16,0,0" Padding="10,9"
+                                                  Expanded="ProcessQueryAuditPanel_Expanded" Collapsed="ProcessQueryAuditPanel_Collapsed"
+                                                  Background="#F5F9FE" BorderBrush="#CCDAED" BorderThickness="1">
+                                            <StackPanel Margin="0,12,0,0">
+                                                <Border Background="#EAF1FA" Padding="12" CornerRadius="6" Margin="0,0,0,16">
+                                                    <StackPanel>
+                                                        <local:SelectableText Text="RIEPILOGO" FontSize="11.5" FontWeight="SemiBold"
+                                                                              Foreground="#315B8A" Margin="0,0,0,7"/>
+                                                        <local:SelectableText x:Name="ProcessQueryAuditOverviewText" FontSize="12.5" Foreground="#334155"/>
+                                                        <Button x:Name="CopyQueryAuditButton" Content="Copia registro completo" IsEnabled="False"
+                                                                Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Left" Margin="0,12,0,0"
+                                                                Click="CopyQueryAudit_Click" ToolTip="Copia il testo originale del registro corrente, comprese le voci non visibili"/>
+                                                    </StackPanel>
+                                                </Border>
+                                                <StackPanel x:Name="ProcessQueryAuditEntriesPanel"/>
+                                                <local:SelectableText x:Name="ProcessQueryAuditLocationText" FontSize="11.5" Foreground="#667085"
+                                                                      Margin="0,4,0,12"/>
+                                                <Expander Header="Testo originale del registro" IsExpanded="False" Margin="0,4,0,4" Padding="0,6">
+                                                    <local:SelectableText x:Name="ProcessQueryAuditText" FontSize="12" FontFamily="Consolas"
+                                                                          TextWrapping="Wrap" Foreground="#294562" Margin="0,12,0,0"
+                                                                          TextChanged="ProcessQueryAuditText_TextChanged"/>
+                                                </Expander>
+                                            </StackPanel>
+                                        </Expander>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Process birth timestamp and continuously updated uptime. -->
+                        <Border Style="{StaticResource DetailCard}" Background="#F3F7FD" BorderBrush="#D8E4F4">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                                    <TextBlock Text="AVVIATO IL" Style="{StaticResource SectionLabel}"/>
+                                    <local:SelectableText x:Name="DetailStartTimeText" Text="-"
+                                               FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="IN ESECUZIONE DA" Style="{StaticResource SectionLabel}"/>
+                                    <local:SelectableText x:Name="DetailUptimeText" Text="-"
+                                               FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- La sintesi mostra i nomi; punteggi nei dettagli tecnici. -->
+                        <Border Style="{StaticResource DetailCard}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                                    <TextBlock Text="APP ASSOCIATA · STIMA" Style="{StaticResource SectionLabel}" TextWrapping="Wrap"/>
+                                    <local:SelectableText x:Name="DetailOwnerText" Text="-" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="RUOLO STIMATO" Style="{StaticResource SectionLabel}" TextWrapping="Wrap"/>
+                                    <local:SelectableText x:Name="DetailTypeText" Text="-" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Fatti osservati separati esplicitamente dalle attribuzioni locali. -->
+                        <Border Style="{StaticResource DetailCard}">
+                            <StackPanel>
+                                <TextBlock Text="IDENTITÀ E CLASSIFICAZIONE" Style="{StaticResource SectionLabel}"/>
+                                <TextBlock Text="DATI WINDOWS" Foreground="#667085" FontSize="11" Margin="0,5,0,2"/>
+                                <local:SelectableText x:Name="DetailIdentityConfidenceText" Text="-" FontSize="12" TextWrapping="Wrap"/>
+                                <TextBlock Text="ASSOCIAZIONE ALL’APP" Foreground="#667085" FontSize="11" Margin="0,9,0,2"/>
+                                <local:SelectableText x:Name="DetailOwnershipConfidenceText" Text="-" FontSize="12" TextWrapping="Wrap"/>
+                                <TextBlock Text="RUOLO" Foreground="#667085" FontSize="11" Margin="0,9,0,2"/>
+                                <local:SelectableText x:Name="DetailRoleConfidenceText" Text="-" FontSize="12" TextWrapping="Wrap"/>
+                                <local:SelectableText Text="La classificazione descrive il ruolo; CPU e rete mostrano l’attività rilevata."
+                                           FontSize="11" Foreground="#667085" TextWrapping="Wrap" Margin="0,9,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource DetailCard}" Background="#F4F8FF" BorderBrush="#D2E0F5">
+                            <StackPanel>
+                                <TextBlock Text="PROCESSO PADRE E AVVIO" Style="{StaticResource SectionLabel}"/>
+                                <local:SelectableText x:Name="DetailOriginSummaryText" Text="Seleziona un processo." FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                <TextBlock Text="COMANDO DI AVVIO" Foreground="#667085" FontSize="11" Margin="0,10,0,3"/>
+                                <local:SelectableText x:Name="DetailOriginOperationText" TextWrapping="Wrap" FontSize="13"/>
+                                <Expander Header="Mostra la catena di avvio" Margin="0,9,0,0">
+                                    <local:SelectableText x:Name="DetailOriginChainText" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Margin="0,7,0,4"/>
+                                </Expander>
+                                <local:SelectableText x:Name="DetailOriginCaveatText" Foreground="#667085" FontSize="11" TextWrapping="Wrap" Margin="0,7,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource DetailCard}">
+                            <StackPanel>
+                                <TextBlock Text="SINTESI ATTIVITÀ" Style="{StaticResource SectionLabel}"/>
+                                <local:SelectableText x:Name="DetailWhatIsItText" Text="Seleziona un processo dalla lista." FontSize="17" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource DetailCard}">
+                            <StackPanel>
+                                <TextBlock Text="DESCRIZIONE" Style="{StaticResource SectionLabel}"/>
+                                <local:SelectableText x:Name="DetailActivityText" Text="-" FontSize="14" TextWrapping="Wrap"/>
+                                <local:SelectableText x:Name="DetailRoleText" Text="" Foreground="#5F6B7A" Margin="0,6,0,0" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource DetailCard}">
+                            <StackPanel>
+                                <TextBlock Text="ELEMENTI DI IDENTIFICAZIONE" Style="{StaticResource SectionLabel}"/>
+                                <local:SelectableText x:Name="DetailDetectionBasisText" Text="-" FontSize="13" TextWrapping="Wrap"/>
+                                <Expander x:Name="DetailIdentificationExpander" Expanded="DetailIdentification_Expanded"
+                                          Collapsed="DetailIdentification_Collapsed" Header="Come è stato riconosciuto" Margin="0,12,0,0" IsExpanded="False"
+                                          Padding="0,4">
+                                    <StackPanel Margin="0,10,0,0">
+                                        <local:SelectableText Text="Dati utilizzati per riconoscere il processo. Apri le sezioni per i dettagli."
+                                                   FontWeight="Normal" FontSize="12" Foreground="#667085"
+                                                   TextWrapping="Wrap" Margin="0,0,0,12"/>
+                                        <StackPanel x:Name="DetailClassificationFactsPanel" />
+                                        <!-- v0.19.14: i dati tecnici si consultano per argomento.
+                                             Il testo integrale rimane accessibile, ma non domina il pannello. -->
+                                        <Expander x:Name="DetailClassificationAuditExpander"
+                                                  Header="Dati tecnici della classificazione"
+                                                  IsExpanded="False" Margin="0,12,0,0" Padding="0,5"
+                                                  Expanded="DetailClassificationAudit_Expanded">
+                                            <StackPanel Margin="0,10,0,0">
+                                                <local:SelectableText Text="Valori interni del classificatore e dati che hanno contribuito al risultato. Le misure di attività sono separate."
+                                                           FontSize="12" FontWeight="Normal" Foreground="#59697C"
+                                                           TextWrapping="Wrap" Margin="0,0,0,12"/>
+                                                <StackPanel x:Name="DetailClassificationAuditPanel"/>
+                                                <Expander Header="Rapporto diagnostico originale - testo integrale"
+                                                          IsExpanded="False" Margin="0,12,0,0" Padding="0,5">
+                                                    <StackPanel Margin="0,8,0,0">
+                                                        <local:SelectableText Text="Identificativi interni e metadati originali."
+                                                                   FontSize="11" FontWeight="Normal" Foreground="#667085"
+                                                                   TextWrapping="Wrap" Margin="0,0,0,9"/>
+                                                        <local:SelectableText x:Name="DetailEvidenceTechnicalText"
+                                                                 IsReadOnly="True" FontFamily="Consolas" FontSize="11"
+                                                                 FontWeight="Normal" Foreground="#334155" Background="#F4F6F9"
+                                                                 TextWrapping="Wrap" AcceptsReturn="True"
+                                                                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                                                                 MinHeight="58" MaxHeight="230" Padding="12"
+                                                                 BorderThickness="1" BorderBrush="#D7DFE8"/>
+                                                    </StackPanel>
+                                                </Expander>
+                                            </StackPanel>
+                                        </Expander>
+                                    </StackPanel>
+                                </Expander>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource DetailCard}">
+                            <StackPanel>
+                                <TextBlock Text="AVVIO DEL PROCESSO" Style="{StaticResource SectionLabel}"/>
+                                <local:SelectableText x:Name="DetailWhyRunningText" Text="-" FontSize="14" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource DetailCard}">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="SE TERMINI IL PROCESSO" Style="{StaticResource SectionLabel}" Margin="0"/>
+                                    <Border Grid.Column="1" x:Name="RiskBadge" Background="#EEF1F5" CornerRadius="6" Padding="8,3">
+                                        <local:SelectableText x:Name="DetailRiskText" Text="-" FontSize="10" FontWeight="Bold"/>
+                                    </Border>
+                                </Grid>
+                                <local:SelectableText x:Name="DetailCloseImpactText" Text="-" FontSize="14" TextWrapping="Wrap"/>
+                                <local:SelectableText Text="Effetti variabili. Chiusura solo su richiesta." Foreground="#667085" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource DetailCard}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- Metric labels wrap within their cells instead of drawing over neighbors. -->
+                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                    <TextBlock Text="CPU" Style="{StaticResource SectionLabel}" TextWrapping="Wrap"
+                                               MinHeight="27" ToolTip="Quota della CPU complessiva attribuita al PID."/>
+                                    <local:SelectableText TextWrapping="Wrap" x:Name="DetailCpuText" Text="-" FontSize="18" FontWeight="SemiBold"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                    <local:SelectableText x:Name="DetailMemoryLabel" Text="WS PRIVATO" Style="{StaticResource SelectableSectionLabel}"
+                                               TextWrapping="Wrap" MinHeight="27"
+                                               ToolTip="Working Set privato: pagine private fisicamente residenti (Private Working Set)."/>
+                                    <local:SelectableText TextWrapping="Wrap" x:Name="DetailMemoryText" Text="-" FontSize="18" FontWeight="SemiBold"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="PROGETTO" Style="{StaticResource SectionLabel}" TextWrapping="Wrap"
+                                               MinHeight="27" ToolTip="Progetto o directory associata, quando identificabile."/>
+                                    <local:SelectableText x:Name="DetailProjectShortText" Text="-" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource DetailCard}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <TextBlock Text="MEMORIA · MISURE SEPARATE" Style="{StaticResource SectionLabel}" VerticalAlignment="Center" Margin="0"/>
+                                    <Button Style="{StaticResource ActionButtonStyle}" x:Name="AnalyzeRamDirectButton" Grid.Column="1" Content="Analizza RAM ora ▾"
+                                            Click="AnalyzeRamDirectButton_Click" Padding="9,3" FontSize="11" FontWeight="SemiBold"
+                                            Background="#E0F2FE" BorderBrush="#7DD3FC" Foreground="#0369A1" Cursor="Hand"
+                                            ToolTip="Esegue subito la diagnosi anatomica completa della RAM per questo processo"/>
+                                </Grid>
+                                <Grid Margin="0,9,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,7,0">
+                                        <local:SelectableText Text="WORKING SET PRIVATO" FontSize="10" Foreground="#667085" TextWrapping="Wrap" MinHeight="40"/>
+                                        <local:SelectableText TextWrapping="Wrap" x:Name="DetailPrivateWorkingSetText" FontSize="15" FontWeight="SemiBold" Text="N/D"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="0,0,7,0">
+                                        <local:SelectableText Text="WORKING SET TOTALE" FontSize="10" Foreground="#667085" TextWrapping="Wrap" MinHeight="40"/>
+                                        <local:SelectableText TextWrapping="Wrap" x:Name="DetailWorkingSetText" FontSize="15" FontWeight="SemiBold" Text="N/D"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <local:SelectableText Text="MEMORIA PRIVATA IMPEGNATA" FontSize="10" Foreground="#667085" TextWrapping="Wrap" MinHeight="40"/>
+                                        <local:SelectableText TextWrapping="Wrap" x:Name="DetailPrivateCommitText" FontSize="15" FontWeight="SemiBold" Text="N/D"/>
+                                    </StackPanel>
+                                </Grid>
+                                <local:SelectableText x:Name="DetailMemoryExplanationText" FontSize="11" Foreground="#667085" TextWrapping="Wrap"/>
+                                <local:SelectableText x:Name="DetailMemoryTrendText" FontSize="11" Foreground="#235E93" TextWrapping="Wrap" Margin="0,7,0,0"/>
+                                <local:SelectableText Text="Commit e RAM sono contatori diversi. Confronta stessa istanza, contatore e intervallo." FontSize="11" Foreground="#667085" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                <Expander x:Name="DetailMemoryGuideExpander"
+                                          Header="Che cosa significa RAM privata?"
+                                          IsExpanded="False" Margin="0,12,0,0"
+                                          ToolTip="Apri una guida alle tre misure di memoria del PID selezionato.">
+                                    <Border Padding="10" Background="White" BorderBrush="#D9E2ED"
+                                            BorderThickness="1" CornerRadius="7">
+                                        <StackPanel>
+                                            <local:SelectableText Text="1 · Working Set privato (Private Working Set)"
+                                                       FontWeight="SemiBold" FontSize="12" TextWrapping="Wrap"/>
+                                            <local:SelectableText Text="Pagine private del processo presenti in RAM. Il valore non include tutti i suoi dati allocati o i sottoprocessi."
+                                                       FontSize="12" TextWrapping="Wrap" Margin="0,4,0,10"/>
+                                            <local:SelectableText Text="2 · Working Set totale (Working Set)"
+                                                       FontWeight="SemiBold" FontSize="12" TextWrapping="Wrap"/>
+                                            <local:SelectableText Text="Pagine private e condivisibili presenti in RAM. Include il Working Set privato: non sommarli. Le pagine condivisibili possono comparire in più processi."
+                                                       FontSize="12" TextWrapping="Wrap" Margin="0,4,0,10"/>
+                                            <local:SelectableText Text="3 · Memoria privata impegnata (Private Bytes / commit)"
+                                                       FontWeight="SemiBold" FontSize="12" TextWrapping="Wrap"/>
+                                            <local:SelectableText Text="Memoria privata con copertura garantita da Windows. Non misura RAM occupata o dati scritti nel file di paging."
+                                                       FontSize="12" TextWrapping="Wrap" Margin="0,4,0,10"/>
+                                            <local:SelectableText Text="Esempio basato sul processo selezionato"
+                                                       FontWeight="SemiBold" FontSize="12" TextWrapping="Wrap"/>
+                                            <local:SelectableText x:Name="DetailMemoryGuideExampleText" Text="Seleziona un processo per vedere le misure."
+                                                       FontSize="12" TextWrapping="Wrap" Margin="0,4,0,10" Foreground="#235E93"/>
+                                            <local:SelectableText Text="Come interpretarle correttamente"
+                                                       FontWeight="SemiBold" FontSize="12" TextWrapping="Wrap"/>
+                                            <local:SelectableText Text="Per cercare un memory leak, osserva lo stesso PID nel tempo insieme a commit e RAM del sistema. Sottoprocessi, GPU e kernel vanno valutati a parte. N/D non equivale a zero."
+                                                       FontSize="12" TextWrapping="Wrap" Margin="0,4,0,10"/>
+                                            <local:SelectableText Text="Origine dei contatori Windows"
+                                                       FontWeight="SemiBold" FontSize="12" TextWrapping="Wrap"/>
+                                            <local:SelectableText Text="API GetProcessMemoryInfo, struttura PROCESS_MEMORY_COUNTERS_EX2: PrivateWorkingSetSize, WorkingSetSize e PrivateUsage. Sono misure riferite al PID; ProcessLens non stima queste quantità a partire dalle regioni di memoria virtuale."
+                                                       FontSize="11" Foreground="#667085" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Expander>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource DetailCard}" Background="#F0F7FF" BorderBrush="#C8DDF4">
+                            <StackPanel>
+                                <TextBlock Text="ANALISI CPU · FINO A 30 SECONDI" Style="{StaticResource SectionLabel}"/>
+                                <Grid Margin="0,8,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <local:SelectableText TextWrapping="Wrap" x:Name="DetailCpuAverageText" Text="Media: -" FontSize="14" FontWeight="SemiBold"/>
+                                    <local:SelectableText TextWrapping="Wrap" x:Name="DetailCpuPeakText" Text="Picco: -" Grid.Column="1" FontSize="14" FontWeight="SemiBold"/>
+                                </Grid>
+                                <local:SelectableText x:Name="DetailCpuCoreText" Text="-" FontSize="12" TextWrapping="Wrap"/>
+                                <local:SelectableText x:Name="DetailCpuGroupText" Text="-" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                <local:SelectableText x:Name="DetailCpuTotalTimeText" Text="-" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                <local:SelectableText Text="CPU: quota della capacità totale del PC, non di un core. Campione ogni circa 2 s; elenco aggiornato a parte." FontSize="11" Foreground="#667085" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                <local:SelectableText TextWrapping="Wrap" x:Name="CpuGraphScaleText" Text="-" FontSize="11" Foreground="#667085" Margin="0,8,0,3"/>
+                                <Border BorderBrush="#CBDBED" BorderThickness="1" Background="White" CornerRadius="4" Padding="3">
+                                    <Canvas x:Name="CpuGraphCanvas" Height="68" ClipToBounds="True" SizeChanged="CpuGraphCanvas_SizeChanged">
+                                        <Polyline x:Name="CpuGraphLine" Stroke="#2376C3" StrokeThickness="2" StrokeLineJoin="Round"/>
+                                    </Canvas>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource DetailCard}">
+                            <StackPanel>
+                                <TextBlock Text="ATTIVITÀ RILEVATA · CPU, RETE E FINESTRE" Style="{StaticResource SectionLabel}"/>
+                                <local:SelectableText x:Name="DetailRuntimeStateText" Text="-" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                <Button x:Name="RefreshProcessPortsButton" Content="Aggiorna porte del PID e del gruppo" Style="{StaticResource ActionButtonStyle}"
+                                            Click="RefreshProcessPorts_Click" IsEnabled="False" HorizontalAlignment="Left" Margin="0,0,0,8"/>
+                                        <local:SelectableText x:Name="DetailNetworkStateText" Text="-" FontSize="13" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                                <local:SelectableText x:Name="DetailWindowStateText" Text="-" FontSize="13" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                <local:SelectableText Text="CPU, finestre e rete sono osservazioni Windows. L'analisi approfondita parte solo sul processo selezionato per mantenere ProcessLens leggero." Foreground="#667085" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- v0.19.10: disclosure progressiva. Evita un unico muro di testo diagnostico. -->
+                        <Expander x:Name="DetailTechnicalSectionsExpander" Header="Dettagli tecnici e fonti"
+                                  IsExpanded="False" FontWeight="SemiBold" Margin="0,8,0,0"
+                                  Expanded="DetailTechnicalSections_Expanded" Collapsed="DetailTechnicalSections_Collapsed">
+                            <StackPanel Margin="0,12,0,0">
+                                <local:SelectableText Text="Apri una sezione. Dati Windows e classificazione locale."
+                                           FontWeight="Normal" Foreground="#667085" TextWrapping="Wrap"
+                                           FontSize="12" Margin="0,0,0,12"/>
+
+                                <Expander Header="Identità e ambiente di esecuzione" IsExpanded="True"
+                                          Margin="0,0,0,8" Padding="0,3">
+                                    <Border Style="{StaticResource DetailCard}" Padding="14">
+                                        <StackPanel x:Name="DetailIdentityFactsPanel"/>
+                                    </Border>
+                                </Expander>
+
+                                <Expander Header="CPU e memoria: dati misurati" IsExpanded="False"
+                                          Margin="0,0,0,8" Padding="0,3">
+                                    <Border Style="{StaticResource DetailCard}" Padding="14">
+                                        <StackPanel x:Name="DetailResourceFactsPanel"/>
+                                    </Border>
+                                </Expander>
+
+                                <Expander Header="Rete, servizi e relazioni" IsExpanded="False"
+                                          Margin="0,0,0,8" Padding="0,3">
+                                    <Border Style="{StaticResource DetailCard}" Padding="14">
+                                        <StackPanel x:Name="DetailNetworkFactsPanel"/>
+                                    </Border>
+                                </Expander>
+
+                                <Expander Header="Percorso e parametri di avvio" IsExpanded="False"
+                                          Margin="0,0,0,8" Padding="0,3">
+                                    <Border Style="{StaticResource DetailCard}">
+                                        <StackPanel>
+                                            <TextBlock Text="PERCORSO DELL'ESEGUIBILE" Style="{StaticResource SectionLabel}"/>
+                                            <local:SelectableText x:Name="DetailExecutableText" IsReadOnly="True"
+                                                     FontFamily="Consolas" FontSize="12" BorderThickness="0"
+                                                     TextWrapping="Wrap" Background="#F0F3F7" Padding="12"
+                                                     Margin="0,0,0,15"/>
+                                            <TextBlock Text="PARAMETRI DI AVVIO" Style="{StaticResource SectionLabel}"/>
+                                            <local:SelectableText Text="Un parametro -- per riga. Originale disponibile sotto."
+                                                       Foreground="#667085" FontSize="11" FontWeight="Normal"
+                                                       TextWrapping="Wrap" Margin="0,0,0,7"/>
+                                            <local:SelectableText x:Name="DetailFormattedCommandLineText" IsReadOnly="True"
+                                                     FontFamily="Consolas" FontSize="12" FontWeight="Normal"
+                                                     TextWrapping="Wrap"
+                                                     VerticalScrollBarVisibility="Auto"
+                                                     MaxHeight="175" MinHeight="55" BorderThickness="0"
+                                                     Background="#F0F3F7" Padding="12" Margin="0,0,0,10"/>
+                                            <Expander Header="Mostra la riga di comando originale" IsExpanded="False">
+                                                <local:SelectableText x:Name="DetailCommandLineText" IsReadOnly="True"
+                                                         FontFamily="Consolas" FontSize="11" FontWeight="Normal"
+                                                         TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
+                                                         VerticalScrollBarVisibility="Auto" MaxHeight="130"
+                                                         Background="#F0F3F7" BorderThickness="0"
+                                                         Padding="10" Margin="0,8,0,0"/>
+                                            </Expander>
+                                        </StackPanel>
+                                    </Border>
+                                </Expander>
+
+                                <Expander Header="Dati e fonti dell'identificazione" IsExpanded="False"
+                                          Margin="0,0,0,8" Padding="0,3">
+                                    <Border Style="{StaticResource DetailCard}">
+                                        <StackPanel>
+                                            <Border Background="#EEF5FF" CornerRadius="6" Padding="12" Margin="0,0,0,12">
+                                                <StackPanel>
+                                                    <local:SelectableText Text="QUADRO GENERALE" FontWeight="SemiBold" FontSize="11.5"
+                                                                          Foreground="#315B8A" Margin="0,0,0,6"/>
+                                                    <local:SelectableText x:Name="DetailEvidenceOverviewText" Text="Dati per argomento."
+                                                                          FontWeight="Normal" Foreground="#334155" TextWrapping="Wrap" FontSize="12.5"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <StackPanel x:Name="DetailEvidenceGroupsPanel"/>
+                                            <Expander Header="Dati originali completi" IsExpanded="False" Margin="0,10,0,0">
+                                                <local:SelectableText x:Name="DetailEvidenceText" FontFamily="Consolas" FontSize="11"
+                                                           FontWeight="Normal" Foreground="#516176"
+                                                           TextWrapping="Wrap" Margin="0,8,0,0"/>
+                                            </Expander>
+                                        </StackPanel>
+                                    </Border>
+                                </Expander>
+
+                                <Expander Header="Diagnostica completa in formato originale" IsExpanded="False"
+                                          Margin="0,0,0,8" Padding="0,3">
+                                    <Border Style="{StaticResource DetailCard}">
+                                        <StackPanel>
+                                            <local:SelectableText Text="Snapshot dell’ultimo aggiornamento dei dettagli. I valori CPU aggiornati continuamente sono nel riquadro Analisi CPU."
+                                                                  TextWrapping="Wrap" FontSize="11" Foreground="#667085" Margin="0,0,0,8"/>
+                                        <local:SelectableText x:Name="DetailTechnicalContextText" FontFamily="Consolas" FontSize="11"
+                                                   FontWeight="Normal" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Expander>
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Dedicated read-only SCM service explorer. Not a Task Manager overlay. -->
+        <Grid x:Name="ServiceWorkspace" Grid.Row="2" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" MinWidth="420"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="1.25*" MinWidth="400"/>
+            </Grid.ColumnDefinitions>
+            <GridSplitter Grid.Column="1" Width="8" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                          ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Background="#D8E1EC"
+                          ShowsPreview="True" Focusable="True" ToolTip="Ridimensiona elenco e dettagli dei servizi"/>
+            <Border Grid.Column="0" Style="{StaticResource PanelStyle}" Padding="14">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Servizi Windows" FontSize="20" FontWeight="SemiBold"/>
+                            <local:SelectableText x:Name="ServicesCountText" Text="Caricamento..." Foreground="#667085" FontSize="12" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="Ordina" Margin="0,0,7,0" VerticalAlignment="Center" Foreground="#667085"/>
+                            <ComboBox x:Name="ServiceSortComboBox" Width="190" SelectedIndex="0" SelectionChanged="ServiceSort_SelectionChanged">
+                                <ComboBoxItem Content="Attivi prima, poi nome"/>
+                                <ComboBoxItem Content="Nome A-Z"/>
+                                <ComboBoxItem Content="Tipo di avvio"/>
+                                <ComboBoxItem Content="PID"/>
+                            </ComboBox>
+                            <Button Style="{StaticResource ActionButtonStyle}" Content="Aggiorna" Margin="9,0,0,0" Padding="10,6" Click="RefreshServices_Click"/>
+                        </StackPanel>
+                    </Grid>
+                    <ListView x:Name="ServiceList" Grid.Row="1" BorderThickness="0" Background="Transparent"
+                              SelectionChanged="ServiceList_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.VirtualizationMode="Recycling"
+                              ItemContainerStyle="{StaticResource ServiceListItemStyle}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="105"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Margin="0,0,10,0">
+                                        <TextBlock Text="{Binding DisplayName}" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Name}" FontSize="11" Foreground="#667085" Margin="0,3,0,0"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="0,0,10,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding StateLabel}" FontWeight="SemiBold" FontSize="12"/>
+                                        <TextBlock Text="{Binding StartupLabel}" TextTrimming="CharacterEllipsis" Foreground="#667085" FontSize="11" Margin="0,3,0,0"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                        <TextBlock Text="PID host" FontSize="10" Foreground="#667085" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{Binding ProcessIdLabel}" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource PanelStyle}" Padding="16">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Dettagli del servizio" FontSize="20" FontWeight="SemiBold"/>
+                        <local:SelectableText x:Name="ServiceScopeText" Text="Tutti i servizi SCM" TextWrapping="Wrap" Margin="0,6,0,4"/>
+                        <Button x:Name="ShowAllServicesButton" Content="Mostra tutti i servizi" Style="{StaticResource ActionButtonStyle}"
+                                Click="ShowAllServices_Click" HorizontalAlignment="Left" Margin="0,0,0,8"/>
+
+                        <local:SelectableText Text="SCM: stato e configurazione del servizio."
+                                   Foreground="#667085" FontSize="12" TextWrapping="Wrap" Margin="0,3,0,12"/>
+                        <Border Style="{StaticResource DetailCard}" Background="#EEF4FF" BorderBrush="#C9DBF6">
+                            <StackPanel>
+                                <local:SelectableText x:Name="ServiceDetailName" Text="Seleziona un servizio" FontSize="19" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                <local:SelectableText x:Name="ServiceDetailIdentity" Text="" Foreground="#667085" Margin="0,5,0,0" TextWrapping="Wrap"/>
+                                <local:SelectableText x:Name="ServiceDetailStatus" Text="" FontWeight="SemiBold" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource DetailCard}">
+                            <StackPanel>
+                                <TextBlock Text="DESCRIZIONE DEL SERVIZIO" Style="{StaticResource SectionLabel}"/>
+                                <local:SelectableText x:Name="ServiceDetailDescription" Text="Descrizione non disponibile." TextWrapping="Wrap" FontSize="13"/>
+                                <local:SelectableText Text="Fonte: descrizione dichiarata dal servizio, se disponibile." Foreground="#667085" FontSize="11" Margin="0,7,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource DetailCard}">
+                            <StackPanel>
+                                <TextBlock Text="MODALITÀ DI AVVIO E STATO" Style="{StaticResource SectionLabel}"/>
+                                <local:SelectableText x:Name="ServiceDetailWhy" Text="" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource DetailCard}" Background="#F6FAFF" BorderBrush="#CDDEF5">
+                            <StackPanel>
+                                <DockPanel LastChildFill="False">
+                                    <TextBlock Text="CRONOLOGIA AVVIO / ARRESTO" Style="{StaticResource SectionLabel}"
+                                               DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                                    <Button Style="{StaticResource ActionButtonStyle}" x:Name="ServiceHistoryRefreshButton" Content="Aggiorna eventi"
+                                            DockPanel.Dock="Right" Margin="10,0,0,0" Padding="8,5"
+                                            Click="RefreshServiceHistory_Click" IsEnabled="False"/>
+                                </DockPanel>
+                                <local:SelectableText x:Name="ServiceHistoryStatusText" Text="Seleziona un servizio per consultare gli eventi Windows."
+                                           Foreground="#667085" TextWrapping="Wrap" Margin="0,7,0,6" FontSize="11"/>
+                                <local:SelectableText x:Name="ServiceHistoryExplanationText" Text=""
+                                           TextWrapping="Wrap" Margin="0,4,0,10" FontSize="12"/>
+                                <ItemsControl x:Name="ServiceHistoryList">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#DEE4ED" BorderThickness="0,1,0,0" Padding="0,9,0,8">
+                                                <StackPanel>
+                                                    <DockPanel LastChildFill="True">
+                                                        <local:SelectableText Text="{Binding WhenLabel, Mode=OneWay}" Foreground="#405676" FontWeight="SemiBold" FontSize="12" Margin="0,0,10,0"/>
+                                                        <local:SelectableText Text="{Binding EventIdLabel, Mode=OneWay}" Foreground="#64748B" FontSize="11"/>
+                                                    </DockPanel>
+                                                    <local:SelectableText Text="{Binding Title, Mode=OneWay}" FontWeight="SemiBold" TextWrapping="Wrap" FontSize="12" Margin="0,4,0,0"/>
+                                                    <local:SelectableText Text="{Binding Detail, Mode=OneWay}" TextWrapping="Wrap" FontSize="12" Margin="0,3,0,0"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <local:SelectableText Text="Eventi SCM. Richiedente dell’avvio non identificato; i vecchi eventi possono mancare."
+                                           Foreground="#667085" TextWrapping="Wrap" FontSize="11" Margin="0,9,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource DetailCard}">
+                            <StackPanel>
+                                <TextBlock Text="PROCESSO CHE LO OSPITA" Style="{StaticResource SectionLabel}"/>
+                                <local:SelectableText x:Name="ServiceDetailHost" Text="" TextWrapping="Wrap"/>
+                                <Button Style="{StaticResource ActionButtonStyle}" x:Name="ServiceShowProcessButton" Content="Mostra processo ospitante" Padding="8,6"
+                                        HorizontalAlignment="Left" Margin="0,10,0,0" Click="ServiceShowProcess_Click" IsEnabled="False"/>
+                                <Button Style="{StaticResource ActionButtonStyle}" x:Name="ServiceStopButton" Content="Arresta servizio…" Padding="10,7"
+                                        HorizontalAlignment="Left" Margin="0,10,0,0" Click="ServiceStopButton_Click" IsEnabled="False"/>
+                                <local:SelectableText Text="Arresto tramite SCM; nessuna terminazione forzata del PID."
+                                           Foreground="#667085" FontSize="11" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource DetailCard}">
+                            <StackPanel>
+                                <TextBlock Text="AVVIO E DIPENDENZE" Style="{StaticResource SectionLabel}"/>
+                                <local:SelectableText x:Name="ServiceDetailDependencies" Text="" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource DetailCard}">
+                            <StackPanel>
+                                <TextBlock Text="SE VIENE ARRESTATO" Style="{StaticResource SectionLabel}"/>
+                                <local:SelectableText x:Name="ServiceDetailImpact" Text="" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                        <Expander Header="Identità tecnica e percorso" Margin="0,2,0,12" FontWeight="SemiBold">
+                            <local:SelectableText x:Name="ServiceDetailTechnical" IsReadOnly="True" BorderThickness="0"
+                                     Background="#F8F9FB" TextWrapping="Wrap" Margin="0,8,0,0" Padding="10"/>
+                        </Expander>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+        <!-- Passive, in-window notice: no focus change or confirmation dialog. -->
+        <Border x:Name="ProcessNoticeCard" Grid.RowSpan="3" Panel.ZIndex="20" Visibility="Collapsed"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom" MaxWidth="420" Margin="12"
+                Padding="14,11" Background="#EDF7F1" BorderBrush="#8DBDA2" BorderThickness="1" CornerRadius="8">
+            <StackPanel>
+                <local:SelectableText x:Name="ProcessNoticeTitleText" Text="Processo chiuso"
+                                      FontSize="13" FontWeight="SemiBold" Foreground="#195734"/>
+                <local:SelectableText x:Name="ProcessNoticeText" FontSize="12.5" TextWrapping="Wrap"
+                                      Foreground="#234B35" Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

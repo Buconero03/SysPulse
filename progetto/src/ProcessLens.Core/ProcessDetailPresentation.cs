@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 
 namespace ProcessLens.Core;
 
@@ -68,6 +68,29 @@ public static class ProcessDetailPresentation
         else
             role = $"Ruolo stimato: {insight.Role}. " +
                    "Non indica il lavoro in corso.";
+
+        if (SysPulseLocalization.CurrentLanguage == AppLanguage.English)
+        {
+            string enAssociation = parentMatchesOwner
+                ? $"Possible app: {insight.OwnerApp}. Parent: {process.ParentName}. Parent name does not confirm ownership."
+                : $"Possible app: {insight.OwnerApp}. Criteria in technical details.";
+            string enRole;
+            if (insight.RoleConfidencePercent < 60)
+                enRole = "Unknown function.";
+            else if (insight.Role.Equals("Script Python", StringComparison.OrdinalIgnoreCase)
+                     && insight.Summary.StartsWith("Script indicato: ", StringComparison.OrdinalIgnoreCase))
+                enRole = $"Script in parameters: {insight.Summary[17..]}. Running instruction not measured.";
+            else
+                enRole = $"Estimated role: {SysPulseLocalization.Translate(insight.Role)}. Does not indicate ongoing work.";
+
+            return new[]
+            {
+                new Fact("Summary", "Windows data", identity),
+                new Fact("Summary", "Suggested association", enAssociation),
+                new Fact("Summary", "Suggested type", enRole)
+            };
+        }
+
         return new[]
         {
             new Fact("Riepilogo", "Dato Windows", identity),
@@ -133,6 +156,13 @@ public static class ProcessDetailPresentation
             facts.Add(new("Identificazione", "Parametro riconosciuto", "--type=gpu-process"));
         facts.Add(new("Identificazione", "Limite dell'analisi",
             "Attività attuale non verificata dalla classificazione."));
+        if (SysPulseLocalization.CurrentLanguage == AppLanguage.English)
+        {
+            return facts.Select(f => new Fact(
+                SysPulseLocalization.Translate(f.Group),
+                SysPulseLocalization.Translate(f.Label),
+                SysPulseLocalization.Translate(f.Value))).ToList();
+        }
         return facts;
     }
 
@@ -230,14 +260,8 @@ public static class ProcessDetailPresentation
         return prefix.Length > 65 ? prefix[..65] + "…" : prefix;
     }
 
-    public static string ClosingRiskLabel(string? risk) => risk?.ToUpperInvariant() switch
-    {
-        "CRITICO" => "Rischio critico",
-        "ALTO" or "MEDIO / ALTO" => "Rischio elevato o variabile",
-        "MEDIO" or "BASSO / MEDIO" => "Effetti variabili",
-        "BASSO" => "Possibili effetti limitati",
-        _ => "Effetti da verificare"
-    };
+    public static string ClosingRiskLabel(string? risk) =>
+        SysPulseLocalization.ClosingRiskLabel(risk);
 
     public static string TechnicalGroup(string label)
     {

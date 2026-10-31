@@ -314,15 +314,16 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="ProcessLens" FontSize="24" FontWeight="SemiBold"/>
-                <local:SelectableText Text="Dati Windows e analisi del processo" ToolTip="La X riduce la finestra; per riaprirla usa la barra applicazioni o Mostra ProcessLens nell’icona."
+                <TextBlock x:Name="AppTitleText" Text="ProcessLens" FontSize="24" FontWeight="SemiBold"/>
+                <local:SelectableText x:Name="AppSubtitleText" Text="Dati Windows e analisi del processo" ToolTip="La X riduce la finestra; per riaprirla usa la barra applicazioni o Mostra ProcessLens nell’icona."
                            TextWrapping="Wrap"
                            Margin="1,3,0,0"
                            Foreground="#667085"
                            FontSize="12"/>
             </StackPanel>
 
-            <WrapPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,8,0" MaxWidth="310">
+            <WrapPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,8,0" MaxWidth="420">
+                <Button x:Name="LanguageButton" Content="Lingua: IT" Margin="2" Style="{StaticResource ActionButtonStyle}" Click="LanguageButton_Click" ToolTip="Cambia lingua tra Italiano e Inglese / Toggle language between Italian and English"/>
                 <Button x:Name="MinimizeWindowButton" Content="Nascondi accanto all’orologio" Margin="2"
                         ToolTip="Nasconde la finestra e il log. Per riaprire: clic sull’icona ProcessLens accanto all’orologio, anche nel menu ^. Il trattino in alto riduce invece nella barra delle applicazioni."
                         Style="{StaticResource ActionButtonStyle}" Click="MinimizeWindow_Click"/>
@@ -337,7 +338,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Cerca" FontWeight="SemiBold" Foreground="#667085" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBlock x:Name="SearchLabelText" Text="Cerca" FontWeight="SemiBold" Foreground="#667085" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <TextBox x:Name="SearchBox"
                              Grid.Column="1"
                              Height="34"
@@ -379,29 +380,29 @@
                 <!-- Gli indicatori non possono piu' sovrapporsi ai filtri. -->
                 <WrapPanel Margin="0,11,0,0" Orientation="Horizontal" VerticalAlignment="Center">
                     <StackPanel x:Name="ProcessDetectedCounter" Orientation="Horizontal" Margin="0,0,17,5">
-                        <TextBlock Text="Rilevati: " Foreground="#667085"
+                        <TextBlock x:Name="ProcessDetectedLabel" Text="Rilevati: " Foreground="#667085"
                                    ToolTip="Processi dell’ultimo rilevamento. Gli avvii brevi possono sfuggire."/>
                         <local:SelectableText x:Name="ProcessCountText" Text="-" FontWeight="SemiBold"/>
                     </StackPanel>
                     <StackPanel x:Name="ProcessVisibleCounter" Orientation="Horizontal" Margin="0,0,17,5">
-                        <TextBlock Text="Mostrati: " Foreground="#667085" ToolTip="Righe dopo filtri e ricerca."/>
+                        <TextBlock x:Name="ProcessVisibleLabel" Text="Mostrati: " Foreground="#667085" ToolTip="Righe dopo filtri e ricerca."/>
                         <local:SelectableText x:Name="VisibleCountText" Text="-" FontWeight="SemiBold"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,17,5">
-                        <TextBlock Text="CPU sistema: " Foreground="#667085"/>
+                        <TextBlock x:Name="SystemCpuLabel" Text="CPU sistema: " Foreground="#667085"/>
                         <local:SelectableText x:Name="SystemCpuText" Text="In attesa…" FontWeight="Bold" Foreground="#124E87"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,17,5">
-                        <TextBlock Text="Media fino a 30 s: " Foreground="#667085"/>
+                        <TextBlock x:Name="SystemCpuAverageLabel" Text="Media fino a 30 s: " Foreground="#667085"/>
                         <local:SelectableText x:Name="SystemCpuAverageText" Text="-" FontWeight="SemiBold"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,17,5">
-                        <TextBlock Text="CPU logici: " Foreground="#667085"/>
+                        <TextBlock x:Name="LogicalCpuLabel" Text="CPU logici: " Foreground="#667085"/>
                         <local:SelectableText x:Name="LogicalCpuText" Text="-" FontWeight="SemiBold"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,17,5"
                                 ToolTip="RAM fisica in uso / totale. Aggiornamento con il campione CPU; sospeso quando la finestra è ridotta.">
-                        <TextBlock Text="RAM sistema: " Foreground="#667085"/>
+                        <TextBlock x:Name="SystemRamLabel" Text="RAM sistema: " Foreground="#667085"/>
                         <local:SelectableText x:Name="SystemRamText" Text="In attesa…" FontWeight="Bold" Foreground="#124E87"/>
                     </StackPanel>
 
@@ -443,14 +444,14 @@
 
                     <!-- Intestazione a piu' righe: testo descrittivo e ordinamento non si sovrappongono. -->
                     <StackPanel Margin="2,0,2,12">
-                        <TextBlock Text="Processi" FontSize="20" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="ProcessListHeading" Text="Processi" FontSize="20" FontWeight="SemiBold"/>
                         <local:SelectableText x:Name="ListExplanationText"
                                    Text="Seleziona un processo per analizzarlo."
                                    Foreground="#667085" FontSize="12" TextWrapping="Wrap" Margin="0,3,0,6"/>
                         <WrapPanel Orientation="Horizontal">
                             <local:SelectableText x:Name="CurrentFilterText" Text="Vista: tutti i processi" Foreground="#667085"
                                        VerticalAlignment="Center" Margin="0,0,14,4"/>
-                            <TextBlock Text="Ordina" Foreground="#667085" VerticalAlignment="Center" Margin="0,0,7,4"/>
+                            <TextBlock x:Name="SortLabelText" Text="Ordina" Foreground="#667085" VerticalAlignment="Center" Margin="0,0,7,4"/>
                             <CheckBox x:Name="GroupApplicationsCheckBox" Content="Raggruppa app" IsChecked="True" Margin="0,0,10,4" VerticalAlignment="Center"
                                       Checked="GroupApplications_Changed" Unchecked="GroupApplications_Changed" ToolTip="Stesso eseguibile e catena di avvio; espandi per scegliere un PID."/>
                             <ComboBox x:Name="SortModeComboBox" Width="135" SelectedIndex="0" Margin="0,0,0,4"
@@ -492,15 +493,15 @@
                         <Button x:Name="ToggleDetailsFocusButton" DockPanel.Dock="Right" Content="Espandi dettagli"
                                 Style="{StaticResource ActionButtonStyle}" Click="ToggleDetailsFocus_Click" Margin="10,0,0,0"
                                 ToolTip="Usa tutta la larghezza della finestra per il processo selezionato; premi Mostra elenco per tornare."/>
-                        <TextBlock Text="Analisi del processo" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="ProcessDetailsHeading" Text="Analisi del processo" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center"/>
                     </DockPanel>
                 <ScrollViewer x:Name="ProcessDetailsScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
-                        <TextBlock Text="CPU, memoria, rete e dettagli del processo."
+                        <TextBlock x:Name="ProcessDetailsSubheading" Text="CPU, memoria, rete e dettagli del processo."
                                    Foreground="#667085"
                                    FontSize="12"
                                    Margin="0,3,0,5"/>
-                        <Button Style="{StaticResource ActionButtonStyle}" Content="Mostra servizi Windows ospitati dal PID" Margin="0,0,0,14"
+                        <Button x:Name="ProcessShowServicesButton" Style="{StaticResource ActionButtonStyle}" Content="Mostra servizi Windows ospitati dal PID" Margin="0,0,0,14"
                                 HorizontalAlignment="Left" Padding="9,6" Click="ProcessShowServices_Click"/>
 
                         <Border Background="#EEF4FF" BorderBrush="#C9DBF6" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,12">
@@ -702,11 +703,11 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0" Margin="0,0,16,0">
-                                    <TextBlock Text="APP ASSOCIATA · STIMA" Style="{StaticResource SectionLabel}" TextWrapping="Wrap"/>
+                                    <TextBlock x:Name="EstimatedOwnerLabel" Text="APP ASSOCIATA · STIMA" Style="{StaticResource SectionLabel}" TextWrapping="Wrap"/>
                                     <local:SelectableText x:Name="DetailOwnerText" Text="-" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="1">
-                                    <TextBlock Text="RUOLO STIMATO" Style="{StaticResource SectionLabel}" TextWrapping="Wrap"/>
+                                    <TextBlock x:Name="EstimatedRoleHeading" Text="RUOLO STIMATO" Style="{StaticResource SectionLabel}" TextWrapping="Wrap"/>
                                     <local:SelectableText x:Name="DetailTypeText" Text="-" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </Grid>
@@ -715,7 +716,7 @@
                         <!-- Fatti osservati separati esplicitamente dalle attribuzioni locali. -->
                         <Border Style="{StaticResource DetailCard}">
                             <StackPanel>
-                                <TextBlock Text="IDENTITÀ E CLASSIFICAZIONE" Style="{StaticResource SectionLabel}"/>
+                                <TextBlock x:Name="IdentityHeading" Text="IDENTITÀ E CLASSIFICAZIONE" Style="{StaticResource SectionLabel}"/>
                                 <TextBlock Text="DATI WINDOWS" Foreground="#667085" FontSize="11" Margin="0,5,0,2"/>
                                 <local:SelectableText x:Name="DetailIdentityConfidenceText" Text="-" FontSize="12" TextWrapping="Wrap"/>
                                 <TextBlock Text="ASSOCIAZIONE ALL’APP" Foreground="#667085" FontSize="11" Margin="0,9,0,2"/>
@@ -757,7 +758,7 @@
 
                         <Border Style="{StaticResource DetailCard}">
                             <StackPanel>
-                                <TextBlock Text="ELEMENTI DI IDENTIFICAZIONE" Style="{StaticResource SectionLabel}"/>
+                                <TextBlock x:Name="ElementsHeading" Text="ELEMENTI DI IDENTIFICAZIONE" Style="{StaticResource SectionLabel}"/>
                                 <local:SelectableText x:Name="DetailDetectionBasisText" Text="-" FontSize="13" TextWrapping="Wrap"/>
                                 <Expander x:Name="DetailIdentificationExpander" Expanded="DetailIdentification_Expanded"
                                           Collapsed="DetailIdentification_Collapsed" Header="Come è stato riconosciuto" Margin="0,12,0,0" IsExpanded="False"
@@ -814,7 +815,7 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="SE TERMINI IL PROCESSO" Style="{StaticResource SectionLabel}" Margin="0"/>
+                                    <TextBlock x:Name="IfTerminatedHeading" Text="SE TERMINI IL PROCESSO" Style="{StaticResource SectionLabel}" Margin="0"/>
                                     <Border Grid.Column="1" x:Name="RiskBadge" Background="#EEF1F5" CornerRadius="6" Padding="8,3">
                                         <local:SelectableText x:Name="DetailRiskText" Text="-" FontSize="10" FontWeight="Bold"/>
                                     </Border>

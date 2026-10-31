@@ -1,4 +1,4 @@
-﻿param([switch] $FunctionsOnly, [string] $Executable, [string] $RuntimeRoot)
+param([switch] $FunctionsOnly, [string] $Executable, [string] $RuntimeRoot, [string] $Language)
 $ErrorActionPreference = 'Stop'
 function Test-DesktopRuntime8([string] $Root) {
     if (-not $Root -or -not (Test-Path -LiteralPath (Join-Path $Root 'dotnet.exe') -PathType Leaf)) { return $false }
@@ -77,6 +77,7 @@ try {
         $argsText = '-NoLogo -NoProfile -ExecutionPolicy Bypass -File ' + (Quote-LaunchArgument $PSCommandPath) +
             ' -Executable ' + (Quote-LaunchArgument $Executable)
         if ($RuntimeRoot) { $argsText += ' -RuntimeRoot ' + (Quote-LaunchArgument $RuntimeRoot) }
+        if ($Language) { $argsText += ' -Language ' + (Quote-LaunchArgument $Language) }
         Start-Process -FilePath $ps -Verb RunAs -ArgumentList $argsText
         exit
     }
@@ -84,7 +85,8 @@ try {
         if (-not (Test-DesktopRuntime8 $RuntimeRoot)) { throw 'Runtime .NET 8 privato incompleto.' }
         $env:DOTNET_ROOT = $RuntimeRoot; $env:DOTNET_ROOT_X64 = $RuntimeRoot
     }
-    Start-Process -FilePath $Executable -WorkingDirectory (Split-Path -Parent $Executable)
+    $launchArgs = if ($Language) { @('--lang', $Language) } else { @() }
+    Start-Process -FilePath $Executable -ArgumentList $launchArgs -WorkingDirectory (Split-Path -Parent $Executable)
 } catch {
     Write-Host ('[ERRORE] ' + $_.Exception.Message) -ForegroundColor Red
     exit 1

@@ -92,12 +92,14 @@ The solution is built on modern .NET 8 / C# 12 and WPF:
 
 ```
 SysPulse / ProcessLens-Leggero/
-├── AVVIA_PROCESSLENS.cmd              # Instant-launch batch script for end users
+├── START_SYSPULSE_EN.cmd              # Instant-launch batch script in English
+├── AVVIA_SYSPULSE_IT.cmd              # Instant-launch batch script in Italian
+├── AVVIA_PROCESSLENS.cmd              # Default instant-launch batch script
 ├── LEGGIMI.txt                        # Concise Italian launch and release notes
 ├── README.md                          # Full English documentation (GitHub root)
 ├── README.it.md                       # Full Italian documentation
 ├── supporto/
-│   ├── avvia.ps1                      # Launch orchestrator, pre-flight & build dispatcher
+│   ├── avvia.ps1                      # Launch orchestrator with -Language support (en/it)
 │   └── build-r34.ok                   # Signed build receipt for verified instant launch
 └── progetto/
     ├── build-dashboard.ps1            # Master build, test, and audit script
@@ -150,13 +152,23 @@ flowchart TD
     J --> K["SysPulse WPF UI opens on desktop"]
 ```
 
-### Quick Launch Options
+### Quick Launch Options & Dual-Language Mode
 
-1. **Standard Launch (Recommended)**:
-   Double-click `AVVIA_PROCESSLENS.cmd` from the root folder.
-2. **From PowerShell**:
+1. **English Mode Launch**:
+   Double-click `START_SYSPULSE_EN.cmd` from the root folder, or run:
    ```powershell
-   .\supporto\avvia.ps1
+   .\supporto\avvia.ps1 -Language en
+   ```
+2. **Italian Mode Launch**:
+   Double-click `AVVIA_SYSPULSE_IT.cmd` (or `AVVIA_PROCESSLENS.cmd`) from the root folder, or run:
+   ```powershell
+   .\supporto\avvia.ps1 -Language it
+   ```
+3. **Dynamic Interactive Switching**:
+   Click the **Language: EN / Lingua: IT** button situated directly in the top header bar of the application at any time to toggle between English and Italian on-the-fly. The selected language is automatically saved and remembered across sessions.
+4. **Direct CLI Argument**:
+   ```cmd
+   .\progetto\publish\win-x64\ProcessLens.exe --lang en
    ```
 3. **Manual Clean Build and Full Verification**:
    ```powershell

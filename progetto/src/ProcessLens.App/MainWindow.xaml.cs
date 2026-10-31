@@ -125,6 +125,7 @@ public partial class MainWindow : Window
         _listViewport = new AutomaticViewport(ProcessList, () => FindVisualChild<ScrollViewer>(ProcessList));
         _detailViewport = new AutomaticViewport(ProcessDetailsScroll, () => ProcessDetailsScroll);
         ProcessList.ItemsSource = _visibleRows;
+        ApplyLanguage(SysPulseLocalization.CurrentLanguage);
 
         // DPI elevato e schermi piccoli: evita che l'interfaccia parta fuori schermo.
         // Non altera risoluzione o impostazioni di Windows.
@@ -200,6 +201,94 @@ public partial class MainWindow : Window
             _serviceEventsWatcher?.Dispose();
             _serviceEventsWatcher = null;
         };
+    }
+
+    private void LanguageButton_Click(object sender, RoutedEventArgs e)
+    {
+        SysPulseLocalization.CurrentLanguage = SysPulseLocalization.CurrentLanguage == AppLanguage.Italian
+            ? AppLanguage.English
+            : AppLanguage.Italian;
+        ApplyLanguage(SysPulseLocalization.CurrentLanguage);
+    }
+
+    public void ApplyLanguage(AppLanguage language)
+    {
+        bool isEn = language == AppLanguage.English;
+        Title = isEn ? "SysPulse" : "ProcessLens";
+        AppTitleText.Text = isEn ? "SysPulse" : "ProcessLens";
+        AppSubtitleText.Text = SysPulseLocalization.Translate("Dati Windows e analisi del processo");
+        LanguageButton.Content = isEn ? "Language: EN" : "Lingua: IT";
+
+        MinimizeWindowButton.Content = SysPulseLocalization.Translate("Nascondi accanto all’orologio");
+        WindowLogButton.Content = SysPulseLocalization.Translate("Log finestra");
+        ExitApplicationButton.Content = SysPulseLocalization.Translate("Esci");
+        NewTaskButton.Content = SysPulseLocalization.Translate("Esegui nuova attività");
+        SearchLabelText.Text = SysPulseLocalization.Translate("Cerca");
+        SearchBox.ToolTip = SysPulseLocalization.Translate("Cerca per nome visualizzato, eseguibile o PID esatto. Ctrl+F per scrivere.");
+
+        NavProcessesButton.Content = SysPulseLocalization.Translate("Processi");
+        NavSystemButton.Content = SysPulseLocalization.Translate("Sistema Windows");
+        NavServicesButton.Content = SysPulseLocalization.Translate("Servizi");
+        NavGuardianButton.Content = SysPulseLocalization.Translate("Guardian");
+        NavNetworkButton.Content = SysPulseLocalization.Translate("Rete");
+        NavMemoryButton.Content = SysPulseLocalization.Translate("Memoria RAM");
+
+        FilterAllButton.Content = SysPulseLocalization.Translate("Tutti");
+        FilterAppsButton.Content = SysPulseLocalization.Translate("App");
+        FilterDevButton.Content = SysPulseLocalization.Translate("Sviluppo");
+        FilterWindowsButton.Content = SysPulseLocalization.Translate("Windows");
+        FilterBackgroundButton.Content = SysPulseLocalization.Translate("Secondari");
+        FilterWslButton.Content = SysPulseLocalization.Translate("WSL");
+        ServiceFilterAllButton.Content = SysPulseLocalization.Translate("Tutti");
+        ServiceFilterRunningButton.Content = SysPulseLocalization.Translate("Attivi");
+        ServiceFilterStoppedButton.Content = SysPulseLocalization.Translate("Arrestati");
+
+        ProcessDetectedLabel.Text = SysPulseLocalization.Translate("Rilevati: ");
+        ProcessVisibleLabel.Text = SysPulseLocalization.Translate("Mostrati: ");
+        SystemCpuLabel.Text = SysPulseLocalization.Translate("CPU sistema: ");
+        SystemCpuAverageLabel.Text = SysPulseLocalization.Translate("Media fino a 30 s: ");
+        LogicalCpuLabel.Text = SysPulseLocalization.Translate("CPU logici: ");
+        SystemRamLabel.Text = SysPulseLocalization.Translate("RAM sistema: ");
+
+        GuiResourcesExpander.Header = SysPulseLocalization.Translate("Risorse di ProcessLens · CPU e RAM della GUI");
+        CopySelfResourcesButton.Content = SysPulseLocalization.Translate("Copia risorse GUI");
+
+        ProcessListHeading.Text = SysPulseLocalization.Translate("Processi");
+        ListExplanationText.Text = SysPulseLocalization.Translate("Seleziona un processo per analizzarlo.");
+        SortLabelText.Text = SysPulseLocalization.Translate("Ordina");
+        GroupApplicationsCheckBox.Content = SysPulseLocalization.Translate("Raggruppa app");
+
+        ProcessDetailsHeading.Text = SysPulseLocalization.Translate("Analisi del processo");
+        ProcessDetailsSubheading.Text = SysPulseLocalization.Translate("CPU, memoria, rete e dettagli del processo.");
+        ProcessShowServicesButton.Content = SysPulseLocalization.Translate("Mostra servizi Windows ospitati dal PID");
+
+        EstimatedOwnerLabel.Text = SysPulseLocalization.Translate("APP ASSOCIATA · STIMA");
+        EstimatedRoleHeading.Text = SysPulseLocalization.Translate("RUOLO STIMATO");
+        IdentityHeading.Text = SysPulseLocalization.Translate("IDENTITÀ E CLASSIFICAZIONE");
+        ElementsHeading.Text = SysPulseLocalization.Translate("ELEMENTI DI IDENTIFICAZIONE");
+        IfTerminatedHeading.Text = SysPulseLocalization.Translate("SE TERMINI IL PROCESSO");
+        DetailIdentificationExpander.Header = SysPulseLocalization.Translate("Come è stato riconosciuto");
+
+        if (SortModeComboBox.Items.Count >= 6)
+        {
+            ((ComboBoxItem)SortModeComboBox.Items[0]).Content = SysPulseLocalization.Translate("Più recenti");
+            ((ComboBoxItem)SortModeComboBox.Items[1]).Content = SysPulseLocalization.Translate("Più vecchi");
+            ((ComboBoxItem)SortModeComboBox.Items[2]).Content = "CPU";
+            ((ComboBoxItem)SortModeComboBox.Items[3]).Content = SysPulseLocalization.Translate("Memoria");
+            ((ComboBoxItem)SortModeComboBox.Items[4]).Content = SysPulseLocalization.Translate("Rete");
+            ((ComboBoxItem)SortModeComboBox.Items[5]).Content = SysPulseLocalization.Translate("Nome");
+        }
+
+        if (_allRows.Count > 0)
+        {
+            ApplyFilter(_selectedPid, preserveScroll: true);
+        }
+        if (_currentDetailRow != null)
+        {
+            _renderedClassificationFactsInsight = null;
+            _renderedClassificationFactsPid = null;
+            ShowDetails(_currentDetailRow);
+        }
     }
 
     private async Task RefreshAsync()
@@ -1134,24 +1223,28 @@ public partial class MainWindow : Window
         WindowsComponentContextExpander.Header = WindowsHostReference.Find(p.Name) is { } hostReference
             ? hostReference.Title + " · scheda Microsoft" : "Componente Windows · ruolo e dati";
         DetailOwnerText.Text = i.OwnerApp;
-        DetailTypeText.Text = i.Role;
+        DetailTypeText.Text = SysPulseLocalization.Translate(i.Role);
         var identification = ProcessDetailPresentation.IdentificationExplanation(p, i);
         DetailIdentityConfidenceText.Text = identification[0].Value;
         DetailOwnershipConfidenceText.Text = identification[1].Value;
         DetailRoleConfidenceText.Text = identification[2].Value;
 
         var origin = ProcessOriginAnalyzer.Analyze(p);
-        DetailOriginSummaryText.Text = origin.ParentSummary;
+        DetailOriginSummaryText.Text = SysPulseLocalization.Translate(origin.ParentSummary);
         DetailOriginOperationText.Text = origin.Operation;
         DetailOriginChainText.Text = origin.Chain;
-        DetailOriginCaveatText.Text = origin.Limitations;
+        DetailOriginCaveatText.Text = SysPulseLocalization.Translate(origin.Limitations);
 
-        DetailWhatIsItText.Text = i.Summary;
-        DetailActivityText.Text = i.WhatIsIt;
+        DetailWhatIsItText.Text = SysPulseLocalization.Translate(i.Summary);
+        DetailActivityText.Text = SysPulseLocalization.Translate(i.WhatIsIt);
         DetailRoleText.Text = string.Empty;
-        DetailDetectionBasisText.Text = i.RoleConfidencePercent >= 60
-            ? "ProcessLens ha identificato una possibile funzione del processo. Apri i dettagli per sapere quali dati ha utilizzato."
-            : "Le informazioni disponibili non bastano a identificare la funzione di questo processo.";
+        DetailDetectionBasisText.Text = SysPulseLocalization.CurrentLanguage == AppLanguage.English
+            ? (i.RoleConfidencePercent >= 60
+                ? "SysPulse identified a probable process function. Expand details to see what evidence was used."
+                : "Available information is insufficient to identify the function of this process.")
+            : (i.RoleConfidencePercent >= 60
+                ? "ProcessLens ha identificato una possibile funzione del processo. Apri i dettagli per sapere quali dati ha utilizzato."
+                : "Le informazioni disponibili non bastano a identificare la funzione di questo processo.");
         _currentDetailRow = row;
         TrackSelectedProcessExit(row);
         RefreshClassificationFacts();
@@ -1161,8 +1254,8 @@ public partial class MainWindow : Window
         _currentClassificationAuditInsight = i;
         if (DetailIdentificationExpander.IsExpanded && DetailClassificationAuditExpander.IsExpanded)
             RefreshClassificationAuditGroups();
-        DetailWhyRunningText.Text = i.WhyRunning;
-        DetailCloseImpactText.Text = i.CloseImpact;
+        DetailWhyRunningText.Text = SysPulseLocalization.Translate(i.WhyRunning);
+        DetailCloseImpactText.Text = SysPulseLocalization.Translate(i.CloseImpact);
         DetailRiskText.Text = ProcessDetailPresentation.ClosingRiskLabel(i.CloseRisk);
         ApplyRiskBadge(i.CloseRisk);
 

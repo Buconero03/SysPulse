@@ -75,30 +75,40 @@ public sealed class ProcessRow(ProcessSnapshot process, ProcessInsight insight) 
     // Labels for the narrow process list. The exact counter name stays in MemoryDisplayLabel.
     public string MemoryDisplayLabel => Process.MemoryDisplayLabel;
     public string MemoryShortLabel => CompactMemoryLabel(Process);
-    public static string CompactMemoryLabel(ProcessSnapshot process) => process.PrivateWorkingSetAvailable
-        ? "WS PRIVATO"
-        : process.WorkingSetAvailable ? "RAM RESIDENTE" : "RAM N/D";
+    public static string CompactMemoryLabel(ProcessSnapshot process)
+    {
+        string label = process.PrivateWorkingSetAvailable
+            ? "WS PRIVATO"
+            : process.WorkingSetAvailable ? "RAM RESIDENTE" : "RAM N/D";
+        return SysPulseLocalization.Translate(label);
+    }
     public string MemoryDescription => Process.MemoryDescription;
     public string Parent => Process.ParentName ?? "N/D";
-    public string Activity => Insight.Summary;
-    public string Role => Insight.Role;
-    public string ParentContext => $"{(Process.ParentName is null ? "Origine non disponibile" : $"Avviato da: {Process.ParentName}")} · PID {Pid}";
+    public string Activity => SysPulseLocalization.Translate(Insight.Summary);
+    public string Role => SysPulseLocalization.Translate(Insight.Role);
+    public string ParentContext => SysPulseLocalization.CurrentLanguage == AppLanguage.English
+        ? $"{(Process.ParentName is null ? "Origin not available" : $"Started by: {Process.ParentName}")} · PID {Pid}"
+        : $"{(Process.ParentName is null ? "Origine non disponibile" : $"Avviato da: {Process.ParentName}")} · PID {Pid}";
     public string StartTimeLabel => Process.StartTime.HasValue
-        ? $"Avvio: {ProcessStartFormatter.FormatStart(Process.StartTime)}"
-        : "Avvio: non disponibile";
+        ? (SysPulseLocalization.CurrentLanguage == AppLanguage.English
+            ? $"Started: {ProcessStartFormatter.FormatStart(Process.StartTime)}"
+            : $"Avvio: {ProcessStartFormatter.FormatStart(Process.StartTime)}")
+        : (SysPulseLocalization.CurrentLanguage == AppLanguage.English ? "Start time: not available" : "Avvio: non disponibile");
     public string UptimeLabel => Process.StartTime.HasValue
-        ? $"In esecuzione da {ProcessStartFormatter.FormatElapsed(Process.StartTime)}"
-        : "Durata non disponibile";
-    public string DetectionLabel => Insight.DetectionLabel;
+        ? (SysPulseLocalization.CurrentLanguage == AppLanguage.English
+            ? $"Running for {ProcessStartFormatter.FormatElapsed(Process.StartTime)}"
+            : $"In esecuzione da {ProcessStartFormatter.FormatElapsed(Process.StartTime)}")
+        : (SysPulseLocalization.CurrentLanguage == AppLanguage.English ? "Uptime not available" : "Durata non disponibile");
+    public string DetectionLabel => SysPulseLocalization.TerminologyFunctionLabel(Insight.RoleConfidencePercent);
     public int Confidence => Insight.ConfidencePercent;
-    public string CloseRisk => Insight.CloseRisk;
+    public string CloseRisk => SysPulseLocalization.Translate(Insight.CloseRisk);
     public string Framework => Insight.Framework;
     public string RoleConfidenceLabel => Insight.RoleConfidenceLabel;
     public string RuntimeCpuState => !Process.CpuSampleAvailable ? "CPU N/D" : CpuPercent switch
     {
-        >= 10 => "Uso CPU elevato",
-        >= 2 => "Uso CPU moderato",
-        >= 0.2 => "Uso CPU contenuto",
-        _ => "Uso CPU minimo"
+        >= 10 => SysPulseLocalization.Translate("Uso CPU elevato"),
+        >= 2 => SysPulseLocalization.Translate("Uso CPU moderato"),
+        >= 0.2 => SysPulseLocalization.Translate("Uso CPU contenuto"),
+        _ => SysPulseLocalization.Translate("Uso CPU minimo")
     };
 }

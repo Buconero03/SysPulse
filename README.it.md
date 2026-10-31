@@ -93,12 +93,14 @@ Il codice sorgente è organizzato in una soluzione modulare in .NET 8 / C# 12:
 
 ```
 ProcessLens-Leggero/
-├── AVVIA_PROCESSLENS.cmd              # Script batch di lancio rapido per l'utente
+├── AVVIA_SYSPULSE_IT.cmd              # Script batch di avvio rapido in lingua Italiana
+├── START_SYSPULSE_EN.cmd              # Script batch di avvio rapido in lingua Inglese
+├── AVVIA_PROCESSLENS.cmd              # Script batch predefinito di avvio rapido per l'utente
 ├── LEGGIMI.txt                        # Note sintetiche di avvio e revisione
 ├── README.md                          # Documentazione principale in lingua inglese (GitHub standard)
 ├── README.it.md                       # Documentazione completa in lingua italiana
 ├── supporto/
-│   ├── avvia.ps1                      # Orchestratore di pre-flight, build e avvio
+│   ├── avvia.ps1                      # Orchestratore di pre-flight, build e avvio con parametro -Language (it/en)
 │   └── build-r34.ok                   # Ricevuta di certificazione build completata
 └── progetto/
     ├── build-dashboard.ps1            # Script maestro di verifica, test e compilazione
@@ -136,22 +138,32 @@ flowchart TD
     J --> K["Apertura Finestra GUI WPF SysPulse"]
 ```
 
-### Metodi di Avvio
+### Metodi di Avvio e Supporto Bilingue (Italiano / Inglese)
 
-1. **Metodo Standard (Consigliato)**:
-   Eseguire con doppio clic il file `AVVIA_PROCESSLENS.cmd` nella cartella principale.
-2. **Da PowerShell**:
+1. **Avvio Diretto in Lingua Italiana**:
+   Doppio clic su `AVVIA_SYSPULSE_IT.cmd` (oppure `AVVIA_PROCESSLENS.cmd`) nella root del progetto.
+2. **Avvio Diretto in Lingua Inglese**:
+   Doppio clic su `START_SYSPULSE_EN.cmd` nella root del progetto.
+3. **Da PowerShell con selezione lingua**:
    ```powershell
-   .\supporto\avvia.ps1
+   # Per avviare in Italiano:
+   .\supporto\avvia.ps1 -Language it
+
+   # Per avviare in Inglese:
+   .\supporto\avvia.ps1 -Language en
    ```
-3. **Compilazione Manuale e Test Completi**:
+4. **Cambio Lingua Dinamico dall'Interfaccia Grafica**:
+   Nella barra superiore dell'applicazione è presente il pulsante interattivo **Lingua: IT / Language: EN** che consente di commutare istantaneamente tutte le etichette, colonne, dettagli e descrizioni dei processi tra Italiano e Inglese senza riavviare. La scelta viene salvata e ricordata automaticamente.
+5. **Compilazione Manuale e Test Completi**:
    ```powershell
    cd .\progetto
    .\build-dashboard.ps1
    ```
-4. **Esecuzione Diretta del Binario Compilato**:
+6. **Esecuzione Diretta del Binario Compilato con flag CLI**:
    ```powershell
-   .\progetto\publish\win-x64\ProcessLens.exe
+   .\progetto\publish\win-x64\ProcessLens.exe --lang it
+   # oppure
+   .\progetto\publish\win-x64\ProcessLens.exe --lang en
    ```
 
 ---

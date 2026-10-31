@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using ProcessLens.Core;
 
 namespace ProcessLens.App;
 
@@ -29,6 +30,7 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        SysPulseLocalization.InitializeFromArgs(e.Args);
         AppDiagnostics.Record("Richiesto avvio della GUI");
         try
         {

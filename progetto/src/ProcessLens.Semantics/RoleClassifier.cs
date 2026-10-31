@@ -190,6 +190,23 @@ internal static partial class RoleClassifier
                 "Può chiudere una parte dell'app. L'effetto preciso non è determinato.", "MEDIO", "Applicazioni", 66,
                 "identità package disponibile, ruolo interno non esposto");
 
+        if (!string.IsNullOrWhiteSpace(p.FileDescription) &&
+            !p.FileDescription.Equals(p.Name, StringComparison.OrdinalIgnoreCase) &&
+            !p.FileDescription.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) &&
+            p.FileDescription.Trim().Length > 2)
+        {
+            string desc = p.FileDescription.Trim();
+            string category = CategoryFor(p, fw);
+            string impact = p.IsDeepInspected && p.HasVisibleWindow
+                ? "Può chiudere la finestra e le funzionalità dell'applicazione."
+                : "La chiusura interrompe le funzionalità fornite da questo componente.";
+            return R(desc, $"{desc} ({owner.Owner})",
+                $"Eseguibile identificato dalla descrizione file: '{desc}'. Componente di {owner.Owner}.",
+                p.ParentName is null ? $"Componente associato a {owner.Owner}; motivo dell’avvio non osservato." : $"Padre riportato: {p.ParentName}. Componente associato a {owner.Owner}.",
+                impact, "MEDIO", category, 88,
+                $"descrizione file eseguibile: '{desc}'; editore={owner.Owner}");
+        }
+
         string genericCategory = CategoryFor(p, fw);
         return R("Funzione sconosciuta", $"{id.FriendlyName}: Non classificato",
             "Funzione sconosciuta: nome e contatori non bastano.",
@@ -353,8 +370,386 @@ internal static partial class RoleClassifier
     private static RoleAssessment? ClassifyByGenericNameSignals(ProcessSnapshot p, OwnershipAssessment owner, FrameworkAssessment fw)
     {
         string cleanExe = Path.GetFileNameWithoutExtension(p.Name).ToLowerInvariant();
+        string cmd = p.CommandLine ?? string.Empty;
+
         switch (cleanExe)
         {
+            case "system":
+                return R("Kernel NT e sottosistema di sistema", "Componente principale di Windows (PID 4)",
+                    "È il processo del kernel NT di Windows. Gestisce thread in modalità kernel, driver di dispositivo e allocazione della memoria fisica.",
+                    "Avviato dal boot loader di Windows all'accensione del computer.",
+                    "Non può e non deve essere terminato: è il nucleo operativo dell'intero sistema Windows.", "CRITICO", "Windows", 100,
+                    "processo kernel NT di sistema (PID 4)");
+
+            case "smss":
+                return R("Sottosistema gestione sessioni (smss)", "Inizializza sessioni utente, memoria virtuale e sottosistema Win32",
+                    "Session Manager Subsystem è il primo processo utente avviato dal kernel. Avvia csrss e winlogon.",
+                    "Processo fondamentale di boot del sistema operativo.",
+                    "Non terminare: la terminazione causa l'immediata schermata blu (BSOD) e riavvio del PC.", "CRITICO", "Windows", 100,
+                    "eseguibile Session Manager Subsystem (smss.exe)");
+
+            case "csrss":
+                return R("Sottosistema di runtime Client/Server (csrss)", "Gestisce finestre di console, processi e thread utente",
+                    "Client/Server Runtime Subsystem è il componente utente critico di Win32. Mantiene le tabelle di processi e le finestre di console.",
+                    "Componente critico di ogni sessione attiva di Windows.",
+                    "Non terminare: provoca l'arresto anomalo immediato del sistema.", "CRITICO", "Windows", 100,
+                    "eseguibile Client/Server Runtime Subsystem (csrss.exe)");
+
+            case "wininit":
+                return R("Inizializzazione di sistema (wininit)", "Avvia il gestore servizi SCM, LSASS e il gestore sessioni locali",
+                    "Windows Initialization Process coordina i servizi di base di Windows avviati nella sessione 0.",
+                    "Avviato all'avvio del sistema operativo.",
+                    "Non terminare: causa l'arresto anomalo del sistema operativo.", "CRITICO", "Windows", 100,
+                    "eseguibile Windows Initialization (wininit.exe)");
+
+            case "services":
+                return R("Gestore controllo servizi (SCM)", "Avvia, arresta e monitora tutti i servizi e driver di Windows",
+                    "Service Control Manager (services.exe) è il coordinatore centrale di tutti i servizi Windows registrati.",
+                    "Componente fondamentale di Windows per l'orchestrazione dei servizi in background.",
+                    "Non terminare: interrompe la gestione di tutti i servizi di rete e di sistema.", "CRITICO", "Windows", 100,
+                    "eseguibile Service Control Manager (services.exe)");
+
+            case "lsass":
+                return R("Sottosistema di sicurezza locale (LSASS)", "Autenticazione utenti, token di sicurezza e policy di accesso",
+                    "Local Security Authority Subsystem Service verifica le credenziali di accesso, genera token di sicurezza e applica i criteri locali.",
+                    "Componente centrale di sicurezza e autenticazione di Windows.",
+                    "Non terminare: provoca la disconnessione immediata o il riavvio del computer.", "CRITICO", "Windows", 100,
+                    "eseguibile Local Security Authority (lsass.exe)");
+
+            case "lsaiso":
+                return R("Isolamento credenziali e sicurezza VBS (LSAISO)", "Protegge chiavi e token di autenticazione con isolamento hardware",
+                    "Credential Guard isola i processi LSA in un ambiente virtualizzato sicuro per impedire il furto delle credenziali in memoria.",
+                    "Abilitato dai criteri di sicurezza basati su virtualizzazione (VBS).",
+                    "Non terminare: protetto dall'hypervisor; essenziale per la sicurezza delle credenziali.", "CRITICO", "Windows", 100,
+                    "eseguibile LSA Isolation / Credential Guard (lsaiso.exe)");
+
+            case "winlogon":
+                return R("Applicazione di accesso a Windows (winlogon)", "Gestisce schermata di blocco, Ctrl+Alt+Canc e sessione utente",
+                    "Windows Logon Application gestisce l'accesso interattivo, il blocco del desktop e il caricamento del profilo utente.",
+                    "Processo fondamentale della sessione di accesso interattiva.",
+                    "Non terminare: provoca la disconnessione della sessione utente attiva.", "CRITICO", "Windows", 100,
+                    "eseguibile Windows Logon Application (winlogon.exe)");
+
+            case "svchost":
+                string svcSugg = cmd.Contains("-k netsvcs", StringComparison.OrdinalIgnoreCase)
+                    ? "Host servizi di rete (svchost · netsvcs)"
+                    : cmd.Contains("-k localservice", StringComparison.OrdinalIgnoreCase)
+                        ? "Host servizi locali (svchost · localService)"
+                        : cmd.Contains("-k networkservice", StringComparison.OrdinalIgnoreCase)
+                            ? "Host servizi di rete locali (svchost · networkService)"
+                            : cmd.Contains("-k dcomlaunch", StringComparison.OrdinalIgnoreCase)
+                                ? "Host avvio DCOM (svchost · DcomLaunch)"
+                                : cmd.Contains("-k appmodel", StringComparison.OrdinalIgnoreCase)
+                                    ? "Host modello app Windows (svchost · AppModel)"
+                                    : cmd.Contains("-k utcsvc", StringComparison.OrdinalIgnoreCase)
+                                        ? "Host telemetria Windows (svchost · UtcSvc)"
+                                        : "Host condiviso servizi Windows (svchost)";
+                string svcDesc = p.ServiceDisplayNames.Count > 0
+                    ? $"Ospita: {string.Join(", ", p.ServiceDisplayNames)}"
+                    : "Ospita servizi DLL di sistema raggruppati per ottimizzare la memoria";
+                return R(svcSugg, svcDesc,
+                    "Processo generico host di Windows per l'esecuzione di servizi implementati in librerie dinamiche DLL.",
+                    p.ParentName is null ? "Avviato dal gestore servizi SCM (services.exe)." : $"Padre: {p.ParentName}.",
+                    "La terminazione può interrompere i servizi di sistema ospitati all'interno.", "ALTO", "Windows", 98,
+                    "eseguibile host servizi Windows (svchost.exe)");
+
+            case "registry":
+                return R("Sottosistema del Registro di Windows", "Gestione in memoria degli hive e ottimizzazione chiavi di sistema",
+                    "Mantiene in memoria gli hive del Registro di sistema per accelerare le letture e scritture fuori dallo spazio kernel.",
+                    "Componente architetturale di sistema di Windows 10/11.",
+                    "Non terminare: è protetto dal sistema operativo.", "CRITICO", "Windows", 100,
+                    "processo architettura Registro di sistema");
+
+            case "shellexperiencehost":
+                return R("Host esperienza Shell di Windows", "Gestisce elementi grafici moderni: flyout, orologio e notifiche",
+                    "Coordina l'integrazione tra la shell desktop classica e i componenti visivi moderni di Windows.",
+                    "Avviato dalla sessione grafica per arricchire l'interfaccia utente.",
+                    "La barra delle applicazioni o i menu a comparsa potrebbero bloccarsi o riavviarsi.", "MEDIO", "Windows", 96,
+                    "eseguibile ShellExperienceHost.exe riconosciuto");
+
+            case "startmenuexperiencehost":
+                return R("Host del Menu Start di Windows", "Renderizza il Menu Start, icone bloccate e collegamenti rapidi",
+                    "Processo dedicato che disegna e anima il menu Start di Windows 10 e Windows 11.",
+                    "Avviato all'accesso per consentire l'apertura istantanea del menu Start.",
+                    "Il menu Start si chiude; Windows lo ricrea automaticamente al clic successivo.", "BASSO / MEDIO", "Windows", 98,
+                    "eseguibile StartMenuExperienceHost.exe riconosciuto");
+
+            case "applicationframehost":
+                return R("Host cornice app moderne (UWP)", "Incornicia le app dello Store in finestre compatibili con il desktop",
+                    "Fornisce la barra del titolo, i bordi e il ridimensionamento standard per le app Universal Windows Platform.",
+                    "Avviato quando una o più app moderne sono aperte.",
+                    "Può nascondere o chiudere la cornice delle app moderne aperte.", "BASSO / MEDIO", "Windows", 96,
+                    "eseguibile ApplicationFrameHost.exe riconosciuto");
+
+            case "taskmgr":
+                return R("Gestione attività di Windows", "Monitoraggio processi, risorse di sistema, prestazioni e avvio",
+                    "Strumento nativo di diagnostica e gestione processi di Windows.",
+                    "Aperto dall'utente per ispezionare le prestazioni del computer.",
+                    "Chiude la finestra di Gestione attività; nessun impatto sugli altri processi.", "BASSO", "Windows", 98,
+                    "eseguibile Taskmgr.exe riconosciuto");
+
+            case "cmd":
+                return R("Prompt dei comandi di Windows", "Interprete di comandi batch e console a riga di comando tradizionale",
+                    "Esegue script .bat/.cmd o comandi interattivi nella shell Win32 standard.",
+                    p.ParentName is null ? "Aperto dall'utente o da un'applicazione." : $"Padre: {p.ParentName}.",
+                    "Chiude la finestra di comando e interrompe gli script attualmente in esecuzione.", "BASSO / MEDIO", "Windows", 96,
+                    "eseguibile Prompt dei comandi (cmd.exe)");
+
+            case "wslhost" or "wslservice" or "vmmem" or "vmmemwsl":
+                return R("Host sottosistema Linux WSL / Macchina virtuale", "Esegue il kernel Linux e gestisce risorse per distribuzioni WSL2",
+                    "Windows Subsystem for Linux (WSL2) esegue distribuzioni Linux native su un hypervisor leggero Hyper-V.",
+                    "Avviato quando una sessione Linux o Docker Desktop è attiva.",
+                    "Chiude tutte le sessioni Linux attive, i server web locali o i container in esecuzione in WSL.", "MEDIO / ALTO", "WSL", 98,
+                    "componente architettura WSL2/vmmem riconosciuto");
+
+            case "vmwp" or "vmms":
+                return R("Gestione macchine virtuali Hyper-V", "Processo di lavoro e coordinamento per macchine virtuali Hyper-V",
+                    "Hyper-V Virtual Machine Management Service gestisce lo stato e la virtualizzazione hardware delle VM.",
+                    "Avviato per gestire macchine virtuali, Sandbox di Windows o emulatori Android.",
+                    "Interrompe o sospende la macchina virtuale associata.", "MEDIO / ALTO", "Windows", 97,
+                    "componente Hyper-V riconosciuto");
+
+            case "werfault" or "wermgr":
+                return R("Segnalazione errori di Windows (WerFault)", "Cattura crash dump e raccoglie informazioni sugli arresti anomali",
+                    "Windows Error Reporting si attiva quando un'applicazione si blocca in modo imprevisto.",
+                    "Attivato automaticamente dal sistema in seguito all'arresto anomalo di un programma.",
+                    "Interrompe la generazione del dump di memoria dell'errore; l'app terminata rimane chiusa.", "BASSO", "Windows", 96,
+                    "componente Windows Error Reporting (WerFault.exe)");
+
+            case "trustedinstaller" or "tiworker" or "mousocoreworker" or "usoclient":
+                return R("Gestione aggiornamenti e moduli Windows", "Installa patch di sicurezza, pacchetti cumulativi e moduli di sistema",
+                    "Windows Modules Installer e Update Orchestrator applicano modifiche ai file di sistema protetti di Windows.",
+                    "Avviato durante la manutenzione o l'installazione di aggiornamenti Windows Update.",
+                    "Sconsigliato terminarlo durante un aggiornamento: può causare pacchetti corrotti o lunghi rollback all'avvio.", "ALTO", "Windows", 98,
+                    "componente Windows Update / TrustedInstaller");
+
+            case "msiexec":
+                return R("Motore di installazione Windows Installer (MSI)", "Esegue installazione, configurazione o rimozione pacchetti .msi",
+                    "Servizio standard di Windows per l'installazione sicura di programmi conformi alle specifiche MSI.",
+                    "Avviato per installare o aggiornare un'applicazione.",
+                    "Interrompe l'installazione in corso, lasciando il programma parzialmente configurato.", "MEDIO / ALTO", "Windows", 97,
+                    "eseguibile Windows Installer (msiexec.exe)");
+
+            case "rundll32":
+                return R("Esecutore di librerie DLL a 32/64 bit (rundll32)", "Esegue funzioni esportate da librerie DLL come processi autonomi",
+                    "Strumento di sistema Windows per richiamare punti di ingresso all'interno di moduli dinamici.",
+                    "Utilizzato da applet del Pannello di controllo, wizard o utilità di sistema.",
+                    "Chiude l'operazione o la finestra di dialogo aperta tramite la DLL.", "BASSO / MEDIO", "Windows", 94,
+                    "eseguibile rundll32.exe riconosciuto");
+
+            case "chrome":
+                if (!cmd.Contains("--type=", StringComparison.OrdinalIgnoreCase))
+                    return R("Processo principale Google Chrome", "Coordina finestre, schede, estensioni e navigazione web",
+                        "Google Chrome coordina l'interfaccia utente, memorizza la cronologia e gestisce l'accesso a rete e disco.",
+                        "Browser web aperto dall'utente.",
+                        "Terminarlo chiude tutte le finestre, schede e processi collegati di Google Chrome.", "MEDIO", "Applicazioni", 98,
+                        "processo principale Google Chrome (chrome.exe)");
+                break;
+
+            case "msedge":
+                if (!cmd.Contains("--type=", StringComparison.OrdinalIgnoreCase))
+                    return R("Processo principale Microsoft Edge", "Coordina finestre, schede, navigazione e integrazione di sistema",
+                        "Microsoft Edge coordina l'interfaccia del browser, i profili utente e i sottoprocessi dedicati alle schede.",
+                        "Browser web aperto dall'utente o da un'applicazione integrata.",
+                        "Terminarlo chiude il browser e tutte le schede aperte.", "MEDIO", "Applicazioni", 98,
+                        "processo principale Microsoft Edge (msedge.exe)");
+                break;
+
+            case "firefox":
+                if (cmd.Contains("-contentproc", StringComparison.OrdinalIgnoreCase))
+                    return R("Processo contenuti web Firefox", "Elabora codice HTML, JavaScript e risorse web isolate in sandbox",
+                        "Firefox isola ogni scheda o origine in processi contenuti separati per sicurezza e stabilità.",
+                        "Avviato da Firefox per renderizzare le schede aperte.",
+                        "La scheda associata mostrerà un errore di arresto anomalo e potrà essere ricaricata.", "BASSO / MEDIO", "Applicazioni", 98,
+                        "processo contenuti Firefox (-contentproc)");
+                return R("Processo principale Mozilla Firefox", "Coordina finestre, schede, segnalibri e navigazione del browser",
+                    "Processo genitore di Mozilla Firefox con motore Gecko per la gestione sicura del browser.",
+                    "Browser web aperto dall'utente.",
+                    "Terminarlo chiude Firefox e tutte le schede web aperte.", "MEDIO", "Applicazioni", 98,
+                    "eseguibile Mozilla Firefox (firefox.exe)");
+
+            case "brave" or "opera" or "opera_gx" or "vivaldi" or "tor":
+                return R($"Browser web {owner.Owner}", $"Coordina navigazione web e schede per {owner.Owner}",
+                    $"Browser ottimizzato per navigazione web da {owner.Owner}.",
+                    "Applicazione aperta dall'utente.",
+                    "Terminarlo chiude la sessione di navigazione attiva.", "MEDIO", "Applicazioni", 96,
+                    $"eseguibile browser {cleanExe}");
+
+            case "code":
+                if (cmd.Contains("--type=extensionHost", StringComparison.OrdinalIgnoreCase))
+                    return R("Host estensioni Visual Studio Code", "Esegue estensioni, linters e integrazioni per l'editor",
+                        "VS Code isola le estensioni di terze parti in questo processo per non bloccare l'interfaccia utente.",
+                        "Avviato da Visual Studio Code per supportare i plugin attivi.",
+                        "Le estensioni attive si riavviano o mostrano un avviso nell'editor.", "BASSO / MEDIO", "Sviluppo", 98,
+                        "VS Code extensionHost riconosciuto");
+                if (cmd.Contains("--type=watcherService", StringComparison.OrdinalIgnoreCase))
+                    return R("Watcher del file system VS Code", "Monitora le modifiche ai file nel workspace per l'albero di progetto",
+                        "Rileva file creati, modificati o eliminati nella cartella di lavoro aperta.",
+                        "Avviato da Visual Studio Code per il tracciamento dei file del progetto.",
+                        "L'esploratore file di VS Code potrebbe non rilevare modifiche esterne fino al riavvio.", "BASSO", "Sviluppo", 98,
+                        "VS Code watcherService riconosciuto");
+                if (!cmd.Contains("--type=", StringComparison.OrdinalIgnoreCase))
+                    return R("Editor Visual Studio Code", "Ambiente di sviluppo leggero e gestione progetti con finestre di codice",
+                        "Visual Studio Code coordina il workspace di sviluppo, l'interfaccia dell'editor e i terminali integrati.",
+                        "Aperto dall'utente per modificare codice sorgente.",
+                        "Terminarlo chiude la finestra dell'editor; i file non salvati sono protetti da hot-exit.", "MEDIO", "Sviluppo", 98,
+                        "processo principale Visual Studio Code (code.exe)");
+                break;
+
+            case "devenv":
+                return R("IDE Microsoft Visual Studio", "Ambiente di sviluppo completo per C++, C#, .NET e cloud",
+                    "Visual Studio gestisce soluzioni complesse, compilatori, designer visuali e debugger avanzati.",
+                    "Aperto dall'utente per lo sviluppo software.",
+                    "Chiude l'IDE; le sessioni di compilazione o debug attive vengono interrotte.", "MEDIO", "Sviluppo", 98,
+                    "Microsoft Visual Studio (devenv.exe)");
+
+            case "git" or "git-lfs":
+                return R("Controllo versione distribuito Git", "Esegue comandi di repository, tracciamento commit, branching o sincronizzazione",
+                    "Strumento a riga di comando Git per la gestione della cronologia del codice sorgente.",
+                    p.ParentName is null ? "Invocato da terminale o da un'estensione dell'editor." : $"Padre: {p.ParentName}.",
+                    "Interrompe l'operazione git in corso (clone, fetch, commit, checkout).", "BASSO / MEDIO", "Sviluppo", 98,
+                    "eseguibile Git riconosciuto");
+
+            case "docker" or "dockerd" or "com.docker.backend" or "com.docker.proxy":
+                return R("Virtualizzazione e container Docker", "Gestisce immagini, container attivi, volumi e reti virtuali Docker",
+                    "Docker Desktop coordina la piattaforma container per lo sviluppo e l'esecuzione di ambienti isolati.",
+                    "Avviato per eseguire container applicativi locali o stack di sviluppo.",
+                    "Interrompe tutti i container Docker in esecuzione e i servizi mappati sulle porte locali.", "MEDIO / ALTO", "Sviluppo", 98,
+                    "piattaforma Docker riconosciuta");
+
+            case "cargo" or "rustc":
+                return R("Compilatore e gestore pacchetti Rust", "Compila codice sorgente Rust, gestisce dipendenze crate e crea binari",
+                    "Toolchain ufficiale di Rust per l'analisi del codice, il borrowing checker e la compilazione nativa.",
+                    "Invocato da cargo build, cargo test o da un language server come rust-analyzer.",
+                    "Interrompe la compilazione o l'esecuzione dei test Rust in corso.", "BASSO / MEDIO", "Sviluppo", 98,
+                    "toolchain Rust (cargo/rustc)");
+
+            case "go":
+                return R("Compilatore e toolchain Go", "Compila, scarica moduli ed esegue pacchetti di codice sorgente Go",
+                    "Strumento di sviluppo della toolchain del linguaggio Go (Golang).",
+                    "Avviato per compilare, testare o eseguire programmi Go.",
+                    "Interrompe la compilazione o l'esecuzione dell'applicazione Go.", "BASSO / MEDIO", "Sviluppo", 98,
+                    "toolchain Go (go.exe)");
+
+            case "npm" or "npx" or "yarn" or "pnpm":
+                return R("Gestore pacchetti JavaScript", "Installa librerie npm, esegue script di build e avvia strumenti di sviluppo",
+                    "Strumento di gestione pacchetti per Node.js per il download e l'esecuzione di dipendenze JavaScript/TypeScript.",
+                    "Invocato per installare pacchetti o eseguire comandi del progetto web.",
+                    "Interrompe l'installazione delle dipendenze o lo script di build corrente.", "BASSO / MEDIO", "Sviluppo", 97,
+                    "package manager JavaScript riconosciuto");
+
+            case "discord":
+                return R("Client di comunicazione Discord", "Chat vocale, streaming video e messaggistica istantanea",
+                    "Applicazione desktop per la connessione a server vocali e canali testuali Discord.",
+                    "Applicazione aperta dall'utente.",
+                    "Chiude Discord e disconnette dai canali vocali attivi.", "BASSO / MEDIO", "Applicazioni", 98,
+                    "eseguibile Discord riconosciuto");
+
+            case "slack":
+                return R("Piattaforma di collaborazione Slack", "Messaggistica di gruppo, canali di lavoro e chiamate integrate",
+                    "Client desktop per la comunicazione interna aziendale e gestione canali Slack.",
+                    "Aperto dall'utente per la collaborazione di lavoro.",
+                    "Chiude Slack; interrompe le notifiche e le chiamate in corso.", "BASSO / MEDIO", "Applicazioni", 98,
+                    "eseguibile Slack riconosciuto");
+
+            case "teams" or "ms-teams":
+                return R("Client Microsoft Teams", "Riunioni online, videoconferenze e chat aziendale integrata",
+                    "Piattaforma di collaborazione Microsoft Teams per videoconferenze e canali aziendali.",
+                    "Aperto dall'utente o configurato per l'avvio automatico con Windows.",
+                    "Chiude Microsoft Teams; interrompe le riunioni video o le chiamate attive.", "BASSO / MEDIO", "Applicazioni", 98,
+                    "Microsoft Teams riconosciuto");
+
+            case "telegram":
+                return R("Client desktop Telegram", "Messaggistica istantanea sincronizzata, gruppi e canali",
+                    "Applicazione nativa di messaggistica veloce e crittografata Telegram Desktop.",
+                    "Aperto dall'utente per comunicare.",
+                    "Chiude l'applicazione Telegram; sospende le notifiche dei messaggi.", "BASSO", "Applicazioni", 98,
+                    "Telegram.exe riconosciuto");
+
+            case "whatsapp":
+                return R("Client desktop WhatsApp", "Messaggistica istantanea, chiamate e condivisione file sincronizzata",
+                    "Applicazione desktop ufficiale WhatsApp per Windows.",
+                    "Aperto dall'utente per la messaggistica.",
+                    "Chiude WhatsApp e sospende le notifiche in arrivo.", "BASSO", "Applicazioni", 98,
+                    "WhatsApp.exe riconosciuto");
+
+            case "spotify":
+                return R("Riproduttore musicale Spotify", "Streaming audio, podcast e gestione playlist musicali",
+                    "Applicazione client desktop per lo streaming e la riproduzione di musica Spotify.",
+                    "Aperto dall'utente per l'ascolto di musica o podcast.",
+                    "Interrompe immediatamente la riproduzione musicale e chiude l'app.", "BASSO", "Applicazioni", 98,
+                    "Spotify.exe riconosciuto");
+
+            case "steam" or "steamwebhelper":
+                return R("Piattaforma giochi Steam", "Libreria giochi, negozio digitale, download aggiornamenti e overlay",
+                    "Client della piattaforma Steam di Valve per il download, la gestione e l'esecuzione di videogiochi.",
+                    "Aperto per avviare giochi o attivo nell'area di notifica per gli aggiornamenti.",
+                    "Terminarlo chiude Steam e interrompe i download di giochi in corso.", "BASSO / MEDIO", "Applicazioni", 98,
+                    "Steam.exe riconosciuto");
+
+            case "winword":
+                return R("Microsoft Word", "Creazione e modifica di documenti di testo con formattazione avanzata",
+                    "Applicazione di videoscrittura della suite Microsoft Office / 365.",
+                    "Aperto dall'utente per redigere o consultare documenti di testo.",
+                    "Chiude Microsoft Word; le modifiche non salvate potrebbero andare perse.", "MEDIO", "Applicazioni", 98,
+                    "Microsoft Word (winword.exe)");
+
+            case "excel":
+                return R("Microsoft Excel", "Calcoli analitici, formule, tabelle pivot e grafici numerici",
+                    "Applicazione per fogli elettronici e analisi di dati della suite Microsoft Office / 365.",
+                    "Aperto dall'utente per lavorare su tabelle e dati numerici.",
+                    "Chiude Excel; le modifiche non salvate ai fogli di calcolo potrebbero andare perse.", "MEDIO", "Applicazioni", 98,
+                    "Microsoft Excel (excel.exe)");
+
+            case "powerpnt":
+                return R("Microsoft PowerPoint", "Creazione e visualizzazione di presentazioni multimediali",
+                    "Applicazione per la creazione di diapositive della suite Microsoft Office / 365.",
+                    "Aperto dall'utente per lavorare a una presentazione.",
+                    "Chiude PowerPoint; le modifiche non salvate potrebbero andare perse.", "MEDIO", "Applicazioni", 98,
+                    "Microsoft PowerPoint (powerpnt.exe)");
+
+            case "acrobat" or "acrord32":
+                return R("Adobe Acrobat / Reader", "Visualizzazione, compilazione moduli e modifica di file PDF",
+                    "Applicazione standard per la lettura e gestione di documenti in formato Portable Document Format (PDF).",
+                    "Aperto dall'utente per consultare o firmare un documento PDF.",
+                    "Chiude il documento PDF visualizzato.", "BASSO", "Applicazioni", 98,
+                    "Adobe Acrobat / Reader riconosciuto");
+
+            case "notepad" or "notepad++":
+                return R("Editor di testo", "Visualizzazione e modifica veloce di file di testo (.txt, configurazioni, codice)",
+                    "Editor di testo leggero per appunti, file di log e configurazioni.",
+                    "Aperto dall'utente per leggere o scrivere un file di testo.",
+                    "Chiude l'editor; i file non salvati richiedono conferma prima della chiusura.", "BASSO", "Applicazioni", 98,
+                    "Editor Notepad riconosciuto");
+
+            case "onedrive":
+                return R("Sincronizzazione Microsoft OneDrive", "Sincronizza file personali e cartelle di sistema con il cloud",
+                    "Client di sincronizzazione nativo di Microsoft per il backup e l'accesso su richiesta ai file cloud.",
+                    "Configurato per l'avvio automatico all'accesso per mantenere aggiornati i file locali.",
+                    "Sospende la sincronizzazione dei file con il cloud Microsoft.", "BASSO / MEDIO", "Background", 98,
+                    "Microsoft OneDrive (onedrive.exe)");
+
+            case "dropbox":
+                return R("Sincronizzazione cloud Dropbox", "Mantiene allineati i file della cartella Dropbox con il cloud",
+                    "Client desktop Dropbox per la sincronizzazione e condivisione file.",
+                    "Attivo in background per rilevare modifiche ai file nella cartella sincronizzata.",
+                    "Sospende la sincronizzazione dei file con Dropbox.", "BASSO", "Background", 98,
+                    "Dropbox.exe riconosciuto");
+
+            case "powertoys" or "powertoys.runner" or "powertoys.powerlauncher":
+                return R("Suite Microsoft PowerToys", "Fornisce scorciatoie, ancoraggio finestre FancyZones e utilità avanzate",
+                    "Raccolta di utilità sviluppate da Microsoft per ottimizzare l'esperienza utente su Windows.",
+                    "Eseguito in background per gestire scorciatoie da tastiera e zone finestre.",
+                    "Disabilita temporaneamente le scorciatoie di PowerToys finché non viene riavviato.", "BASSO", "Background", 98,
+                    "Microsoft PowerToys riconosciuto");
+
+            case "everything":
+                return R("Indicizzatore rapido Everything", "Indicizzazione NTFS istantanea per la ricerca immediata di file",
+                    "Utilità ad altissime prestazioni per la ricerca di file per nome tramite lettura diretta NTFS.",
+                    "Attivo in background per mantenere aggiornato l'indice dei file.",
+                    "Chiude l'indicizzatore; la ricerca istantanea non sarà disponibile finché non viene riaperto.", "BASSO", "Background", 98,
+                    "Everything.exe riconosciuto");
+
             case "processlens.memoryagent":
                 return R("Agente avvisi RAM ProcessLens", "Monitora la soglia RAM (85% / 80%) nella sessione utente",
                     "Controlla periodicamente la pressione della RAM fisica e mostra una notifica se supera l'85%.",

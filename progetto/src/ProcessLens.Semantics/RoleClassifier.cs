@@ -431,6 +431,10 @@ internal static partial class RoleClassifier
                     "eseguibile Windows Logon Application (winlogon.exe)");
 
             case "svchost":
+                var svcGroupMatch = Regex.Match(cmd, @"(?i)(?:^|\s)-k\s+([a-zA-Z0-9_.\-]{1,64})");
+                var svcSingleMatch = Regex.Match(cmd, @"(?i)(?:^|\s)-s\s+([a-zA-Z0-9_.\-]{1,64})");
+                string? svcGroup = svcGroupMatch.Success ? svcGroupMatch.Groups[1].Value : null;
+                string? svcSingle = svcSingleMatch.Success ? svcSingleMatch.Groups[1].Value : null;
                 string svcSugg = cmd.Contains("-k netsvcs", StringComparison.OrdinalIgnoreCase)
                     ? "Host servizi di rete (svchost · netsvcs)"
                     : cmd.Contains("-k localservice", StringComparison.OrdinalIgnoreCase)
@@ -443,13 +447,21 @@ internal static partial class RoleClassifier
                                     ? "Host modello app Windows (svchost · AppModel)"
                                     : cmd.Contains("-k utcsvc", StringComparison.OrdinalIgnoreCase)
                                         ? "Host telemetria Windows (svchost · UtcSvc)"
-                                        : "Host condiviso servizi Windows (svchost)";
+                                        : svcSingle is not null
+                                            ? $"Host servizio Windows (svchost · {svcSingle})"
+                                            : svcGroup is not null
+                                                ? $"Host servizi Windows (svchost · {svcGroup})"
+                                                : "Host condiviso servizi Windows (svchost)";
                 string svcDesc = p.ServiceDisplayNames.Count > 0
                     ? $"Ospita: {string.Join(", ", p.ServiceDisplayNames)}"
-                    : "Ospita servizi DLL di sistema raggruppati per ottimizzare la memoria";
+                    : svcSingle is not null
+                        ? $"Parametro servizio: -s {svcSingle}"
+                        : svcGroup is not null
+                            ? $"Gruppo di servizi: -k {svcGroup}"
+                            : "Ospita servizi DLL di sistema raggruppati per ottimizzare la memoria";
                 return R(svcSugg, svcDesc,
                     "Processo generico host di Windows per l'esecuzione di servizi implementati in librerie dinamiche DLL.",
-                    p.ParentName is null ? "Avviato dal gestore servizi SCM (services.exe)." : $"Padre: {p.ParentName}.",
+                    p.ParentName is null ? "Gestito dal Service Control Manager (services.exe)." : $"Padre: {p.ParentName}.",
                     "La terminazione può interrompere i servizi di sistema ospitati all'interno.", "ALTO", "Windows", 98,
                     "eseguibile host servizi Windows (svchost.exe)");
 
@@ -837,7 +849,11 @@ internal static partial class RoleClassifier
                     "Può impedire la digitazione nelle app moderne o nel menu Start finché non si riavvia.", "MEDIO", "Windows", 95,
                     "componente input testo Windows (ctfmon/TextInputHost)");
             case "dllhost":
-                return R("Host componenti COM (dllhost)", "Ospita librerie COM o generatori di anteprime in un processo isolato",
+                var clsidMatch = Regex.Match(cmd, @"(?i)/processid:\{?([0-9a-fA-F\-]{8,36})\}?");
+                string dllHostSummary = clsidMatch.Success
+                    ? $"Ospita componente COM isolato (AppID/CLSID {{{clsidMatch.Groups[1].Value}}})"
+                    : "Ospita librerie COM o generatori di anteprime in un processo isolato";
+                return R("Host componenti COM (dllhost)", dllHostSummary,
                     "COM Surrogate carica DLL e componenti COM fuori dal processo chiamante per isolarne la memoria.",
                     p.ParentName is null ? "Ospita un componente COM su richiesta." : $"Padre riportato: {p.ParentName}; il CLSID specifico richiede ispezione dei parametri.",
                     "Interrompe l'operazione COM o la generazione di miniature in corso.", "BASSO / MEDIO", "Windows", 94,
@@ -851,7 +867,7 @@ internal static partial class RoleClassifier
             case "wmiprvse":
                 return R("Provider WMI di Windows", "Risponde alle interrogazioni di diagnostica e gestione WMI",
                     "Esegue le query WMI richieste da strumenti di monitoraggio, script o servizi di sistema.",
-                    "Avviato dal servizio WMI quando un programma interroga i dati di gestione di Windows.",
+                    "Processo del servizio WMI per l'interrogazione dei dati di gestione di Windows.",
                     "Può far fallire le query WMI in corso; Windows lo riavvia se necessario.", "BASSO / MEDIO", "Background", 95,
                     "eseguibile WMI Provider Host (WmiPrvSE.exe)");
             case "spoolsv":
@@ -863,9 +879,273 @@ internal static partial class RoleClassifier
             case "fontdrvhost":
                 return R("Host driver caratteri (fontdrvhost)", "Renderizza i caratteri tipografici in modalità utente isolata",
                     "Usermode Font Driver Host elabora i font fuori dal kernel per maggiore sicurezza.",
-                    "Componente grafico di sistema avviato da Windows.",
+                    "Componente grafico di sistema di Windows.",
                     "Non terminare: può compromettere la visualizzazione del testo nelle applicazioni.", "ALTO", "Windows", 96,
                     "eseguibile Usermode Font Driver Host (fontdrvhost.exe)");
+            case "processlens":
+                return R("Dashboard diagnostica ProcessLens / SysPulse", "Interfaccia WPF di monitoraggio processi, memoria RAM, rete e servizi",
+                    "Applicazione principale ProcessLens / SysPulse che ispeziona in sola lettura i processi Windows, la memoria fisica/virtuale e i socket TCP/UDP.",
+                    p.ParentName is null ? "Sessione diagnostica aperta dall'utente." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Chiude la finestra di monitoraggio ProcessLens / SysPulse.", "BASSO", "Applicazioni", 99,
+                    "eseguibile principale ProcessLens.exe riconosciuto");
+            case "aggregatorhost":
+                return R("Host aggregatore telemetria Windows", "Raccoglie metriche diagnostiche locali per i componenti di sistema",
+                    "Componente ausiliario di Windows associato all'aggregazione di eventi diagnostici.",
+                    "Processo di sistema Windows; motivo puntuale dell’avvio sconosciuto.",
+                    "Interrompe l'aggregazione corrente; Windows può ricrearlo automaticamente.", "BASSO", "Windows", 95,
+                    "eseguibile AggregatorHost.exe riconosciuto");
+            case "widgets" or "widgetservice":
+                return R("Pannello Widget di Windows", "Gestisce la bacheca dei widget, notizie e schede informative di Windows 11",
+                    "Fornisce il servizio in background e il rendering WebView2 per il pannello Widget di Windows.",
+                    "Componente della shell di Windows 11; motivo puntuale dell’avvio sconosciuto.",
+                    "Chiude i Widget in background; si riavvia aprendo il pannello Widget.", "BASSO", "Windows", 96,
+                    "componente Windows Widgets riconosciuto");
+            case "phoneexperiencehost":
+                return R("Collegamento al telefono (Phone Link)", "Sincronizza notifiche, messaggi, chiamate e foto con lo smartphone",
+                    "Applicazione Microsoft Phone Link per l'integrazione tra Windows e dispositivi mobili Android/iOS.",
+                    "Componente di sincronizzazione mobile; motivo dell’avvio sconosciuto.",
+                    "Sospende il collegamento con il telefono fino alla riapertura dell'app.", "BASSO", "Background", 96,
+                    "eseguibile PhoneExperienceHost.exe riconosciuto");
+            case "gamebar" or "gamebarftserver" or "gamingservices" or "gamingservicesnet":
+                return R("Xbox Game Bar e servizi di gioco", "Gestisce overlay di gioco, cattura clip, audio e servizi Xbox su Windows",
+                    "Infrastruttura di gioco Microsoft per overlay rapidi (Win+G) e gestione pacchetti Xbox.",
+                    "Componente gaming di Windows; motivo dell’avvio sconosciuto.",
+                    "Disabilita temporaneamente l'overlay Xbox Game Bar o i servizi di gioco.", "BASSO", "Background", 96,
+                    "componente Xbox Game Bar / GamingServices riconosciuto");
+            case "systemsettings" or "systemsettingsbroker":
+                return R("Impostazioni di sistema Windows", "Interfaccia moderna per la configurazione di rete, schermo, dispositivi e sistema",
+                    "Applicazione nativa di configurazione di Windows 10/11 (Impostazioni).",
+                    "Finestra o broker delle Impostazioni di Windows; motivo dell’avvio sconosciuto.",
+                    "Chiude la finestra delle Impostazioni di Windows.", "BASSO", "Windows", 98,
+                    "eseguibile SystemSettings riconosciuto");
+            case "lockapp" or "logonui":
+                return R("Schermata di blocco e accesso Windows", "Mostra l'interfaccia della schermata di blocco e i controlli di autenticazione",
+                    "Gestisce l'interfaccia grafica di blocco sessione, sfondo Spotlight e credenziali di accesso.",
+                    "Componente di sessione di Windows; motivo dell’avvio sconosciuto.",
+                    "Windows gestisce automaticamente il ciclo di vita della schermata di blocco.", "MEDIO", "Windows", 96,
+                    "componente LockApp/LogonUI riconosciuto");
+            case "securityhealthhost" or "mpcmdrun" or "nissrv":
+                return R("Ispezione e scansione Microsoft Defender", "Esegue scansioni antimalware su richiesta e ispezione del traffico di rete",
+                    "Modulo operativo di Sicurezza di Windows per verifiche da riga di comando o protezione di rete in tempo reale.",
+                    "Componente operativo di sicurezza Windows; motivo dell’avvio sconosciuto.",
+                    "Può interrompere una scansione antimalware o ridurre la protezione di rete.", "ALTO", "Windows", 97,
+                    "componente operativo Microsoft Defender riconosciuto");
+            case "vssvc":
+                return R("Copia Shadow del volume (VSS)", "Coordina snapshot coerenti dei dischi per backup e punti di ripristino",
+                    "Volume Shadow Copy Service consente di creare copie di sicurezza dei file anche mentre sono in uso.",
+                    "Servizio di sistema Windows; motivo dell’avvio sconosciuto.",
+                    "Interrompe la creazione di punti di ripristino o backup in corso.", "MEDIO / ALTO", "Windows", 97,
+                    "eseguibile Volume Shadow Copy (vssvc.exe)");
+            case "dashost":
+                return R("Host associazione dispositivi (dasHost)", "Gestisce l'accoppiamento di periferiche Bluetooth, Wi-Fi, stampanti e UPnP",
+                    "Device Association Framework Provider Host coordina la scoperta e l'associazione dei dispositivi hardware.",
+                    "Servizio hardware di Windows; motivo dell’avvio sconosciuto.",
+                    "Può interrompere l'abbinamento di dispositivi Bluetooth o di rete.", "BASSO / MEDIO", "Windows", 96,
+                    "eseguibile Device Association Host (dasHost.exe)");
+            case "wlanext":
+                return R("Estensibilità rete wireless (wlanext)", "Supporta autenticazione 802.11, hotspot mobile e driver Wi-Fi",
+                    "Windows Wireless LAN 802.11 Extensibility Framework ospita moduli per la connettività Wi-Fi.",
+                    "Sottosistema wireless di Windows; motivo dell’avvio sconosciuto.",
+                    "Può causare la disconnessione temporanea dalla rete Wi-Fi.", "MEDIO", "Windows", 96,
+                    "eseguibile WLAN Extensibility Host (wlanext.exe)");
+            case "wudfhost":
+                return R("Host driver in modalità utente (WUDFHost)", "Esegue driver di periferiche USB, sensori e dispositivi portatili in spazio utente",
+                    "Windows Driver Foundation User-mode Driver Framework isola i driver fuori dal kernel per prevenire crash di sistema.",
+                    "Sottosistema driver di Windows; motivo dell’avvio sconosciuto.",
+                    "Non terminare: disconnette le periferiche hardware gestite dal driver.", "ALTO", "Windows", 97,
+                    "eseguibile Windows User-Mode Driver Host (WUDFHost.exe)");
+            case "unsecapp":
+                return R("Sink asincrono WMI (unsecapp)", "Inoltra risultati e notifiche asincrone WMI ai programmi client",
+                    "WMI Unsecured App funge da intermediario per ricevere callback asincrone dal sottosistema WMI.",
+                    "Componente ausiliario WMI; motivo dell’avvio sconosciuto.",
+                    "I programmi in ascolto di eventi WMI possono smettere di ricevere notifiche.", "BASSO / MEDIO", "Background", 95,
+                    "eseguibile WMI Unsecured App (unsecapp.exe)");
+            case "backgroundtaskhost":
+                return R("Host attività in background UWP", "Esegue compiti periodici di sincronizzazione o notifica per app dello Store",
+                    "Processo temporaneo di Windows che esegue task in background per le app pacchettizzate.",
+                    "Gestito dal broker di sistema Windows; motivo dell’avvio sconosciuto.",
+                    "Interrompe il task secondario corrente dell'app associata.", "BASSO", "Background", 95,
+                    "eseguibile backgroundTaskHost.exe riconosciuto");
+            case "msbuild" or "vbcscompiler" or "csc":
+                return R("Compilatore Roslyn / Motore MSBuild .NET", "Compila progetti C#/VB.NET e mantiene in cache l'analisi sintattica",
+                    "Strumento della toolchain .NET SDK per la compilazione incrementale e l'orchestrazione dei file di progetto.",
+                    p.ParentName is null ? "Processo di build .NET attivo." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Interrompe la compilazione .NET in corso o azzera la cache del compilatore Roslyn.", "BASSO / MEDIO", "Sviluppo", 98,
+                    "toolchain di compilazione .NET (MSBuild/Roslyn)");
+            case "cl" or "link" or "mspdbsrv":
+                return R("Toolchain di compilazione Microsoft Visual C++", "Compila sorgenti C/C++, collega oggetti nativi e genera simboli PDB",
+                    "Compilatore nativo MSVC (cl.exe), linker (link.exe) e server di database simboli di debug (mspdbsrv.exe).",
+                    p.ParentName is null ? "Processo di compilazione C/C++ attivo." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Fa fallire la compilazione C/C++ attualmente in esecuzione.", "BASSO / MEDIO", "Sviluppo", 98,
+                    "toolchain MSVC (cl/link/mspdbsrv)");
+            case "gcc" or "g++" or "clang" or "clang++" or "lld" or "cc1" or "cc1plus":
+                return R("Compilatore C/C++ GCC / LLVM Clang", "Traduce codice sorgente C/C++ in codice macchina nativo ed eseguibili",
+                    "Front-end e ottimizzatore di compilazione per progetti C e C++.",
+                    p.ParentName is null ? "Processo di compilazione nativa attivo." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Interrompe il job di compilazione C/C++ corrente.", "BASSO / MEDIO", "Sviluppo", 98,
+                    "compilatore C/C++ (GCC/Clang)");
+            case "cmake" or "ninja" or "make" or "mingw32-make":
+                return R("Orchestratore di build CMake / Ninja / Make", "Configura il grafo delle dipendenze e coordina le compilazioni parallele",
+                    "Sistema di automazione della build per progetti multipiattaforma.",
+                    p.ParentName is null ? "Processo di orchestrazione build attivo." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Arresta l'intera sequenza di compilazione del progetto.", "BASSO / MEDIO", "Sviluppo", 98,
+                    "sistema di build (CMake/Ninja/Make)");
+            case "javac" or "gradle" or "mvn":
+                return R("Sistema di build e compilatore Java (Gradle / Maven)", "Compila classi Java, risolve dipendenze Maven ed esegue test",
+                    "Toolchain di automazione e compilazione per l'ecosistema JVM.",
+                    p.ParentName is null ? "Processo di build JVM attivo." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Interrompe la build Gradle/Maven o il daemon di compilazione Java.", "BASSO / MEDIO", "Sviluppo", 97,
+                    "toolchain di build Java (javac/gradle/mvn)");
+            case "bun" or "deno":
+                return R("Runtime moderno JavaScript / TypeScript (Bun / Deno)", "Esegue applicazioni TypeScript/JS, server web, bundler e test runner",
+                    "Motore ad alte prestazioni per l'esecuzione diretta di codice TypeScript e JavaScript.",
+                    p.ParentName is null ? "Runtime JS/TS attivo." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Arresta il server o lo script JavaScript/TypeScript in esecuzione.", "BASSO / MEDIO", "Sviluppo", 98,
+                    "runtime JS/TS (Bun/Deno)");
+            case "cursor" or "windsurf":
+                return R("Editor di codice AI-native (Cursor / Windsurf)", "Ambiente di sviluppo integrato con assistenza AI, indicizzazione e terminale",
+                    "IDE basato su architettura Chromium/VS Code con integrazione nativa per modelli linguistici del codice.",
+                    p.ParentName is null ? "Editor di sviluppo aperto." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Chiude l'editor o il sottoprocesso associato.", "MEDIO", "Sviluppo", 98,
+                    "IDE AI-native (Cursor/Windsurf) riconosciuto");
+            case "rider64" or "idea64" or "pycharm64" or "webstorm64" or "clion64" or "goland64":
+                return R("Ambiente di sviluppo JetBrains IDE", "Indicizzazione codice, refactoring, compilazione e debug avanzato",
+                    "IDE professionale della suite JetBrains basato su piattaforma JVM.",
+                    p.ParentName is null ? "IDE JetBrains attivo." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Chiude l'ambiente di sviluppo JetBrains e interrompe i task in corso.", "MEDIO", "Sviluppo", 98,
+                    "eseguibile JetBrains IDE riconosciuto");
+            case "ollama" or "ollama_llama_server" or "llama-server" or "lmstudio":
+                return R("Motore di inferenza AI / LLM locale", "Esegue modelli linguistici di grandi dimensioni (LLM) su GPU/CPU locale",
+                    "Server e runtime di inferenza locale per l'esecuzione privata di modelli AI generativi.",
+                    p.ParentName is null ? "Motore AI locale attivo." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Interrompe la generazione AI in corso e scarica il modello dalla memoria VRAM/RAM.", "BASSO / MEDIO", "Sviluppo", 98,
+                    "motore inferenza LLM locale (Ollama/llama.cpp/LM Studio)");
+            case "claude":
+                return R("Assistente AI Claude", "Client desktop o agente a riga di comando per assistenza AI e sviluppo codice",
+                    "Applicazione o CLI ufficiale Anthropic Claude.",
+                    p.ParentName is null ? "Sessione Claude attiva." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Chiude la sessione corrente di Claude.", "BASSO / MEDIO", "Sviluppo", 97,
+                    "eseguibile Claude riconosciuto");
+            case "adb" or "emulator" or "qemu-system-x86_64":
+                return R("Strumenti SDK Android (ADB / Emulatore)", "Ponte di debug con dispositivi Android ed esecuzione di dispositivi virtuali AVD",
+                    "Android Debug Bridge e motore QEMU per il test e il deploy di applicazioni mobile Android.",
+                    p.ParentName is null ? "Servizio di sviluppo Android attivo." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Disconnette i dispositivi Android in debug o chiude l'emulatore attivo.", "BASSO / MEDIO", "Sviluppo", 98,
+                    "componente Android SDK (adb/emulator/qemu)");
+            case "sqlservr" or "sqlwriter":
+                return R("Motore database Microsoft SQL Server", "Gestisce database relazionali, transazioni SQL, indici e cache buffer",
+                    "Servizio principale del database relazionale Microsoft SQL Server.",
+                    "Servizio database attivo; motivo puntuale dell’avvio sconosciuto.",
+                    "Interrompe le connessioni ai database SQL locali e annulla le transazioni aperte.", "ALTO", "Sviluppo", 98,
+                    "eseguibile Microsoft SQL Server (sqlservr/sqlwriter)");
+            case "postgres" or "pg_ctl":
+                return R("Server database PostgreSQL", "Gestisce connessioni client, query SQL, WAL e processi worker del database",
+                    "Motore di database relazionale open-source PostgreSQL.",
+                    p.ParentName is null ? "Istanza database PostgreSQL attiva." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Interrompe il servizio database PostgreSQL o chiude la connessione worker.", "MEDIO / ALTO", "Sviluppo", 98,
+                    "eseguibile PostgreSQL (postgres.exe)");
+            case "mysqld" or "mariadbd":
+                return R("Server database MySQL / MariaDB", "Elabora interrogazioni SQL, tabelle InnoDB e connessioni applicative",
+                    "Demone del server database relazionale MySQL o MariaDB.",
+                    "Servizio database attivo; motivo dell’avvio sconosciuto.",
+                    "Arresta il database MySQL/MariaDB; le applicazioni collegate perderanno la connessione.", "MEDIO / ALTO", "Sviluppo", 98,
+                    "eseguibile MySQL/MariaDB riconosciuto");
+            case "mongod" or "mongos":
+                return R("Server database documentale MongoDB", "Gestisce collezioni BSON/JSON, indici e replicazione dati",
+                    "Processo principale del database NoSQL orientato ai documenti MongoDB.",
+                    "Servizio database MongoDB attivo; motivo dell’avvio sconosciuto.",
+                    "Interrompe l'istanza MongoDB e disconnette i client locali.", "MEDIO / ALTO", "Sviluppo", 98,
+                    "eseguibile MongoDB (mongod/mongos)");
+            case "redis-server":
+                return R("Data store in-memory Redis", "Gestisce cache ad altissima velocità, strutture dati in RAM e code di messaggi",
+                    "Server Redis per il caching in memoria e la gestione di sessioni e broker di messaggi.",
+                    "Processo server Redis attivo; motivo dell’avvio sconosciuto.",
+                    "Arresta la cache Redis; i dati non ancora persistiti su disco potrebbero andare persi.", "MEDIO", "Sviluppo", 98,
+                    "eseguibile Redis Server riconosciuto");
+            case "nginx" or "httpd" or "caddy" or "traefik" or "w3wp" or "iisexpress":
+                return R("Server Web HTTP / Reverse Proxy", "Accetta richieste HTTP/HTTPS, serve contenuti web e instrada traffico di rete",
+                    "Server web o worker applicativo (Nginx, Apache, Caddy, Traefik, IIS).",
+                    p.ParentName is null ? "Server web attivo." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Rende irraggiungibili i siti o le API ospitate su questo server.", "MEDIO", "Sviluppo", 98,
+                    "server web HTTP riconosciuto");
+            case "kubectl" or "helm" or "minikube" or "kubelet":
+                return R("Orchestrazione cluster Kubernetes", "Comunica con le API del cluster Kubernetes, gestisce pod e port-forwarding",
+                    "Strumento di gestione e orchestrazione per cluster containerizzati Kubernetes.",
+                    p.ParentName is null ? "Comando o tunnel Kubernetes attivo." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Chiude il comando o interrompe i tunnel di port-forward Kubernetes attivi.", "BASSO / MEDIO", "Sviluppo", 97,
+                    "strumento Kubernetes (kubectl/helm/minikube)");
+            case "vboxheadless" or "virtualboxvm" or "vmware-vmx":
+                return R("Macchina virtuale (VirtualBox / VMware)", "Esegue un intero sistema operativo guest isolato con risorse virtualizzate",
+                    "Processo hypervisor che mantiene in esecuzione una macchina virtuale completa.",
+                    p.ParentName is null ? "Macchina virtuale in esecuzione." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Spegne bruscamente la macchina virtuale guest, con rischio di perdita dati nel sistema ospitato.", "ALTO", "Applicazioni", 98,
+                    "processo macchina virtuale (VirtualBox/VMware)");
+            case "nvcontainer" or "nvdisplay.container" or "nvidia share" or "nvidia web helper":
+                return R("Servizi driver e overlay NVIDIA", "Gestisce pannello di controllo GPU, profili schermo, ShadowPlay e telemetria driver",
+                    "Contenitore di servizi utente e di sistema per schede grafiche NVIDIA GeForce / RTX.",
+                    "Componente del pacchetto driver NVIDIA; motivo dell’avvio sconosciuto.",
+                    "Disabilita temporaneamente l'overlay NVIDIA o le funzioni accessorie del driver grafico.", "BASSO / MEDIO", "Background", 97,
+                    "servizio contenitore driver NVIDIA riconosciuto");
+            case "amdrsserv" or "radeonsoftware" or "amdow":
+                return R("Software e servizi grafici AMD Radeon", "Gestisce impostazioni GPU, profili di gioco, registrazione e metriche hardware",
+                    "Componente utente e servizio del driver grafico AMD Software: Adrenalin Edition.",
+                    "Componente del pacchetto driver AMD; motivo dell’avvio sconosciuto.",
+                    "Chiude il pannello di controllo AMD Radeon e le scorciatoie grafiche.", "BASSO / MEDIO", "Background", 97,
+                    "componente software grafico AMD Radeon riconosciuto");
+            case "igfxem" or "igfxext" or "igfxcuiservice" or "oneapp.igcc.winservice":
+                return R("Servizio controllo grafico Intel", "Gestisce scorciatoie schermo, profili colore e impostazioni della GPU integrata Intel",
+                    "Modulo di supporto per i driver grafici Intel Graphics Command Center.",
+                    "Componente del driver grafico Intel; motivo dell’avvio sconosciuto.",
+                    "Disabilita la gestione avanzata dello schermo Intel fino al riavvio.", "BASSO", "Background", 96,
+                    "servizio grafico Intel riconosciuto");
+            case "rtkauduservice64" or "ravbg64" or "fmapp":
+                return R("Servizio gestione audio Realtek HD", "Gestisce il rilevamento dei jack audio, effetti sonori e configurazione altoparlanti",
+                    "Servizio di accompagnamento per il chip audio integrato Realtek High Definition Audio.",
+                    "Servizio audio hardware; motivo dell’avvio sconosciuto.",
+                    "Può disabilitare il cambio automatico cuffie/altoparlanti o gli effetti Realtek.", "BASSO", "Background", 96,
+                    "servizio audio Realtek riconosciuto");
+            case "obs64" or "obs-ffmpeg-mux":
+                return R("OBS Studio (Registrazione e Streaming)", "Acquisisce schermo, audio e webcam per codifica video o streaming live",
+                    "Open Broadcaster Software per la produzione video e la registrazione su disco.",
+                    p.ParentName is null ? "Applicazione OBS Studio aperta." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Interrompe immediatamente la registrazione video o la diretta streaming in corso.", "MEDIO / ALTO", "Applicazioni", 98,
+                    "eseguibile OBS Studio riconosciuto");
+            case "vlc" or "mpv":
+                return R("Riproduttore multimediale (VLC / mpv)", "Decodifica e riproduce file video, tracce audio e flussi di rete",
+                    "Lettore multimediale multiprotocollo con accelerazione hardware.",
+                    "Aperto per la riproduzione di contenuti audio/video.",
+                    "Interrompe la riproduzione multimediale e chiude la finestra del player.", "BASSO", "Applicazioni", 98,
+                    "riproduttore multimediale (VLC/mpv) riconosciuto");
+            case "7z" or "7zg" or "winrar" or "tar":
+                return R("Gestore archivi e compressione file", "Comprime o estrae archivi di file (.zip, .7z, .rar, .tar.gz)",
+                    "Utilità di compressione e decompressione dati ad alte prestazioni.",
+                    p.ParentName is null ? "Operazione su archivio in corso." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Interrompe la compressione o estrazione, lasciando l'archivio di destinazione incompleto.", "MEDIO", "Applicazioni", 97,
+                    "strumento di archiviazione (7-Zip/WinRAR/tar)");
+            case "anydesk" or "teamviewer" or "rustdesk" or "mstsc":
+                return R("Client di controllo e desktop remoto", "Trasmette lo schermo e inoltra i comandi di mouse e tastiera a distanza",
+                    "Software di teleassistenza, accesso remoto o connessione Desktop Remoto (RDP).",
+                    "Sessione o servizio di accesso remoto attivo; motivo dell’avvio sconosciuto.",
+                    "Disconnette immediatamente la sessione di controllo remoto attiva.", "MEDIO", "Applicazioni", 98,
+                    "client desktop remoto (AnyDesk/TeamViewer/RustDesk/RDP)");
+            case "wireshark" or "dumpcap" or "tshark":
+                return R("Analizzatore di rete Wireshark / Dumpcap", "Cattura e decodifica pacchetti di rete dalle interfacce Ethernet/Wi-Fi",
+                    "Strumento diagnostico per l'ispezione del traffico di rete e l'analisi dei protocolli.",
+                    p.ParentName is null ? "Analisi pacchetti di rete attiva." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Termina la cattura dei pacchetti di rete in corso.", "BASSO / MEDIO", "Sviluppo", 98,
+                    "analizzatore di rete (Wireshark/dumpcap/tshark)");
+            case "curl":
+                return R("Client trasferimento dati di rete (curl)", "Esegue richieste HTTP/HTTPS/FTP da riga di comando o script",
+                    "Utilità a riga di comando per il trasferimento dati tramite URL.",
+                    p.ParentName is null ? "Richiesta di rete da riga di comando." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Annulla il download o la richiesta HTTP in corso.", "BASSO", "Sviluppo", 97,
+                    "eseguibile curl riconosciuto");
+            case "ffmpeg" or "ffprobe":
+                return R("Elaboratore multimediale FFmpeg", "Transcodifica, converte, unisce o analizza flussi audio e video",
+                    "Motore a riga di comando per la codifica e l'elaborazione di file multimediali.",
+                    p.ParentName is null ? "Elaborazione audio/video attiva." : $"Padre riportato: {p.ParentName}; motivo dell’avvio sconosciuto.",
+                    "Interrompe la conversione multimediale lasciando il file di output incompleto.", "MEDIO", "Sviluppo", 98,
+                    "eseguibile FFmpeg/FFprobe riconosciuto");
         }
 
         string signal = $"{p.Name} {p.FileDescription} {p.ProductName}".ToLowerInvariant();

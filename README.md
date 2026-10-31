@@ -6,7 +6,7 @@
 [![Architecture](https://img.shields.io/badge/Architecture-Read--Only%20%7C%20Zero--Intervention-success.svg)](#architectural-principles--safety)
 [![Tests](https://img.shields.io/badge/Verification-341%20Tests%20%26%2053%20Static%20Gates%20Passed-brightgreen.svg)](#compilation-pipeline-phases-1-6)
 
-*Read this in other languages: [English](README.md) | [Italiano](README.it.md)*
+*Read this in other languages: [English](README.md) | [Italiano](README.it.md) | [Bilingual Process Analysis Encyclopedia (IT + EN)](PROCESS_ANALYSIS_IT_EN.md)*
 
 **SysPulse** is an advanced systems analysis dashboard and high-precision Task Manager & Network Inspector for 64-bit Windows environments. Engineered on the battle-tested ProcessLens R34 engine, SysPulse is purpose-built to deliver **absolute transparency**, **microsecond-accurate live telemetry**, and a **zero-intervention architecture**.
 

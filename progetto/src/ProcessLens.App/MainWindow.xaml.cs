@@ -1258,6 +1258,8 @@ public partial class MainWindow : Window
         DetailCloseImpactText.Text = SysPulseLocalization.Translate(i.CloseImpact);
         DetailRiskText.Text = ProcessDetailPresentation.ClosingRiskLabel(i.CloseRisk);
         ApplyRiskBadge(i.CloseRisk);
+        DetailEnglishAnalysisText.Text = SysPulseLocalization.BuildEnglishProcessAnalysis(
+            p, i, origin.ParentSummary, origin.Operation);
 
         RefreshCpuDetails(row);
         RefreshMemoryDetails(row);
@@ -2323,6 +2325,7 @@ public partial class MainWindow : Window
         DetailWhyRunningText.Text = "-";
         DetailCloseImpactText.Text = "-";
         DetailRiskText.Text = "-";
+        DetailEnglishAnalysisText.Text = "Select a process to view the complete English analysis.";
         DetailCpuText.Text = "-";
         DetailCpuAverageText.Text = "Media: -";
         DetailCpuPeakText.Text = "Picco: -";

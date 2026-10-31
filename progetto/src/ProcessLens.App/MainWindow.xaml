@@ -825,6 +825,13 @@
                             </StackPanel>
                         </Border>
 
+                        <Border Style="{StaticResource DetailCard}" Background="#F5F9FF" BorderBrush="#CBE0FA">
+                            <StackPanel>
+                                <TextBlock Text="ENGLISH PROCESS ANALYSIS · ANALISI IN INGLESE" Style="{StaticResource SectionLabel}"/>
+                                <local:SelectableText x:Name="DetailEnglishAnalysisText" Text="Select a process to view the complete English analysis." FontSize="12.5" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
                         <Border Style="{StaticResource DetailCard}">
                             <Grid>
                                 <Grid.ColumnDefinitions>

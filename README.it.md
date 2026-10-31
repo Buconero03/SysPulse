@@ -6,7 +6,7 @@
 [![Architecture](https://img.shields.io/badge/Architecture-Read--Only%20%7C%20Zero--Intervention-success.svg)](#principi-architetturali-e-sicurezza)
 [![Tests](https://img.shields.io/badge/Verification-341%20Tests%20%26%2053%20Static%20Gates%20Passed-brightgreen.svg)](#fasi-della-pipeline-di-compilazione)
 
-*Disponibile anche in: [English](README.md) | [Italiano](README.it.md)*
+*Disponibile anche in: [English](README.md) | [Italiano](README.it.md) | [Enciclopedia Analisi dei Processi Bilingue (IT + EN)](PROCESS_ANALYSIS_IT_EN.md)*
 
 **SysPulse** (sviluppato sulla base tecnologica ProcessLens) è una dashboard di analisi avanzata per sistemi operativi Windows (Task Manager & Network Inspector ad alta precisione), progettata specificamente per garantire **trasparenza assoluta**, **misurazioni in tempo reale a livello di microsecondo** e **totale non-intrusività** (zero-intervention architecture).
 

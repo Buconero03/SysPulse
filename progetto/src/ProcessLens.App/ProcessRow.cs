@@ -58,7 +58,9 @@ public sealed class ProcessRow(ProcessSnapshot process, ProcessInsight insight) 
     public ProcessGroupRow? Group { get; internal set; }
     public string MemberLabel => (Process.ServiceDisplayNames.Count > 0 || Process.ServiceNames.Count > 0
         ? WindowsHostReference.Services(Process)
-        : WindowsHostReference.Find(Process.Name) is { } host ? $"Dal nome: {host.Title}" : Insight.Role) + $" · PID {Pid}";
+        : WindowsHostReference.Find(Process.Name) is { } host
+            ? (SysPulseLocalization.IsEnglish ? $"By name: {SysPulseLocalization.Translate(host.Title)}" : $"Dal nome: {host.Title}")
+            : SysPulseLocalization.Translate(Insight.Role)) + $" · PID {Pid}";
     public string Name => Process.Name;
     public ImageSource? IconSource => ProcessIconResolver.GetIcon(Process);
     public string IconDescription => ProcessIconResolver.IconDescription(Process);
@@ -68,7 +70,9 @@ public sealed class ProcessRow(ProcessSnapshot process, ProcessInsight insight) 
     public string OwnerApp => Insight.OwnerApp;
     public int Pid => Process.Pid;
     public double CpuPercent => Process.CpuPercent;
-    public string CpuDisplay => Process.CpuSampleAvailable ? ProcessDisplayFormatter.Percent(Process.CpuPercent) : "N/D";
+    public string CpuDisplay => Process.CpuSampleAvailable
+        ? ProcessDisplayFormatter.Percent(Process.CpuPercent)
+        : (SysPulseLocalization.IsEnglish ? "N/A" : "N/D");
     public double WorkingSetMb => Process.WorkingSetMb;
     public double MemoryDisplayMb => Process.MemoryDisplayMb;
     public string MemoryDisplayText => Process.MemoryDisplayText;
@@ -77,13 +81,19 @@ public sealed class ProcessRow(ProcessSnapshot process, ProcessInsight insight) 
     public string MemoryShortLabel => CompactMemoryLabel(Process);
     public static string CompactMemoryLabel(ProcessSnapshot process)
     {
+        if (SysPulseLocalization.IsEnglish)
+        {
+            return process.PrivateWorkingSetAvailable
+                ? "PRIVATE WS"
+                : process.WorkingSetAvailable ? "RESIDENT RAM" : "RAM N/A";
+        }
         string label = process.PrivateWorkingSetAvailable
             ? "WS PRIVATO"
             : process.WorkingSetAvailable ? "RAM RESIDENTE" : "RAM N/D";
         return SysPulseLocalization.Translate(label);
     }
     public string MemoryDescription => Process.MemoryDescription;
-    public string Parent => Process.ParentName ?? "N/D";
+    public string Parent => Process.ParentName ?? (SysPulseLocalization.IsEnglish ? "N/A" : "N/D");
     public string Activity => SysPulseLocalization.Translate(Insight.Summary);
     public string Role => SysPulseLocalization.Translate(Insight.Role);
     public string ParentContext => SysPulseLocalization.CurrentLanguage == AppLanguage.English
@@ -104,11 +114,13 @@ public sealed class ProcessRow(ProcessSnapshot process, ProcessInsight insight) 
     public string CloseRisk => SysPulseLocalization.Translate(Insight.CloseRisk);
     public string Framework => Insight.Framework;
     public string RoleConfidenceLabel => Insight.RoleConfidenceLabel;
-    public string RuntimeCpuState => !Process.CpuSampleAvailable ? "CPU N/D" : CpuPercent switch
-    {
-        >= 10 => SysPulseLocalization.Translate("Uso CPU elevato"),
-        >= 2 => SysPulseLocalization.Translate("Uso CPU moderato"),
-        >= 0.2 => SysPulseLocalization.Translate("Uso CPU contenuto"),
-        _ => SysPulseLocalization.Translate("Uso CPU minimo")
-    };
+    public string RuntimeCpuState => !Process.CpuSampleAvailable
+        ? (SysPulseLocalization.IsEnglish ? "CPU N/A" : "CPU N/D")
+        : CpuPercent switch
+        {
+            >= 10 => SysPulseLocalization.IsEnglish ? "High CPU usage" : "Uso CPU elevato",
+            >= 2 => SysPulseLocalization.IsEnglish ? "Moderate CPU usage" : "Uso CPU moderato",
+            >= 0.2 => SysPulseLocalization.IsEnglish ? "Light CPU usage" : "Uso CPU contenuto",
+            _ => SysPulseLocalization.IsEnglish ? "Minimal CPU usage" : "Uso CPU minimo"
+        };
 }

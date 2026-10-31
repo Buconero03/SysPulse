@@ -205,79 +205,101 @@ public partial class MainWindow : Window
 
     private void LanguageButton_Click(object sender, RoutedEventArgs e)
     {
-        SysPulseLocalization.CurrentLanguage = SysPulseLocalization.CurrentLanguage == AppLanguage.Italian
-            ? AppLanguage.English
-            : AppLanguage.Italian;
+        SysPulseLocalization.ToggleLanguage();
         ApplyLanguage(SysPulseLocalization.CurrentLanguage);
     }
 
     public void ApplyLanguage(AppLanguage language)
     {
+        SysPulseLocalization.SetLanguage(language, persist: true);
         bool isEn = language == AppLanguage.English;
+
+        // Recursively translate all static XAML controls, menus, headers, columns, and tooltips.
+        UiTreeLocalizer.Apply(this, language);
+        UiTreeLocalizer.Apply(GuardianDashboard, language);
+        UiTreeLocalizer.Apply(MemoryDashboard, language);
+        UiTreeLocalizer.Apply(NetworkDevices, language);
+        UiTreeLocalizer.Apply(SystemProcesses, language);
+        UiTreeLocalizer.Apply(_newTaskWindow, language);
+        UiTreeLocalizer.Apply(_serviceDetailsWindow, language);
+
         Title = isEn ? "SysPulse" : "ProcessLens";
         AppTitleText.Text = isEn ? "SysPulse" : "ProcessLens";
-        AppSubtitleText.Text = SysPulseLocalization.Translate("Dati Windows e analisi del processo");
+        AppSubtitleText.Text = isEn ? "Real-time system telemetry and process analysis" : "Dati Windows e analisi del processo";
         LanguageButton.Content = isEn ? "Language: EN" : "Lingua: IT";
 
-        MinimizeWindowButton.Content = SysPulseLocalization.Translate("Nascondi accanto all’orologio");
-        WindowLogButton.Content = SysPulseLocalization.Translate("Log finestra");
-        ExitApplicationButton.Content = SysPulseLocalization.Translate("Esci");
-        NewTaskButton.Content = SysPulseLocalization.Translate("Esegui nuova attività");
-        SearchLabelText.Text = SysPulseLocalization.Translate("Cerca");
-        SearchBox.ToolTip = SysPulseLocalization.Translate("Cerca per nome visualizzato, eseguibile o PID esatto. Ctrl+F per scrivere.");
+        MinimizeWindowButton.Content = isEn ? "Hide to tray" : "Nascondi accanto all’orologio";
+        WindowLogButton.Content = isEn ? "Window log" : "Log finestra";
+        ExitApplicationButton.Content = isEn ? "Exit" : "Esci";
+        NewTaskButton.Content = isEn ? "Run new task" : "Esegui nuova attività";
+        SearchLabelText.Text = isEn ? "Search" : "Cerca";
+        SearchBox.ToolTip = isEn
+            ? "Search by display name, executable, or exact PID. Press Ctrl+F to focus."
+            : "Cerca per nome visualizzato, eseguibile o PID esatto. Ctrl+F per scrivere.";
 
-        NavProcessesButton.Content = SysPulseLocalization.Translate("Processi");
-        NavSystemButton.Content = SysPulseLocalization.Translate("Sistema Windows");
-        NavServicesButton.Content = SysPulseLocalization.Translate("Servizi");
-        NavGuardianButton.Content = SysPulseLocalization.Translate("Guardian");
-        NavNetworkButton.Content = SysPulseLocalization.Translate("Rete");
-        NavMemoryButton.Content = SysPulseLocalization.Translate("Memoria RAM");
+        NavProcessesButton.Content = isEn ? "Processes" : "Processi";
+        NavSystemButton.Content = isEn ? "Windows System" : "Sistema Windows";
+        NavServicesButton.Content = isEn ? "Services" : "Servizi";
+        NavGuardianButton.Content = "Guardian";
+        NavNetworkButton.Content = isEn ? "Network" : "Rete";
+        NavMemoryButton.Content = isEn ? "RAM Memory" : "Memoria RAM";
 
-        FilterAllButton.Content = SysPulseLocalization.Translate("Tutti");
-        FilterAppsButton.Content = SysPulseLocalization.Translate("App");
-        FilterDevButton.Content = SysPulseLocalization.Translate("Sviluppo");
-        FilterWindowsButton.Content = SysPulseLocalization.Translate("Windows");
-        FilterBackgroundButton.Content = SysPulseLocalization.Translate("Secondari");
-        FilterWslButton.Content = SysPulseLocalization.Translate("WSL");
-        ServiceFilterAllButton.Content = SysPulseLocalization.Translate("Tutti");
-        ServiceFilterRunningButton.Content = SysPulseLocalization.Translate("Attivi");
-        ServiceFilterStoppedButton.Content = SysPulseLocalization.Translate("Arrestati");
+        FilterAllButton.Content = isEn ? "All" : "Tutti";
+        FilterAppsButton.Content = isEn ? "Apps" : "App";
+        FilterDevButton.Content = isEn ? "Dev" : "Sviluppo";
+        FilterWindowsButton.Content = "Windows";
+        FilterBackgroundButton.Content = isEn ? "Background" : "Secondari";
+        FilterWslButton.Content = "WSL";
+        ServiceFilterAllButton.Content = isEn ? "All" : "Tutti";
+        ServiceFilterRunningButton.Content = isEn ? "Running" : "Attivi";
+        ServiceFilterStoppedButton.Content = isEn ? "Stopped" : "Arrestati";
 
-        ProcessDetectedLabel.Text = SysPulseLocalization.Translate("Rilevati: ");
-        ProcessVisibleLabel.Text = SysPulseLocalization.Translate("Mostrati: ");
-        SystemCpuLabel.Text = SysPulseLocalization.Translate("CPU sistema: ");
-        SystemCpuAverageLabel.Text = SysPulseLocalization.Translate("Media fino a 30 s: ");
-        LogicalCpuLabel.Text = SysPulseLocalization.Translate("CPU logici: ");
-        SystemRamLabel.Text = SysPulseLocalization.Translate("RAM sistema: ");
+        ProcessDetectedLabel.Text = isEn ? "Detected: " : "Rilevati: ";
+        ProcessVisibleLabel.Text = isEn ? "Shown: " : "Mostrati: ";
+        SystemCpuLabel.Text = isEn ? "System CPU: " : "CPU sistema: ";
+        SystemCpuAverageLabel.Text = isEn ? "30s Avg: " : "Media fino a 30 s: ";
+        LogicalCpuLabel.Text = isEn ? "Logical CPUs: " : "CPU logici: ";
+        SystemRamLabel.Text = isEn ? "System RAM: " : "RAM sistema: ";
 
-        GuiResourcesExpander.Header = SysPulseLocalization.Translate("Risorse di ProcessLens · CPU e RAM della GUI");
-        CopySelfResourcesButton.Content = SysPulseLocalization.Translate("Copia risorse GUI");
+        GuiResourcesExpander.Header = isEn ? "SysPulse Resources · GUI CPU & RAM" : "Risorse di ProcessLens · CPU e RAM della GUI";
+        CopySelfResourcesButton.Content = isEn ? "Copy GUI resources" : "Copia risorse GUI";
 
-        ProcessListHeading.Text = SysPulseLocalization.Translate("Processi");
-        ListExplanationText.Text = SysPulseLocalization.Translate("Seleziona un processo per analizzarlo.");
-        SortLabelText.Text = SysPulseLocalization.Translate("Ordina");
-        GroupApplicationsCheckBox.Content = SysPulseLocalization.Translate("Raggruppa app");
+        ProcessListHeading.Text = isEn ? "Processes" : "Processi";
+        ListExplanationText.Text = isEn ? "Select a process to inspect its telemetry." : "Seleziona un processo per analizzarlo.";
+        SortLabelText.Text = isEn ? "Sort" : "Ordina";
+        GroupApplicationsCheckBox.Content = isEn ? "Group apps" : "Raggruppa app";
 
-        ProcessDetailsHeading.Text = SysPulseLocalization.Translate("Analisi del processo");
-        ProcessDetailsSubheading.Text = SysPulseLocalization.Translate("CPU, memoria, rete e dettagli del processo.");
-        ProcessShowServicesButton.Content = SysPulseLocalization.Translate("Mostra servizi Windows ospitati dal PID");
+        ProcessDetailsHeading.Text = isEn ? "Process Analysis" : "Analisi del processo";
+        ProcessDetailsSubheading.Text = isEn ? "CPU, memory, network, and deep process telemetry." : "CPU, memoria, rete e dettagli del processo.";
+        ProcessShowServicesButton.Content = isEn ? "Show Windows services hosted by this PID" : "Mostra servizi Windows ospitati dal PID";
+        ToggleDetailsFocusButton.Content = _listWidthBeforeFocus is null
+            ? (isEn ? "Expand details" : "Espandi dettagli")
+            : (isEn ? "Show list" : "Mostra elenco");
+        AskProcessButton.Content = isEn ? "Ask" : "Chiedi";
+        QuickQuestionRoot.Header = isEn ? "Deep Analysis ▾" : "Analisi approfondita ▾";
 
-        EstimatedOwnerLabel.Text = SysPulseLocalization.Translate("APP ASSOCIATA · STIMA");
-        EstimatedRoleHeading.Text = SysPulseLocalization.Translate("RUOLO STIMATO");
-        IdentityHeading.Text = SysPulseLocalization.Translate("IDENTITÀ E CLASSIFICAZIONE");
-        ElementsHeading.Text = SysPulseLocalization.Translate("ELEMENTI DI IDENTIFICAZIONE");
-        IfTerminatedHeading.Text = SysPulseLocalization.Translate("SE TERMINI IL PROCESSO");
-        DetailIdentificationExpander.Header = SysPulseLocalization.Translate("Come è stato riconosciuto");
+        EstimatedOwnerLabel.Text = isEn ? "ASSOCIATED APP · ESTIMATE" : "APP ASSOCIATA · STIMA";
+        EstimatedRoleHeading.Text = isEn ? "ESTIMATED ROLE" : "RUOLO STIMATO";
+        IdentityHeading.Text = isEn ? "IDENTITY & CLASSIFICATION" : "IDENTITÀ E CLASSIFICAZIONE";
+        ElementsHeading.Text = isEn ? "IDENTIFICATION EVIDENCE" : "ELEMENTI DI IDENTIFICAZIONE";
+        IfTerminatedHeading.Text = isEn ? "IF YOU TERMINATE THIS PROCESS" : "SE TERMINI IL PROCESSO";
+        DetailIdentificationExpander.Header = isEn ? "How it was identified" : "Come è stato riconosciuto";
 
         if (SortModeComboBox.Items.Count >= 6)
         {
-            ((ComboBoxItem)SortModeComboBox.Items[0]).Content = SysPulseLocalization.Translate("Più recenti");
-            ((ComboBoxItem)SortModeComboBox.Items[1]).Content = SysPulseLocalization.Translate("Più vecchi");
+            ((ComboBoxItem)SortModeComboBox.Items[0]).Content = isEn ? "Newest" : "Più recenti";
+            ((ComboBoxItem)SortModeComboBox.Items[1]).Content = isEn ? "Oldest" : "Più vecchi";
             ((ComboBoxItem)SortModeComboBox.Items[2]).Content = "CPU";
-            ((ComboBoxItem)SortModeComboBox.Items[3]).Content = SysPulseLocalization.Translate("Memoria");
-            ((ComboBoxItem)SortModeComboBox.Items[4]).Content = SysPulseLocalization.Translate("Rete");
-            ((ComboBoxItem)SortModeComboBox.Items[5]).Content = SysPulseLocalization.Translate("Nome");
+            ((ComboBoxItem)SortModeComboBox.Items[3]).Content = isEn ? "Memory" : "Memoria";
+            ((ComboBoxItem)SortModeComboBox.Items[4]).Content = isEn ? "Network" : "Rete";
+            ((ComboBoxItem)SortModeComboBox.Items[5]).Content = isEn ? "Name" : "Nome";
         }
+
+        // Notify all process rows and groups so data-bound labels (PRIVATE WS, NET, N/A) refresh immediately.
+        foreach (var row in _allRows)
+            row.UpdateFrom(row);
+        foreach (var group in _processGroups)
+            group.Refresh();
 
         if (_allRows.Count > 0)
         {
@@ -287,7 +309,16 @@ public partial class MainWindow : Window
         {
             _renderedClassificationFactsInsight = null;
             _renderedClassificationFactsPid = null;
+            _renderedClassificationAuditInsight = null;
             ShowDetails(_currentDetailRow);
+        }
+        else
+        {
+            ClearDetails();
+        }
+        if (_servicesMode)
+        {
+            ApplyServiceFilter();
         }
     }
 
@@ -488,16 +519,17 @@ public partial class MainWindow : Window
             ApplyLiveNetworkSamples(result.Cpu.Network);
             var liveSnapshots = _allRows.Select(r => r.Process).ToArray();
             TrackCpuHistory(liveSnapshots);
-            if ((_sortMode == "CPU" || _sortMode == "Memoria" || _sortMode == "Rete") && !_servicesMode && !_guardianMode && !_memoryMode && !_networkMode && !_systemMode && ProcessList.ItemsSource is not null)
+            if ((_sortMode == "CPU" || _sortMode == "Memoria" || _sortMode == "Memory" || _sortMode == "Rete" || _sortMode == "Network") && !_servicesMode && !_guardianMode && !_memoryMode && !_networkMode && !_systemMode && ProcessList.ItemsSource is not null)
             {
                 _suppressSelectionEvents = true;
                 try { RefreshLiveProcessOrder(); }
                 finally { _suppressSelectionEvents = false; }
             }
             var sys = result.Cpu.System;
-            LogicalCpuText.Text = sys.LogicalProcessors > 0 ? sys.LogicalProcessors.ToString() : "N/D";
-            SystemCpuText.Text = sys.HasSample ? ProcessDisplayFormatter.Percent(sys.BusyPercent) : "N/D";
-            SystemCpuAverageText.Text = sys.HasSample ? ProcessDisplayFormatter.Percent(sys.Average30Seconds) : "N/D";
+            string na = SysPulseLocalization.IsEnglish ? "N/A" : "N/D";
+            LogicalCpuText.Text = sys.LogicalProcessors > 0 ? sys.LogicalProcessors.ToString() : na;
+            SystemCpuText.Text = sys.HasSample ? ProcessDisplayFormatter.Percent(sys.BusyPercent) : na;
+            SystemCpuAverageText.Text = sys.HasSample ? ProcessDisplayFormatter.Percent(sys.Average30Seconds) : na;
             SystemCpuText.ToolTip = $"Tempo CPU occupato da GetSystemTimes / tempo trascorso monotono / CPU logiche. " +
                 $"Intervallo {ProcessDisplayFormatter.Seconds(sys.SampleIntervalSeconds)}; " +
                 $"PID con campione {sys.ProcessesWithCpuSamples}, senza campione {sys.ProcessesWithoutCpuAccess}. " +
@@ -516,13 +548,14 @@ public partial class MainWindow : Window
                 }
             }
             var memory = result.Memory;
-            static string MiB(long? value) => value.HasValue ? $"{value.Value / 1048576d:F1} MiB" : "N/D";
+            string MiB(long? value) => value.HasValue ? $"{value.Value / 1048576d:F1} MiB" : na;
             var own = RecentCpu(Environment.ProcessId);
-            string ownCpu = own?.Available == true ? ProcessDisplayFormatter.Percent(own.Percent) : "N/D";
-            SelfResourcesText.Text = $"GUI ProcessLens · PID {memory.Pid} · CPU {ownCpu} · " +
-                $"Working Set privato {MiB(memory.PrivateResident)} · Working Set totale {MiB(memory.Resident)}";
+            string ownCpu = own?.Available == true ? ProcessDisplayFormatter.Percent(own.Percent) : na;
+            SelfResourcesText.Text = SysPulseLocalization.IsEnglish
+                ? $"SysPulse GUI · PID {memory.Pid} · CPU {ownCpu} · Private WS {MiB(memory.PrivateResident)} · Total WS {MiB(memory.Resident)}"
+                : $"GUI ProcessLens · PID {memory.Pid} · CPU {ownCpu} · Working Set privato {MiB(memory.PrivateResident)} · Working Set totale {MiB(memory.Resident)}";
             _selfResourceReport = SelfResourcesText.Text + "\nIntervallo CPU effettivo: " +
-                (own?.Available == true ? ProcessDisplayFormatter.Seconds(own.IntervalSeconds) : "N/D") + $"\nCommit privato: {MiB(memory.PrivateCommit)}" +
+                (own?.Available == true ? ProcessDisplayFormatter.Seconds(own.IntervalSeconds) : na) + $"\nCommit privato: {MiB(memory.PrivateCommit)}" +
                 $"\nCampione UTC: {memory.CapturedUtc:O}\nVersione: " +
                 typeof(MainWindow).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false)
                     .OfType<System.Reflection.AssemblyInformationalVersionAttribute>().FirstOrDefault()?.InformationalVersion +
@@ -544,9 +577,10 @@ public partial class MainWindow : Window
                 RefreshCpuDetails(failedDetail);
                 RefreshMemoryDetails(failedDetail);
             }
-            SystemCpuText.Text = "N/D"; SystemCpuAverageText.Text = "N/D";
+            string naCatch = SysPulseLocalization.IsEnglish ? "N/A" : "N/D";
+            SystemCpuText.Text = naCatch; SystemCpuAverageText.Text = naCatch;
             UpdateSystemRam(null);
-            SelfResourcesText.Text = "Risorse GUI: lettura non disponibile.";
+            SelfResourcesText.Text = SysPulseLocalization.IsEnglish ? "GUI resources: unavailable." : "Risorse GUI: lettura non disponibile.";
             _selfResourceReport = string.Empty;
             CopySelfResourcesButton.IsEnabled = false;
             AppDiagnostics.Record("Campionamento CPU/RAM rapido non riuscito", ex);
@@ -565,7 +599,7 @@ public partial class MainWindow : Window
             column.Width = new GridLength(0);
             ProcessListPanel.Visibility = Visibility.Collapsed;
             ProcessDetailsSplitter.Visibility = Visibility.Collapsed;
-            ToggleDetailsFocusButton.Content = "Mostra elenco";
+            ToggleDetailsFocusButton.Content = SysPulseLocalization.IsEnglish ? "Show list" : "Mostra elenco";
         }
         else
         {
@@ -574,7 +608,7 @@ public partial class MainWindow : Window
             _listWidthBeforeFocus = null;
             ProcessListPanel.Visibility = Visibility.Visible;
             ProcessDetailsSplitter.Visibility = Visibility.Visible;
-            ToggleDetailsFocusButton.Content = "Espandi dettagli";
+            ToggleDetailsFocusButton.Content = SysPulseLocalization.IsEnglish ? "Expand details" : "Espandi dettagli";
         }
     }
 
@@ -583,8 +617,12 @@ public partial class MainWindow : Window
         if (_queryBusy || _currentDetailRow is not { } row) return;
         var context = WindowsComponentContext.Describe(row.Process);
         ClearQueryAnswer();
-        ShowQueryResult(new ProcessQueryResult("Componente Windows · ruolo e dati", context.Report,
-            "Ruolo tipico separato dallo snapshot del PID; autenticità e sicurezza non verificate.",
+        ShowQueryResult(new ProcessQueryResult(
+            SysPulseLocalization.IsEnglish ? "Windows component · role and telemetry" : "Componente Windows · ruolo e dati",
+            SysPulseLocalization.Translate(context.Report),
+            SysPulseLocalization.IsEnglish
+                ? "Typical OS role separated from live PID snapshot; signature authenticity not verified here."
+                : "Ruolo tipico separato dallo snapshot del PID; autenticità e sicurezza non verificate.",
             Array.Empty<string>(), null));
         ProcessQueryAnswerCard.BringIntoView();
     }
@@ -597,28 +635,43 @@ public partial class MainWindow : Window
     private void RefreshCpuDetails(ProcessRow row)
     {
         var p = row.Process;
-        DetailCpuText.Text = p.CpuSampleAvailable ? ProcessDisplayFormatter.Percent(p.CpuPercent) : "N/D";
-        DetailCpuAverageText.Text = p.CpuSampleAvailable ? $"Media: {ProcessDisplayFormatter.Percent(p.CpuAverage30Seconds)}" : "Media: N/D";
-        DetailCpuPeakText.Text = p.CpuSampleAvailable ? $"Picco: {ProcessDisplayFormatter.Percent(p.CpuPeak30Seconds)}" : "Picco: N/D";
+        bool en = SysPulseLocalization.IsEnglish;
+        string na = en ? "N/A" : "N/D";
+        DetailCpuText.Text = p.CpuSampleAvailable ? ProcessDisplayFormatter.Percent(p.CpuPercent) : na;
+        DetailCpuAverageText.Text = p.CpuSampleAvailable
+            ? $"{(en ? "Avg" : "Media")}: {ProcessDisplayFormatter.Percent(p.CpuAverage30Seconds)}"
+            : $"{(en ? "Avg" : "Media")}: {na}";
+        DetailCpuPeakText.Text = p.CpuSampleAvailable
+            ? $"{(en ? "Peak" : "Picco")}: {ProcessDisplayFormatter.Percent(p.CpuPeak30Seconds)}"
+            : $"{(en ? "Peak" : "Picco")}: {na}";
         DetailCpuCoreText.Text = p.CpuSampleAvailable
-            ? $"Equivalente a {p.CpuLogicalCoreEquivalent:F2} core logici interamente occupati; campione {ProcessDisplayFormatter.Seconds(p.CpuSampleIntervalSeconds)}."
-            : "Campione CPU non disponibile: servono due letture confrontabili della stessa istanza; dato assente o intervallo interrotto.";
+            ? (en
+                ? $"Equivalent to {p.CpuLogicalCoreEquivalent:F2} logical cores at full load; sample {ProcessDisplayFormatter.Seconds(p.CpuSampleIntervalSeconds)}."
+                : $"Equivalente a {p.CpuLogicalCoreEquivalent:F2} core logici interamente occupati; campione {ProcessDisplayFormatter.Seconds(p.CpuSampleIntervalSeconds)}.")
+            : (en
+                ? "CPU sample unavailable: requires two comparable readings of the same process instance."
+                : "Campione CPU non disponibile: servono due letture confrontabili della stessa istanza; dato assente o intervallo interrotto.");
         DetailCpuTotalTimeText.Text = p.CpuCumulativeAvailable
-            ? $"Tempo CPU accumulato: {ProcessDisplayFormatter.CpuDuration(p.CpuCumulativeSeconds)}."
-            : "Tempo CPU accumulato: non disponibile.";
+            ? (en
+                ? $"Total CPU time: {ProcessDisplayFormatter.CpuDuration(p.CpuCumulativeSeconds)}."
+                : $"Tempo CPU accumulato: {ProcessDisplayFormatter.CpuDuration(p.CpuCumulativeSeconds)}.")
+            : (en ? "Total CPU time: unavailable." : "Tempo CPU accumulato: non disponibile.");
         DetailCpuTotalTimeText.ToolTip = p.CpuCumulativeAvailable
-            ? $"Valore del contatore: {p.CpuCumulativeSeconds:G17} s. Somma del tempo CPU dei thread, distinta dal tempo trascorso dall’avvio. La sintesi è arrotondata al millisecondo."
-            : "Contatore del tempo CPU non accessibile; non equivale a zero.";
+            ? (en
+                ? $"Counter value: {p.CpuCumulativeSeconds:G17} s. Sum of thread CPU time since start."
+                : $"Valore del contatore: {p.CpuCumulativeSeconds:G17} s. Somma del tempo CPU dei thread, distinta dal tempo trascorso dall’avvio. La sintesi è arrotondata al millisecondo.")
+            : (en ? "CPU time counter inaccessible; does not mean zero." : "Contatore del tempo CPU non accessibile; non equivale a zero.");
         DetailCpuGroupText.Text = DescribeRelatedProcessCpu(p);
         UpdateCpuGraph(p.Pid);
-        DetailRuntimeStateText.Text = !p.CpuSampleAvailable ? "CPU: dato non disponibile in questo intervallo." : p.CpuPercent switch
-        {
-            >= 10 => $"Utilizzo CPU elevato ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
-            >= 2 => $"Utilizzo CPU moderato ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
-            >= 0.2 => $"Utilizzo CPU contenuto ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
-            _ => $"Utilizzo CPU minimo ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo)."
-        };
-
+        DetailRuntimeStateText.Text = !p.CpuSampleAvailable
+            ? (en ? "CPU: data unavailable in this interval." : "CPU: dato non disponibile in questo intervallo.")
+            : p.CpuPercent switch
+            {
+                >= 10 => en ? $"High CPU usage ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in this interval)." : $"Utilizzo CPU elevato ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
+                >= 2 => en ? $"Moderate CPU usage ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in this interval)." : $"Utilizzo CPU moderato ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
+                >= 0.2 => en ? $"Light CPU usage ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in this interval)." : $"Utilizzo CPU contenuto ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo).",
+                _ => en ? $"Minimal CPU usage ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in this interval)." : $"Utilizzo CPU minimo ({ProcessDisplayFormatter.Percent(p.CpuPercent)} in questo intervallo)."
+            };
     }
 
     private ProcessInsight GetCachedInsight(ProcessSnapshot process)
@@ -768,13 +821,21 @@ public partial class MainWindow : Window
             }
             bool orderChanged = SynchronizeVisibleRows(visible, holdOrder);
             if (grouped && (regroup || orderChanged)) CollectionViewSource.GetDefaultView(ProcessList.ItemsSource).Refresh();
+            bool en = SysPulseLocalization.IsEnglish;
+            string filterLabel = _activeFilter switch
+            {
+                "Tutti" => en ? "View: all processes" : "Vista: tutti i processi",
+                "App" => en ? "View: Apps" : "Vista: App",
+                "Sviluppo" => en ? "View: Dev" : "Vista: Sviluppo",
+                _ => en ? $"View: {_activeFilter}" : $"Vista: {_activeFilter}"
+            };
             VisibleCountText.Text = visible.Count.ToString();
-            CurrentFilterText.Text = (_activeFilter == "Tutti" ? "Vista: tutti i processi" : $"Vista: {_activeFilter}") +
-                (grouped ? $" · {_processGroups.Count} gruppi · {visible.Count} PID" : "");
+            CurrentFilterText.Text = filterLabel +
+                (grouped ? (en ? $" · {_processGroups.Count} groups · {visible.Count} PIDs" : $" · {_processGroups.Count} gruppi · {visible.Count} PID") : "");
 
             if (search.Length > 0) CurrentFilterText.Text += visible.Count == 0
-                ? " · Nessun risultato per «" + search[..Math.Min(search.Length, 100)] + "»"
-                : " · Cerca: «" + search[..Math.Min(search.Length, 100)] + "»";
+                ? (en ? " · No results for «" : " · Nessun risultato per «") + search[..Math.Min(search.Length, 100)] + "»"
+                : (en ? " · Search: «" : " · Cerca: «") + search[..Math.Min(search.Length, 100)] + "»";
             ProcessRow? item = null;
 
             if (selectedPid is not null)
@@ -825,8 +886,8 @@ public partial class MainWindow : Window
         return _sortMode switch
         {
             "CPU" => sorted.OrderByDescending(x => x.Group?.CpuPercent ?? 0),
-            "Memoria" => sorted.OrderByDescending(x => x.Group?.MemoryDisplayMb ?? 0),
-            "Rete" => sorted.OrderByDescending(x => x.Group?.NetworkSortScore ?? 0),
+            "Memoria" or "Memory" => sorted.OrderByDescending(x => x.Group?.MemoryDisplayMb ?? 0),
+            "Rete" or "Network" => sorted.OrderByDescending(x => x.Group?.NetworkSortScore ?? 0),
             _ => sorted
         };
     }
@@ -843,11 +904,11 @@ public partial class MainWindow : Window
 
     private IEnumerable<ProcessRow> ApplySort(IEnumerable<ProcessRow> rows) => _sortMode switch
     {
-        "Più vecchi" => rows.OrderBy(x => x.Process.StartTime ?? DateTime.MaxValue).ThenBy(x => x.FriendlyName, StringComparer.CurrentCultureIgnoreCase),
+        "Più vecchi" or "Oldest" => rows.OrderBy(x => x.Process.StartTime ?? DateTime.MaxValue).ThenBy(x => x.FriendlyName, StringComparer.CurrentCultureIgnoreCase),
         "CPU" => rows.OrderByDescending(x => x.CpuPercent).ThenByDescending(x => x.MemoryDisplayMb),
-        "Memoria" => rows.OrderByDescending(x => x.Process.PrivateWorkingSetAvailable).ThenByDescending(x => x.MemoryDisplayMb).ThenByDescending(x => x.CpuPercent),
-        "Rete" => rows.OrderByDescending(x => x.NetworkSortScore).ThenByDescending(x => x.CpuPercent),
-        "Nome" => rows.OrderBy(x => x.FriendlyName, StringComparer.CurrentCultureIgnoreCase).ThenBy(x => x.Pid),
+        "Memoria" or "Memory" => rows.OrderByDescending(x => x.Process.PrivateWorkingSetAvailable).ThenByDescending(x => x.MemoryDisplayMb).ThenByDescending(x => x.CpuPercent),
+        "Rete" or "Network" => rows.OrderByDescending(x => x.NetworkSortScore).ThenByDescending(x => x.CpuPercent),
+        "Nome" or "Name" => rows.OrderBy(x => x.FriendlyName, StringComparer.CurrentCultureIgnoreCase).ThenBy(x => x.Pid),
         _ => rows.OrderByDescending(x => x.Process.StartTime ?? DateTime.MinValue).ThenBy(x => x.FriendlyName, StringComparer.CurrentCultureIgnoreCase)
     };
 
@@ -1206,6 +1267,7 @@ public partial class MainWindow : Window
         var p = row.Process;
         var i = row.Insight;
 
+        bool en = SysPulseLocalization.IsEnglish;
         DetailProcessIcon.Source = row.IconSource;
         DetailProcessIcon.ToolTip = row.IconDescription;
         DetailFriendlyNameText.Text = i.FriendlyName;
@@ -1214,14 +1276,18 @@ public partial class MainWindow : Window
         DetailUptimeText.Text = ProcessStartFormatter.FormatElapsed(p.StartTime);
         DeepInspectionStatusText.Text = p.IsDeepInspected
             ? (p.DirectNetworkIdentityVerified == false || (p.NetworkCapturedUtc.HasValue && !p.NetworkAcquisitionComplete)
-                ? "Analisi parziale · limiti nei dettagli di rete" : "Analisi approfondita completata")
-            : (_deepInspectionInProgress.Contains(p.Pid) ? "Analisi approfondita in corso…" : "Analisi rapida");
+                ? (en ? "Partial inspection · network limits apply" : "Analisi parziale · limiti nei dettagli di rete")
+                : (en ? "Deep inspection completed" : "Analisi approfondita completata"))
+            : (_deepInspectionInProgress.Contains(p.Pid)
+                ? (en ? "Deep inspection in progress…" : "Analisi approfondita in corso…")
+                : (en ? "Quick snapshot" : "Analisi rapida"));
 
         var windowsContext = WindowsComponentContext.Describe(p);
         WindowsComponentContextExpander.Visibility = windowsContext.IsApplicable ? Visibility.Visible : Visibility.Collapsed;
-        WindowsComponentContextText.Text = ReportLayout.Sections(windowsContext.Report)[0].Body;
+        WindowsComponentContextText.Text = SysPulseLocalization.Translate(ReportLayout.Sections(windowsContext.Report)[0].Body);
         WindowsComponentContextExpander.Header = WindowsHostReference.Find(p.Name) is { } hostReference
-            ? hostReference.Title + " · scheda Microsoft" : "Componente Windows · ruolo e dati";
+            ? (en ? $"{SysPulseLocalization.Translate(hostReference.Title)} · Microsoft reference" : hostReference.Title + " · scheda Microsoft")
+            : (en ? "Windows component · role and telemetry" : "Componente Windows · ruolo e dati");
         DetailOwnerText.Text = i.OwnerApp;
         DetailTypeText.Text = SysPulseLocalization.Translate(i.Role);
         var identification = ProcessDetailPresentation.IdentificationExplanation(p, i);
@@ -1231,14 +1297,14 @@ public partial class MainWindow : Window
 
         var origin = ProcessOriginAnalyzer.Analyze(p);
         DetailOriginSummaryText.Text = SysPulseLocalization.Translate(origin.ParentSummary);
-        DetailOriginOperationText.Text = origin.Operation;
+        DetailOriginOperationText.Text = SysPulseLocalization.Translate(origin.Operation);
         DetailOriginChainText.Text = origin.Chain;
         DetailOriginCaveatText.Text = SysPulseLocalization.Translate(origin.Limitations);
 
         DetailWhatIsItText.Text = SysPulseLocalization.Translate(i.Summary);
         DetailActivityText.Text = SysPulseLocalization.Translate(i.WhatIsIt);
         DetailRoleText.Text = string.Empty;
-        DetailDetectionBasisText.Text = SysPulseLocalization.CurrentLanguage == AppLanguage.English
+        DetailDetectionBasisText.Text = en
             ? (i.RoleConfidencePercent >= 60
                 ? "SysPulse identified a probable process function. Expand details to see what evidence was used."
                 : "Available information is insufficient to identify the function of this process.")
@@ -1263,15 +1329,23 @@ public partial class MainWindow : Window
 
         RefreshCpuDetails(row);
         RefreshMemoryDetails(row);
-        DetailProjectShortText.Text = i.ProjectRoot is null ? "Non identificato" : ShortenPath(i.ProjectRoot, 34);
+        DetailProjectShortText.Text = i.ProjectRoot is null
+            ? (en ? "Not identified" : "Non identificato")
+            : ShortenPath(i.ProjectRoot, 34);
         DetailNetworkStateText.Text = ProcessNetworkPresentation.DescribeEndpointOwners(p);
         RefreshProcessPortsButton.IsEnabled = p.IsDeepInspected && !_networkPortsRefreshing;
 
         DetailWindowStateText.Text = p.IsDeepInspected
             ? (p.HasVisibleWindow
-                ? $"Interfaccia: possiede almeno una finestra visibile{(p.WindowTitles.Count > 0 ? $" — {p.WindowTitles[0]}" : string.Empty)}"
-                : "Interfaccia: nessuna finestra top-level visibile rilevata nelle letture disponibili.")
-            : "Interfaccia: verrà controllata nell'analisi approfondita.";
+                ? (en
+                    ? $"Interface: has at least one visible window{(p.WindowTitles.Count > 0 ? $" — {p.WindowTitles[0]}" : string.Empty)}"
+                    : $"Interfaccia: possiede almeno una finestra visibile{(p.WindowTitles.Count > 0 ? $" — {p.WindowTitles[0]}" : string.Empty)}")
+                : (en
+                    ? "Interface: no visible top-level window detected in current snapshot."
+                    : "Interfaccia: nessuna finestra top-level visibile rilevata nelle letture disponibili."))
+            : (en
+                ? "Interface: will be checked during deep inspection."
+                : "Interfaccia: verrà controllata nell'analisi approfondita.");
 
         if (DetailTechnicalSectionsExpander.IsExpanded)
             UpdateTechnicalDetails(row);
@@ -1309,21 +1383,28 @@ public partial class MainWindow : Window
     private void RefreshMemoryDetails(ProcessRow row)
     {
         var p = row.Process;
+        bool en = SysPulseLocalization.IsEnglish;
+        string na = en ? "N/A" : "N/D";
         DetailMemoryLabel.Text = ProcessRow.CompactMemoryLabel(p);
         DetailMemoryLabel.ToolTip = p.MemoryDescription + (p.MemorySampledUtc.HasValue
-            ? $"\nCampione: {p.MemorySampledUtc.Value.ToLocalTime():HH:mm:ss}. CPU/RAM: intervallo nominale 1 s; elenco e metadati: 15–45 s."
-            : "\nOra del campione RAM non disponibile.");
+            ? (en
+                ? $"\nSample: {p.MemorySampledUtc.Value.ToLocalTime():HH:mm:ss}. CPU/RAM: nominal 1 s interval; list and metadata: 15–45 s."
+                : $"\nCampione: {p.MemorySampledUtc.Value.ToLocalTime():HH:mm:ss}. CPU/RAM: intervallo nominale 1 s; elenco e metadati: 15–45 s.")
+            : (en ? "\nRAM sample timestamp unavailable." : "\nOra del campione RAM non disponibile."));
         DetailMemoryText.Text = p.MemoryDisplayText;
-        DetailPrivateWorkingSetText.Text = p.PrivateWorkingSetAvailable ? $"{p.PrivateWorkingSetMb:F1} MiB" : "N/D";
-        DetailWorkingSetText.Text = p.WorkingSetAvailable ? $"{p.WorkingSetMb:F1} MiB" : "N/D";
-        DetailPrivateCommitText.Text = p.PrivateCommitAvailable ? $"{p.PrivateMb:F1} MiB" : "N/D";
+        DetailPrivateWorkingSetText.Text = p.PrivateWorkingSetAvailable ? $"{p.PrivateWorkingSetMb:F1} MiB" : na;
+        DetailWorkingSetText.Text = p.WorkingSetAvailable ? $"{p.WorkingSetMb:F1} MiB" : na;
+        DetailPrivateCommitText.Text = p.PrivateCommitAvailable ? $"{p.PrivateMb:F1} MiB" : na;
         DetailMemoryExplanationText.Text = p.MemoryDescription;
-        DetailMemoryGuideExampleText.Text = ProcessMemoryGuide.DescribeCurrentValues(p);
+        DetailMemoryGuideExampleText.Text = SysPulseLocalization.Translate(ProcessMemoryGuide.DescribeCurrentValues(p));
         var memoryTrend = GetMemoryTrend(p);
         DetailMemoryTrendText.Text = memoryTrend?.HasTrend == true
-            ? $"Ultimi {memoryTrend.Seconds / 60:F1} min · {memoryTrend.Metric}: " +
-              $"Δ {memoryTrend.DeltaMb:+0.0;-0.0;0.0} MiB · min {memoryTrend.MinimumMb:F1} · picco {memoryTrend.PeakMb:F1} MiB ({memoryTrend.Samples} campioni)"
-            : "Andamento memoria non disponibile: servono almeno tre campioni confrontabili in almeno 20 s.";
+            ? (en
+                ? $"Last {memoryTrend.Seconds / 60:F1} min · {SysPulseLocalization.Translate(memoryTrend.Metric)}: Δ {memoryTrend.DeltaMb:+0.0;-0.0;0.0} MiB · min {memoryTrend.MinimumMb:F1} · peak {memoryTrend.PeakMb:F1} MiB ({memoryTrend.Samples} samples)"
+                : $"Ultimi {memoryTrend.Seconds / 60:F1} min · {memoryTrend.Metric}: Δ {memoryTrend.DeltaMb:+0.0;-0.0;0.0} MiB · min {memoryTrend.MinimumMb:F1} · picco {memoryTrend.PeakMb:F1} MiB ({memoryTrend.Samples} campioni)")
+            : (en
+                ? "Memory trend unavailable: requires at least 3 comparable samples over at least 20 s."
+                : "Andamento memoria non disponibile: servono almeno tre campioni confrontabili in almeno 20 s.");
     }
 
     private void UpdateTechnicalDetails(ProcessRow row)
@@ -1331,48 +1412,53 @@ public partial class MainWindow : Window
         var p = row.Process;
         var i = row.Insight;
         var origin = ProcessOriginAnalyzer.Analyze(p);
-        string critical = p.IsCritical ? "SÌ - flag critico rilevato" : "Flag non rilevato; stato negativo non verificato";
+        bool en = SysPulseLocalization.IsEnglish;
+        string na = en ? "N/A" : "N/D";
+        string critical = p.IsCritical
+            ? (en ? "YES - critical flag detected" : "SÌ - flag critico rilevato")
+            : (en ? "Flag not detected; negative state unverified" : "Flag non rilevato; stato negativo non verificato");
         string started = ProcessStartFormatter.FormatStart(p.StartTime);
 
         DetailTechnicalContextText.Text =
             $"Nome eseguibile: {p.Name}\n" +
             $"PID: {p.Pid}\n" +
-            $"Parent: {p.ParentName ?? "N/D"} (PID {p.ParentPid})\n" +
+            $"Parent: {p.ParentName ?? na} (PID {p.ParentPid})\n" +
             $"Thread: {p.ThreadCount}\n" +
-            $"CPU campione valido: {(p.CpuSampleAvailable ? "Sì" : "No")}\n" +
-            $"CPU media/picco fino a 30 s: {(p.CpuSampleAvailable ? $"{p.CpuAverage30Seconds:F2} % / {p.CpuPeak30Seconds:F2} %" : "N/D")}\n" +
-            $"Tempo CPU accumulato: {(p.CpuCumulativeAvailable ? $"{p.CpuCumulativeSeconds:F1} s" : "N/D")}\n" +
-            $"Handle: {p.HandleCount} (zero può indicare lettura non accessibile)\n" +
-            $"Working Set privato: {(p.PrivateWorkingSetAvailable ? $"{p.PrivateWorkingSetMb:F1} MiB" : "N/D")}\n" +
-            $"Working Set totale: {(p.WorkingSetAvailable ? $"{p.WorkingSetMb:F1} MiB" : "N/D")}\n" +
-            $"Memoria privata impegnata / commit: {(p.PrivateCommitAvailable ? $"{p.PrivateMb:F1} MiB" : "N/D")}\n" +
+            $"CPU campione valido: {(p.CpuSampleAvailable ? (en ? "Yes" : "Sì") : "No")}\n" +
+            $"CPU media/picco fino a 30 s: {(p.CpuSampleAvailable ? $"{p.CpuAverage30Seconds:F2} % / {p.CpuPeak30Seconds:F2} %" : na)}\n" +
+            $"Tempo CPU accumulato: {(p.CpuCumulativeAvailable ? $"{p.CpuCumulativeSeconds:F1} s" : na)}\n" +
+            $"Handle: {p.HandleCount} ({(en ? "zero may indicate inaccessible counter" : "zero può indicare lettura non accessibile")})\n" +
+            $"Working Set privato: {(p.PrivateWorkingSetAvailable ? $"{p.PrivateWorkingSetMb:F1} MiB" : na)}\n" +
+            $"Working Set totale: {(p.WorkingSetAvailable ? $"{p.WorkingSetMb:F1} MiB" : na)}\n" +
+            $"Memoria privata impegnata / commit: {(p.PrivateCommitAvailable ? $"{p.PrivateMb:F1} MiB" : na)}\n" +
             $"Critico: {critical}\n" +
             $"Avviato: {started}\n" +
             $"In esecuzione da: {ProcessStartFormatter.FormatElapsed(p.StartTime)}\n" +
-            $"Identificazione funzione: {i.DetectionLabel}\n" +
+            $"Identificazione funzione: {SysPulseLocalization.Translate(i.DetectionLabel)}\n" +
             $"Punteggi regole (non probabilità): identità {i.IdentityConfidencePercent}/100, app associata {i.OwnershipConfidencePercent}/100, funzione {i.RoleConfidencePercent}/100, aggregato {i.ConfidencePercent}/100\n" +
-            $"Prodotto dichiarato nei metadati: {p.ProductName ?? "N/D"}\n" +
-            $"Descrizione file: {p.FileDescription ?? "N/D"}\n" +
-            $"Azienda dichiarata nei metadati: {p.CompanyName ?? "N/D"}\n" +
-            $"Package: {p.PackageFullName ?? "N/D"}\n" +
-            $"AUMID: {p.ApplicationUserModelId ?? "N/D"}\n" +
-            $"Analisi approfondita: {(p.IsDeepInspected ? "Letture terminate" : "Non eseguita")}\n" +
-            $"Esito/limiti letture: {p.DeepInspectionNote ?? "N/D"}\n" +
-            $"Finestra visibile: {(!p.IsDeepInspected ? "N/D" : p.HasVisibleWindow ? "Rilevata" : "Non rilevata")}\n" +
-            $"PID - TCP listen/established: {(p.IsDeepInspected ? $"{p.TcpListeningCount}/{p.TcpEstablishedCount}" : "N/D")}\n" +
-            $"PID - UDP endpoint: {(p.IsDeepInspected ? p.UdpEndpointCount.ToString() : "N/D")}\n" +
-            $"Famiglia per nome/albero: {(p.IsDeepInspected ? $"{p.NetworkFamilyProcessCount} processi (root PID {p.NetworkFamilyRootPid})" : "N/D")}\n" +
-            $"Famiglia - processi con socket: {(p.IsDeepInspected ? p.NetworkFamilyProcessesWithSockets.ToString() : "N/D")}\n" +
-            $"Famiglia - TCP listen/established: {(p.IsDeepInspected ? $"{p.NetworkFamilyTcpListeningCount}/{p.NetworkFamilyTcpEstablishedCount}" : "N/D")}\n" +
-            $"Famiglia - UDP endpoint: {(p.IsDeepInspected ? p.NetworkFamilyUdpEndpointCount.ToString() : "N/D")}\n" +
-            $"Figli: {p.ChildCount} (omonimi: {p.SameNameChildCount})\n" +
+            $"Prodotto dichiarato nei metadati: {p.ProductName ?? na}\n" +
+            $"Descrizione file: {p.FileDescription ?? na}\n" +
+            $"Azienda dichiarata nei metadati: {p.CompanyName ?? na}\n" +
+            $"Package: {p.PackageFullName ?? na}\n" +
+            $"AUMID: {p.ApplicationUserModelId ?? na}\n" +
+            $"Analisi approfondita: {(p.IsDeepInspected ? (en ? "Completed" : "Letture terminate") : (en ? "Not executed" : "Non eseguita"))}\n" +
+            $"Esito/limiti letture: {p.DeepInspectionNote ?? na}\n" +
+            $"Finestra visibile: {(!p.IsDeepInspected ? na : p.HasVisibleWindow ? (en ? "Detected" : "Rilevata") : (en ? "Not detected" : "Non rilevata"))}\n" +
+            $"PID - TCP listen/established: {(p.IsDeepInspected ? $"{p.TcpListeningCount}/{p.TcpEstablishedCount}" : na)}\n" +
+            $"PID - UDP endpoint: {(p.IsDeepInspected ? p.UdpEndpointCount.ToString() : na)}\n" +
+            $"Famiglia per nome/albero: {(p.IsDeepInspected ? $"{p.NetworkFamilyProcessCount} {(en ? "processes" : "processi")} (root PID {p.NetworkFamilyRootPid})" : na)}\n" +
+            $"Famiglia - processi con socket: {(p.IsDeepInspected ? p.NetworkFamilyProcessesWithSockets.ToString() : na)}\n" +
+            $"Famiglia - TCP listen/established: {(p.IsDeepInspected ? $"{p.NetworkFamilyTcpListeningCount}/{p.NetworkFamilyTcpEstablishedCount}" : na)}\n" +
+            $"Famiglia - UDP endpoint: {(p.IsDeepInspected ? p.NetworkFamilyUdpEndpointCount.ToString() : na)}\n" +
+            $"Figli: {p.ChildCount} ({(en ? "same-name" : "omonimi")}: {p.SameNameChildCount})\n" +
             $"Framework: {i.Framework}\n" +
-            $"Servizi: {(p.ServiceDisplayNames.Count == 0 ? "Nessuno associato" : string.Join(", ", p.ServiceDisplayNames))}\n" +
-            $"Catena padre: {(p.AncestorNames.Count == 0 ? "N/D" : string.Join(" <- ", p.AncestorNames))}\n" +
-            $"Progetto: {i.ProjectRoot ?? "Non identificato"}";
+            $"Servizi: {(p.ServiceDisplayNames.Count == 0 ? (en ? "None associated" : "Nessuno associato") : string.Join(", ", p.ServiceDisplayNames))}\n" +
+            $"Catena padre: {(p.AncestorNames.Count == 0 ? na : string.Join(" <- ", p.AncestorNames))}\n" +
+            $"Progetto: {i.ProjectRoot ?? (en ? "Not identified" : "Non identificato")}";
 
-        DetailExecutableText.Text = p.ExecutablePath ?? "Accesso non disponibile";
-        var commandLineToShow = p.CommandLine ?? "Accesso non disponibile";
+        string accessUnavailable = en ? "Access unavailable" : "Accesso non disponibile";
+        DetailExecutableText.Text = p.ExecutablePath ?? accessUnavailable;
+        var commandLineToShow = p.CommandLine ?? accessUnavailable;
         if (!string.Equals(DetailCommandLineText.Text, commandLineToShow, StringComparison.Ordinal))
         {
             DetailCommandLineText.Text = commandLineToShow;
@@ -1391,8 +1477,8 @@ public partial class MainWindow : Window
         }
 
         DetailEvidenceText.Text = detailEvidence.Count == 0
-            ? "Nessuna evidenza aggiuntiva disponibile."
-            : string.Join(Environment.NewLine, detailEvidence.Select(x => $"• {x}"));
+            ? (en ? "No additional evidence available." : "Nessuna evidenza aggiuntiva disponibile.")
+            : string.Join(Environment.NewLine, detailEvidence.Select(x => $"• {SysPulseLocalization.Translate(x)}"));
         if (DetailTechnicalSectionsExpander.IsExpanded)
             RefreshTechnicalDetailGroups();
     }
@@ -1759,11 +1845,15 @@ public partial class MainWindow : Window
         var related = _allRows.Where(x => x.Pid == rootPid ||
                 x.Process.AncestorDetails.Any(a => a.Pid == rootPid && a.VerifiedByStartTime))
             .ToArray();
-        if (related.Length <= 1) return "Nessun altro discendente osservato per questo ramo.";
+        if (related.Length <= 1)
+            return SysPulseLocalization.IsEnglish
+                ? "No other descendants observed in this process branch."
+                : "Nessun altro discendente osservato per questo ramo.";
         double aggregate = related.Where(x => x.Process.CpuSampleAvailable).Sum(x => x.CpuPercent);
         int coverage = related.Count(x => x.Process.CpuSampleAvailable);
-        return $"Albero di origine: {related.Length} processi, CPU totale {aggregate:F1} % " +
-               $"del PC ({coverage}/{related.Length} campionati; somma approssimata).";
+        return SysPulseLocalization.IsEnglish
+            ? $"Origin tree: {related.Length} processes, total CPU {aggregate:F1} % of PC ({coverage}/{related.Length} sampled; approximate sum)."
+            : $"Albero di origine: {related.Length} processi, CPU totale {aggregate:F1} % del PC ({coverage}/{related.Length} campionati; somma approssimata).";
     }
 
     private void CpuGraphCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1777,7 +1867,9 @@ public partial class MainWindow : Window
         CpuGraphLine.Points.Clear();
         if (!_cpuHistory.TryGetValue(pid, out var queue) || queue.Count == 0)
         {
-            CpuGraphScaleText.Text = "Grafico: in attesa di campioni";
+            CpuGraphScaleText.Text = SysPulseLocalization.IsEnglish
+                ? "Graph: waiting for samples"
+                : "Grafico: in attesa di campioni";
             return;
         }
         var samples = queue.Where(x => DateTime.UtcNow - x.TimestampUtc <= TimeSpan.FromSeconds(30))
@@ -1792,7 +1884,9 @@ public partial class MainWindow : Window
             double y = height * (1 - Math.Min(samples[j], max) / max);
             CpuGraphLine.Points.Add(new Point(x, y));
         }
-        CpuGraphScaleText.Text = $"Andamento CPU del PID · scala verticale 0–{max:F0} % · {samples.Length} campioni";
+        CpuGraphScaleText.Text = SysPulseLocalization.IsEnglish
+            ? $"PID CPU trend · vertical scale 0–{max:F0} % · {samples.Length} samples"
+            : $"Andamento CPU del PID · scala verticale 0–{max:F0} % · {samples.Length} campioni";
     }
 
     private IReadOnlyList<double> RecentCpuSamples(int pid)
@@ -2121,6 +2215,7 @@ public partial class MainWindow : Window
 
     private void ShowQueryResult(ProcessQueryResult result)
     {
+        bool en = SysPulseLocalization.IsEnglish;
         ProcessQueryAnswerCard.Visibility = Visibility.Visible;
         ProcessQueryAnswerTitleText.Text = result.Title;
         RenderQueryAnswer(result);
@@ -2128,10 +2223,10 @@ public partial class MainWindow : Window
         CopyQueryReportButton.IsEnabled = !_queryBusy && _copyAnswerBody.Length > 0;
         ProcessQueryConfidenceText.Text = string.IsNullOrWhiteSpace(result.Confidence)
             ? string.Empty
-            : $"Dati e limiti: {result.Confidence}";
+            : (en ? $"Data & limits: {result.Confidence}" : $"Dati e limiti: {result.Confidence}");
         ProcessQueryEvidenceText.Text = result.Evidence.Count == 0
             ? string.Empty
-            : "Fonti: " + string.Join(" · ", result.Evidence.Take(5));
+            : (en ? "Sources: " : "Fonti: ") + string.Join(" · ", result.Evidence.Take(5));
     }
 
     private void CopyQueryReport_Click(object sender, RoutedEventArgs e)
@@ -2299,7 +2394,9 @@ public partial class MainWindow : Window
         DetailProcessIcon.ToolTip = null;
         WindowsComponentContextExpander.Visibility = Visibility.Collapsed;
         WindowsComponentContextText.Text = string.Empty;
-        DetailFriendlyNameText.Text = "Nessun processo selezionato";
+        bool en = SysPulseLocalization.IsEnglish;
+        string na = en ? "N/A" : "N/D";
+        DetailFriendlyNameText.Text = en ? "No process selected" : "Nessun processo selezionato";
         DetailProcessIdentityText.Text = string.Empty;
         DetailStartTimeText.Text = "-";
         DetailUptimeText.Text = "-";
@@ -2309,11 +2406,11 @@ public partial class MainWindow : Window
         DetailIdentityConfidenceText.Text = "-";
         DetailOwnershipConfidenceText.Text = "-";
         DetailRoleConfidenceText.Text = "-";
-        DetailOriginSummaryText.Text = "Seleziona un processo per ricostruirne l'origine.";
+        DetailOriginSummaryText.Text = en ? "Select a process to reconstruct its provenance." : "Seleziona un processo per ricostruirne l'origine.";
         DetailOriginOperationText.Text = "";
         DetailOriginChainText.Text = "";
         DetailOriginCaveatText.Text = "";
-        DetailWhatIsItText.Text = "Seleziona un processo dalla lista.";
+        DetailWhatIsItText.Text = en ? "Select a process from the list." : "Seleziona un processo dalla lista.";
         DetailActivityText.Text = "-";
         DetailRoleText.Text = string.Empty;
         DetailDetectionBasisText.Text = "-";
@@ -2327,20 +2424,22 @@ public partial class MainWindow : Window
         DetailRiskText.Text = "-";
         DetailEnglishAnalysisText.Text = "Select a process to view the complete English analysis.";
         DetailCpuText.Text = "-";
-        DetailCpuAverageText.Text = "Media: -";
-        DetailCpuPeakText.Text = "Picco: -";
+        DetailCpuAverageText.Text = en ? "Avg: -" : "Media: -";
+        DetailCpuPeakText.Text = en ? "Peak: -" : "Picco: -";
         DetailCpuCoreText.Text = "-";
         DetailCpuGroupText.Text = "-";
         DetailCpuTotalTimeText.Text = "-";
         DetailCpuTotalTimeText.ToolTip = null;
         CpuGraphLine.Points.Clear();
         CpuGraphScaleText.Text = "-";
-        DetailMemoryLabel.Text = "WS PRIVATO";
-        DetailMemoryLabel.ToolTip = "Working Set privato: pagine private fisicamente residenti (Private Working Set).";
+        DetailMemoryLabel.Text = en ? "PRIVATE WS" : "WS PRIVATO";
+        DetailMemoryLabel.ToolTip = en
+            ? "Private Working Set: physical RAM pages allocated exclusively to this process."
+            : "Working Set privato: pagine private fisicamente residenti (Private Working Set).";
         DetailMemoryText.Text = "-";
-        DetailPrivateWorkingSetText.Text = "N/D";
-        DetailWorkingSetText.Text = "N/D";
-        DetailPrivateCommitText.Text = "N/D";
+        DetailPrivateWorkingSetText.Text = na;
+        DetailWorkingSetText.Text = na;
+        DetailPrivateCommitText.Text = na;
         DetailMemoryExplanationText.Text = string.Empty;
         DetailProjectShortText.Text = "-";
         DetailRuntimeStateText.Text = "-";
@@ -2445,6 +2544,7 @@ public partial class MainWindow : Window
         if (guardian && GuardianDashboard is null)
         {
             GuardianDashboard = new GuardianDashboardView();
+            UiTreeLocalizer.Apply(GuardianDashboard, SysPulseLocalization.CurrentLanguage);
             GuardianDashboardHost.Content = GuardianDashboard;
         }
         if (memory && MemoryDashboard is null)
@@ -2452,17 +2552,20 @@ public partial class MainWindow : Window
             MemoryDashboard = new MemoryDashboardView();
             MemoryDashboard.InspectProcessRequested += pid => _ = InspectPidMemoryFromDashboardAsync(pid);
             MemoryDashboard.DetailsRequested += target => _ = OpenMemoryDetailsAsync(target);
+            UiTreeLocalizer.Apply(MemoryDashboard, SysPulseLocalization.CurrentLanguage);
             MemoryDashboardHost.Content = MemoryDashboard;
         }
         if (network && NetworkDevices is null)
         {
             NetworkDevices = new NetworkDevicesView();
+            UiTreeLocalizer.Apply(NetworkDevices, SysPulseLocalization.CurrentLanguage);
             NetworkDevicesHost.Content = NetworkDevices;
         }
         if (system && SystemProcesses is null)
         {
             SystemProcesses = new SystemProcessesView();
             SystemProcesses.AnalysisRequested += target => _ = OpenSystemProcessAsync(target);
+            UiTreeLocalizer.Apply(SystemProcesses, SysPulseLocalization.CurrentLanguage);
             SystemProcessesHost.Content = SystemProcesses;
         }
         SystemProcessesHost.Visibility = system ? Visibility.Visible : Visibility.Collapsed;
@@ -2735,13 +2838,15 @@ public partial class MainWindow : Window
                 Contains(x.StartupLabel, search) || x.ProcessId.ToString().Contains(search, StringComparison.OrdinalIgnoreCase));
         items = _serviceSortMode switch
         {
-            "Nome A-Z" => items.OrderBy(x => x.DisplayName, StringComparer.CurrentCultureIgnoreCase),
-            "Tipo di avvio" => items.OrderBy(x => x.StartupCode ?? 9).ThenBy(x => x.DisplayName, StringComparer.CurrentCultureIgnoreCase),
+            "Nome A-Z" or "Display name (A-Z)" or "Name (A-Z)" => items.OrderBy(x => x.DisplayName, StringComparer.CurrentCultureIgnoreCase),
+            "Tipo di avvio" or "Startup type" => items.OrderBy(x => x.StartupCode ?? 9).ThenBy(x => x.DisplayName, StringComparer.CurrentCultureIgnoreCase),
             "PID" => items.OrderByDescending(x => x.ProcessId).ThenBy(x => x.DisplayName, StringComparer.CurrentCultureIgnoreCase),
             _ => items.OrderByDescending(x => x.IsRunning).ThenBy(x => x.DisplayName, StringComparer.CurrentCultureIgnoreCase)
         };
         var visible = items.ToList();
-        ServicesCountText.Text = $"Installati: {_allServices.Count}   Attivi: {_allServices.Count(x => x.IsRunning)}   Arrestati: {_allServices.Count(x => x.StateCode == 1)}   Visualizzati: {visible.Count}";
+        ServicesCountText.Text = SysPulseLocalization.IsEnglish
+            ? $"Installed: {_allServices.Count}   Running: {_allServices.Count(x => x.IsRunning)}   Stopped: {_allServices.Count(x => x.StateCode == 1)}   Shown: {visible.Count}"
+            : $"Installati: {_allServices.Count}   Attivi: {_allServices.Count(x => x.IsRunning)}   Arrestati: {_allServices.Count(x => x.StateCode == 1)}   Visualizzati: {visible.Count}";
         var saved = _selectedServiceName;
         _suppressServiceSelection = true;
         try

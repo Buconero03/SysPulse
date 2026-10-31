@@ -240,6 +240,9 @@ internal sealed class TrayWindowController : IDisposable
         {
             if (_disposed || _exitRequested) return IntPtr.Zero;
             _diagnostics?.Record("RESTORE_SOURCE", "messaggio da altra istanza ProcessLens");
+            Core.SysPulseLocalization.ReloadFromSavedSettings();
+            if (_window is MainWindow mw)
+                mw.Dispatcher.BeginInvoke(new Action(() => mw.ApplyLanguage(Core.SysPulseLocalization.CurrentLanguage)));
             RequestRestore(); handled = true; return new IntPtr(1);
         }
         if (TaskbarCreated != 0 && message == TaskbarCreated)

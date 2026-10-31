@@ -22,5 +22,6 @@ public sealed class ServiceDetailsWindow : Window
         Add("04 · Interpretazione e limiti", ServiceExplanation.WhyRunning(service) + "\n\n" + ServiceExplanation.Impact(service));
         foreach (var chapter in sections.Children.OfType<Expander>().Take(2)) chapter.IsExpanded = true;
         Content = new ScrollViewer { Content = sections, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        UiTreeLocalizer.Apply(this, SysPulseLocalization.CurrentLanguage);
     }
 }

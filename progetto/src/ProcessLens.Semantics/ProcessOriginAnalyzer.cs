@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using ProcessLens.Core;
 
 namespace ProcessLens.Semantics;
@@ -93,6 +93,24 @@ public static class ProcessOriginAnalyzer
         {
             operation = "Operazione sconosciuta.";
             status = "Motivo dell’avvio sconosciuto; il padre non basta a ricostruirlo.";
+        }
+
+        if (SysPulseLocalization.IsEnglish)
+        {
+            launch = nearest is null
+                ? $"PPID: {process.ParentPid}. Parent process no longer active."
+                : nearest.VerifiedByStartTime
+                    ? $"Parent: {nearest.Name} · PID {nearest.Pid}. Start timestamps verified."
+                    : $"Candidate parent: {nearest.Name} · PID {nearest.Pid}. Start timestamps unavailable for verification.";
+            var stepsEn = ancestors.Reverse().Select(a =>
+                $"{a.Name} (PID {a.Pid}) · Started: {ProcessStartFormatter.FormatStart(a.StartTime)}" +
+                (a.VerifiedByStartTime ? "" : " [unverified]"))
+                .Append($"{process.Name} (PID {process.Pid}) · Started: {ProcessStartFormatter.FormatStart(process.StartTime)}");
+            chain = ancestors.Count == 0
+                ? $"{process.Name} (PID {process.Pid}) · Started: {ProcessStartFormatter.FormatStart(process.StartTime)}\nEarlier ancestry not available in current snapshot."
+                : string.Join("\n  ↓\n", stepsEn);
+            operation = SysPulseLocalization.Translate(operation);
+            status = SysPulseLocalization.Translate(status);
         }
 
         return new ProcessOriginReport(launch, chain, operation, status, evidence);

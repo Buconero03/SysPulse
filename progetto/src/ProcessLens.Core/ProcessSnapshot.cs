@@ -121,39 +121,59 @@ public sealed record ProcessSnapshot
     public double NetworkSampledAtMonotonicSeconds { get; init; }
 
     public int ActiveNetworkSocketCount => TcpEstablishedCount + TcpListeningCount + UdpEndpointCount;
-    public string NetworkShortLabel => TcpEstablishedCount > 0 && NetworkBandwidthAvailable && NetworkBytesPerSecond >= 64
-        ? $"RETE · {TcpEstablishedCount} CONN."
-        : PublicRemoteConnectionCount > 0 ? "RETE · ESTERNA" : "RETE";
+    public string NetworkShortLabel =>
+        SysPulseLocalization.IsEnglish
+            ? (TcpEstablishedCount > 0 && NetworkBandwidthAvailable && NetworkBytesPerSecond >= 64
+                ? $"NET · {TcpEstablishedCount} CONN."
+                : PublicRemoteConnectionCount > 0 ? "NET · EXTERNAL" : "NET")
+            : (TcpEstablishedCount > 0 && NetworkBandwidthAvailable && NetworkBytesPerSecond >= 64
+                ? $"RETE · {TcpEstablishedCount} CONN."
+                : PublicRemoteConnectionCount > 0 ? "RETE · ESTERNA" : "RETE");
     public string NetworkDisplayText =>
         NetworkBandwidthAvailable && NetworkBytesPerSecond >= 64
             ? LiveNetworkSample.FormatRate(NetworkBytesPerSecond)
             : TcpEstablishedCount > 0
                 ? $"{TcpEstablishedCount} conn."
                 : TcpListeningCount > 0
-                    ? $"{TcpListeningCount} ascolto"
+                    ? (SysPulseLocalization.IsEnglish ? $"{TcpListeningCount} listen" : $"{TcpListeningCount} ascolto")
                     : UdpEndpointCount > 0
                         ? $"{UdpEndpointCount} UDP"
                         : NetworkLiveAvailable || IsDeepInspected
                             ? LiveNetworkSample.FormatRate(0)
                             : "0,0\u00a0KB/s";
     public string NetworkDescription =>
-        $"Traffico rilevato: {(NetworkBandwidthAvailable ? $"{LiveNetworkSample.FormatRate(NetworkBytesPerSecond)} (invio {LiveNetworkSample.FormatRate(NetworkSendBytesPerSecond)}, ricezione {LiveNetworkSample.FormatRate(NetworkReceiveBytesPerSecond)})" : "0,0 KB/s")} · " +
-        $"Connessioni TCP stabilite: {TcpEstablishedCount} (verso IP pubblici: {PublicRemoteConnectionCount}) · " +
-        $"Porte TCP in ascolto: {TcpListeningCount} · Endpoint UDP: {UdpEndpointCount}.";
+        SysPulseLocalization.IsEnglish
+            ? $"Detected traffic: {(NetworkBandwidthAvailable ? $"{LiveNetworkSample.FormatRate(NetworkBytesPerSecond)} (send {LiveNetworkSample.FormatRate(NetworkSendBytesPerSecond)}, recv {LiveNetworkSample.FormatRate(NetworkReceiveBytesPerSecond)})" : "0.0 KB/s")} · " +
+              $"Established TCP connections: {TcpEstablishedCount} (to public IPs: {PublicRemoteConnectionCount}) · " +
+              $"Listening TCP ports: {TcpListeningCount} · UDP endpoints: {UdpEndpointCount}."
+            : $"Traffico rilevato: {(NetworkBandwidthAvailable ? $"{LiveNetworkSample.FormatRate(NetworkBytesPerSecond)} (invio {LiveNetworkSample.FormatRate(NetworkSendBytesPerSecond)}, ricezione {LiveNetworkSample.FormatRate(NetworkReceiveBytesPerSecond)})" : "0,0 KB/s")} · " +
+              $"Connessioni TCP stabilite: {TcpEstablishedCount} (verso IP pubblici: {PublicRemoteConnectionCount}) · " +
+              $"Porte TCP in ascolto: {TcpListeningCount} · Endpoint UDP: {UdpEndpointCount}.";
 
     public double WorkingSetMb => WorkingSetBytes / 1024d / 1024d;
     public double PrivateMb => PrivateBytes / 1024d / 1024d;
     public double PrivateWorkingSetMb => PrivateWorkingSetBytes / 1024d / 1024d;
     public double MemoryDisplayMb => PrivateWorkingSetAvailable ? PrivateWorkingSetMb : WorkingSetMb;
-    public string MemoryDisplayLabel => PrivateWorkingSetAvailable ? "WORKING SET PRIVATO" :
-        WorkingSetAvailable ? "WORKING SET TOTALE" : "RAM N/D";
+    public string MemoryDisplayLabel =>
+        SysPulseLocalization.IsEnglish
+            ? (PrivateWorkingSetAvailable ? "PRIVATE WORKING SET" :
+               WorkingSetAvailable ? "TOTAL WORKING SET" : "RAM N/A")
+            : (PrivateWorkingSetAvailable ? "WORKING SET PRIVATO" :
+               WorkingSetAvailable ? "WORKING SET TOTALE" : "RAM N/D");
     public string MemoryDisplayText => PrivateWorkingSetAvailable || WorkingSetAvailable
-        ? $"{MemoryDisplayMb:F1} MiB" : "N/D";
-    public string MemoryDescription => PrivateWorkingSetAvailable
-        ? "Pagine private presenti in RAM. Confronta la stessa istanza, contatore e intervallo; Gestione attività può usare aggregazioni diverse."
-        : WorkingSetAvailable
-            ? "Private Working Set non disponibile: viene mostrata la memoria residente TOTALE, inclusa quella condivisa; NON confrontare direttamente con Gestione attività / Processi."
-            : "Contatori di memoria non accessibili per questo PID.";
+        ? $"{MemoryDisplayMb:F1} MiB" : (SysPulseLocalization.IsEnglish ? "N/A" : "N/D");
+    public string MemoryDescription =>
+        SysPulseLocalization.IsEnglish
+            ? (PrivateWorkingSetAvailable
+                ? "Private pages resident in RAM. Compare the same instance, counter, and interval; Task Manager may use different aggregations."
+                : WorkingSetAvailable
+                    ? "Private Working Set unavailable: showing TOTAL resident memory including shared pages; do NOT compare directly with Task Manager / Processes."
+                    : "Memory counters inaccessible for this PID.")
+            : (PrivateWorkingSetAvailable
+                ? "Pagine private presenti in RAM. Confronta la stessa istanza, contatore e intervallo; Gestione attività può usare aggregazioni diverse."
+                : WorkingSetAvailable
+                    ? "Private Working Set non disponibile: viene mostrata la memoria residente TOTALE, inclusa quella condivisa; NON confrontare direttamente con Gestione attività / Processi."
+                    : "Contatori di memoria non accessibili per questo PID.");
 
     // The semantic meaning of a process depends on identity, ancestry, command line
     // and (when available) deep Windows evidence, not on CPU/RAM values.

@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using ProcessLens.Core;
@@ -760,32 +760,41 @@ public sealed class ProcessQueryEngine
 
     private static ProcessQueryResult Help() => new(
         "Process Query",
-        "Puoi chiedere, per esempio: “Cosa sta facendo?”, “A che punto è?”, “Quando finirà?”, “È bloccato?”, “Ha porte aperte?”, “Ha connessioni di rete?”, “Chi lo ha avviato?”, “Perché è aperto?” o “Posso chiuderlo?”.",
+        SysPulseLocalization.IsEnglish
+            ? "You can ask, for example: “What is it doing?”, “What is its progress?”, “When will it finish?”, “Is it stuck?”, “Does it have open ports?”, “Why is it using RAM?”, “Why is it using CPU?”, “Who started it?” or “Can I close it safely?”."
+            : "Puoi chiedere, per esempio: “Cosa sta facendo?”, “A che punto è?”, “Quando finirà?”, “È bloccato?”, “Ha porte aperte?”, “Ha connessioni di rete?”, “Chi lo ha avviato?”, “Perché è aperto?” o “Posso chiuderlo?”.",
         "",
         Array.Empty<string>(),
         null);
 
     private static ProcessQueryResult Result(string title, string answer, string confidence, List<string> evidence, ProcessProgressSample? sample = null) =>
-        new(title, answer, confidence, evidence.Distinct(StringComparer.OrdinalIgnoreCase).ToArray(), sample);
+        SysPulseLocalization.IsEnglish
+            ? new(
+                SysPulseLocalization.Translate(title),
+                SysPulseLocalization.Translate(answer),
+                SysPulseLocalization.Translate(confidence),
+                evidence.Select(e => SysPulseLocalization.Translate(e)).Distinct(StringComparer.OrdinalIgnoreCase).ToArray(),
+                sample)
+            : new(title, answer, confidence, evidence.Distinct(StringComparer.OrdinalIgnoreCase).ToArray(), sample);
 
     private static IReadOnlyList<ProcessQueryIntent> DetectIntents(string question)
     {
         string q = question.ToLowerInvariant();
         var intents = new List<ProcessQueryIntent>();
 
-        if (ContainsAny(q, "cosa sta facendo", "cosa fa", "che fa", "attività", "attivita", "sta facendo")) intents.Add(ProcessQueryIntent.Activity);
-        bool cpuQuestion = ContainsAny(q, "cpu", "processore", "core", "carico del computer");
+        if (ContainsAny(q, "cosa sta facendo", "cosa fa", "che fa", "attività", "attivita", "sta facendo", "what is it doing", "what does it do")) intents.Add(ProcessQueryIntent.Activity);
+        bool cpuQuestion = ContainsAny(q, "cpu", "processore", "core", "carico del computer", "processor");
         if (cpuQuestion) intents.Add(ProcessQueryIntent.Cpu);
-        if (Regex.IsMatch(q, @"\bram\b|\b\d+\s*(?:mb|gb)\b") || ContainsAny(q, "memoria", "working set", "commit", "megabyte", "gigabyte", "memory", "cache", "perdita di memoria"))
+        if (Regex.IsMatch(q, @"\bram\b|\b\d+\s*(?:mb|gb)\b") || ContainsAny(q, "memoria", "working set", "commit", "megabyte", "gigabyte", "memory", "cache", "perdita di memoria", "memory leak"))
             intents.Add(ProcessQueryIntent.Memory);
-        if (ContainsAny(q, "a che punto", "progresso", "avanzamento", "quanto ha fatto") ||
-            (!cpuQuestion && ContainsAny(q, "percentuale"))) intents.Add(ProcessQueryIntent.Progress);
-        if (ContainsAny(q, "quanto manca", "quando finir", "quando finisc", "tempo alla fine", "eta", "tra quanto")) intents.Add(ProcessQueryIntent.Eta);
-        if (ContainsAny(q, "bloccato", "bloccata", "fermo", "ferma", "stall", "risponde")) intents.Add(ProcessQueryIntent.Health);
-        if (ContainsAny(q, "internet", "rete", "connession", "socket") || Regex.IsMatch(q, @"\b(?:porta|porte|port|ports)\b")) intents.Add(ProcessQueryIntent.Network);
-        if (ContainsAny(q, "chi lo ha avviato", "chi l'ha avviato", "chi ha avviato", "origine", "processo padre", "parent", "da chi", "da dove", "dove è partito", "dove e partito", "chi l'ha lanciato", "chi lo ha lanciato", "perché è partito", "perche e partito", "cosa lo ha avviato")) intents.Add(ProcessQueryIntent.Origin);
-        if (ContainsAny(q, "perché è aperto", "perche e aperto", "perché è attivo", "perche e attivo", "perché gira", "perche gira")) intents.Add(ProcessQueryIntent.WhyRunning);
-        if (ContainsAny(q, "posso chiuder", "se lo chiudo", "termin", "kill", "sicuro chiud")) intents.Add(ProcessQueryIntent.Termination);
+        if (ContainsAny(q, "a che punto", "progresso", "avanzamento", "quanto ha fatto", "progress", "how far") ||
+            (!cpuQuestion && ContainsAny(q, "percentuale", "percent"))) intents.Add(ProcessQueryIntent.Progress);
+        if (ContainsAny(q, "quanto manca", "quando finir", "quando finisc", "tempo alla fine", "eta", "tra quanto", "when will it finish", "time remaining")) intents.Add(ProcessQueryIntent.Eta);
+        if (ContainsAny(q, "bloccato", "bloccata", "fermo", "ferma", "stall", "risponde", "stuck", "frozen", "hanging")) intents.Add(ProcessQueryIntent.Health);
+        if (ContainsAny(q, "internet", "rete", "connession", "socket", "network", "connection") || Regex.IsMatch(q, @"\b(?:porta|porte|port|ports)\b")) intents.Add(ProcessQueryIntent.Network);
+        if (ContainsAny(q, "chi lo ha avviato", "chi l'ha avviato", "chi ha avviato", "origine", "processo padre", "parent", "da chi", "da dove", "dove è partito", "dove e partito", "chi l'ha lanciato", "chi lo ha lanciato", "perché è partito", "perche e partito", "cosa lo ha avviato", "who started", "origin")) intents.Add(ProcessQueryIntent.Origin);
+        if (ContainsAny(q, "perché è aperto", "perche e aperto", "perché è attivo", "perche e attivo", "perché gira", "perche gira", "why is it running", "why is it open")) intents.Add(ProcessQueryIntent.WhyRunning);
+        if (ContainsAny(q, "posso chiuder", "se lo chiudo", "termin", "kill", "sicuro chiud", "can i close", "safe to close")) intents.Add(ProcessQueryIntent.Termination);
 
         return intents.Distinct().ToArray();
     }

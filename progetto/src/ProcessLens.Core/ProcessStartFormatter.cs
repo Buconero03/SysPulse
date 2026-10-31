@@ -1,4 +1,4 @@
-﻿namespace ProcessLens.Core;
+namespace ProcessLens.Core;
 
 /// <summary>
 /// Formats OS-provided process start times without inferring missing timestamps.
@@ -9,7 +9,7 @@ public static class ProcessStartFormatter
     public static string FormatStart(DateTime? startTime)
     {
         if (startTime is not { } start)
-            return "Non disponibile";
+            return SysPulseLocalization.IsEnglish ? "Unavailable" : "Non disponibile";
 
         // Process.StartTime is local. Some system/test sources report an
         // unspecified Kind; do not reinterpret their clock reading as UTC.
@@ -20,15 +20,16 @@ public static class ProcessStartFormatter
     public static string FormatElapsed(DateTime? startTime, DateTime? nowUtc = null)
     {
         if (startTime is not { } start)
-            return "Non disponibile";
+            return SysPulseLocalization.IsEnglish ? "Unavailable" : "Non disponibile";
 
         var elapsed = (nowUtc ?? DateTime.UtcNow).ToUniversalTime() - start.ToUniversalTime();
         if (elapsed < TimeSpan.Zero)
-            return "Non disponibile";
+            return SysPulseLocalization.IsEnglish ? "Unavailable" : "Non disponibile";
 
         int days = (int)elapsed.TotalDays;
+        string dayUnit = SysPulseLocalization.IsEnglish ? "d" : "g";
         if (days > 0)
-            return $"{days} g {elapsed.Hours} h {elapsed.Minutes} min";
+            return $"{days} {dayUnit} {elapsed.Hours} h {elapsed.Minutes} min";
         if (elapsed.Hours > 0)
             return $"{elapsed.Hours} h {elapsed.Minutes} min";
         if (elapsed.Minutes > 0)

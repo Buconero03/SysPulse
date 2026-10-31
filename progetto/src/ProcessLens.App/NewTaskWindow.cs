@@ -48,6 +48,7 @@ public sealed class NewTaskWindow : Window
         RunButton.IsDefault = true; _cancel.IsCancel = true;
         actions.Children.Add(RunButton); actions.Children.Add(_cancel); body.Children.Add(actions);
         Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        UiTreeLocalizer.Apply(this, SysPulseLocalization.CurrentLanguage);
         RunButton.Click += async (_, _) => await RunAsync();
         _cancel.Click += (_, _) => Close();
         _browse.Click += (_, _) => Browse();

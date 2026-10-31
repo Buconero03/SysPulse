@@ -62,14 +62,15 @@ internal static class ProcessNetworkPresentation
             "Richieste accettate e byte trasferiti non sono misurati.");
         if (!string.IsNullOrWhiteSpace(p.DeepInspectionNote))
             sections.Add("Esito e limiti di acquisizione\n" + p.DeepInspectionNote);
-        return string.Join("\n\n", sections);
+        string text = string.Join("\n\n", sections);
+        return SysPulseLocalization.IsEnglish ? SysPulseLocalization.Translate(text) : text;
     }
     public static string DescribeEndpointOwners(ProcessSnapshot p)
     {
         var lines = new List<string> { Describe(p), "SOCKET OSSERVATI — proprietario PID, indirizzo locale e destinazione" };
         static string Endpoint(int pid, NetworkEndpointSnapshot e) =>
-            $"PID {pid} · {e.Protocol} {e.State} · locale [{e.LocalAddress}]:{e.LocalPort}" +
-            (e.RemoteAddress is null ? "" : $" → remoto [{e.RemoteAddress}]:{e.RemotePort}");
+            $"PID {pid} · {e.Protocol} {e.State} · {(SysPulseLocalization.IsEnglish ? "local" : "locale")} [{e.LocalAddress}]:{e.LocalPort}" +
+            (e.RemoteAddress is null ? "" : $" → {(SysPulseLocalization.IsEnglish ? "remote" : "remoto")} [{e.RemoteAddress}]:{e.RemotePort}");
         if (p.DirectNetworkIdentityVerified != false)
             lines.AddRange(p.NetworkEndpoints.Select(e => Endpoint(p.Pid, e)));
         foreach (var owner in p.RelatedNetworkProcesses.Where(x => x.Pid != p.Pid))
@@ -78,7 +79,8 @@ internal static class ProcessNetworkPresentation
             "I conteggi includono le righe lette oltre questi limiti; gli altri stati TCP compaiono soltanto nell'elenco. " +
             "Gruppo per stesso eseguibile e catena di avvio con orari compatibili; altri eseguibili o identità non leggibili esclusi. " +
             "Una porta remota 443 non è una porta locale in ascolto. Nessuna misura dei byte trasferiti.");
-        return string.Join("\n\n", lines);
+        string full = string.Join("\n\n", lines);
+        return SysPulseLocalization.IsEnglish ? SysPulseLocalization.Translate(full) : full;
     }
 
 }

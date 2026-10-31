@@ -45,12 +45,21 @@ public sealed class SelectableText : TextBox
 
         // Build menus in code: no event-wired ContextMenu in a XAML style setter.
         ContextMenu = new ContextMenu();
-        ContextMenu.Items.Add(new MenuItem { Header = "Copia selezione", Command = ApplicationCommands.Copy,
-            CommandTarget = this, InputGestureText = "Ctrl+C" });
-        ContextMenu.Items.Add(new MenuItem { Header = "Copia tutto", Command = CopyAllCommand, CommandTarget = this });
+        var copySel = new MenuItem { Header = "Copia selezione", Command = ApplicationCommands.Copy,
+            CommandTarget = this, InputGestureText = "Ctrl+C" };
+        var copyAll = new MenuItem { Header = "Copia tutto", Command = CopyAllCommand, CommandTarget = this };
+        var selAll = new MenuItem { Header = "Seleziona tutto", Command = ApplicationCommands.SelectAll,
+            CommandTarget = this, InputGestureText = "Ctrl+A" };
+        ContextMenu.Items.Add(copySel);
+        ContextMenu.Items.Add(copyAll);
         ContextMenu.Items.Add(new Separator());
-        ContextMenu.Items.Add(new MenuItem { Header = "Seleziona tutto", Command = ApplicationCommands.SelectAll,
-            CommandTarget = this, InputGestureText = "Ctrl+A" });
+        ContextMenu.Items.Add(selAll);
+        ContextMenu.Opened += (_, _) =>
+        {
+            copySel.Header = Core.SysPulseLocalization.GetLabel("Copia selezione");
+            copyAll.Header = Core.SysPulseLocalization.GetLabel("Copia tutto");
+            selAll.Header = Core.SysPulseLocalization.GetLabel("Seleziona tutto");
+        };
     }
 
     protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)

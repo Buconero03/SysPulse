@@ -1,0 +1,13 @@
+PASS 7036 transition parsed
+PASS raw state preserved
+PASS timestamp formatted
+PASS do not confuse unrelated service
+PASS 7035 start control recorded
+PASS 7040 config change
+PASS 7045 install by service name
+PASS unrecognized event ignored
+PASS missing payload ignored
+PASS historical event must not attribute caller
+PASS error does not fabricate history
+PASS empty history not asserted as no starts
+Service history interpretation tests completed.

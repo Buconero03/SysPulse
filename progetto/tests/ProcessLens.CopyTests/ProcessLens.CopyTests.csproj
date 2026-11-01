@@ -4,11 +4,12 @@
     <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="../../src/ProcessLens.App/CopyTextFormat.cs" Link="CopyTextFormat.cs" />
-    <Compile Include="../../src/ProcessLens.App/ReportLayout.cs" Link="ReportLayout.cs" />
-    <Compile Include="../../src/ProcessLens.App/ProcessExitNotice.cs" Link="ProcessExitNotice.cs" />
-    <Compile Include="../../src/ProcessLens.App/WindowLifetimePolicy.cs" Link="WindowLifetimePolicy.cs" />
-    <Compile Include="../../src/ProcessLens.App/AuditLogPresentation.cs" Link="AuditLogPresentation.cs" />
-    <Compile Include="../../src/ProcessLens.App/ServiceNavigation.cs" Link="ServiceNavigation.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/CopyTextFormat.g.cs" Link="CopyTextFormat.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/ReportLayout.g.cs" Link="ReportLayout.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/ProcessExitNotice.g.cs" Link="ProcessExitNotice.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/WindowLifetimePolicy.g.cs" Link="WindowLifetimePolicy.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/AuditLogPresentation.g.cs" Link="AuditLogPresentation.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/ServiceNavigation.g.cs" Link="ServiceNavigation.cs" />
   </ItemGroup>
+<ItemGroup><ProjectReference Include="../../src/ProcessLens.Core/ProcessLens.Core.csproj"/></ItemGroup>
 </Project>

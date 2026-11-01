@@ -108,8 +108,10 @@
    <TextBlock Text="Dettagli del componente" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
    <WrapPanel Grid.Row="1" Margin="0,0,0,8">
     <TextBlock Text="Istanza da approfondire" VerticalAlignment="Center" Margin="0,0,10,6" Foreground="#667085"/>
-    <ComboBox x:Name="SystemInstancesBox" DisplayMemberPath="Label" SelectionChanged="SystemInstance_Changed" IsEnabled="False"
-        MinWidth="180" Width="340" MinHeight="36" Padding="7,5" Margin="0,0,10,6"/>
+    <ComboBox x:Name="SystemInstancesBox" SelectionChanged="SystemInstance_Changed" IsEnabled="False"
+        MinWidth="180" Width="340" MinHeight="36" Padding="7,5" Margin="0,0,10,6">
+     <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Label}"/></DataTemplate></ComboBox.ItemTemplate>
+    </ComboBox>
     <Button x:Name="AnalyzeSystemButton" Content="Analizza PID selezionato" Style="{StaticResource SystemAction}"
         IsEnabled="False" Click="AnalyzeSystem_Click"/>
    </WrapPanel>

@@ -1,3 +1,9 @@
+> R35 R2: corretti CS0509 e CS0263 nella finestra WPF. Lingue IT/EN conservate. Rapporto: `progetto/audit/R10_R35_R2/REVISIONE_R35_R2.md`.
+
+> R35 R1: ulteriori correzioni dei testi inglesi e localizzazione delle finestre di scelta file. Rapporto in `progetto/audit/R10_R35_R1/REVISIONE_R35_R1.md`.
+
+> R35: scegli una sola lingua per tutta l’analisi. Avvia `AVVIA_PROCESSLENS.cmd`. Dettagli e limiti della candidata in `PROCESS_ANALYSIS_IT_EN.md` e nel rapporto R35.
+
 # SysPulse (ProcessLens R34) — Analizzatore Avanzato di Processi, Memoria e Rete Windows
 
 [![Language](https://img.shields.io/badge/Language-Italiano-green.svg)](#) [![English](https://img.shields.io/badge/Language-English-blue.svg)](README.md)

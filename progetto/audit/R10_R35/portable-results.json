@@ -1,0 +1,231 @@
+[
+  {
+    "name": "ProcessLens.BehaviorTests",
+    "status": "PASS",
+    "checks": 70,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.CompatibleCaptureTests",
+    "status": "PASS",
+    "checks": 56,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.CopyTests",
+    "status": "PASS",
+    "checks": 52,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.CopyUiTests",
+    "status": "NOT RUN",
+    "reason": "Requires Windows or package-dependent integration fixture"
+  },
+  {
+    "name": "ProcessLens.CpuTests",
+    "status": "PASS",
+    "checks": 27,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.DiagnosticsTests",
+    "status": "PASS",
+    "checks": 10,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.GuardianDashboardTests",
+    "status": "NOT RUN",
+    "reason": "Requires Windows or package-dependent integration fixture"
+  },
+  {
+    "name": "ProcessLens.GuardianStorageTests",
+    "status": "NOT RUN",
+    "reason": "Requires Windows or package-dependent integration fixture"
+  },
+  {
+    "name": "ProcessLens.GuardianTests",
+    "status": "NOT RUN",
+    "reason": "Additional integration assembly required"
+  },
+  {
+    "name": "ProcessLens.IconResourceTests",
+    "status": "PASS",
+    "checks": 40,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.LiveMetricsTests",
+    "status": "PASS",
+    "checks": 46,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.LiveMetricsUiTests",
+    "status": "NOT RUN",
+    "reason": "Requires Windows or package-dependent integration fixture"
+  },
+  {
+    "name": "ProcessLens.LocalizationTests",
+    "status": "PASS",
+    "checks": 248,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.LocalizationUiTests",
+    "status": "NOT RUN",
+    "reason": "Requires Windows or package-dependent integration fixture"
+  },
+  {
+    "name": "ProcessLens.MemoryAlertTests",
+    "status": "PASS",
+    "checks": 10,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.MemoryEfficiencyTests",
+    "status": "PASS",
+    "checks": 17,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.MemoryTests",
+    "status": "PASS",
+    "checks": 20,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.NativeCaptureTests",
+    "status": "PASS",
+    "checks": 75,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.NativeNetworkTests",
+    "status": "PASS",
+    "checks": 77,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.NetworkDeviceTests",
+    "status": "PASS",
+    "checks": 81,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.NetworkUiTests",
+    "status": "NOT RUN",
+    "reason": "Requires Windows or package-dependent integration fixture"
+  },
+  {
+    "name": "ProcessLens.NewTaskTests",
+    "status": "PASS",
+    "checks": 48,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.NewTaskUiTests",
+    "status": "NOT RUN",
+    "reason": "Requires Windows or package-dependent integration fixture"
+  },
+  {
+    "name": "ProcessLens.OriginTests",
+    "status": "PASS",
+    "checks": 17,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.PacketCaptureTests",
+    "status": "PASS",
+    "checks": 33,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.PresentationTests",
+    "status": "PASS",
+    "checks": 86,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.ProcessGroupsTests",
+    "status": "PASS",
+    "checks": 226,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.ProcessGroupsUiTests",
+    "status": "NOT RUN",
+    "reason": "Requires Windows or package-dependent integration fixture"
+  },
+  {
+    "name": "ProcessLens.ProfilerFixture",
+    "status": "NOT RUN",
+    "reason": "Requires Windows or package-dependent integration fixture"
+  },
+  {
+    "name": "ProcessLens.ProfilerTests",
+    "status": "PASS",
+    "checks": 9,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.RamMonitorTests",
+    "status": "PASS",
+    "checks": 22,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.RefreshPolicyTests",
+    "status": "PASS",
+    "checks": 9,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.ServiceHistoryTests",
+    "status": "PASS",
+    "checks": 12,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.ServiceStopTests",
+    "status": "PASS",
+    "checks": 11,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.ServiceTests",
+    "status": "PASS",
+    "checks": 10,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.SystemProcessTests",
+    "status": "PASS",
+    "checks": 22,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.SystemProcessUiTests",
+    "status": "NOT RUN",
+    "reason": "Requires Windows or package-dependent integration fixture"
+  },
+  {
+    "name": "ProcessLens.TerminationTests",
+    "status": "PASS",
+    "checks": 10,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.TerminologyTests",
+    "status": "PASS",
+    "checks": 104,
+    "exit": 0
+  },
+  {
+    "name": "ProcessLens.WindowsComponentTests",
+    "status": "PASS",
+    "checks": 107,
+    "exit": 0
+  }
+]

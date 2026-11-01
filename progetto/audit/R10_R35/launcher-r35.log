@@ -1,0 +1,24 @@
+PASS R35 launcher: empty package has no runnable GUI
+PASS R35 launcher: completed old installation cannot silently substitute its old GUI
+PASS R35 launcher: publication without successful R31 receipt is not accepted
+PASS R35 launcher: receipt for another revision is rejected
+Primo avvio R35: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R35 launcher: failed tests cannot issue a build receipt or launch a stale publication
+PASS R35 launcher: completed R20 cache reused without copying packages into ZIP
+PASS R35 launcher: R20 cache build has no configured network feed
+Primo avvio R35: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R35 launcher: missing executable after build remains an error
+Primo avvio R35: test e compilazione della nuova versione. I successivi avvii saranno diretti.
+Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.
+PASS R35 launcher: successful owned build resolves new publication with existing private runtime
+PASS R35 launcher: subsequent resolution needs no build or SDK command
+PASS R35 launcher: missing desktop runtime is not accepted
+PASS R35 launcher: wrong desktop runtime major is not accepted
+PASS R35 launcher: paths with spaces remain one UAC argument
+PASS R35 launcher: quotes and newlines cannot create extra launch arguments
+PASS R35 launcher: quotes and newlines cannot create extra launch arguments
+PASS R35 launcher: real PowerShell parser accepts complete launcher
+PASS R35 launcher: launcher installs no dependencies and changes no services or running processes
+R35 launcher fixture complete: 17 checks; synthetic files only, no Windows app or UAC.

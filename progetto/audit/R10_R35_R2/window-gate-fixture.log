@@ -1,0 +1,4 @@
+PASS R35 R2 fixture: sealed XAML root rejected before compilation (CS0509 regression).
+PASS R35 R2 fixture: mismatched partial base rejected (CS0263 regression).
+PASS R35 R2: 1 localized XAML root(s) are inheritable and match the generated code-behind. Actual BAML and Windows runtime checks remain separate.
+PASS R35 R2 fixture: inheritable matching root accepted; synthetic files only, no WPF window.

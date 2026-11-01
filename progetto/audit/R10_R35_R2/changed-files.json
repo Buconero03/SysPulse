@@ -1,0 +1,118 @@
+[
+  {
+    "path": "README.md",
+    "status": "CHANGED"
+  },
+  {
+    "path": "LEGGIMI.txt",
+    "status": "CHANGED"
+  },
+  {
+    "path": "PROCESS_ANALYSIS_IT_EN.md",
+    "status": "CHANGED"
+  },
+  {
+    "path": "README.it.md",
+    "status": "CHANGED"
+  },
+  {
+    "path": "progetto/localization-manifest.json",
+    "status": "CHANGED"
+  },
+  {
+    "path": "progetto/README.md",
+    "status": "CHANGED"
+  },
+  {
+    "path": "progetto/build-dashboard.ps1",
+    "status": "CHANGED"
+  },
+  {
+    "path": "supporto/avvia.ps1",
+    "status": "CHANGED"
+  },
+  {
+    "path": "progetto/tests/check-localized-window-r35r2.ps1",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/src/ProcessLens.App/ProcessLens.App.csproj",
+    "status": "CHANGED"
+  },
+  {
+    "path": "progetto/src/ProcessLens.App/Localization/LocalizedControls.cs",
+    "status": "CHANGED"
+  },
+  {
+    "path": "progetto/src/ProcessLens.App/Localized/MainWindow.xaml.g.cs",
+    "status": "CHANGED"
+  },
+  {
+    "path": "progetto/tools/LocalizationGenerator/Program.cs",
+    "status": "CHANGED"
+  },
+  {
+    "path": "progetto/tests/ProcessLens.LocalizationUiTests/Program.cs",
+    "status": "CHANGED"
+  },
+  {
+    "path": "progetto/audit/R10_R35_R2/ProcessLens.SystemProcessUiTests-typecheck.log",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/R10_R35_R2/ProcessLens.ProcessGroupsUiTests-typecheck.log",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/R10_R35_R2/ProcessLens.LocalizationUiTests-typecheck.log",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/R10_R35_R2/ProcessLens-typecheck.log",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/R10_R35_R2/msbuild-wpf-usings.json",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/R10_R35_R2/ProcessLens.LiveMetricsUiTests-typecheck.log",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/R10_R35_R2/wpf-typecheck-evidence.json",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/R10_R35_R2/ProcessLens.CopyUiTests-typecheck.log",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/R10_R35_R2/ProcessLens.NetworkUiTests-typecheck.log",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/R10_R35_R2/ProcessLens.Semantics-typecheck.log",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/R10_R35_R2/ProcessLens.NewTaskUiTests-typecheck.log",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/R10_R35_R2/ProcessLens.Windows-typecheck.log",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/tools/test_localized_window_gate_r35r2.ps1",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/tools/test_launcher_r35r2.ps1",
+    "status": "ADDED"
+  },
+  {
+    "path": "progetto/audit/tools/typecheck_wpf_sources_r35r2.py",
+    "status": "ADDED"
+  }
+]

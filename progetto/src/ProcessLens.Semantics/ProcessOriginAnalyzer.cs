@@ -98,9 +98,9 @@ public static class ProcessOriginAnalyzer
         if (SysPulseLocalization.IsEnglish)
         {
             launch = nearest is null
-                ? $"PPID: {process.ParentPid}. Parent process no longer active."
+                ? $"PPID: {process.ParentPid}. Parent process unavailable."
                 : nearest.VerifiedByStartTime
-                    ? $"Parent: {nearest.Name} · PID {nearest.Pid}. Start timestamps verified."
+                    ? $"Parent: {nearest.Name} · PID {nearest.Pid}. Start timestamps compatible."
                     : $"Candidate parent: {nearest.Name} · PID {nearest.Pid}. Start timestamps unavailable for verification.";
             var stepsEn = ancestors.Reverse().Select(a =>
                 $"{a.Name} (PID {a.Pid}) · Started: {ProcessStartFormatter.FormatStart(a.StartTime)}" +

@@ -1,0 +1,10 @@
+ProcessLens.Windows PASS
+ProcessLens.Semantics PASS
+ProcessLens PASS
+ProcessLens.NetworkUiTests PASS
+ProcessLens.CopyUiTests PASS
+ProcessLens.SystemProcessUiTests PASS
+ProcessLens.NewTaskUiTests PASS
+ProcessLens.LiveMetricsUiTests PASS
+ProcessLens.ProcessGroupsUiTests PASS
+ProcessLens.LocalizationUiTests PASS

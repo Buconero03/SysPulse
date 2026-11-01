@@ -1,0 +1,68 @@
+<UserControl x:Class="ProcessLens.App.NetworkCaptureView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:l10n="clr-namespace:ProcessLens.App"
+ xmlns:local="clr-namespace:ProcessLens.App">
+ <UserControl.Resources>
+  <Style x:Key="CaptureAction" TargetType="Button">
+   <Setter Property="MinHeight" Value="36"/><Setter Property="Padding" Value="10,7"/><Setter Property="Margin" Value="0,0,8,6"/>
+   <Setter Property="ContentTemplate"><Setter.Value><DataTemplate><l10n:LocalizedTextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center"/></DataTemplate></Setter.Value></Setter>
+  </Style>
+  <Style x:Key="CaptureCell" TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/><Setter Property="Margin" Value="6,5"/></Style>
+ </UserControl.Resources>
+ <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><Grid Margin="0,10,0,0">
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*" MinHeight="100"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <StackPanel>
+   <l10n:LocalizedTextBlock Text="{l10n:Tr F26B2CF17097D57D}" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap"/>
+   <local:SelectableText Text="{l10n:Tr 8747EB8EDF1723C6}" TextWrapping="Wrap" Margin="0,4,0,8"/>
+   <WrapPanel>
+    <l10n:LocalizedButton x:Name="DiscoverCaptureButton" Content="{l10n:Tr 2E52442EE9473A91}" Style="{StaticResource CaptureAction}" Click="Discover_Click"/>
+    <l10n:LocalizedButton x:Name="ChooseToolsButton" Content="{l10n:Tr 5E14DECC2B0848F8}" Style="{StaticResource CaptureAction}" Click="ChooseTools_Click"/>
+    <l10n:LocalizedButton x:Name="ImportCaptureButton" Content="{l10n:Tr F0EC118B066A78F9}" Style="{StaticResource CaptureAction}" Click="Import_Click" IsEnabled="False"/>
+   </WrapPanel>
+  </StackPanel>
+  <StackPanel Grid.Row="1">
+   <l10n:LocalizedTextBlock Text="{l10n:Tr 03EF53E15164DED4}" TextWrapping="Wrap"/>
+   <ComboBox x:Name="CaptureInterfacesBox" MinHeight="32" Margin="0,4,0,8" SelectionChanged="Interface_Changed">
+    <ComboBox.ItemTemplate><DataTemplate><l10n:LocalizedTextBlock Text="{Binding Display}" TextWrapping="Wrap"/></DataTemplate></ComboBox.ItemTemplate>
+   </ComboBox>
+   <l10n:LocalizedCheckBox x:Name="CaptureMonitorBox" Content="{l10n:Tr 217312C344C0D870}" Margin="0,0,0,8" Checked="Monitor_Changed" Unchecked="Monitor_Changed"/>
+   <WrapPanel>
+    <l10n:LocalizedButton x:Name="VerifyMonitorButton" Content="{l10n:Tr A018AA56B8510FCF}" Style="{StaticResource CaptureAction}" Click="Monitor_Click" IsEnabled="False"/>
+    <l10n:LocalizedButton x:Name="StartCaptureButton" Content="{l10n:Tr 50E59FDD71F27646}" Style="{StaticResource CaptureAction}" Click="Capture_Click" IsEnabled="False"/>
+    <l10n:LocalizedButton x:Name="StopCaptureButton" Content="{l10n:Tr 17F53641E13D2FE9}" Style="{StaticResource CaptureAction}" Click="Stop_Click" IsEnabled="False"/>
+    <l10n:LocalizedButton x:Name="ReadCaptureButton" Content="{l10n:Tr 3A714285E4FC5595}" Style="{StaticResource CaptureAction}" Click="Read_Click" IsEnabled="False"/>
+   </WrapPanel>
+  </StackPanel>
+  <StackPanel Grid.Row="2" Margin="0,0,0,8">
+   <local:SelectableText x:Name="CaptureStatusText" Text="{l10n:Tr A299B24781F3738A}" TextWrapping="Wrap"/>
+   <local:SelectableText x:Name="CaptureFileText" Text="{l10n:Tr CA6246CF075E5D9B}" TextWrapping="Wrap" Foreground="#64748B"/>
+   <local:SelectableText x:Name="CaptureSummaryText" Text="{l10n:Tr CB5B828EB528295A}" TextWrapping="Wrap" FontWeight="SemiBold"/>
+  </StackPanel>
+  <DataGrid x:Name="CaptureObservationsTable" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False"
+    EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"
+    local:GridCopySupport.Enabled="True" HeadersVisibility="Column" MinRowHeight="36" Height="240">
+   <DataGrid.Columns>
+    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr A194F7268877317C}" Binding="{Binding Kind, Mode=OneWay}" Width="185" ElementStyle="{StaticResource CaptureCell}"/>
+    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 1F6368E6ECC0AA62}" Binding="{Binding Mac, Mode=OneWay}" Width="155" ElementStyle="{StaticResource CaptureCell}"/>
+    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr D909E18785952512}" Binding="{Binding Bssid, Mode=OneWay}" Width="155" ElementStyle="{StaticResource CaptureCell}"/>
+    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 5AB4796FD4E096CA}" Binding="{Binding Ssid, Mode=OneWay}" Width="160" ElementStyle="{StaticResource CaptureCell}"/>
+    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr B8CFF750B1C09CA2}" Binding="{Binding Frequency, Mode=OneWay}" Width="110" ElementStyle="{StaticResource CaptureCell}"/>
+    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr E00BEF9C817C9A4F}" Binding="{Binding Signal, Mode=OneWay}" Width="100" ElementStyle="{StaticResource CaptureCell}"/>
+    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 3217B7419F49193D}" Binding="{Binding Frames, Mode=OneWay}" Width="105" ElementStyle="{StaticResource CaptureCell}"/>
+   </DataGrid.Columns>
+  </DataGrid>
+  <StackPanel Grid.Row="4" Margin="0,10,0,0">
+   <WrapPanel>
+    <l10n:LocalizedButton x:Name="OpenWiresharkButton" Content="{l10n:Tr 1673949A69B9FDDB}" Style="{StaticResource CaptureAction}" Click="Open_Click" IsEnabled="False"/>
+    <l10n:LocalizedButton x:Name="CopyCaptureButton" Content="{l10n:Tr 8B024025413ABBB5}" Style="{StaticResource CaptureAction}" Click="Copy_Click" IsEnabled="False"/>
+   </WrapPanel>
+   <l10n:LocalizedExpander Header="{l10n:Tr D224E0691D17C661}">
+    <ScrollViewer MaxHeight="140" VerticalScrollBarVisibility="Auto"><StackPanel Margin="0,6,0,0">
+     <local:SelectableText Text="{l10n:Tr 4C1A6638F1F6CEF2}" TextWrapping="Wrap" Margin="0,0,0,6"/>
+     <local:SelectableText Text="{l10n:Tr A588A82C3A82C9DE}" TextWrapping="Wrap" Margin="0,0,0,6"/>
+     <local:SelectableText Text="{l10n:Tr 2495685C988D6E70}" TextWrapping="Wrap" Margin="0,0,0,6"/>
+     <local:SelectableText x:Name="CaptureDetailsText" Text="{l10n:Tr A2EF7EBEF4EB8BFE}" TextWrapping="Wrap"/>
+    </StackPanel></ScrollViewer>
+   </l10n:LocalizedExpander>
+  </StackPanel>
+ </Grid></ScrollViewer>
+</UserControl>

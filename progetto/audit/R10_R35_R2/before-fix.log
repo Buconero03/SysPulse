@@ -1,0 +1,5 @@
+ProcessLens.Windows PASS
+ProcessLens.Semantics PASS
+ProcessLens FAIL
+R35R1/tools/typecheck/MarkupFieldStubs.cs(2,63): error CS0509: 'MainWindow': cannot derive from sealed type 'LocalizedWindow'
+

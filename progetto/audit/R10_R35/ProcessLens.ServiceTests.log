@@ -1,0 +1,11 @@
+PASS state and start
+PASS no invented process initiator
+PASS manual start not assumed user initiated
+PASS stopped no PID
+PASS stopped impact
+PASS shared host count
+PASS no fabricated host
+Service explanation tests completed.
+PASS R7 SCM stop capability described accurately
+PASS R7 stopped service does not describe entire host activity
+PASS R7 driver type not labelled Win32

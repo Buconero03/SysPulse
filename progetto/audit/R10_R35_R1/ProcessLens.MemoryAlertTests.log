@@ -1,0 +1,10 @@
+PASS initial below threshold
+PASS below 85 does not alert
+PASS alert exactly at 85
+PASS no repeated alert above threshold
+PASS exactly 80 does not rearm
+PASS strictly below 80 rearms
+PASS subsequent crossing alerts
+PASS invalid readings cannot reset latch
+PASS already above threshold at start alerts
+PASS invalid threshold configuration rejected

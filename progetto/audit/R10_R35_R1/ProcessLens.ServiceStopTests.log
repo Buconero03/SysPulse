@@ -1,0 +1,12 @@
+PASS Third-party AnyDesk eligible
+PASS Nonessential Microsoft service in Windows directory eligible
+PASS Nonessential service hosted in svchost eligible
+PASS Missing image path does not falsely deny SCM check
+PASS RPC essential denied
+PASS Firewall essential denied
+PASS Defender essential denied
+PASS Stopped service denied
+PASS Driver service denied
+PASS No PID denied
+PASS Empty name denied
+Service stop policy tests complete. No service was stopped.

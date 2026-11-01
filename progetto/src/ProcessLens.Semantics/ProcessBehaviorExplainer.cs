@@ -125,7 +125,6 @@ public static class ProcessBehaviorExplainer
             ? "TIPO SUGGERITO E PARAMETRI RICONOSCIUTI; ATTIVITÀ INTERNA NON VERIFICATA"
             : hasRoleEvidence ? "TIPO SUGGERITO DALLE REGOLE; COMPITO INTERNO NON VERIFICATO" : "IDENTIFICAZIONE PARZIALE — LIMITI ESPLICITI";
 
-        string englishSection = BuildEnglishBehaviorSection(p, i, hasRoleEvidence, operation, originEn);
 
         string answer =
             "COS'È\n" + string.Join(" ", identity) + "\n\n" +
@@ -139,8 +138,7 @@ public static class ProcessBehaviorExplainer
             "Ruolo stimato; codice in esecuzione non rilevato." +
             (p.TcpListeningCount > 0 || p.TcpEstablishedCount > 0
                 ? " TCP LISTEN/ESTABLISHED: richieste accettate e byte trasferiti non misurati."
-                : "") +
-            "\n\n" + englishSection;
+                : "");
 
         return new ProcessQueryResult("Analisi approfondita — cosa fa questo processo", answer, confidence,
             evidence.Distinct(StringComparer.OrdinalIgnoreCase).Take(20).ToArray(), null);

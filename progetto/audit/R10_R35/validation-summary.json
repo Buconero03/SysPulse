@@ -1,0 +1,15 @@
+{
+  "revision": "R35",
+  "input": "ProcessLens-Leggero.zip",
+  "portable_suites_passed": 29,
+  "portable_checks_passed": 1555,
+  "localization_checks": 248,
+  "static_gates_passed": 31,
+  "wpf_actual_markup_and_runtime": "NOT RUN: Windows required",
+  "typecheck_only": "WindowsDesktop references with explicit generated-field stubs",
+  "catalog_sha256": "ad4107921534fe5133bd3da5ebc09691ac7f43c42d0b3b574ffae822cddba7e0",
+  "core_test_assembly_sha256": "97e22f2141096d61e5234cc2626758822226d7983249c205291aa13eb3c47c63",
+  "dictionary_keys": 5882,
+  "source_message_occurrences": 8676,
+  "unique_source_keys": 5756
+}

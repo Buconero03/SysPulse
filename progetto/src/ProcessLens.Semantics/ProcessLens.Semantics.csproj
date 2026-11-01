@@ -13,4 +13,5 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
+<ItemGroup><Compile Remove="*.cs"/></ItemGroup>
 </Project>

@@ -1,0 +1,10 @@
+PASS heap totals parsed
+PASS heap type histogram
+PASS heap bytes/count grounded
+PASS gcdump 10 documented header and inferred full heap totals
+PASS top-N report does not truncate inferred totals
+PASS empty current-format report does not fabricate types
+PASS malformed output not fabricated
+PASS 85 percent RAM gate
+PASS bounded acquisition defaults
+ProcessLens Profiler core tests passed.

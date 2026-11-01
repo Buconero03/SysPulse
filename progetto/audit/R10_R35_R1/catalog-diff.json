@@ -1,0 +1,672 @@
+[
+  {
+    "italian": "diagnostiche coda: ",
+    "previous_english": "the tail diagnosis: ",
+    "english": "queue diagnostics: "
+  },
+  {
+    "italian": " · porta ",
+    "previous_english": " · door ",
+    "english": " · port "
+  },
+  {
+    "italian": "Ricerca di Windows (SearchHost)",
+    "previous_english": "This is a list of the countries of the European Union.",
+    "english": "Windows Search (SearchHost)"
+  },
+  {
+    "italian": "libGLESv2.dll: stack grafico Chromium/ANGLE",
+    "previous_english": "This is a list of the official languages of the European Union.",
+    "english": "libGLESv2.dll: Chromium/ANGLE graphics stack"
+  },
+  {
+    "italian": "Server database PostgreSQL",
+    "previous_english": "The following information is provided:",
+    "english": "PostgreSQL database server"
+  },
+  {
+    "italian": "Processo GPU Chromium/Electron",
+    "previous_english": "The processor shall be equipped with the following:",
+    "english": "Chromium/Electron GPU process"
+  },
+  {
+    "italian": "Wireshark dumpcap|dumpcap.exe",
+    "previous_english": "The Commission shall adopt delegated acts in accordance with Article 21 of this Regulation.",
+    "english": "Wireshark dumpcap|dumpcap.exe"
+  },
+  {
+    "italian": "La socket è in ascolto sulla porta indicata; non sono osservate richieste già accettate.",
+    "previous_english": "The socket is listening at the door indicated; no requests already accepted are observed.",
+    "english": "The socket is listening on the indicated port; accepted requests are not observed."
+  },
+  {
+    "italian": "L’applicazione può continuare a funzionare, ma potrebbe non registrare gli arresti anomali.",
+    "previous_english": "The application may continue to operate, but it may not record any anomalous arrests.",
+    "english": "The application may keep running, but crashes might no longer be recorded."
+  },
+  {
+    "italian": " servizi.",
+    "previous_english": " servizi.",
+    "english": " services."
+  },
+  {
+    "italian": "NtQuerySystemInformation: NTSTATUS 0x",
+    "previous_english": "This is a list of the most commonly used methods for calculating data.",
+    "english": "NtQuerySystemInformation: NTSTATUS 0x"
+  },
+  {
+    "italian": "Compilatore nativo MSVC (cl.exe), linker (link.exe) e server di database simboli di debug (mspdbsrv.exe).",
+    "previous_english": "This is a list of the types of data that can be stored in the database.",
+    "english": "MSVC native compiler (cl.exe), linker (link.exe), and debug symbol database server (mspdbsrv.exe)."
+  },
+  {
+    "italian": "Compilatore Roslyn / Motore MSBuild .NET",
+    "previous_english": "This is a list of all the different types of data processing equipment.",
+    "english": ".NET Roslyn compiler / MSBuild engine"
+  },
+  {
+    "italian": " proc. (",
+    "previous_english": " The Commission shall adopt implementing acts in accordance with the procedure referred to in paragraphs 1 and 2.",
+    "english": " processes ("
+  },
+  {
+    "italian": "eseguibile Spooler di stampa (spoolsv.exe)",
+    "previous_english": "This is a list of the official languages of the European Union.",
+    "english": "Print Spooler executable (spoolsv.exe)"
+  },
+  {
+    "italian": "eseguibile FFmpeg/FFprobe riconosciuto",
+    "previous_english": "The test shall be carried out in accordance with the following conditions:",
+    "english": "FFmpeg/FFprobe executable recognized"
+  },
+  {
+    "italian": "Dispositivi: N/D",
+    "previous_english": "The Commission shall adopt delegated acts in accordance with Article 21 of this Regulation.",
+    "english": "Devices: N/A"
+  },
+  {
+    "italian": "Process32Next=",
+    "previous_english": "This is Process32Next=",
+    "english": "Process32Next="
+  },
+  {
+    "italian": "-c nella command line",
+    "previous_english": "-c in the command line",
+    "english": "-c nella command line"
+  },
+  {
+    "italian": "eseguibile Windows Audio Device Graph Isolation (audiodg.exe)",
+    "previous_english": "This is a list of all the functions that are included in this table.",
+    "english": "Windows Audio Device Graph Isolation executable (audiodg.exe)"
+  },
+  {
+    "italian": "Process32First=",
+    "previous_english": "This is the process32First=",
+    "english": "Process32First="
+  },
+  {
+    "italian": "sistema di build (CMake/Ninja/Make)",
+    "previous_english": "The Commission shall adopt delegated acts in accordance with Article 21 of this Regulation.",
+    "english": "build system (CMake/Ninja/Make)"
+  },
+  {
+    "italian": "Arresto",
+    "previous_english": "Arrested",
+    "english": "Stop"
+  },
+  {
+    "italian": "Non verrà eseguita una terminazione forzata del processo.\n\nConfermi?",
+    "previous_english": "No forced termination of the proceedings shall be carried out.\n\nConfirm that?",
+    "english": "The process will not be forcibly terminated.\n\nConfirm?"
+  },
+  {
+    "italian": "Chromium Embedded Framework",
+    "previous_english": "The following information is provided for in Part A of this Annex:",
+    "english": "Chromium Embedded Framework"
+  },
+  {
+    "italian": "Client desktop Telegram",
+    "previous_english": "The following is a list of the countries of the European Union:",
+    "english": "Telegram desktop client"
+  },
+  {
+    "italian": "Programmi (*.exe;*.com)|*.exe;*.com",
+    "previous_english": "The following information shall be provided for the purposes of this Regulation:",
+    "english": "Programs (*.exe;*.com)|*.exe;*.com"
+  },
+  {
+    "italian": "Elaboratore multimediale FFmpeg",
+    "previous_english": "The following information is provided by the Commission:",
+    "english": "FFmpeg media processor"
+  },
+  {
+    "italian": "stato=",
+    "previous_english": "State=",
+    "english": "stato="
+  },
+  {
+    "italian": "; scartate dalla coda: ",
+    "previous_english": "; discarded from the tail: ",
+    "english": "; dropped from the queue: "
+  },
+  {
+    "italian": "Connessioni bloccate: ",
+    "previous_english": "Locked connections: ",
+    "english": "Blocked connections: "
+  },
+  {
+    "italian": "TimeCreated[@SystemTime >= '",
+    "previous_english": "This is a list of all the different types of data.",
+    "english": "TimeCreated[@SystemTime >= '"
+  },
+  {
+    "italian": "Pressione RAM non misurabile; acquisizione annullata.",
+    "previous_english": "Unmeasurable RAM pressure; cancelled acquisition.",
+    "english": "RAM pressure unavailable; acquisition cancelled."
+  },
+  {
+    "italian": "^\\[(?<time>[0-9]{2}:[0-9]{2}:[0-9]{2})\\] (?<stage>ESITO): (?<message>.*)$",
+    "previous_english": "^\\[(?<time>[0-9]{2}:[0-9]{2}:[0-9]{2})\\] (?<stage>RESULT): (?<message>.*)$",
+    "english": "^\\[(?<time>[0-9]{2}:[0-9]{2}:[0-9]{2})\\] (?<stage>ESITO): (?<message>.*)$"
+  },
+  {
+    "italian": "eseguibile WLAN Extensibility Host (wlanext.exe)",
+    "previous_english": "The following information is provided for in Part A of Annex I to this Regulation:",
+    "english": "WLAN Extensibility Host executable (wlanext.exe)"
+  },
+  {
+    "italian": "origine=",
+    "previous_english": "origin=",
+    "english": "origine="
+  },
+  {
+    "italian": "; esclusi=",
+    "previous_english": "- excluded",
+    "english": "; esclusi="
+  },
+  {
+    "italian": "Risolutore proxy",
+    "previous_english": "The following information shall be provided:",
+    "english": "Proxy resolver"
+  },
+  {
+    "italian": "Sottosistema di runtime Client/Server (csrss)",
+    "previous_english": "The following information shall be provided in accordance with the provisions of this Regulation:",
+    "english": "Client/Server Runtime Subsystem (csrss)"
+  },
+  {
+    "italian": "metadati file",
+    "previous_english": "The data set shall be the same as the data set.",
+    "english": "file metadata"
+  },
+  {
+    "italian": "-k appmodel",
+    "previous_english": "-k app model",
+    "english": "-k appmodel"
+  },
+  {
+    "italian": "Servizio non arrestato",
+    "previous_english": "Unarrested service",
+    "english": "Service not stopped"
+  },
+  {
+    "italian": "; versione4=",
+    "previous_english": "This is the fourth version.",
+    "english": "; versione4="
+  },
+  {
+    "italian": "Server database documentale MongoDB",
+    "previous_english": "The following information shall be provided:",
+    "english": "MongoDB document database server"
+  },
+  {
+    "italian": "Isolamento credenziali e sicurezza VBS (LSAISO)",
+    "previous_english": "This appropriation is intended to cover expenditure relating to the implementation of the programme.",
+    "english": "Credential isolation and VBS security (LSAISO)"
+  },
+  {
+    "italian": "Microsoft Edge WebView2",
+    "previous_english": "This is a list of all the different ways Microsoft Edge WebView2",
+    "english": "Microsoft Edge WebView2"
+  },
+  {
+    "italian": "Contatori storici e Kernel Pool (PSAPI EX2):",
+    "previous_english": "Historical counters and Kernel Pool (PSAPI EX2):",
+    "english": "Historical counters and kernel pools (PSAPI EX2):"
+  },
+  {
+    "italian": "memory leak",
+    "previous_english": "memory leakage",
+    "english": "memory leak"
+  },
+  {
+    "italian": "Valutazione rischio: ",
+    "previous_english": "The risk assessment shall include: ",
+    "english": "Risk assessment: "
+  },
+  {
+    "italian": "Letture separate: la differenza non misura coda o perdite. ",
+    "previous_english": "Separate readings: the difference does not measure tail or losses. ",
+    "english": "Separate readings: their difference does not measure queued or lost events. "
+  },
+  {
+    "italian": "PID ospitante: N/D.",
+    "previous_english": "In the case of a vehicle, the vehicle shall be equipped with:",
+    "english": "Host PID: N/A."
+  },
+  {
+    "italian": "PID diretto - TCP LISTEN: ",
+    "previous_english": "The following information shall be provided: ",
+    "english": "Selected PID - TCP LISTEN: "
+  },
+  {
+    "italian": "Microsoft Corporation",
+    "previous_english": "The Commission shall adopt delegated acts in accordance with Article 21 of this Regulation.",
+    "english": "Microsoft Corporation"
+  },
+  {
+    "italian": "runtime JS/TS (Bun/Deno)",
+    "previous_english": "The following information shall be provided:",
+    "english": "JS/TS runtime (Bun/Deno)"
+  },
+  {
+    "italian": "Gestisce l'indice di ricerca. Il campione non verifica lo stato dell'indice o il documento in elaborazione.",
+    "previous_english": "He manages the search index. The sample shall not verify the status of the index or document being processed.",
+    "english": "Manages the search index. The sample does not verify the index status or identify the document being processed."
+  },
+  {
+    "italian": "CreateToolhelp32Snapshot=",
+    "previous_english": "I'm going to do this for you.",
+    "english": "CreateToolhelp32Snapshot="
+  },
+  {
+    "italian": "PktMon · ",
+    "previous_english": "The Commission shall adopt implementing acts in accordance with the opinion of the Committee. ",
+    "english": "PktMon · "
+  },
+  {
+    "italian": "Nessun indicatore esplicito current/total o percentuale osservato.",
+    "previous_english": "Nessun indicatore esplicito current/total o percentuale osservato.",
+    "english": "No explicit current/total or percentage indicator observed."
+  },
+  {
+    "italian": "eseguibile Device Association Host (dasHost.exe)",
+    "previous_english": "This is a list of the active ingredients in the preparation process.",
+    "english": "Device Association Host executable (dasHost.exe)"
+  },
+  {
+    "italian": "kind IN ('ProcessExited','ProcessStarted','ProcessObservedAtStartup') ",
+    "previous_english": "This appropriation is intended to cover expenditure relating to: ",
+    "english": "kind IN ('ProcessExited','ProcessStarted','ProcessObservedAtStartup') "
+  },
+  {
+    "italian": "RAM N/A",
+    "previous_english": "THE FOLLOWING INFORMATION SHALL BE PROVIDED:",
+    "english": "RAM N/A"
+  },
+  {
+    "italian": "libEGL.dll: stack grafico Chromium/ANGLE",
+    "previous_english": "This is a list of the official languages of the European Union.",
+    "english": "libEGL.dll: Chromium/ANGLE graphics stack"
+  },
+  {
+    "italian": "Renderer Chromium/Electron",
+    "previous_english": "The following information is provided for in Part A of Annex I to this Regulation:",
+    "english": "Chromium/Electron renderer"
+  },
+  {
+    "italian": "QueryFullProcessImageName=",
+    "previous_english": "This is a list of characters who have appeared in the television series",
+    "english": "QueryFullProcessImageName="
+  },
+  {
+    "italian": "-k localservice",
+    "previous_english": "- local service",
+    "english": "-k localservice"
+  },
+  {
+    "italian": "processo principale",
+    "previous_english": "the main proceedings",
+    "english": "main process"
+  },
+  {
+    "italian": "toolchain MSVC (cl/link/mspdbsrv)",
+    "previous_english": "The Commission shall adopt delegated acts in accordance with Article 21 of this Regulation.",
+    "english": "MSVC toolchain (cl/link/mspdbsrv)"
+  },
+  {
+    "italian": "QueryWorkingSetEx: campione N/D; residenza non verificata.",
+    "previous_english": "QueryWorkingSetEx: sample N/A; residence not verified.",
+    "english": "QueryWorkingSetEx: sample N/A; page residency not verified."
+  },
+  {
+    "italian": "Cattura crash dump e raccoglie informazioni sugli arresti anomali",
+    "previous_english": "capture crash dump and collects information on anomalous arrests",
+    "english": "Captures crash dumps and collects information about crashes"
+  },
+  {
+    "italian": "Fonte: GetPerformanceInfo. Campione separato dall'inventario processi; non è una ripartizione esatta della RAM.",
+    "previous_english": "This is a list of the countries in the world that have achieved the highest level of achievement. Sample separated from process inventory; it is not an exact distribution of RAM.",
+    "english": "Source: GetPerformanceInfo. Sampled separately from the process inventory; not an exact breakdown of RAM."
+  },
+  {
+    "italian": "Orchestratore di build CMake / Ninja / Make",
+    "previous_english": "This is a list of all the different ways to make music.",
+    "english": "CMake / Ninja / Make build orchestrator"
+  },
+  {
+    "italian": "Ascolto su porta locale bloccato",
+    "previous_english": "Listening on local door locked",
+    "english": "Listening on a local port blocked"
+  },
+  {
+    "italian": "avvio: ",
+    "previous_english": "avvio: ",
+    "english": "start: "
+  },
+  {
+    "italian": "Gli appunti sono temporaneamente occupati da un'altra applicazione. Riprova a copiare il testo.",
+    "previous_english": "The notes are temporarily occupied by another application. Try copying the text again.",
+    "english": "The clipboard is temporarily busy in another application. Try copying the text again."
+  },
+  {
+    "italian": " MiB di commit · ",
+    "previous_english": " Member States shall ensure that the following conditions are met: ",
+    "english": " MiB of commit · "
+  },
+  {
+    "italian": "Chat vocale, streaming video e messaggistica istantanea",
+    "previous_english": "In the event of a dispute, the Commission shall adopt implementing acts laying down the rules for the application of this Regulation.",
+    "english": "Voice chat, video streaming and instant messaging"
+  },
+  {
+    "italian": "Processo utility Chromium/Electron",
+    "previous_english": "This is the total value of all final goods and services produced within the Union in a given year.",
+    "english": "Chromium/Electron utility process"
+  },
+  {
+    "italian": "PID antenato ",
+    "previous_english": "The following information shall be provided: ",
+    "english": "Ancestor PID "
+  },
+  {
+    "italian": "Cronologia SCM: N/D. Motivo dell’avvio sconosciuto.",
+    "previous_english": "The following is the list of Member States that have notified the Commission of the measures taken: Reason for the start unknown.",
+    "english": "SCM history: N/A. Reason for launch unknown."
+  },
+  {
+    "italian": "L'associazione viene verificata per istanza del processo. Per il carico usa i rapporti CPU/RAM e confronta campioni della stessa istanza e dello stesso contatore.\n\n",
+    "previous_english": "The association shall be verified at the time of process. For loading, use the CPU/RAM ratios and compare samples from the same instance and counter.\n\n",
+    "english": "The association is checked for the specific process instance. To assess load, use the CPU/RAM reports and compare samples from the same instance and counter.\n\n"
+  },
+  {
+    "italian": "^[a-fA-F0-9]{32}$",
+    "previous_english": "I'm going to tell you something.",
+    "english": "^[a-fA-F0-9]{32}$"
+  },
+  {
+    "italian": "; erroreWin32=",
+    "previous_english": "This is the first time I've seen this.",
+    "english": "; erroreWin32="
+  },
+  {
+    "italian": "Lettura RAM non disponibile; API GlobalMemoryStatusEx, tipo errore: ",
+    "previous_english": "RAM readings not available; The following information shall be provided: ",
+    "english": "RAM reading unavailable; GlobalMemoryStatusEx API, error type: "
+  },
+  {
+    "italian": "File Npcap rilevati; il supporto monitor va verificato per scheda e driver.",
+    "previous_english": "Detected Npcap files; monitor support shall be checked for card and driver.",
+    "english": "Npcap files detected; monitor mode support must be checked for the adapter and driver."
+  },
+  {
+    "italian": "Runtime/dev server Next.js",
+    "previous_english": "This is a list of current and upcoming releases.",
+    "english": "Next.js runtime / development server"
+  },
+  {
+    "italian": "; percorso=",
+    "previous_english": "; route=",
+    "english": "; percorso="
+  },
+  {
+    "italian": "Ospita il motore audio e può caricare effetti dei produttori. La sua presenza non dimostra che sia in riproduzione un suono.",
+    "previous_english": "It houses the audio engine and can load effects from manufacturers. His presence does not indicate that a sound is being played.",
+    "english": "Hosts the audio engine and may load vendor effects. Its presence does not establish that audio is playing."
+  },
+  {
+    "italian": "[Finestra] Coda piena: ",
+    "previous_english": "[Window] Full tail: ",
+    "english": "[Window] Queue full: "
+  },
+  {
+    "italian": "Servizio diagnostico ProcessLens Guardian",
+    "previous_english": "This is the main reason why the Commission has not yet adopted a proposal for a regulation.",
+    "english": "ProcessLens Guardian diagnostic service"
+  },
+  {
+    "italian": "RSSI (dBm)",
+    "previous_english": "The Commission shall adopt delegated acts in accordance with Article 21 of Regulation (EU) No 1308/2013.",
+    "english": "RSSI (dBm)"
+  },
+  {
+    "italian": " · schede lette: ",
+    "previous_english": " · read sheets: ",
+    "english": " · adapters read: "
+  },
+  {
+    "italian": "eseguibile Desktop Window Manager (dwm.exe)",
+    "previous_english": "This is a list of the official languages of the European Union.",
+    "english": "Desktop Window Manager executable (dwm.exe)"
+  },
+  {
+    "italian": "Applicazione per fogli elettronici e analisi di dati della suite Microsoft Office / 365.",
+    "previous_english": "Application for electronic sheets and data analysis of the Microsoft Office 365 suite.",
+    "english": "Spreadsheet and data analysis application in Microsoft Office / Microsoft 365."
+  },
+  {
+    "italian": "Renderizza il Menu Start, icone bloccate e collegamenti rapidi",
+    "previous_english": "Returns the Start menu, locked icons and quick links",
+    "english": "Renders the Start menu, pinned icons and shortcuts"
+  },
+  {
+    "italian": "Scegli il programma",
+    "previous_english": "Select program",
+    "english": "Choose a program"
+  },
+  {
+    "italian": "Distintivo grafico generato dal nome del file. Icona originale non disponibile; non identifica il produttore.",
+    "previous_english": "Distinguishing graph generated by the file name. Original icon not available; does not identify the manufacturer.",
+    "english": "Visual badge generated from the file name. Original icon unavailable; the badge does not identify the publisher."
+  },
+  {
+    "italian": "SELECT name, COALESCE(SUM(cpu_sum)/NULLIF(SUM(cpu_count),0),0),\n  COALESCE(MAX(cpu_peak),0), COALESCE(MAX(resident_peak)/1048576.0,0), SUM(samples)\nFROM resources WHERE bucket >= ($since - 300)\nGROUP BY name HAVING SUM(cpu_count) > 0 ORDER BY SUM(cpu_sum)/NULLIF(SUM(cpu_count),0) DESC LIMIT 16",
+    "previous_english": "SELECT name, COALESCE(SUM(cpu_sum)/NULLIF(SUM(cpu_count),0),0),\n  This is the case in the United Kingdom, where the number of coal miners is estimated to exceed the total number of coal miners.\nFrom resources WHERE bucket >= ($since - 300)\nGROUP BY name HAVING SUM(cpu_count) > 0 ORDER BY SUM(cpu_sum)/NULLIF(SUM(cpu_count),0) DESC LIMIT 16",
+    "english": "SELECT name, COALESCE(SUM(cpu_sum)/NULLIF(SUM(cpu_count),0),0),\n  COALESCE(MAX(cpu_peak),0), COALESCE(MAX(resident_peak)/1048576.0,0), SUM(samples)\nFROM resources WHERE bucket >= ($since - 300)\nGROUP BY name HAVING SUM(cpu_count) > 0 ORDER BY SUM(cpu_sum)/NULLIF(SUM(cpu_count),0) DESC LIMIT 16"
+  },
+  {
+    "italian": "crittografia/certificati (Crypt32/BCrypt)",
+    "previous_english": "The following information shall be provided for the purposes of this Regulation:",
+    "english": "cryptography/certificates (Crypt32/BCrypt)"
+  },
+  {
+    "italian": "eseguibile LSA Isolation / Credential Guard (lsaiso.exe)",
+    "previous_english": "This is a list of the most commonly used methods for calculating the value of a security.",
+    "english": "LSA Isolation / Credential Guard executable (lsaiso.exe)"
+  },
+  {
+    "italian": "\nScheda\tSSID\tBSSID\tRSSI dBm\tFrequenza\tTipo\n",
+    "previous_english": "\nThe following information shall be provided:\n",
+    "english": "\nAdapter\tSSID\tBSSID\tRSSI dBm\tFrequency\tType\n"
+  },
+  {
+    "italian": "-k utcsvc",
+    "previous_english": "- to the United States",
+    "english": "-k utcsvc"
+  },
+  {
+    "italian": "; versione4Negoziata=",
+    "previous_english": "; version4Traded=",
+    "english": "; versione4Negoziata="
+  },
+  {
+    "italian": "Compilatore .NET Roslyn (VBCSCompiler)",
+    "previous_english": "This is a list of the official languages of the European Union.",
+    "english": ".NET Roslyn compiler (VBCSCompiler)"
+  },
+  {
+    "italian": " ms; intervallo automatico ",
+    "previous_english": " The following information shall be provided: ",
+    "english": " ms; automatic interval "
+  },
+  {
+    "italian": "Installa Wireshark con TShark e Npcap. In Npcap abilita Support raw 802.11 traffic (and monitor mode) for wireless adapters. Servono scheda e driver compatibili. Istruzioni: INTEGRAZIONE_WIRESHARK_R13.md.",
+    "previous_english": "Install Wireshark with TShark and Npcap. In Npcap, support raw 802.11 traffic (and monitor mode) for wireless adapters is enabled. You need a compatible card and drivers. This is a list of the official languages of the European Union.",
+    "english": "Install Wireshark with TShark and Npcap. In Npcap, enable “Support raw 802.11 traffic (and monitor mode) for wireless adapters”. A compatible adapter and driver are required. Instructions: INTEGRAZIONE_WIRESHARK_R13.md."
+  },
+  {
+    "italian": "processo macchina virtuale (VirtualBox/VMware)",
+    "previous_english": "The Commission shall adopt implementing acts in accordance with the opinion of the European Parliament and of the Council.",
+    "english": "virtual machine process (VirtualBox/VMware)"
+  },
+  {
+    "italian": "Letto alle ",
+    "previous_english": "I'm in bed ",
+    "english": "Read at "
+  },
+  {
+    "italian": "Per cercare un memory leak, osserva lo stesso PID nel tempo insieme a commit e RAM del sistema. Sottoprocessi, GPU e kernel vanno valutati a parte. N/D non equivale a zero.",
+    "previous_english": "To check for a memory leak, monitor the same PID over time alongside commit charge and system RAM. N/A does not mean zero.",
+    "english": "To investigate a memory leak, observe the same PID over time alongside commit and system RAM. Assess child processes, GPU memory and the kernel separately. N/A is not zero."
+  },
+  {
+    "italian": "Bind su porta locale bloccato",
+    "previous_english": "Bind to local door locked",
+    "english": "Binding to a local port blocked"
+  },
+  {
+    "italian": "Creazione di un commit locale",
+    "previous_english": "Establishment of a local committee",
+    "english": "Creating a local commit"
+  },
+  {
+    "italian": "toolchain Rust (cargo/rustc)",
+    "previous_english": "The value of the eligible costs shall be calculated as follows:",
+    "english": "Rust toolchain (cargo/rustc)"
+  },
+  {
+    "italian": "eseguibile Shell Infrastructure Host (sihost.exe)",
+    "previous_english": "This is a list of the types of software that can be used for the purposes of this specification.",
+    "english": "Shell Infrastructure Host executable (sihost.exe)"
+  },
+  {
+    "italian": "Identificativo applicazione Windows (AUMID)",
+    "previous_english": "The following information is provided for in the Annex to Implementing Regulation (EU) 2015/2449.",
+    "english": "Windows application identifier (AUMID)"
+  },
+  {
+    "italian": "eseguibile Client/Server Runtime Subsystem (csrss.exe)",
+    "previous_english": "The following information shall be provided in accordance with the provisions of this Regulation:",
+    "english": "Client/Server Runtime Subsystem executable (csrss.exe)"
+  },
+  {
+    "italian": "Il nome o i metadati indicano un componente dedicato alla gestione degli arresti anomali.",
+    "previous_english": "The name or metadata indicates a component dedicated to the management of anomalous arrests.",
+    "english": "The name or metadata indicates a component dedicated to crash handling."
+  },
+  {
+    "italian": "Server database MySQL / MariaDB",
+    "previous_english": "This is a list of the most commonly used data sources.",
+    "english": "MySQL / MariaDB database server"
+  },
+  {
+    "italian": "dd/MM/yyyy HH:mm:ss",
+    "previous_english": "The following information shall be provided:",
+    "english": "dd/MM/yyyy HH:mm:ss"
+  },
+  {
+    "italian": "NtQuerySystemInformation · SystemProcessInformation",
+    "previous_english": "The following information is provided for in Part II of Annex I to this Regulation:",
+    "english": "NtQuerySystemInformation · SystemProcessInformation"
+  },
+  {
+    "italian": "eseguibile Microsoft SQL Server (sqlservr/sqlwriter)",
+    "previous_english": "This is the total amount of data that can be used to calculate the value of the data in accordance with paragraph 1 of this Article.",
+    "english": "Microsoft SQL Server executable (sqlservr/sqlwriter)"
+  },
+  {
+    "italian": "ParentQueryStatus=",
+    "previous_english": "This is a list of characters who have appeared on the programme.",
+    "english": "ParentQueryStatus="
+  },
+  {
+    "italian": "Tempo CPU occupato da GetSystemTimes / tempo trascorso monotono / CPU logiche. ",
+    "previous_english": "CPU time occupied by GetSystemTimes / time spent monotonous / CPU logical. ",
+    "english": "Busy CPU time from GetSystemTimes / monotonic elapsed time / logical processor count. "
+  },
+  {
+    "italian": "• Quota residente condivisibile: ",
+    "previous_english": "• Shared resident quota: ",
+    "english": "• Shareable resident memory: "
+  },
+  {
+    "italian": "; visibileWin32=",
+    "previous_english": "See also:",
+    "english": "; visibileWin32="
+  },
+  {
+    "italian": "Rilevati: ",
+    "previous_english": "Rilevati: ",
+    "english": "Detected: "
+  },
+  {
+    "italian": "grafica/GPU (DirectX/OpenGL/Vulkan)",
+    "previous_english": "The Commission shall adopt delegated acts in accordance with Article 21 of this Regulation.",
+    "english": "graphics/GPU (DirectX/OpenGL/Vulkan)"
+  },
+  {
+    "italian": "Segoe UI",
+    "previous_english": "The Commission shall adopt delegated acts in accordance with Article 21 of this Regulation.",
+    "english": "Segoe UI"
+  },
+  {
+    "italian": "client desktop remoto (AnyDesk/TeamViewer/RustDesk/RDP)",
+    "previous_english": "The following information is provided for in Part A of Annex I to Regulation (EU) No 1303/2013.",
+    "english": "remote desktop client (AnyDesk/TeamViewer/RustDesk/RDP)"
+  },
+  {
+    "italian": "; caratteri XML: ",
+    "previous_english": "For the purposes of this Regulation: ",
+    "english": "; XML characters: "
+  },
+  {
+    "italian": "Associato a una sessione console; processo originario non determinato.",
+    "previous_english": "Associated with a consular session; original proceedings not determined.",
+    "english": "Associated with a console session; originating process undetermined."
+  },
+  {
+    "italian": "eseguibile Task Host Windows (taskhostw.exe)",
+    "previous_english": "This is a list of all the functions that are included in this table.",
+    "english": "Windows Task Host executable (taskhostw.exe)"
+  },
+  {
+    "italian": "AuditQuerySystemPolicy · Win32 ",
+    "previous_english": "This is a list of the countries of the European Union. ",
+    "english": "AuditQuerySystemPolicy · Win32 "
+  },
+  {
+    "italian": "eseguibile Windows User-Mode Driver Host (WUDFHost.exe)",
+    "previous_english": "This is a list of the operating systems used in the United States.",
+    "english": "Windows User-Mode Driver Host executable (WUDFHost.exe)"
+  },
+  {
+    "italian": "RAM fisica ",
+    "previous_english": "The following information shall be provided: ",
+    "english": "Physical RAM "
+  },
+  {
+    "italian": "strumento di archiviazione (7-Zip/WinRAR/tar)",
+    "previous_english": "The data shall be stored in the form of a separate file.",
+    "english": "archive tool (7-Zip/WinRAR/tar)"
+  }
+]

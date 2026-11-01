@@ -1,0 +1,76 @@
+PASS native capture: independent Windows metadata size and aligned offsets
+PASS native capture: stream configuration pointer and UINT16 layout
+PASS native capture: stream descriptor independent size and packet offset
+PASS native capture: independent Ethernet IPv4 TCP fixture [it-IT]
+PASS native capture: native FILETIME formatted with invariant timestamp [it-IT]
+PASS native capture: fragment does not acquire transport ports [it-IT]
+PASS native capture: invalid IPv4 header cannot acquire endpoints [it-IT]
+PASS native capture: IPv4 total length bounds transport parsing [it-IT]
+PASS native capture: raw 802.11 and unknown direction remain undecoded [it-IT]
+PASS native capture: VLAN header handled without guessing IP offset [it-IT]
+PASS native capture: IPv6 direct UDP header fixture [it-IT]
+PASS native capture: IPv6 extensions and fragments do not acquire ports [it-IT]
+PASS native capture: independent BSS binary offsets preserve radio measurements [it-IT]
+PASS native capture: SSID control bytes cannot inject report events [it-IT]
+PASS native capture: non UTF8 SSID retains exact bytes as hex [it-IT]
+PASS native capture: empty SSID is not invented [it-IT]
+PASS native capture: oversized SSID rejected [it-IT]
+PASS native capture: BSS count cannot exceed actual buffer [it-IT]
+PASS native capture: unknown BSS type is not an invented access point [it-IT]
+PASS native capture: unavailable capture preserves error and coverage [it-IT]
+PASS native capture: BSS report distinguishes access points and clients [it-IT]
+PASS native capture: independent Ethernet IPv4 TCP fixture [en-US]
+PASS native capture: native FILETIME formatted with invariant timestamp [en-US]
+PASS native capture: fragment does not acquire transport ports [en-US]
+PASS native capture: invalid IPv4 header cannot acquire endpoints [en-US]
+PASS native capture: IPv4 total length bounds transport parsing [en-US]
+PASS native capture: raw 802.11 and unknown direction remain undecoded [en-US]
+PASS native capture: VLAN header handled without guessing IP offset [en-US]
+PASS native capture: IPv6 direct UDP header fixture [en-US]
+PASS native capture: IPv6 extensions and fragments do not acquire ports [en-US]
+PASS native capture: independent BSS binary offsets preserve radio measurements [en-US]
+PASS native capture: SSID control bytes cannot inject report events [en-US]
+PASS native capture: non UTF8 SSID retains exact bytes as hex [en-US]
+PASS native capture: empty SSID is not invented [en-US]
+PASS native capture: oversized SSID rejected [en-US]
+PASS native capture: BSS count cannot exceed actual buffer [en-US]
+PASS native capture: unknown BSS type is not an invented access point [en-US]
+PASS native capture: unavailable capture preserves error and coverage [en-US]
+PASS native capture: BSS report distinguishes access points and clients [en-US]
+PASS native capture: truncated BSS list rejected
+PASS native capture: Unicode line separator and control text normalized
+PASS native capture: source keeps the exact owned native specification pointer
+PASS native capture: out-of-buffer source pointer rejected before dereference
+PASS native capture: null source pointer rejected
+PASS native capture: source count capped before pointer array read
+PASS native capture: construction is lazy
+PASS native capture: discovery does not create or activate a session
+PASS native capture: capture wait always receives the twenty second budget
+PASS native capture: owned API boundary feeds real collector and decoder
+PASS native capture: native stream uses bounded ring multiplier and snap length
+PASS native capture: owned session configured before activation and released in order
+PASS native capture: session uses a fresh private name
+PASS native capture: rediscovery invalidates stale source tokens
+PASS native capture: unknown selection cannot create a capture session
+PASS native capture: source label mismatch fails closed
+PASS native capture: release invalidates selection and closes native discovery
+PASS native capture: native error preserved at session
+PASS native capture: resource rollback after session
+PASS native capture: native error preserved at source
+PASS native capture: resource rollback after source
+PASS native capture: native error preserved at stream
+PASS native capture: resource rollback after stream
+PASS native capture: native error preserved at attach
+PASS native capture: resource rollback after attach
+PASS native capture: native error preserved at active
+PASS native capture: resource rollback after active
+PASS native capture: bounded partial acquisition: overflow
+PASS native capture: capture observations never exceed 2048
+PASS native capture: bounded partial acquisition: bad-offset
+PASS native capture: bounded partial acquisition: fatal
+PASS native capture: bounded partial acquisition: loss
+PASS native capture: native loss counts preserved without asserting complete capture
+PASS native capture: bounded partial acquisition: unexpected-stop
+PASS native capture: missing API exports are unavailable with a reason
+PASS native capture: cancellation before discovery does not load native code
+Native capture regressions complete; synthetic buffers and owned interop fixtures only. No live packet capture or radio changes.

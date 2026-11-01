@@ -1,0 +1,10 @@
+PASS fixture: default senza acquisizione
+PASS fixture: nessun profiler automatico nella build
+PASS fixture: nessun profiler automatico nel launcher
+PASS fixture: nessun servizio Guardian modificato
+PASS fixture: processo sintetico chiuso e file rimossi
+PASS fixture: consenso scritto richiesto
+PASS fixture: target di prova con oggetti sintetici
+PASS fixture: nessuna installazione automatica
+PASS fixture: soglia preventiva RAM
+PASS fixture: identita PID con ora avvio

@@ -1,0 +1,18 @@
+PASS git push recognized from observed command
+PASS live ancestry shown
+PASS full ancestor command suppressed
+PASS success not claimed
+PASS git status recognized
+PASS -C directory recognized, not claimed as root
+PASS no push inferred without command
+PASS unverified ancestor command ignored
+PASS verified git ancestor provides operation
+PASS generic process does not invent operation
+PASS verified origin explains timestamp evidence
+PASS unverified parent relationship is qualified
+PASS ancestor start timestamp shown in origin chain
+PASS selected process start timestamp shown in origin chain
+PASS elapsed time is formatted using UTC
+PASS unknown start is not invented
+PASS unknown start has explicit fallback
+RESULT: 17 tests passed

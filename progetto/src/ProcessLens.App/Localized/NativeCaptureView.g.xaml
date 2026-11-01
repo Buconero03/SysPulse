@@ -1,0 +1,72 @@
+<UserControl x:Class="ProcessLens.App.NativeCaptureView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:l10n="clr-namespace:ProcessLens.App" xmlns:local="clr-namespace:ProcessLens.App">
+ <UserControl.Resources>
+  <Style x:Key="CaptureAction" TargetType="Button">
+   <Setter Property="Background" Value="#F8FAFC"/><Setter Property="Foreground" Value="#1F2937"/>
+   <Setter Property="BorderBrush" Value="#CBD5E1"/><Setter Property="BorderThickness" Value="1"/>
+   <Setter Property="MinHeight" Value="36"/><Setter Property="Padding" Value="12,8"/><Setter Property="Margin" Value="0,0,8,7"/>
+   <Setter Property="ContentTemplate"><Setter.Value><DataTemplate><l10n:LocalizedTextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center"/></DataTemplate></Setter.Value></Setter>
+  </Style>
+  <Style x:Key="CaptureCell" TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/><Setter Property="Padding" Value="5"/></Style>
+ </UserControl.Resources>
+ <Grid Margin="0,10,0,0">
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="2*" MinHeight="100"/><RowDefinition Height="7"/><RowDefinition Height="*" MinHeight="95"/></Grid.RowDefinitions>
+  <ScrollViewer MaxHeight="220" VerticalScrollBarVisibility="Auto"><StackPanel>
+   <l10n:LocalizedTextBlock Text="{l10n:Tr 7DE905E65B83604A}" FontSize="21" FontWeight="SemiBold"/>
+   <local:SelectableText Text="{l10n:Tr 220EFA359F3C4B85}" TextWrapping="Wrap" Margin="0,6,0,9"/>
+   <WrapPanel>
+    <l10n:LocalizedButton x:Name="DiscoverNativeCaptureButton" Background="#175CD3" Foreground="White" BorderBrush="#175CD3" Content="{l10n:Tr 286A8F1CF57FDB86}" Style="{StaticResource CaptureAction}" Click="Discover_Click"/>
+    <l10n:LocalizedButton x:Name="ReadWifiBssButton" Content="{l10n:Tr 33833CB2AE22B064}" Style="{StaticResource CaptureAction}" Click="Wifi_Click"/>
+    <l10n:LocalizedButton x:Name="StopNativeCaptureButton" Content="{l10n:Tr D7CBA7C8A97E3A97}" Style="{StaticResource CaptureAction}" Click="Stop_Click" IsEnabled="False"/>
+    <l10n:LocalizedButton x:Name="CopyNativeCaptureButton" Content="{l10n:Tr 8B024025413ABBB5}" Style="{StaticResource CaptureAction}" Click="Copy_Click" IsEnabled="False"/>
+   </WrapPanel>
+   <WrapPanel>
+    <l10n:LocalizedTextBlock Text="{l10n:Tr D6BB783C99F98348}" VerticalAlignment="Center" Margin="0,0,8,7"/>
+    <ComboBox x:Name="NativeCaptureSourcesBox" DisplayMemberPath="DisplayName" MinWidth="220" MaxWidth="470" Margin="0,0,8,7" SelectionChanged="Source_Changed"/>
+    <l10n:LocalizedButton x:Name="StartNativeCaptureButton" Content="{l10n:Tr 3222977F2FFAEEAE}" Style="{StaticResource CaptureAction}" Click="Capture_Click" IsEnabled="False"/>
+   </WrapPanel>
+   <Border Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="7" Padding="10,8" Margin="0,4,0,8"><local:SelectableText x:Name="NativeCaptureStatusText" Text="{l10n:Tr 9678F59516DB07F5}" TextWrapping="Wrap" Margin="0,0,0,8"/></Border>
+   <l10n:LocalizedExpander Header="{l10n:Tr E8D6A8675A34B2CF}" Margin="0,0,0,8">
+    <ScrollViewer MaxHeight="150" VerticalScrollBarVisibility="Auto"><StackPanel>
+     <local:SelectableText Text="{l10n:Tr 695995132D447912}" TextWrapping="Wrap"/>
+     <local:SelectableText Text="{l10n:Tr 1000971D466ABD0E}" TextWrapping="Wrap" Margin="0,6,0,0"/>
+     <local:SelectableText Text="{l10n:Tr F057BF0D82850939}" TextWrapping="Wrap" Margin="0,6,0,0"/>
+    </StackPanel></ScrollViewer>
+   </l10n:LocalizedExpander>
+  </StackPanel></ScrollViewer>
+  <TabControl Grid.Row="1" x:Name="NativeResultTabs" SelectedIndex="0">
+   <l10n:LocalizedTabItem Header="{l10n:Tr 5294C05AE560FED8}">
+    <DataGrid x:Name="NativePacketsTable" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling" local:GridCopySupport.Enabled="True" MinRowHeight="34" SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="Observation_Changed">
+     <DataGrid.Columns>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 4926B5A86FD65D5D}" Binding="{Binding Time}" Width="115" ElementStyle="{StaticResource CaptureCell}"/>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 2BF99BB061D22516}" Binding="{Binding Protocol}" Width="150" ElementStyle="{StaticResource CaptureCell}"/>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr A449426D8742A2F3}" Binding="{Binding Source}" Width="210" ElementStyle="{StaticResource CaptureCell}"/>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr EE1F3229B45739DA}" Binding="{Binding Destination}" Width="210" ElementStyle="{StaticResource CaptureCell}"/>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr CAFD2A4BC1A72F07}" Binding="{Binding Direction}" Width="90" ElementStyle="{StaticResource CaptureCell}"/>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 2E005384FA530248}" Binding="{Binding Bytes}" Width="110" ElementStyle="{StaticResource CaptureCell}"/>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 24792125670201DE}" Binding="{Binding ComponentText}" Width="125" ElementStyle="{StaticResource CaptureCell}"/>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 49A79F337A455096}" Binding="{Binding DropReasonText}" Width="95" ElementStyle="{StaticResource CaptureCell}"/>
+     </DataGrid.Columns>
+    </DataGrid>
+   </l10n:LocalizedTabItem>
+   <l10n:LocalizedTabItem Header="{l10n:Tr 2E9C6B58075927DF}">
+    <DataGrid x:Name="WifiBssTable" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling" local:GridCopySupport.Enabled="True" MinRowHeight="34" SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="Observation_Changed">
+     <DataGrid.Columns>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 458AB16591036662}" Binding="{Binding Adapter}" Width="180" ElementStyle="{StaticResource CaptureCell}"/>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr EB49A323752087CE}" Binding="{Binding Ssid}" Width="190" ElementStyle="{StaticResource CaptureCell}"/>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 61E55A43ED27F5E4}" Binding="{Binding Bssid}" Width="170" ElementStyle="{StaticResource CaptureCell}"/>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 62E283D12A34D6D1}" Binding="{Binding Rssi}" Width="95" ElementStyle="{StaticResource CaptureCell}"/>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr B8CFF750B1C09CA2}" Binding="{Binding Frequency}" Width="120" ElementStyle="{StaticResource CaptureCell}"/>
+      <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 3868D2843D5924C1}" Binding="{Binding BssType}" Width="150" ElementStyle="{StaticResource CaptureCell}"/>
+     </DataGrid.Columns>
+    </DataGrid>
+   </l10n:LocalizedTabItem>
+  </TabControl>
+  <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" ResizeDirection="Rows" Background="#D8E2EE"/>
+  <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Margin="0,9,0,0"><StackPanel>
+   <local:SelectableText x:Name="NativeCaptureSelectionText" Text="{l10n:Tr A66C141EF86CEBFA}" TextWrapping="Wrap"/>
+   <l10n:LocalizedExpander Header="{l10n:Tr 7D92AE01DF581D1D}" IsExpanded="True" Margin="0,10,0,0"><local:SelectableText x:Name="NativeCaptureNoteText" Text="{l10n:Tr 67A97A2F58969989}" TextWrapping="Wrap" Margin="0,6,0,0"/></l10n:LocalizedExpander>
+  </StackPanel></ScrollViewer>
+ </Grid>
+</UserControl>

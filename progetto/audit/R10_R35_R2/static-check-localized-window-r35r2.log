@@ -1,0 +1,1 @@
+PASS R35 R2: 1 localized XAML root(s) are inheritable and match the generated code-behind. Actual BAML and Windows runtime checks remain separate.

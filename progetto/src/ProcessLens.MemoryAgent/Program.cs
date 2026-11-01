@@ -30,13 +30,13 @@ internal sealed class MonitorContext : ApplicationContext
     public MonitorContext()
     {
         var menu = new ContextMenuStrip();
-        menu.Items.Add("Mostra utilizzo RAM", null, (_, _) => ShowCurrent());
-        menu.Items.Add("Prova notifica", null, (_, _) => TestNotification());
-        menu.Items.Add("Chiudi monitor", null, (_, _) => ExitThread());
+        menu.Items.Add(SysPulseLocalization.Translate("Mostra utilizzo RAM"), null, (_, _) => ShowCurrent());
+        menu.Items.Add(SysPulseLocalization.Translate("Prova notifica"), null, (_, _) => TestNotification());
+        menu.Items.Add(SysPulseLocalization.Translate("Chiudi monitor"), null, (_, _) => ExitThread());
         _icon = new NotifyIcon
         {
             Icon = SystemIcons.Information,
-            Text = "ProcessLens - avvisi RAM 85% / riarmo 80%",
+            Text = SysPulseLocalization.Translate("ProcessLens - avvisi RAM 85% / riarmo 80%"),
             Visible = true,
             ContextMenuStrip = menu
         };

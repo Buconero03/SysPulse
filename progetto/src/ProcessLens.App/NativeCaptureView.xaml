@@ -23,7 +23,7 @@
    </WrapPanel>
    <WrapPanel>
     <TextBlock Text="Sorgente:" VerticalAlignment="Center" Margin="0,0,8,7"/>
-    <ComboBox x:Name="NativeCaptureSourcesBox" DisplayMemberPath="Name" MinWidth="220" MaxWidth="470" Margin="0,0,8,7" SelectionChanged="Source_Changed"/>
+    <ComboBox x:Name="NativeCaptureSourcesBox" DisplayMemberPath="DisplayName" MinWidth="220" MaxWidth="470" Margin="0,0,8,7" SelectionChanged="Source_Changed"/>
     <Button x:Name="StartNativeCaptureButton" Content="2. Cattura per 20 s" Style="{StaticResource CaptureAction}" Click="Capture_Click" IsEnabled="False"/>
    </WrapPanel>
    <Border Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="7" Padding="10,8" Margin="0,4,0,8"><local:SelectableText x:Name="NativeCaptureStatusText" Text="Scegli Elenca sorgenti Windows oppure Leggi reti Wi-Fi. Nessuna raccolta automatica." TextWrapping="Wrap" Margin="0,0,0,8"/></Border>

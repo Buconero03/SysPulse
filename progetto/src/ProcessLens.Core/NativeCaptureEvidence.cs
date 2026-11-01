@@ -5,7 +5,10 @@ using System.Text;
 
 namespace ProcessLens.Core;
 
-public sealed record NativeCaptureSource(string Key, string Name);
+public sealed record NativeCaptureSource(string Key, string Name)
+{
+    public string DisplayName => SysPulseLocalization.Render(Name);
+}
 public sealed record NativeCaptureDiscovery(bool Available, IReadOnlyList<NativeCaptureSource> Sources, string Note);
 public sealed record NativePacketRow(string Time, string Protocol, string Source, string Destination, string Direction,
     int Bytes, ushort Component, uint DropReason)

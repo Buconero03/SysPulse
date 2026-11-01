@@ -1,0 +1,2 @@
+PASS R18 R2 source guard: 13 regression cases; original false positive reproduced.
+PASS R18 R1 source: bounded native Dispatcher layout; original height, wrap and selection assertions retained.

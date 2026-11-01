@@ -1,0 +1,2 @@
+PASS R10 R1: all buttons styled; missing/unknown styles and fixed-height regressions rejected.
+PASS R9: time and network presentation wired; button labels and metric cells can wrap. Structural checks only; visual Windows verification is separate.

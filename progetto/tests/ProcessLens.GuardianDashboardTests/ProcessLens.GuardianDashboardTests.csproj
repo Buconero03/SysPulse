@@ -7,10 +7,10 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/ProcessLens.Core/ProcessLens.Core.csproj" />
-    <Compile Include="../../src/ProcessLens.App/GuardianDiagnosticPresentation.cs" Link="GuardianDiagnosticPresentation.cs" />
-    <Compile Include="../../src/ProcessLens.App/WindowsComponentContext.cs" Link="WindowsComponentContext.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/GuardianDiagnosticPresentation.g.cs" Link="GuardianDiagnosticPresentation.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/WindowsComponentContext.g.cs" Link="WindowsComponentContext.cs" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.20" />
-    <Compile Include="../../src/ProcessLens.App/GuardianDashboardReader.cs" Link="GuardianDashboardReader.cs" />
-    <Compile Include="../../src/ProcessLens.App/GuardianLineageReader.cs" Link="GuardianLineageReader.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/GuardianDashboardReader.g.cs" Link="GuardianDashboardReader.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/GuardianLineageReader.g.cs" Link="GuardianLineageReader.cs" />
   </ItemGroup>
 </Project>

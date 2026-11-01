@@ -28,7 +28,7 @@ public sealed class LogSession : IDisposable
             Limit = "Campioni periodici non simultanei: possibili esclusioni di processi brevi, orfani precedenti, altre installazioni e componenti ospitati da dotnet.",
             MainMetric = "Somma dei Working Set privati dei PID identificati. Totale della memoria fisica condivisa non misurato.",
             WorkingSet = "La somma può duplicare pagine condivise. Commit distinto dalla RAM fisica. Monitor escluso."
-        }, new JsonSerializerOptions { WriteIndented = true }), new UTF8Encoding(false));
+        }, ProcessLens.Core.SysPulseLocalization.ReportJsonOptions(true)), new UTF8Encoding(false));
         Flush(); SaveSummary("Running");
     }
     private StreamWriter Writer(string name) => new(Path.Combine(DirectoryPath, name), false, new UTF8Encoding(false)) { AutoFlush = false };
@@ -68,7 +68,7 @@ public sealed class LogSession : IDisposable
         if (!capture.EnumerationComplete) Line("Enumerazione parziale/fallita", capture.EnumerationError);
         Line("Intervallo UTC", $"{capture.BeginUtc:O} -> {capture.EndUtc:O}; letture non simultanee");
         Line("Copertura", "PID identificati; memoria fisica condivisa complessiva non misurata");
-        _text.WriteLine(block);
+        _text.WriteLine(ProcessLens.Core.SysPulseLocalization.Render(block.ToString()));
         Console.WriteLine(block);
         object?[] line = { capture.BeginUtc.ToString("O"), capture.EndUtc.ToString("O"), capture.EnumerationComplete,
             total.IncludedProcesses, total.UnresolvedCandidates, total.OutsideScope,
@@ -97,7 +97,7 @@ public sealed class LogSession : IDisposable
             MeanCompletePrivateBytes = _completeSamples > 0 ? (decimal?)(_privateSum / _completeSamples) : null,
             SampledPeakCompletePrivateBytes = _privatePeak,
             Note = "Media e picco sui soli campioni completi di Working Set privato. N/D non equivale a zero. Possibili picchi tra campioni. Monitor escluso."
-        }, new JsonSerializerOptions { WriteIndented = true }), new UTF8Encoding(false));
+        }, ProcessLens.Core.SysPulseLocalization.ReportJsonOptions(true)), new UTF8Encoding(false));
         File.Move(path + ".tmp", path, true);
     }
     public void Dispose() { _text.Dispose(); _totals.Dispose(); _processes.Dispose(); }

@@ -207,11 +207,16 @@ public partial class MainWindow : Window
     {
         SysPulseLocalization.ToggleLanguage();
         ApplyLanguage(SysPulseLocalization.CurrentLanguage);
+        if (_copyAnswerBody.Length > 0)
+        {
+            ClearQueryAnswer();
+            ShowQueryMessage("Lingua cambiata", "Ripeti la domanda per generare il rapporto nella lingua scelta.", string.Empty);
+        }
     }
 
     public void ApplyLanguage(AppLanguage language)
     {
-        SysPulseLocalization.SetLanguage(language, persist: true);
+        SysPulseLocalization.SetLanguage(language, persist: false);
         bool isEn = language == AppLanguage.English;
 
         // Recursively translate all static XAML controls, menus, headers, columns, and tooltips.
@@ -1324,8 +1329,7 @@ public partial class MainWindow : Window
         DetailCloseImpactText.Text = SysPulseLocalization.Translate(i.CloseImpact);
         DetailRiskText.Text = ProcessDetailPresentation.ClosingRiskLabel(i.CloseRisk);
         ApplyRiskBadge(i.CloseRisk);
-        DetailEnglishAnalysisText.Text = SysPulseLocalization.BuildEnglishProcessAnalysis(
-            p, i, origin.ParentSummary, origin.Operation);
+        DetailEnglishAnalysisText.Text = string.Empty;
 
         RefreshCpuDetails(row);
         RefreshMemoryDetails(row);

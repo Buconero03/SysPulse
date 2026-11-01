@@ -1,0 +1,157 @@
+[
+  {
+    "script": "tests\\check-powershell-syntax.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-localization-r35.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-wpf-contextmenu.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-ui-readability.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-memory-efficiency-r8.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-ui-format-r9.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-workspace-r10r10.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-ux-writing-r10r11.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-network-devices-r12.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-native-network-r16.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-native-capture-r17.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-network-recovery-r18.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-copy-layout-r18r1.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-packet-capture-r13.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-system-processes-r14.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-windows-components-r15.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-wpf-test-context-r14r3.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-copy-ui-r10.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-terminology-ui.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-detail-hierarchy-v01910.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-classification-language-v01911.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-classification-hierarchy-v01914.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-guardian-dashboard.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-memory-dashboard.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-memory-ui-v0195.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-structured-queries.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-memory-measurement-audit.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-windows-allocation-inspector.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-profiler-isolation.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-profiler-fixture-v01912.ps1",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "script": "tests\\check-diagnostics-v01913.ps1",
+    "status": "PASS",
+    "exit": 0
+  }
+]

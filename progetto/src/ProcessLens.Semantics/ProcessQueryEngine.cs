@@ -915,12 +915,20 @@ public sealed class ProcessQueryEngine
     }
 }
 
-public sealed record ProcessQueryResult(
-    string Title,
-    string Answer,
-    string Confidence,
-    IReadOnlyList<string> Evidence,
-    ProcessProgressSample? ProgressSample);
+public sealed record ProcessQueryResult
+{
+    private string _title, _answer, _confidence;
+    private IReadOnlyList<string> _evidence;
+    public string Title { get => SysPulseLocalization.Render(_title); init => _title=value; }
+    public string Answer { get => SysPulseLocalization.Render(_answer); init => _answer=value; }
+    public string Confidence { get => SysPulseLocalization.Render(_confidence); init => _confidence=value; }
+    public IReadOnlyList<string> Evidence { get => SysPulseLocalization.IsEnglish ? _evidence.Select(s=>SysPulseLocalization.Render(s)).ToArray() : _evidence; init=>_evidence=value; }
+    public ProcessProgressSample? ProgressSample { get; init; }
+    public ProcessQueryResult(string Title,string Answer,string Confidence,IReadOnlyList<string> Evidence,ProcessProgressSample? ProgressSample)
+    { _title=Title;_answer=Answer;_confidence=Confidence;_evidence=Evidence;this.ProgressSample=ProgressSample; }
+    public void Deconstruct(out string Title,out string Answer,out string Confidence,out IReadOnlyList<string> Evidence,out ProcessProgressSample? ProgressSample)
+    { Title=this.Title;Answer=this.Answer;Confidence=this.Confidence;Evidence=this.Evidence;ProgressSample=this.ProgressSample; }
+}
 
 public sealed record ProcessProgressSample(
     int Pid,

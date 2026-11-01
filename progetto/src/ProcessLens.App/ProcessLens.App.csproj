@@ -9,7 +9,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>ProcessLens</AssemblyName>
     <Version>0.19.16</Version>
-    <InformationalVersion>0.19.16-R10-R34-network-clarity-candidate</InformationalVersion>
+    <InformationalVersion>0.19.16-R10-R35-R2-wpf-inheritance-candidate</InformationalVersion>
     <UseAppHost>true</UseAppHost>
     <AssemblyTitle>ProcessLens</AssemblyTitle>
     <Product>ProcessLens</Product>
@@ -30,4 +30,5 @@
     <ProjectReference Include="..\ProcessLens.Windows\ProcessLens.Windows.csproj" />
     <ProjectReference Include="..\ProcessLens.Semantics\ProcessLens.Semantics.csproj" />
   </ItemGroup>
+<ItemGroup><Compile Remove="*.cs"/></ItemGroup><ItemGroup><Page Remove="*.xaml"/></ItemGroup>
 </Project>

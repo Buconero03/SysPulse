@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
  <ItemGroup><ProjectReference Include="../../src/ProcessLens.Core/ProcessLens.Core.csproj"/>
-  <Compile Include="../../src/ProcessLens.Windows/WindowsNativeCapture.cs" Link="WindowsNativeCapture.cs"/>
+  <Compile Include="../../src/ProcessLens.Windows/Localized/WindowsNativeCapture.g.cs" Link="WindowsNativeCapture.cs"/>
  </ItemGroup>
 </Project>

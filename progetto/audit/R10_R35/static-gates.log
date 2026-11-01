@@ -1,0 +1,17 @@
+PASS Sintassi PowerShell: 109 script verificati.
+PASS R35: 143 generated files and canonical source hashes verified; dictionary coverage is checked by LocalizationTests.
+PASS menu servizi: tasto destro, azione SCM e PID ospitante collegati.
+PASS XAML: nessun ContextMenu con handler dentro Style.Setter.Value.
+PASS menu contestuale: creazione e handlers in C#.
+PASS UI readability: window centered at startup
+PASS UI readability: filters and counters on separate rows
+PASS UI readability: text wraps in process explanations
+PASS UI readability: process labels wrap
+PASS UI readability: technical identification section
+PASS UI readability: XML valido e nomi univoci
+PASS UI readability v0.19.16 R3: metric columns and technical tooltips.
+PASS UI readability R4: optional RAM guide, Windows API source and PID example.
+PASS R8: lazy dashboard hosts, on-demand details, sample buffer, recycling and lifecycle guards.
+PASS R10 R1: all buttons styled; missing/unknown styles and fixed-height regressions rejected.
+PASS R9: time and network presentation wired; button labels and metric cells can wrap. Structural checks only; visual Windows verification is separate.
+PASS R10 R10: resizable analysis, focus/return, Windows context and Guardian diagnostic details wired. Source checks only; WPF and DPI checks remain separate.

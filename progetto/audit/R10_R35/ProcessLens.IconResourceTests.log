@@ -1,0 +1,42 @@
+PASS icon: actual SDK embedded resource is available without a path
+PASS icon: 32-pixel native icon payload selected from actual asset
+PASS icon: selected actual image has PNG resource signature
+PASS icon: small and tray sizes retain distinct image payloads
+PASS icon: 256-pixel entry retains its actual dimensions
+PASS icon: invalid or missing data is unavailable
+PASS icon: invalid or missing data is unavailable
+PASS icon: invalid or missing data is unavailable
+PASS icon: invalid or missing data is unavailable
+PASS icon: invalid or missing data is unavailable
+PASS icon: overflowing payload offset rejected
+PASS icon: overflowing payload length rejected
+PASS icon: payload cannot overlap icon directory
+PASS icon: cursor does not masquerade as icon
+PASS icon: invalid requested dimensions rejected
+PASS icon: missing optional assembly resource is unavailable
+PASS icon: reads preserve embedded bytes exactly
+Icon resource tests complete; no WPF, native icon handles, filesystem icon lookup or user data.
+PASS icon: R33 actual SDK catalogue loads with all 61 entries
+PASS icon: R33 Bash and Git have distinct symbols
+PASS icon: R33 System and Idle have distinct symbols
+PASS icon: R33 Windows components have explicit symbols
+PASS icon: R33 exact-name boundary excludes git-helper.exe
+PASS icon: R33 exact-name boundary excludes not-git.exe
+PASS icon: R33 exact-name boundary excludes C:\Tools\git.exe
+PASS icon: R33 exact-name boundary excludes /tmp/git.exe
+PASS icon: R33 exact-name boundary excludes git.exe --anything
+PASS icon: R33 exact-name boundary excludes git.exe.bak
+PASS icon: R33 exact-name boundary excludes  
+PASS icon: R33 exact-name boundary excludes git .exe
+PASS icon: R33 Git group cannot inherit Bash image
+PASS icon: R33 actual Git executable retains native icon priority
+PASS icon: R33 Chrome group retains actual Chrome icon
+PASS icon: R33 group labels use exact aliases
+PASS icon: R33 name matching is case insensitive
+PASS icon: R33 generated pattern is stable across case
+PASS icon: R33 every generated icon has visible bounded cells
+PASS icon: R33 unknown files do not collapse to one generic pattern
+PASS icon: R33 missing and Unicode names keep a visible pattern
+PASS icon: R33 catalogue geometry remains bounded
+PASS icon: R33 catalogue identifiers are distinct
+R33 catalogue regressions complete; no native icon acquisition or network.

@@ -9,3 +9,5 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("ProcessLens.LiveMetricsUiTests")]
 
 [assembly: InternalsVisibleTo("ProcessLens.ProcessGroupsUiTests")]
+
+[assembly: InternalsVisibleTo("ProcessLens.LocalizationUiTests")]

@@ -9,4 +9,5 @@
     <ServerGarbageCollection>false</ServerGarbageCollection>
   </PropertyGroup>
   <ItemGroup><ProjectReference Include="..\ProcessLens.Core\ProcessLens.Core.csproj" /></ItemGroup>
+<ItemGroup><Compile Remove="*.cs"/></ItemGroup>
 </Project>

@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
 <ItemGroup><ProjectReference Include="../../src/ProcessLens.Core/ProcessLens.Core.csproj"/>
-<Compile Include="../../src/ProcessLens.Windows/WindowsMemorySampler.cs" Link="WindowsMemorySampler.cs"/>
-<Compile Include="../../src/ProcessLens.Windows/OwnedNetworkTableReader.cs" Link="OwnedNetworkTableReader.cs"/>
-<Compile Include="../../src/ProcessLens.Windows/WindowsLiveNetworkSampler.cs" Link="WindowsLiveNetworkSampler.cs"/>
-<Compile Include="../../src/ProcessLens.Windows/WindowsLiveCpuSampler.cs" Link="WindowsLiveCpuSampler.cs"/>
-<Compile Include="../../src/ProcessLens.Windows/NativeMethods.cs" Link="NativeMethods.cs"/>
-<Compile Include="../../src/ProcessLens.App/WindowLifetimePolicy.cs" Link="WindowLifetimePolicy.cs"/>
-<Compile Include="../../src/ProcessLens.App/MemoryObservationBuffer.cs" Link="MemoryObservationBuffer.cs"/>
+<Compile Include="../../src/ProcessLens.Windows/Localized/WindowsMemorySampler.g.cs" Link="WindowsMemorySampler.cs"/>
+<Compile Include="../../src/ProcessLens.Windows/Localized/OwnedNetworkTableReader.g.cs" Link="OwnedNetworkTableReader.cs"/>
+<Compile Include="../../src/ProcessLens.Windows/Localized/WindowsLiveNetworkSampler.g.cs" Link="WindowsLiveNetworkSampler.cs"/>
+<Compile Include="../../src/ProcessLens.Windows/Localized/WindowsLiveCpuSampler.g.cs" Link="WindowsLiveCpuSampler.cs"/>
+<Compile Include="../../src/ProcessLens.Windows/Localized/NativeMethods.g.cs" Link="NativeMethods.cs"/>
+<Compile Include="../../src/ProcessLens.App/Localized/WindowLifetimePolicy.g.cs" Link="WindowLifetimePolicy.cs"/>
+<Compile Include="../../src/ProcessLens.App/Localized/MemoryObservationBuffer.g.cs" Link="MemoryObservationBuffer.cs"/>
 </ItemGroup></Project>

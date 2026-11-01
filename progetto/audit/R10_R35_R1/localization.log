@@ -1,0 +1,474 @@
+PASS localization: all source fragments, knowledge entries and XAML keys have exact dictionary entries
+PASS localization: complete dictionary embedded without external translation service
+PASS localization: untracked data never translated
+PASS localization: exact analysis key
+PASS localization: Italian bytes unchanged
+PASS localization: process name preserved inside translated template
+PASS localization: composed report preserves structured arguments
+PASS localization: explicit translation reversible
+PASS localization: nested composition preserves translated clauses
+PASS localization: full answer changes language: unknown.exe / Cosa sta facendo?
+PASS localization: no Italian analysis clauses: unknown.exe / Cosa sta facendo?
+PASS localization: Italian restored exactly: unknown.exe / Cosa sta facendo?
+PASS localization: identity and counters untouched
+EXAMPLE Cosa sta facendo?
+WHAT IT IS
+Process: Prodotto di prova (unknown.exe, PID 123). Declared file product: Prodotto di prova. Declared publisher: Società di prova.
+
+PURPOSE
+Estimated role: Process with a TCP LISTEN socket. TCP listens to the PID. The reading does not measure already accepted requests or transferred bytes.
+
+IDENTIFIABLE OPERATION
+Internal operation unknown. Name, CPU and RAM do not identify functions or files processed.
+
+OBSERVED RESOURCES AND STATE
+• CPU in the sample interval: 12.5% of the total PC capacity (high).
+• Private working set: 25.0 MiB.
+• The PID has 1 TCP socket in the LISTEN state (ports: 8080).
+• No main window visible associated with this process.
+
+PARENT PROCESS AND ORIGIN
+Windows returns the PPID 30, but a parent instance verified in the current reading is not available.
+
+LIMITATIONS
+Stack, heap and file contents: not inspected. Digital signature: not verified. File metadata: not authenticated. Role estimated; executing code not observed. TCP LISTEN/ESTABLISHED: Accepted requests and transferred bytes not measured.
+END EXAMPLE
+PASS localization: full answer changes language: unknown.exe / Quanta RAM usa?
+PASS localization: no Italian analysis clauses: unknown.exe / Quanta RAM usa?
+PASS localization: Italian restored exactly: unknown.exe / Quanta RAM usa?
+PASS localization: identity and counters untouched
+EXAMPLE Quanta RAM usa?
+■ DIAGNOSTIC SUMMARY
+Process: unknown.exe (PID 123)
+Role: Process with a TCP LISTEN socket · Unknown runtime
+• Current use: 25.0 MiB of private working set.
+• Total working set: 100.0 MiB
+• Private commit: N/A
+Trend: waiting for 3 samples spanning at least 20 s.
+
+■ ASSESSMENT: IS MEMORY USAGE EXCESSIVE?
+TREND NOT YET ESTABLISHED: more comparable samples are needed.
+System RAM: N/A.
+
+■ MEMORY BREAKDOWN
+• Private working set: 25.0 MiB — Private pages present in RAM.
+• Total working set: 100.0 MiB — Includes private and shareable pages.
+• Shareable resident memory: 75.0 MiB (75% of the total working set).
+The total working set includes the private working set. Do not add working set and commit.
+
+■ TREND MEASURED OVER TIME
+It takes at least three readings spread over at least 20 seconds to calculate growth rate and peaks. Wait a few seconds and do the analysis again.
+
+■ VIRTUAL MEMORY MAP
+Virtual map not required in this reading.
+
+■ TYPICAL COMPONENTS · NOT MEASURED
+Typical components of Process with a TCP LISTEN socket · Unknown runtime; not measured by this analysis:
+• Data structures in the native process heap, work buffers and internal state of the application.
+• Caches kept in RAM to speed up subsequent operations and mapped DLL libraries.
+Activity note: the current CPU is 12.5%. The process is performing active work on the CPU, which can involve temporary allocations.
+
+■ WHEN TO LEARN MORE AND RECOMMENDED TOOLS
+• Investigate sustained private working set growth under comparable workloads. Also check system RAM usage.
+• EmptyWorkingSet removes pages from the working set. Subsequent accesses can cause page faults and slowdowns.
+• To inspect individual internal objects: If it is a .NET process it uses the integrated Profile of ProcessLens; for native processes it uses Windows Performance Recorder (ETW VirtualAlloc/Heap).
+END EXAMPLE
+PASS localization: full answer changes language: unknown.exe / Ha porte aperte?
+PASS localization: no Italian analysis clauses: unknown.exe / Ha porte aperte?
+PASS localization: Italian restored exactly: unknown.exe / Ha porte aperte?
+PASS localization: identity and counters untouched
+EXAMPLE Ha porte aperte?
+NETWORK DETAIL OF THE SELECTED PROCESS
+Socket/endpoint counts, no traffic or requests. Zero indicates no entry detected in the readings available, not a guaranteed absence.
+- Socket TCP LISTEN detected: 1 (8080)
+- TCP connections established: 0
+- Endpoint UDP: 0
+- TCP connections to public addresses: 0
+
+Conclusion: no TCP connections to public addresses were observed in the current snapshot. The classification of the address as public does not prove the network path, accessibility, transfer or remote service used. A LISTEN port on 127.0.0.1/::1 is only local; 0.0.0.0/:: indicates all local interfaces, but firewall/NAT determines the actual reach from the outside.
+END EXAMPLE
+PASS localization: full answer changes language: unknown.exe / Quando finirà?
+PASS localization: no Italian analysis clauses: unknown.exe / Quando finirà?
+PASS localization: Italian restored exactly: unknown.exe / Quando finirà?
+PASS localization: identity and counters untouched
+EXAMPLE Quando finirà?
+A reliable completion time cannot be estimated. No observable progress indicator is available: Without knowing how much total work is left, a CPU/RAM-only forecast would be invented.
+END EXAMPLE
+PASS localization: full answer changes language: unknown.exe / È bloccato?
+PASS localization: no Italian analysis clauses: unknown.exe / È bloccato?
+PASS localization: Italian restored exactly: unknown.exe / È bloccato?
+PASS localization: identity and counters untouched
+EXAMPLE È bloccato?
+CPU and TCP state provide only partial signals: not enough to determine whether the process is blocked. These measures do not exclude a partial block: progress signals or information on threads are needed to verify this.
+END EXAMPLE
+PASS localization: full answer changes language: unknown.exe / Chi lo ha avviato?
+PASS localization: no Italian analysis clauses: unknown.exe / Chi lo ha avviato?
+PASS localization: Italian restored exactly: unknown.exe / Chi lo ha avviato?
+PASS localization: identity and counters untouched
+EXAMPLE Chi lo ha avviato?
+PPID: 30. Parent process unavailable.
+
+Operation unknown.
+
+LAUNCH CHAIN
+unknown.exe (PID 123) · Started: Unavailable
+Previous origin not reconstructed in the snapshot.
+
+Reason for launch unknown; the parent alone cannot establish it.
+END EXAMPLE
+PASS localization: full answer changes language: unknown.exe / Perché è aperto?
+PASS localization: no Italian analysis clauses: unknown.exe / Perché è aperto?
+PASS localization: Italian restored exactly: unknown.exe / Perché è aperto?
+PASS localization: identity and counters untouched
+EXAMPLE Perché è aperto?
+Listening socket. Reason for launch unknown; accepted requests not measured.
+
+ORIGIN: PPID: 30. Parent process unavailable.
+OPERATION: Operation unknown.
+
+Reason for launch unknown; the parent alone cannot establish it.
+END EXAMPLE
+PASS localization: full answer changes language: unknown.exe / Posso chiuderlo?
+PASS localization: no Italian analysis clauses: unknown.exe / Posso chiuderlo?
+PASS localization: Italian restored exactly: unknown.exe / Posso chiuderlo?
+PASS localization: identity and counters untouched
+EXAMPLE Posso chiuderlo?
+It may interrupt listening on PID sockets; other processes or a restart could keep the service available.
+
+Possible consequences under the rules, not verified in the running process. Estimated impact: MEDIUM.
+END EXAMPLE
+PASS localization: full answer changes language: unknown.exe / A che punto è?
+PASS localization: no Italian analysis clauses: unknown.exe / A che punto è?
+PASS localization: Italian restored exactly: unknown.exe / A che punto è?
+PASS localization: identity and counters untouched
+EXAMPLE A che punto è?
+ProcessLens sees that the process is active, but it does not have a reliable work total. CPU, RAM or time spent alone won't allow you to say exactly 'where is it'.
+END EXAMPLE
+PASS localization: full answer changes language: python.exe / Cosa sta facendo?
+PASS localization: no Italian analysis clauses: python.exe / Cosa sta facendo?
+PASS localization: Italian restored exactly: python.exe / Cosa sta facendo?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: python.exe / Quanta RAM usa?
+PASS localization: no Italian analysis clauses: python.exe / Quanta RAM usa?
+PASS localization: Italian restored exactly: python.exe / Quanta RAM usa?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: python.exe / Ha porte aperte?
+PASS localization: no Italian analysis clauses: python.exe / Ha porte aperte?
+PASS localization: Italian restored exactly: python.exe / Ha porte aperte?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: python.exe / Quando finirà?
+PASS localization: no Italian analysis clauses: python.exe / Quando finirà?
+PASS localization: Italian restored exactly: python.exe / Quando finirà?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: python.exe / È bloccato?
+PASS localization: no Italian analysis clauses: python.exe / È bloccato?
+PASS localization: Italian restored exactly: python.exe / È bloccato?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: python.exe / Chi lo ha avviato?
+PASS localization: no Italian analysis clauses: python.exe / Chi lo ha avviato?
+PASS localization: Italian restored exactly: python.exe / Chi lo ha avviato?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: python.exe / Perché è aperto?
+PASS localization: no Italian analysis clauses: python.exe / Perché è aperto?
+PASS localization: Italian restored exactly: python.exe / Perché è aperto?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: python.exe / Posso chiuderlo?
+PASS localization: no Italian analysis clauses: python.exe / Posso chiuderlo?
+PASS localization: Italian restored exactly: python.exe / Posso chiuderlo?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: python.exe / A che punto è?
+PASS localization: no Italian analysis clauses: python.exe / A che punto è?
+PASS localization: Italian restored exactly: python.exe / A che punto è?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: node.exe / Cosa sta facendo?
+PASS localization: no Italian analysis clauses: node.exe / Cosa sta facendo?
+PASS localization: Italian restored exactly: node.exe / Cosa sta facendo?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: node.exe / Quanta RAM usa?
+PASS localization: no Italian analysis clauses: node.exe / Quanta RAM usa?
+PASS localization: Italian restored exactly: node.exe / Quanta RAM usa?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: node.exe / Ha porte aperte?
+PASS localization: no Italian analysis clauses: node.exe / Ha porte aperte?
+PASS localization: Italian restored exactly: node.exe / Ha porte aperte?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: node.exe / Quando finirà?
+PASS localization: no Italian analysis clauses: node.exe / Quando finirà?
+PASS localization: Italian restored exactly: node.exe / Quando finirà?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: node.exe / È bloccato?
+PASS localization: no Italian analysis clauses: node.exe / È bloccato?
+PASS localization: Italian restored exactly: node.exe / È bloccato?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: node.exe / Chi lo ha avviato?
+PASS localization: no Italian analysis clauses: node.exe / Chi lo ha avviato?
+PASS localization: Italian restored exactly: node.exe / Chi lo ha avviato?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: node.exe / Perché è aperto?
+PASS localization: no Italian analysis clauses: node.exe / Perché è aperto?
+PASS localization: Italian restored exactly: node.exe / Perché è aperto?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: node.exe / Posso chiuderlo?
+PASS localization: no Italian analysis clauses: node.exe / Posso chiuderlo?
+PASS localization: Italian restored exactly: node.exe / Posso chiuderlo?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: node.exe / A che punto è?
+PASS localization: no Italian analysis clauses: node.exe / A che punto è?
+PASS localization: Italian restored exactly: node.exe / A che punto è?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: svchost.exe / Cosa sta facendo?
+PASS localization: no Italian analysis clauses: svchost.exe / Cosa sta facendo?
+PASS localization: Italian restored exactly: svchost.exe / Cosa sta facendo?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: svchost.exe / Quanta RAM usa?
+PASS localization: no Italian analysis clauses: svchost.exe / Quanta RAM usa?
+PASS localization: Italian restored exactly: svchost.exe / Quanta RAM usa?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: svchost.exe / Ha porte aperte?
+PASS localization: no Italian analysis clauses: svchost.exe / Ha porte aperte?
+PASS localization: Italian restored exactly: svchost.exe / Ha porte aperte?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: svchost.exe / Quando finirà?
+PASS localization: no Italian analysis clauses: svchost.exe / Quando finirà?
+PASS localization: Italian restored exactly: svchost.exe / Quando finirà?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: svchost.exe / È bloccato?
+PASS localization: no Italian analysis clauses: svchost.exe / È bloccato?
+PASS localization: Italian restored exactly: svchost.exe / È bloccato?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: svchost.exe / Chi lo ha avviato?
+PASS localization: no Italian analysis clauses: svchost.exe / Chi lo ha avviato?
+PASS localization: Italian restored exactly: svchost.exe / Chi lo ha avviato?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: svchost.exe / Perché è aperto?
+PASS localization: no Italian analysis clauses: svchost.exe / Perché è aperto?
+PASS localization: Italian restored exactly: svchost.exe / Perché è aperto?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: svchost.exe / Posso chiuderlo?
+PASS localization: no Italian analysis clauses: svchost.exe / Posso chiuderlo?
+PASS localization: Italian restored exactly: svchost.exe / Posso chiuderlo?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: svchost.exe / A che punto è?
+PASS localization: no Italian analysis clauses: svchost.exe / A che punto è?
+PASS localization: Italian restored exactly: svchost.exe / A che punto è?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: chrome.exe / Cosa sta facendo?
+PASS localization: no Italian analysis clauses: chrome.exe / Cosa sta facendo?
+PASS localization: Italian restored exactly: chrome.exe / Cosa sta facendo?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: chrome.exe / Quanta RAM usa?
+PASS localization: no Italian analysis clauses: chrome.exe / Quanta RAM usa?
+PASS localization: Italian restored exactly: chrome.exe / Quanta RAM usa?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: chrome.exe / Ha porte aperte?
+PASS localization: no Italian analysis clauses: chrome.exe / Ha porte aperte?
+PASS localization: Italian restored exactly: chrome.exe / Ha porte aperte?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: chrome.exe / Quando finirà?
+PASS localization: no Italian analysis clauses: chrome.exe / Quando finirà?
+PASS localization: Italian restored exactly: chrome.exe / Quando finirà?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: chrome.exe / È bloccato?
+PASS localization: no Italian analysis clauses: chrome.exe / È bloccato?
+PASS localization: Italian restored exactly: chrome.exe / È bloccato?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: chrome.exe / Chi lo ha avviato?
+PASS localization: no Italian analysis clauses: chrome.exe / Chi lo ha avviato?
+PASS localization: Italian restored exactly: chrome.exe / Chi lo ha avviato?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: chrome.exe / Perché è aperto?
+PASS localization: no Italian analysis clauses: chrome.exe / Perché è aperto?
+PASS localization: Italian restored exactly: chrome.exe / Perché è aperto?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: chrome.exe / Posso chiuderlo?
+PASS localization: no Italian analysis clauses: chrome.exe / Posso chiuderlo?
+PASS localization: Italian restored exactly: chrome.exe / Posso chiuderlo?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: chrome.exe / A che punto è?
+PASS localization: no Italian analysis clauses: chrome.exe / A che punto è?
+PASS localization: Italian restored exactly: chrome.exe / A che punto è?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: dotnet.exe / Cosa sta facendo?
+PASS localization: no Italian analysis clauses: dotnet.exe / Cosa sta facendo?
+PASS localization: Italian restored exactly: dotnet.exe / Cosa sta facendo?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: dotnet.exe / Quanta RAM usa?
+PASS localization: no Italian analysis clauses: dotnet.exe / Quanta RAM usa?
+PASS localization: Italian restored exactly: dotnet.exe / Quanta RAM usa?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: dotnet.exe / Ha porte aperte?
+PASS localization: no Italian analysis clauses: dotnet.exe / Ha porte aperte?
+PASS localization: Italian restored exactly: dotnet.exe / Ha porte aperte?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: dotnet.exe / Quando finirà?
+PASS localization: no Italian analysis clauses: dotnet.exe / Quando finirà?
+PASS localization: Italian restored exactly: dotnet.exe / Quando finirà?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: dotnet.exe / È bloccato?
+PASS localization: no Italian analysis clauses: dotnet.exe / È bloccato?
+PASS localization: Italian restored exactly: dotnet.exe / È bloccato?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: dotnet.exe / Chi lo ha avviato?
+PASS localization: no Italian analysis clauses: dotnet.exe / Chi lo ha avviato?
+PASS localization: Italian restored exactly: dotnet.exe / Chi lo ha avviato?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: dotnet.exe / Perché è aperto?
+PASS localization: no Italian analysis clauses: dotnet.exe / Perché è aperto?
+PASS localization: Italian restored exactly: dotnet.exe / Perché è aperto?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: dotnet.exe / Posso chiuderlo?
+PASS localization: no Italian analysis clauses: dotnet.exe / Posso chiuderlo?
+PASS localization: Italian restored exactly: dotnet.exe / Posso chiuderlo?
+PASS localization: identity and counters untouched
+PASS localization: full answer changes language: dotnet.exe / A che punto è?
+PASS localization: no Italian analysis clauses: dotnet.exe / A che punto è?
+PASS localization: Italian restored exactly: dotnet.exe / A che punto è?
+PASS localization: identity and counters untouched
+PASS localization: English question routes to the same analysis: What is it doing?
+PASS localization: English query answer uses English clauses
+PASS localization: English question routes to the same analysis: How much memory does it use?
+PASS localization: English query answer uses English clauses
+PASS localization: English question routes to the same analysis: Does it have open ports?
+PASS localization: English query answer uses English clauses
+PASS localization: English question routes to the same analysis: When will it finish?
+PASS localization: English query answer uses English clauses
+PASS localization: English question routes to the same analysis: Is it stuck?
+PASS localization: English query answer uses English clauses
+PASS localization: English question routes to the same analysis: Who started it?
+PASS localization: English query answer uses English clauses
+PASS localization: English question routes to the same analysis: Why is it running?
+PASS localization: English query answer uses English clauses
+PASS localization: English question routes to the same analysis: Can I close it?
+PASS localization: English query answer uses English clauses
+PASS localization: English question routes to the same analysis: What is its progress?
+PASS localization: English query answer uses English clauses
+PASS localization: file metadata matching a dictionary key is preserved as data
+PASS localization: exported diagnostic JSON uses English descriptions
+PASS localization: JSON export preserves raw identity and numeric evidence
+PASS localization: JSON dictionary property names remain protocol keys
+PASS localization: English numeric format retained in complete diagnostic template
+PASS localization: R35 R1 reviewed term: Ricerca di Windows (SearchHost)
+PASS localization: R35 R1 reviewed term: libGLESv2.dll: stack grafico Chromium/ANGLE
+PASS localization: R35 R1 reviewed term: Server database PostgreSQL
+PASS localization: R35 R1 reviewed term: Processo GPU Chromium/Electron
+PASS localization: R35 R1 reviewed term: Wireshark dumpcap|dumpcap.exe
+PASS localization: R35 R1 reviewed term: NtQuerySystemInformation: NTSTATUS 0x
+PASS localization: R35 R1 reviewed term: Compilatore nativo MSVC (cl.exe), linker (link.exe) e server di database simboli di debug (mspdbsrv.exe).
+PASS localization: R35 R1 reviewed term: Compilatore Roslyn / Motore MSBuild .NET
+PASS localization: R35 R1 reviewed term:  proc. (
+PASS localization: R35 R1 reviewed term: eseguibile Spooler di stampa (spoolsv.exe)
+PASS localization: R35 R1 reviewed term: eseguibile FFmpeg/FFprobe riconosciuto
+PASS localization: R35 R1 reviewed term: Dispositivi: N/D
+PASS localization: R35 R1 reviewed term: eseguibile Windows Audio Device Graph Isolation (audiodg.exe)
+PASS localization: R35 R1 reviewed term: sistema di build (CMake/Ninja/Make)
+PASS localization: R35 R1 reviewed term: Non verrà eseguita una terminazione forzata del processo.  Confermi?
+PASS localization: R35 R1 reviewed term: Chromium Embedded Framework
+PASS localization: R35 R1 reviewed term: Programmi (*.exe;*.com)|*.exe;*.com
+PASS localization: R35 R1 reviewed term: Elaboratore multimediale FFmpeg
+PASS localization: R35 R1 reviewed term: TimeCreated[@SystemTime >= '
+PASS localization: R35 R1 reviewed term: eseguibile WLAN Extensibility Host (wlanext.exe)
+PASS localization: R35 R1 reviewed term: Risolutore proxy
+PASS localization: R35 R1 reviewed term: Sottosistema di runtime Client/Server (csrss)
+PASS localization: R35 R1 reviewed term: metadati file
+PASS localization: R35 R1 reviewed term: Server database documentale MongoDB
+PASS localization: R35 R1 reviewed term: Microsoft Edge WebView2
+PASS localization: R35 R1 reviewed term: Valutazione rischio: 
+PASS localization: R35 R1 reviewed term: PID ospitante: N/D.
+PASS localization: R35 R1 reviewed term: PID diretto - TCP LISTEN: 
+PASS localization: R35 R1 reviewed term: Microsoft Corporation
+PASS localization: R35 R1 reviewed term: runtime JS/TS (Bun/Deno)
+PASS localization: R35 R1 reviewed term: Gestisce l'indice di ricerca. Il campione non verifica lo stato dell'indice o il documento in elaborazione.
+PASS localization: R35 R1 reviewed term: PktMon · 
+PASS localization: R35 R1 reviewed term: eseguibile Device Association Host (dasHost.exe)
+PASS localization: R35 R1 reviewed term: RAM N/A
+PASS localization: R35 R1 reviewed term: libEGL.dll: stack grafico Chromium/ANGLE
+PASS localization: R35 R1 reviewed term: Renderer Chromium/Electron
+PASS localization: R35 R1 reviewed term: QueryFullProcessImageName=
+PASS localization: R35 R1 reviewed term: toolchain MSVC (cl/link/mspdbsrv)
+PASS localization: R35 R1 reviewed term: Fonte: GetPerformanceInfo. Campione separato dall'inventario processi; non è una ripartizione esatta della RAM.
+PASS localization: R35 R1 reviewed term: Orchestratore di build CMake / Ninja / Make
+PASS localization: R35 R1 reviewed term:  MiB di commit · 
+PASS localization: R35 R1 reviewed term: Chat vocale, streaming video e messaggistica istantanea
+PASS localization: R35 R1 reviewed term: PID antenato 
+PASS localization: R35 R1 reviewed term: Cronologia SCM: N/D. Motivo dell’avvio sconosciuto.
+PASS localization: R35 R1 reviewed term: L'associazione viene verificata per istanza del processo. Per il carico usa i rapporti CPU/RAM e confronta campioni della stessa istanza e dello stesso contatore.  
+PASS localization: R35 R1 reviewed term: Lettura RAM non disponibile; API GlobalMemoryStatusEx, tipo errore: 
+PASS localization: R35 R1 reviewed term: File Npcap rilevati; il supporto monitor va verificato per scheda e driver.
+PASS localization: R35 R1 reviewed term: Runtime/dev server Next.js
+PASS localization: R35 R1 reviewed term: Servizio diagnostico ProcessLens Guardian
+PASS localization: R35 R1 reviewed term: RSSI (dBm)
+PASS localization: R35 R1 reviewed term: eseguibile Desktop Window Manager (dwm.exe)
+PASS localization: R35 R1 reviewed term: Distintivo grafico generato dal nome del file. Icona originale non disponibile; non identifica il produttore.
+PASS localization: R35 R1 reviewed term: crittografia/certificati (Crypt32/BCrypt)
+PASS localization: R35 R1 reviewed term: eseguibile LSA Isolation / Credential Guard (lsaiso.exe)
+PASS localization: R35 R1 reviewed term:  Scheda SSID BSSID RSSI dBm Frequenza Tipo 
+PASS localization: R35 R1 reviewed term: Compilatore .NET Roslyn (VBCSCompiler)
+PASS localization: R35 R1 reviewed term:  ms; intervallo automatico 
+PASS localization: R35 R1 reviewed term: Installa Wireshark con TShark e Npcap. In Npcap abilita Support raw 802.11 traffic (and monitor mode) for wireless adapters. Servono scheda e driver compatibili. Istruzioni: INTEGRAZIONE_WIRESHARK_R13.md.
+PASS localization: R35 R1 reviewed term: processo macchina virtuale (VirtualBox/VMware)
+PASS localization: R35 R1 reviewed term: Creazione di un commit locale
+PASS localization: R35 R1 reviewed term: toolchain Rust (cargo/rustc)
+PASS localization: R35 R1 reviewed term: eseguibile Shell Infrastructure Host (sihost.exe)
+PASS localization: R35 R1 reviewed term: Identificativo applicazione Windows (AUMID)
+PASS localization: R35 R1 reviewed term: eseguibile Client/Server Runtime Subsystem (csrss.exe)
+PASS localization: R35 R1 reviewed term: Server database MySQL / MariaDB
+PASS localization: R35 R1 reviewed term: dd/MM/yyyy HH:mm:ss
+PASS localization: R35 R1 reviewed term: NtQuerySystemInformation · SystemProcessInformation
+PASS localization: R35 R1 reviewed term: ParentQueryStatus=
+PASS localization: R35 R1 reviewed term: grafica/GPU (DirectX/OpenGL/Vulkan)
+PASS localization: R35 R1 reviewed term: Segoe UI
+PASS localization: R35 R1 reviewed term: client desktop remoto (AnyDesk/TeamViewer/RustDesk/RDP)
+PASS localization: R35 R1 reviewed term: ; caratteri XML: 
+PASS localization: R35 R1 reviewed term: eseguibile Task Host Windows (taskhostw.exe)
+PASS localization: R35 R1 reviewed term: AuditQuerySystemPolicy · Win32 
+PASS localization: R35 R1 reviewed term: eseguibile Windows User-Mode Driver Host (WUDFHost.exe)
+PASS localization: R35 R1 reviewed term: RAM fisica 
+PASS localization: R35 R1 reviewed term: strumento di archiviazione (7-Zip/WinRAR/tar)
+PASS localization: R35 R1 reviewed term: Processo utility Chromium/Electron
+PASS localization: R35 R1 reviewed term: eseguibile Microsoft SQL Server (sqlservr/sqlwriter)
+PASS localization: R35 R1 reviewed term: Esecutore di librerie DLL a 32/64 bit (rundll32)
+PASS localization: R35 R1 reviewed term: diagnostiche coda: 
+PASS localization: R35 R1 reviewed term:  · porta 
+PASS localization: R35 R1 reviewed term: La socket è in ascolto sulla porta indicata; non sono osservate richieste già accettate.
+PASS localization: R35 R1 reviewed term: Arresto
+PASS localization: R35 R1 reviewed term: ; scartate dalla coda: 
+PASS localization: R35 R1 reviewed term: Connessioni bloccate: 
+PASS localization: R35 R1 reviewed term: Servizio non arrestato
+PASS localization: R35 R1 reviewed term: memory leak
+PASS localization: R35 R1 reviewed term: Letture separate: la differenza non misura coda o perdite. 
+PASS localization: R35 R1 reviewed term: Ascolto su porta locale bloccato
+PASS localization: R35 R1 reviewed term: Gli appunti sono temporaneamente occupati da un'altra applicazione. Riprova a copiare il testo.
+PASS localization: R35 R1 reviewed term: [Finestra] Coda piena: 
+PASS localization: R35 R1 reviewed term:  · schede lette: 
+PASS localization: R35 R1 reviewed term: Applicazione per fogli elettronici e analisi di dati della suite Microsoft Office / 365.
+PASS localization: R35 R1 reviewed term: Renderizza il Menu Start, icone bloccate e collegamenti rapidi
+PASS localization: R35 R1 reviewed term: Letto alle 
+PASS localization: R35 R1 reviewed term: Per cercare un memory leak, osserva lo stesso PID nel tempo insieme a commit e RAM del sistema. Sottoprocessi, GPU e kernel vanno valutati a parte. N/D non equivale a zero.
+PASS localization: R35 R1 reviewed term: Bind su porta locale bloccato
+PASS localization: R35 R1 reviewed term: Tempo CPU occupato da GetSystemTimes / tempo trascorso monotono / CPU logiche. 
+PASS localization: R35 R1 reviewed term:  servizi.
+PASS localization: R35 R1 reviewed term: Nessun indicatore esplicito current/total o percentuale osservato.
+PASS localization: R35 R1 reviewed term: avvio: 
+PASS localization: R35 R1 reviewed term: Rilevati: 
+PASS localization: R35 R1 reviewed term: Fonte:
+PASS localization: R35 R1 reviewed term: Contatori storici e Kernel Pool (PSAPI EX2):
+PASS localization: R35 R1 reviewed term: Contatori storici e Kernel Pool (PSAPI EX2): 
+PASS localization: R35 R1 reviewed term: Copertura: 
+PASS localization: R35 R1 reviewed term: Client desktop Telegram
+PASS localization: R35 R1 reviewed term: Isolamento credenziali e sicurezza VBS (LSAISO)
+PASS localization: R35 R1 reviewed term: kind IN ('ProcessExited','ProcessStarted','ProcessObservedAtStartup') 
+PASS localization: R35 R1 reviewed term: processo principale
+PASS localization: R35 R1 reviewed term: Associato a una sessione console; processo originario non determinato.
+PASS localization: R35 R1 reviewed term: L’applicazione può continuare a funzionare, ma potrebbe non registrare gli arresti anomali.
+PASS localization: R35 R1 reviewed term: Cattura crash dump e raccoglie informazioni sugli arresti anomali
+PASS localization: R35 R1 reviewed term: Il nome o i metadati indicano un componente dedicato alla gestione degli arresti anomali.
+PASS localization: R35 R1 reviewed term: • Quota residente condivisibile: 
+PASS localization: R35 R1 reviewed term: Pressione RAM non misurabile; acquisizione annullata.
+PASS localization: R35 R1 reviewed term: QueryWorkingSetEx: campione N/D; residenza non verificata.
+PASS localization: R35 R1 reviewed term: Ospita il motore audio e può caricare effetti dei produttori. La sua presenza non dimostra che sia in riproduzione un suono.
+PASS localization: R35 R1 entire embedded catalog checked for unrelated prose and protocol corruption
+PASS localization: R35 R1 native file dialog filter retains Windows wildcard grammar
+PASS localization: R35 R1 date format remains a format string
+PASS localization: R35 R1 font family remains an identifier
+PASS localization: R35 R1 source display is translated without changing source identity
+Localization regressions complete: 372 checks.

@@ -1,0 +1,11 @@
+PASS ordinary process allowed
+PASS self denied
+PASS system pid denied
+PASS critical denied
+PASS lsass name denied
+PASS service host denied
+PASS path absent denied
+PASS start absent denied
+PASS same timestamp
+PASS reused PID mismatched timestamp
+Termination policy tests completed (no process was terminated).

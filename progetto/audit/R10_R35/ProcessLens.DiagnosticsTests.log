@@ -1,0 +1,11 @@
+PASS diagnostic test: schema version
+PASS diagnostic test: stable event code
+PASS diagnostic test: typed measurements and units
+PASS diagnostic test: incomplete not marked successful
+PASS diagnostic test: absent evidence omitted, not zero
+PASS diagnostic test: native error details
+PASS diagnostic test: exception message excluded
+PASS diagnostic test: event namespace controlled
+PASS diagnostic test: free-form sensitive text rejected
+PASS diagnostic test: bounded log size
+ProcessLens structured diagnostic tests passed.

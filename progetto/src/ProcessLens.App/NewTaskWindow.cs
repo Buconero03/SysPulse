@@ -64,9 +64,13 @@ public sealed class NewTaskWindow : Window
         Content = new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, TextAlignment = TextAlignment.Center },
         MinHeight = 36, MinWidth = 88, Padding = new Thickness(12, 7, 12, 7), Margin = new Thickness(8, 0, 0, 0)
     };
+    internal static OpenFileDialog CreateProgramPicker() => new OpenFileDialog {
+        Title = "Scegli il programma", Filter = "Programmi (*.exe;*.com)|*.exe;*.com", CheckFileExists = true, Multiselect = false
+    };
+
     private void Browse()
     {
-        var picker = new OpenFileDialog { Title = "Scegli il programma", Filter = "Programmi (*.exe;*.com)|*.exe;*.com", CheckFileExists = true, Multiselect = false };
+        var picker = CreateProgramPicker();
         if (picker.ShowDialog(this) == true) ProgramBox.Text = picker.FileName;
     }
     internal async Task RunAsync()

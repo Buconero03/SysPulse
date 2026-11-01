@@ -16,9 +16,9 @@ function Resolve-ProcessLensLaunch([string] $Root, [string] $UserLocalAppData) {
         if (Test-DesktopRuntime8 $candidate) { $runtime = $candidate; break }
     }
     $exe = Join-Path $Root 'progetto/publish/win-x64/ProcessLens.exe'
-    $receipt = Join-Path $Root 'supporto/build-r34.ok'
+    $receipt = Join-Path $Root 'supporto/build-r35r2.ok'
     if ((Test-Path -LiteralPath $exe -PathType Leaf) -and (Test-Path -LiteralPath $receipt -PathType Leaf) -and
-        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R34-network-clarity') {
+        (Get-Content -LiteralPath $receipt -Raw).Trim() -eq 'ProcessLens-R35-R2-wpf-inheritance') {
         return [PSCustomObject]@{ Kind='Exe'; Entry=$exe; Runtime=$runtime }
     }
     return $null
@@ -47,14 +47,14 @@ function Invoke-ProcessLensBuild([string] $Root, [string] $UserLocalAppData) {
     if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
         throw 'SDK .NET non trovato. Usa lo SDK 8 gia installato oppure quello della precedente installazione R20. Nessun download automatico.'
     }
-    Write-Host 'Primo avvio R34: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
+    Write-Host 'Primo avvio R35 R2: test e compilazione della nuova versione. I successivi avvii saranno diretti.' -ForegroundColor Cyan
     Write-Host 'Non installo SDK, driver o servizi. Non avvio la vecchia applicazione R20.'
     Push-Location -LiteralPath $project
     try { & (Join-Path $project 'build-dashboard.ps1') }
     finally { Pop-Location }
     $exe = Join-Path $project 'publish/win-x64/ProcessLens.exe'
-    if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { throw 'Compilazione senza eseguibile R34. Avvio interrotto.' }
-    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r34.ok') -Value 'ProcessLens-R34-network-clarity' -Encoding ASCII
+    if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { throw 'Compilazione senza eseguibile R35. Avvio interrotto.' }
+    Set-Content -LiteralPath (Join-Path $Root 'supporto/build-r35r2.ok') -Value 'ProcessLens-R35-R2-wpf-inheritance' -Encoding ASCII
 }
 function Quote-LaunchArgument([string] $Value) {
     if ($Value.Contains('"') -or $Value -match "[`r`n]") { throw 'Percorso non valido.' }

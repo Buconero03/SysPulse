@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/ProcessLens.Core/ProcessLens.Core.csproj" />
-    <Compile Include="../../src/ProcessLens.App/BoundedCache.cs" Link="BoundedCache.cs" />
-    <Compile Include="../../src/ProcessLens.App/MemoryObservationBuffer.cs" Link="MemoryObservationBuffer.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/BoundedCache.g.cs" Link="BoundedCache.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/MemoryObservationBuffer.g.cs" Link="MemoryObservationBuffer.cs" />
   </ItemGroup>
 </Project>

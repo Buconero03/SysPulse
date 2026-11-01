@@ -1,0 +1,292 @@
+<UserControl x:Class="ProcessLens.App.MemoryDashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:l10n="clr-namespace:ProcessLens.App"
+             xmlns:local="clr-namespace:ProcessLens.App"
+             Background="#F5F6F8">
+    <UserControl.Resources>
+        <Style x:Key="MemoryMetricLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#475569"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style x:Key="SelectableMemoryMetricLabel" TargetType="local:SelectableText">
+            <Setter Property="Foreground" Value="#475569"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style x:Key="MemoryGridCell" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="8,4"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+        </Style>
+        <Style x:Key="MemoryNumericCell" TargetType="TextBlock" BasedOn="{StaticResource MemoryGridCell}">
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style x:Key="MemoryModeButton" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#334155"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="11,5"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style x:Key="MemoryCategoryCard" TargetType="Button">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                    <ContentPresenter HorizontalAlignment="Stretch"/>
+                </Border>
+            </ControlTemplate></Setter.Value></Setter>
+        </Style>
+        <!-- Indicatore personalizzato: il colore viene da Foreground,
+             quindi il valore e il livello di uso comunicano lo stesso stato. -->
+        <Style x:Key="PhysicalMemoryProgress" TargetType="ProgressBar">
+            <Setter Property="Background" Value="#E2E8F0"/>
+            <Setter Property="Foreground" Value="#047857"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid x:Name="PART_Track" ClipToBounds="True">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="6"/>
+                            <Border x:Name="PART_Indicator" Background="{TemplateBinding Foreground}"
+                                    CornerRadius="6" HorizontalAlignment="Left"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="0,0,0,6">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 1. Stato attuale + Censimento e Suddivisione per Macro-Categorie -->
+        <Border Grid.Row="0" Background="White" BorderBrush="#E2E5E9"
+                BorderThickness="1" CornerRadius="12" Padding="15,13" Margin="0,0,0,8">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <l10n:LocalizedTextBlock Text="{l10n:Tr 52475A32B6C29FB3}" FontSize="19" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <l10n:LocalizedButton Grid.Column="1" Content="{l10n:Tr 584B69EA7152C0FD}" Click="RefreshMemory_Click"
+                            Padding="13,6" Margin="12,0,0,0" FontWeight="SemiBold"
+                            Background="#EFF6FF" BorderBrush="#93C5FD" Foreground="#1E40AF"
+                            ToolTip="{l10n:Tr 8ACF809DB05A6BA4}"/>
+                </Grid>
+                <Border x:Name="PressureBadge" Background="#E2E8F0" CornerRadius="7"
+                        HorizontalAlignment="Left" Padding="9,4" Margin="0,7,0,6">
+                    <local:SelectableText x:Name="PressureText" Text="{l10n:Tr 7DA1D35F739A4C3E}" FontSize="12" FontWeight="SemiBold"
+                               Foreground="#334155"/>
+                </Border>
+                <Grid Margin="0,1,0,9">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#F8FAFC" CornerRadius="8" Padding="11,7">
+                        <StackPanel>
+                            <l10n:LocalizedTextBlock Text="{l10n:Tr 8736241B2398B82F}" Style="{StaticResource MemoryMetricLabel}"/>
+                            <local:SelectableText x:Name="UsageText" Text="{l10n:Tr ECCBAB5C8A3272A0}" FontSize="24" FontWeight="Bold" Foreground="#334155"/>
+                            <local:SelectableText x:Name="UsedText" Text="{l10n:Tr 17BE5FDDD8D55069}" Foreground="#64748B" FontSize="11.5" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="2" Background="#F8FAFC" CornerRadius="8" Padding="11,7">
+                        <StackPanel>
+                            <l10n:LocalizedTextBlock Text="{l10n:Tr 0BDF8A85F48D9D4E}" Style="{StaticResource MemoryMetricLabel}"/>
+                            <local:SelectableText x:Name="AvailableText" Text="{l10n:Tr 30120CE153E52180}" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A"/>
+                            <local:SelectableText Text="{l10n:Tr 0BE052842BF6F84F}" Foreground="#64748B" FontSize="11.5" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="4" Background="#F8FAFC" CornerRadius="8" Padding="11,7">
+                        <StackPanel>
+                            <local:SelectableText Text="{l10n:Tr D743B089A22DF484}" Style="{StaticResource SelectableMemoryMetricLabel}" TextWrapping="Wrap"/>
+                            <local:SelectableText x:Name="TotalText" Text="{l10n:Tr 30120CE153E52180}" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A"/>
+                            <local:SelectableText x:Name="CommitSummaryText" Text="{l10n:Tr 0927D648D3C89391}" Foreground="#64748B" FontSize="11.5" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                <ProgressBar x:Name="MemoryBar" Style="{StaticResource PhysicalMemoryProgress}"
+                             Minimum="0" Maximum="100" Value="0"/>
+                <local:SelectableText x:Name="PressureExplanation" Text="{l10n:Tr D9E0D39A7BDA02FE}"
+                           Foreground="#475569" FontSize="11.5" TextWrapping="Wrap" Margin="0,6,0,0"/>
+
+                <!-- Suddivisione esatta per Macro-Categorie (basata su RAM privata esclusiva, senza doppi conteggi) -->
+                <l10n:LocalizedTextBlock Text="{l10n:Tr 7EA31E18865BCC48}"
+                           FontSize="11" FontWeight="SemiBold" Foreground="#475569" Margin="0,10,0,5"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="1.15*"/>
+                    </Grid.ColumnDefinitions>
+                    <l10n:LocalizedButton x:Name="CategoryAppsCard" Style="{StaticResource MemoryCategoryCard}" Tag="Applicazioni" Click="CategoryFilterButton_Click" Grid.Column="0" Background="#F0F7FF" BorderBrush="#BFDBFE" BorderThickness="1" Padding="9,6">
+                        <StackPanel>
+                            <l10n:LocalizedTextBlock Text="{l10n:Tr 535E35550229254B}" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#1E40AF"/>
+                            <local:SelectableText x:Name="CatAppsValueText" Text="{l10n:Tr 24BC1B33063EA99A}" FontSize="15" FontWeight="Bold" Foreground="#1E3A8A" Margin="0,2,0,1"/>
+                            <local:SelectableText x:Name="CatAppsMetaText" Text="{l10n:Tr 32E6B0DE64A51C6A}" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </l10n:LocalizedButton>
+                    <l10n:LocalizedButton x:Name="CategoryDevCard" Style="{StaticResource MemoryCategoryCard}" Tag="Sviluppo" Click="CategoryFilterButton_Click" Grid.Column="2" Background="#F5F3FF" BorderBrush="#DDD6FE" BorderThickness="1" Padding="9,6">
+                        <StackPanel>
+                            <l10n:LocalizedTextBlock Text="{l10n:Tr 888D2FFF428E2866}" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#5B21B6"/>
+                            <local:SelectableText x:Name="CatDevValueText" Text="{l10n:Tr 24BC1B33063EA99A}" FontSize="15" FontWeight="Bold" Foreground="#4C1D95" Margin="0,2,0,1"/>
+                            <local:SelectableText x:Name="CatDevMetaText" Text="{l10n:Tr 32E6B0DE64A51C6A}" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </l10n:LocalizedButton>
+                    <l10n:LocalizedButton x:Name="CategoryWinCard" Style="{StaticResource MemoryCategoryCard}" Tag="Windows" Click="CategoryFilterButton_Click" Grid.Column="4" Background="#ECFEFF" BorderBrush="#A5F3FC" BorderThickness="1" Padding="9,6">
+                        <StackPanel>
+                            <l10n:LocalizedTextBlock Text="{l10n:Tr 34BECC4CE1C9759E}" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#0E7490"/>
+                            <local:SelectableText x:Name="CatWinValueText" Text="{l10n:Tr 24BC1B33063EA99A}" FontSize="15" FontWeight="Bold" Foreground="#155E75" Margin="0,2,0,1"/>
+                            <local:SelectableText x:Name="CatWinMetaText" Text="{l10n:Tr 32E6B0DE64A51C6A}" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </l10n:LocalizedButton>
+                    <l10n:LocalizedButton x:Name="CategoryServicesCard" Style="{StaticResource MemoryCategoryCard}" Tag="Secondario" Click="CategoryFilterButton_Click" Grid.Column="6" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" Padding="9,6">
+                        <StackPanel>
+                            <l10n:LocalizedTextBlock Text="{l10n:Tr 37C86542AF9E6D85}" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#334155"/>
+                            <local:SelectableText x:Name="CatBgValueText" Text="{l10n:Tr 24BC1B33063EA99A}" FontSize="15" FontWeight="Bold" Foreground="#1E293B" Margin="0,2,0,1"/>
+                            <local:SelectableText x:Name="CatBgMetaText" Text="{l10n:Tr 32E6B0DE64A51C6A}" FontSize="10.5" Foreground="#475569" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </l10n:LocalizedButton>
+                    <l10n:LocalizedButton x:Name="CategoryResidualCard" Style="{StaticResource MemoryCategoryCard}" Tag="RESIDUAL" Click="ResidualCategory_Click" Grid.Column="8" Background="#FFFBEB" BorderBrush="#FDE68A" BorderThickness="1" Padding="9,6"
+                            ToolTip="{l10n:Tr 9DBEEF0DFDBC4009}">
+                        <StackPanel>
+                            <l10n:LocalizedTextBlock Text="{l10n:Tr 5B888A420137E1A9}" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold" Foreground="#92400E"/>
+                            <local:SelectableText x:Name="CatKernelValueText" Text="{l10n:Tr 30120CE153E52180}" FontSize="15" FontWeight="Bold" Foreground="#78350F" Margin="0,2,0,1"/>
+                            <local:SelectableText x:Name="CatKernelMetaText" Text="{l10n:Tr FB09FF4DBD798860}" FontSize="10.5" Foreground="#78350F" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </l10n:LocalizedButton>
+                </Grid>
+
+                <l10n:LocalizedExpander x:Name="ResidualCategoryDetails" Header="{l10n:Tr 323FC4FDFCF5A12B}" IsExpanded="False" Margin="0,8,0,0">
+                    <local:SelectableText Text="{l10n:Tr 34135BF3F67C17F4}"
+                                          TextWrapping="Wrap" Margin="8"/>
+                </l10n:LocalizedExpander>
+                <local:SelectableText x:Name="RefreshStatus" Text="{l10n:Tr 721878EDDCBCC1E3}"
+                           Foreground="#64748B" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+
+        <!-- 2. Avvisi automatici compatti -->
+        <Border Grid.Row="1" Background="#EFF6FF" BorderBrush="#BFDBFE"
+                BorderThickness="1" CornerRadius="10" Padding="12,7" Margin="0,0,0,8">
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <WrapPanel VerticalAlignment="Center">
+                    <l10n:LocalizedTextBlock Text="{l10n:Tr 352915FB4F66E8A6}" FontWeight="SemiBold" FontSize="12.5" Foreground="#1E3A8A"/>
+                    <local:SelectableText x:Name="AgentStatus" Text="{l10n:Tr 0D46C0E210EEDD61}"
+                               FontWeight="SemiBold" Foreground="#1D4ED8" FontSize="12.5" Margin="0,0,8,0"/>
+                    <local:SelectableText x:Name="AgentExplanation" Text="{l10n:Tr AA08BB8D7BFF022C}"
+                               Foreground="#475569" FontSize="11.5"/>
+                </WrapPanel>
+                <l10n:LocalizedTextBlock Grid.Column="1" Text="{l10n:Tr 4F39A618B9C3E66F}" Foreground="#1E40AF"
+                           FontWeight="SemiBold" FontSize="11.5" VerticalAlignment="Center"
+                           Margin="12,0,0,0" ToolTip="{l10n:Tr 9E8C37E833F88D2E}"/>
+            </Grid>
+        </Border>
+
+        <!-- 3. Tabella interattiva: Raggruppamento per Programma (Multi-processo) oppure per Singolo PID + Filtri Categoria -->
+        <Border Grid.Row="2" Background="White" BorderBrush="#E2E5E9"
+                BorderThickness="1" CornerRadius="12" Padding="14,11" MinHeight="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <local:SelectableText x:Name="TableHeaderTitleText" Text="{l10n:Tr F1CA9A9FA5B57931}" FontSize="16" FontWeight="SemiBold"/>
+                        <local:SelectableText x:Name="TopProcessesCaption" Text="{l10n:Tr C67B49D0089B69CD}"
+                                   Foreground="#64748B" FontSize="11.5" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                    <l10n:LocalizedButton x:Name="InspectSelectedMemoryButton" Grid.Column="1"
+                            Content="{l10n:Tr 121C5175CA72A5A9}"
+                            Click="InspectSelectedMemory_Click"
+                            Padding="12,6" FontWeight="SemiBold" FontSize="12"
+                            Background="#E0F2FE" BorderBrush="#7DD3FC" Foreground="#0369A1"
+                            VerticalAlignment="Center" Cursor="Hand"
+                            ToolTip="{l10n:Tr 5094C4E012BD8111}"/>
+                </Grid>
+
+                <!-- Selettore modalità vista e filtro categoria -->
+                <WrapPanel Grid.Row="1" Margin="0,0,0,8" VerticalAlignment="Center">
+                    <l10n:LocalizedTextBlock Text="{l10n:Tr CA936DDB90C02CCB}" FontSize="12" FontWeight="SemiBold" Foreground="#475569" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <l10n:LocalizedButton x:Name="ModeGroupedButton" Content="{l10n:Tr AAE0C73E23AFCA59}"
+                            Style="{StaticResource MemoryModeButton}" Click="ModeGroupedButton_Click"
+                            ToolTip="{l10n:Tr A6DBA1F7D15B2621}"/>
+                    <l10n:LocalizedButton x:Name="ModeSinglePidButton" Content="{l10n:Tr 584549FED612A0CF}"
+                            Style="{StaticResource MemoryModeButton}" Click="ModeSinglePidButton_Click"
+                            ToolTip="{l10n:Tr 76330EF8FDFF2419}"/>
+
+                    <l10n:LocalizedTextBlock Text="{l10n:Tr 59B20B550ED130BF}" FontSize="12" FontWeight="SemiBold" Foreground="#475569" VerticalAlignment="Center" Margin="10,0,6,0"/>
+                    <l10n:LocalizedButton x:Name="CatFilterAllButton" Content="{l10n:Tr 8497975606D65F20}" Tag="ALL"
+                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
+                    <l10n:LocalizedButton x:Name="CatFilterAppsButton" Content="{l10n:Tr B2E11CBEDD2A388E}" Tag="Applicazioni"
+                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
+                    <l10n:LocalizedButton x:Name="CatFilterDevButton" Content="{l10n:Tr 2CF6D08EF68E2F9A}" Tag="Sviluppo"
+                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
+                    <l10n:LocalizedButton x:Name="CatFilterWinButton" Content="{l10n:Tr D598026A9CBC6050}" Tag="Windows"
+                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
+                    <l10n:LocalizedButton x:Name="CatFilterBgButton" Content="{l10n:Tr E08BC21EB694A15B}" Tag="Secondario"
+                            Style="{StaticResource MemoryModeButton}" Click="CategoryFilterButton_Click"/>
+                </WrapPanel>
+
+                <DataGrid local:GridCopySupport.Enabled="True" Grid.Row="2" x:Name="TopMemoryProcesses" AutoGenerateColumns="False" IsReadOnly="True"
+                          SelectionMode="Single" SelectionUnit="FullRow" CanUserAddRows="False" CanUserDeleteRows="False"
+                          CanUserSortColumns="False" EnableRowVirtualization="True" EnableColumnVirtualization="True"
+                          HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E2E8F0"
+                          AlternatingRowBackground="#F8FAFC" RowBackground="White" RowHeight="30"
+                          ColumnHeaderHeight="30" BorderThickness="0" FontSize="12"
+                          MouseDoubleClick="TopMemoryProcesses_MouseDoubleClick"
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <DataGrid.Columns>
+                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr A50926BDB4F7EEBD}" Binding="{Binding Name}" Width="2.1*"
+                                            ElementStyle="{StaticResource MemoryGridCell}"/>
+                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 54276AA0307F83CB}" Binding="{Binding CategoryLabel}" Width="110"
+                                            ElementStyle="{StaticResource MemoryGridCell}"/>
+                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 5BE93CA4E4F59C0E}" Binding="{Binding InstancesOrPid}" Width="125"
+                                            ElementStyle="{StaticResource MemoryGridCell}"/>
+                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 79DAEFAA36C90A76}" Binding="{Binding PrivateWorkingSetMiB}" Width="135"
+                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
+                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr E93486E603C3C950}" Binding="{Binding SharedWorkingSetMiB}" Width="120"
+                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
+                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 3592C4BA81817B73}" Binding="{Binding WorkingSetMiB}" Width="130"
+                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
+                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 41AAD716D1A71982}" Binding="{Binding CommitMiB}" Width="140"
+                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
+                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr CA05BFA99D1BD3AB}" Binding="{Binding SystemShare}" Width="105"
+                                            ElementStyle="{StaticResource MemoryNumericCell}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <local:SelectableText Grid.Row="3" Text="{l10n:Tr 1A39ECB27CD68166}"
+                           Foreground="#64748B" FontSize="11" TextWrapping="Wrap" Margin="0,7,0,0"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

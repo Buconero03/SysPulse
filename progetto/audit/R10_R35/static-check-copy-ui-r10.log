@@ -1,0 +1,6 @@
+PASS R10 copy: selectable output, one-way bindings, grid copy, complete report and no automatic GUI termination. Structural checks only.
+PASS R10 R3 hierarchy: overview, chapters, wrapping, source retention and lazy controls. Source checks only.
+PASS R10 R4 exit notice: verified instance, Windows exit signal and bounded UI lifecycle. Source checks only.
+PASS R10 R7 lifecycle: taskbar restore route, Mostra, explicit exit and shell recovery wired. Source checks only.
+PASS R10 R6 audit layout: timestamp/stage/message cards, spacing, append and original copy wired. Source checks only.
+PASS R10 R7 resources: CPU/RAM tick, stale generation, sample age and self-resource copy wired. Source checks only.

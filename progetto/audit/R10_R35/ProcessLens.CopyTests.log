@@ -1,0 +1,52 @@
+PASS copy: full body, closed sections and unheaded paragraphs preserved exactly
+PASS copy: visible measurement log included
+PASS copy: empty optional fields do not rewrite body
+PASS copy: no extra process metadata appended
+PASS copy: TSV retains tabs, newlines, quotes and missing-value labels
+PASS copy: copy preserves rendered decimal culture it-IT
+PASS copy: copy preserves rendered decimal culture en-US
+PASS copy: report layout retains unheaded paragraphs within the correct chapter
+PASS copy: report chapter split preserves every normalized source line
+PASS copy: preamble and heading-only final chapter are retained
+PASS copy: embedded square marker does not create a false chapter
+PASS copy: plain reports preserve all paragraphs
+PASS copy: API sources and unheaded limits get distinct readable blocks
+PASS copy: PSAPI visual lines retain exact numbers and units
+PASS copy: evidence chapters distinguish modules and acquisition status without altering other groups
+PASS copy: complete copied report remains original CRLF text independent of visual hierarchy
+PASS copy: accepted request alone has no confirmed exit notice
+PASS copy: confirmed exit notice identifies executable and PID without inventing its cause
+PASS copy: selection and termination signals for the same instance produce one notice
+PASS copy: reused PID with a different creation timestamp is a separate process
+PASS copy: missing identity cannot produce a confirmed exit notice
+PASS copy: exit-notice deduplication history stays bounded
+PASS copy: X preserves a taskbar restore route even when tray registration succeeded
+PASS copy: unavailable tray preserves a taskbar restore route
+PASS copy: explicit Exit and session ending can close with or without a tray icon
+PASS copy: UI polling resumes only for a visible non-minimized window
+PASS copy: audit layout separates real timestamp, stage and message
+PASS copy: audit continuation and actual local-log location retained
+PASS copy: audit overview counts source entries without declaring them successful
+PASS copy: audit overview explicitly labels an empty register
+PASS copy: audit complete copy retains original CRLF and repeated raw prefixes exactly
+PASS copy: profiler stages remain distinct without invented timestamps
+PASS copy: audit overview without a timestamp does not invent one
+PASS copy: profiler result keeps all continuation lines
+PASS copy: unknown and malformed audit text is retained without false events
+PASS copy: audit layout never reparses or reformats measured decimal text 44,0
+PASS copy: audit layout never reparses or reformats measured decimal text 44.0
+PASS copy: RAM group lookup accepts normalized executable name only with matching creation
+PASS copy: RAM navigation rejects reused or unidentified host
+PASS copy: single PID navigation cannot match a substring PID
+PASS copy: SCM scope uses exact host PID
+PASS copy: all-services and empty scoped views remain distinct
+PASS copy: RAM frame cannot acquire a process born after its acquisition began
+PASS copy: same PID with another executable cannot acquire RAM row navigation
+PASS copy: R11 compact log grammar and invariant timestamp [it-IT]
+PASS copy: R11 log parser retains numbers units delta continuation and exact source [it-IT]
+PASS copy: R11 overview counts one event rather than its continuation lines [it-IT]
+PASS copy: R11 legacy RAM logs remain readable [it-IT]
+PASS copy: R11 compact log grammar and invariant timestamp [en-US]
+PASS copy: R11 log parser retains numbers units delta continuation and exact source [en-US]
+PASS copy: R11 overview counts one event rather than its continuation lines [en-US]
+PASS copy: R11 legacy RAM logs remain readable [en-US]

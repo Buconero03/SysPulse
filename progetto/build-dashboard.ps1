@@ -8,6 +8,8 @@ Write-BuildDiagnostic -EventId 'PL-BUILD-5001' -Stage 'BuildDashboard' -Result '
 Write-Host '[FASE 1] Controlli statici WPF, accesso SQLite in sola lettura e sicurezza del profiler...' -ForegroundColor Cyan
 Write-Host 'Controllo sintassi di tutti gli script PowerShell...' -ForegroundColor Cyan
 & (Join-Path $PSScriptRoot 'tests\check-powershell-syntax.ps1')
+& (Join-Path $PSScriptRoot 'tests\check-localization-r35.ps1')
+& (Join-Path $PSScriptRoot 'tests\check-localized-window-r35r2.ps1')
 & (Join-Path $PSScriptRoot 'tests\check-wpf-contextmenu.ps1')
 & (Join-Path $PSScriptRoot 'tests\check-ui-readability.ps1')
 & (Join-Path $PSScriptRoot 'tests\check-memory-efficiency-r8.ps1')
@@ -73,6 +75,9 @@ Write-Host 'Test icona incorporata: risorsa assembly e formato ICO, nessuna fine
 Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.IconResourceTests' -Project '.\tests\ProcessLens.IconResourceTests\ProcessLens.IconResourceTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.IconResourceTests\ProcessLens.IconResourceTests.csproj','-c','Release')
 Write-Host '[FASE 2] Test RAM: separazione memoria fisica/virtuale, campioni e culture it-IT/en-US...' -ForegroundColor Cyan
 Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.MemoryTests' -Project '.\tests\ProcessLens.MemoryTests\ProcessLens.MemoryTests.csproj' -Arguments @('run', '--project', '.\tests\ProcessLens.MemoryTests\ProcessLens.MemoryTests.csproj', '-c', 'Release')
+Write-Host 'Test R35: analisi completa italiano/inglese, dati e misure invariati...' -ForegroundColor Cyan
+Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.LocalizationTests' -Project '.\tests\ProcessLens.LocalizationTests\ProcessLens.LocalizationTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.LocalizationTests\ProcessLens.LocalizationTests.csproj','-c','Release')
+Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.LocalizationUiTests' -Project '.\tests\ProcessLens.LocalizationUiTests\ProcessLens.LocalizationUiTests.csproj' -Arguments @('run','--project','.\tests\ProcessLens.LocalizationUiTests\ProcessLens.LocalizationUiTests.csproj','-c','Release')
 Write-Host 'Test interpretazione approfondita dei processi...' -ForegroundColor Cyan
 Invoke-CheckedDotnet -Stage 'Tests.ProcessLens.BehaviorTests' -Project '.\tests\ProcessLens.BehaviorTests\ProcessLens.BehaviorTests.csproj' -Arguments @('run', '--project', '.\tests\ProcessLens.BehaviorTests\ProcessLens.BehaviorTests.csproj', '-c', 'Release')
 Write-Host 'Test terminologia e confini tra regole e osservazioni...' -ForegroundColor Cyan

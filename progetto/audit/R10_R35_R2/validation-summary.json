@@ -1,0 +1,18 @@
+{
+  "base": "R35 R1",
+  "base_sha256": "eed90e6eee7aaee7789d5b3385f21ec9395fc52ef8e21104d03d8ae390e474f5",
+  "fixed": [
+    "CS0509 sealed localized XAML root",
+    "CS0263 different partial base types"
+  ],
+  "regression_reproduced_before_fix": true,
+  "after_fix_csharp_windows_reference_check": "PASS (markup-root base declarations in stubs; not BAML)",
+  "ui_test_assemblies_compiled": 7,
+  "localization_checks_pass": 372,
+  "static_gates_pass": 32,
+  "launcher_fixture_checks_pass": 17,
+  "negative_gate_fixture": "PASS: sealed root rejected; different code-behind base rejected; corrected pair accepted",
+  "english_catalog_bytes_unchanged": true,
+  "full_windows_build_and_runtime": "NOT RUN",
+  "sdk_msbuild_attempt": "Environment Process.get_ProcessName failure; tests compiled directly with SDK Roslyn instead"
+}

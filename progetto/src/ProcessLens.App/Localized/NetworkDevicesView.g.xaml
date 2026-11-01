@@ -1,0 +1,102 @@
+<UserControl x:Class="ProcessLens.App.NetworkDevicesView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:l10n="clr-namespace:ProcessLens.App"
+ xmlns:local="clr-namespace:ProcessLens.App">
+ <UserControl.Resources>
+  <Style x:Key="NetworkAction" TargetType="Button">
+   <Setter Property="Background" Value="#F8FAFC"/><Setter Property="Foreground" Value="#1F2937"/>
+   <Setter Property="BorderBrush" Value="#CBD5E1"/><Setter Property="BorderThickness" Value="1"/>
+   <Setter Property="MinHeight" Value="36"/><Setter Property="Padding" Value="12,8"/>
+   <Setter Property="Margin" Value="0,0,8,6"/>
+   <Setter Property="ContentTemplate"><Setter.Value><DataTemplate>
+    <l10n:LocalizedTextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center"/>
+   </DataTemplate></Setter.Value></Setter>
+  </Style>
+  <Style x:Key="NetworkCell" TargetType="TextBlock">
+   <Setter Property="TextWrapping" Value="Wrap"/>
+   <Setter Property="Margin" Value="6,5"/><Setter Property="VerticalAlignment" Value="Center"/>
+  </Style>
+ </UserControl.Resources>
+ <Border Background="White" BorderBrush="#E2E5E9" BorderThickness="1" CornerRadius="12" Padding="16">
+  <Grid>
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*" MinHeight="180"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <StackPanel Margin="0,0,0,12"><l10n:LocalizedTextBlock Text="{l10n:Tr A0DD274E04A0BDBF}" FontSize="23" FontWeight="SemiBold"/>
+    <local:SelectableText Text="{l10n:Tr 4CC42046788D8BBA}" TextWrapping="Wrap" Foreground="#64748B" Margin="0,4,0,0"/></StackPanel>
+  <TabControl Background="White" BorderBrush="#D8E2EE" Grid.Row="1" x:Name="NetworkTabs" SelectedIndex="0" SelectionChanged="NetworkTabs_Changed">
+   <l10n:LocalizedTabItem Header="{l10n:Tr 517C16CACD50D34A}" Padding="14,8">
+  <Grid>
+   <Grid.RowDefinitions>
+    <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+    <RowDefinition Height="*" MinHeight="100"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+   </Grid.RowDefinitions>
+   <StackPanel Margin="0,0,0,10">
+    <l10n:LocalizedTextBlock Text="{l10n:Tr 951EA6317A922C6D}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap"/>
+    <local:SelectableText Text="{l10n:Tr 330349D7B2C0CA4E}" TextWrapping="Wrap" Foreground="#64748B"/>
+   </StackPanel>
+   <WrapPanel Grid.Row="1">
+    <l10n:LocalizedButton x:Name="RefreshNetworkButton" Background="#175CD3" Foreground="White" BorderBrush="#175CD3" Content="{l10n:Tr 43569809E00EF20B}" Style="{StaticResource NetworkAction}" Click="RefreshNetwork_Click"/>
+    <l10n:LocalizedButton x:Name="CopyNetworkButton" Content="{l10n:Tr 8B024025413ABBB5}" IsEnabled="False" Style="{StaticResource NetworkAction}" Click="CopyNetwork_Click"/>
+    <local:SelectableText x:Name="NetworkUpdatedText" Text="{l10n:Tr A4F0AD9AA389A7F9}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,6"/>
+   </WrapPanel>
+   <Border x:Name="NetworkIndicatorBorder" Grid.Row="2" Background="#F1F5F9" BorderBrush="#64748B" BorderThickness="2,0,0,0" Padding="12,8" Margin="0,4,0,10">
+    <StackPanel>
+     <local:SelectableText x:Name="NetworkIndicatorText" Text="{l10n:Tr E38F554BAD80AA79}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+     <local:SelectableText x:Name="NetworkSummaryText" Text="{l10n:Tr 12EAE7391FBB4C16}" TextWrapping="Wrap"/>
+     <local:SelectableText x:Name="NetworkCountsText" Text="{l10n:Tr 2D50B3F8CF5F1F0C}" TextWrapping="Wrap" Margin="0,6,0,0"/>
+     <local:SelectableText x:Name="NetworkNoticeText" Text="" TextWrapping="Wrap" Foreground="#92400E"/>
+    </StackPanel>
+   </Border>
+   <DataGrid x:Name="NetworkDevicesTable" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True"
+     CanUserAddRows="False" CanUserDeleteRows="False" EnableRowVirtualization="True" EnableColumnVirtualization="True"
+     VirtualizingPanel.VirtualizationMode="Recycling" SelectionMode="Single" SelectionUnit="FullRow"
+     local:GridCopySupport.Enabled="True" HeadersVisibility="Column" MinRowHeight="36"
+     SelectionChanged="NetworkSelection_Changed" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+    <DataGrid.Columns>
+     <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 3AEF086762C56731}" Binding="{Binding Name, Mode=OneWay}" Width="160" ElementStyle="{StaticResource NetworkCell}"/>
+     <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr FF7518B38CB9B1EB}" Binding="{Binding Addresses, Mode=OneWay}" Width="210" ElementStyle="{StaticResource NetworkCell}"/>
+     <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 1F6368E6ECC0AA62}" Binding="{Binding Mac, Mode=OneWay}" Width="155" ElementStyle="{StaticResource NetworkCell}"/>
+     <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 62E4E4FECB121B59}" Binding="{Binding Presence, Mode=OneWay}" Width="195" ElementStyle="{StaticResource NetworkCell}"/>
+     <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr E4FBAAB50DB60378}" Binding="{Binding Recognition, Mode=OneWay}" Width="180" ElementStyle="{StaticResource NetworkCell}"/>
+     <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 458AB16591036662}" Binding="{Binding InterfaceName, Mode=OneWay}" Width="140" ElementStyle="{StaticResource NetworkCell}"/>
+    </DataGrid.Columns>
+   </DataGrid>
+   <Border x:Name="NetworkEmptyBorder" Grid.Row="3" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" Padding="24" IsHitTestVisible="False" Margin="0,38,0,0">
+    <local:SelectableText x:Name="NetworkEmptyText" Text="{l10n:Tr FF0B9A64F8BB5FE5}" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="540" Foreground="#475569"/>
+   </Border>
+   <StackPanel Grid.Row="4" Margin="0,12,0,0">
+    <local:SelectableText x:Name="NetworkSelectionText" Text="{l10n:Tr 8EBDF8CE1DFE74BD}" TextWrapping="Wrap" Margin="0,0,0,6"/>
+    <WrapPanel>
+     <l10n:LocalizedTextBlock Text="{l10n:Tr 4F2C7AE4C6CD09A1}" VerticalAlignment="Center" Margin="0,0,8,6"/>
+     <l10n:LocalizedTextBox x:Name="NetworkNameBox" MaxLength="80" MinWidth="150" Width="190" Margin="0,0,8,6"
+       VerticalContentAlignment="Center" ToolTip="{l10n:Tr 5247C1CB976A13A6}"/>
+     <l10n:LocalizedButton x:Name="RecognizeNetworkButton" Content="{l10n:Tr 281A5E5F76A17259}" IsEnabled="False"
+       Style="{StaticResource NetworkAction}" Click="RecognizeNetwork_Click"/>
+     <l10n:LocalizedButton x:Name="ForgetNetworkButton" Content="{l10n:Tr EA1765F00FEA8BD0}" IsEnabled="False"
+       Style="{StaticResource NetworkAction}" Click="ForgetNetwork_Click"/>
+    </WrapPanel>
+   </StackPanel>
+   <l10n:LocalizedExpander Grid.Row="5" Header="{l10n:Tr 402ED63491CE555E}" Margin="0,6,0,0">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="160">
+     <StackPanel Margin="0,8,0,0">
+      <local:SelectableText Text="{l10n:Tr ACEF14454D3C9341}"
+        TextWrapping="Wrap" Margin="0,0,0,6"/>
+      <local:SelectableText Text="{l10n:Tr B61062BB37E4CDA0}"
+        TextWrapping="Wrap" Margin="0,0,0,6"/>
+      <local:SelectableText Text="{l10n:Tr 2814FE6EB4665D9C}"
+        TextWrapping="Wrap" Margin="0,0,0,6"/>
+      <local:SelectableText x:Name="NetworkDetailsText" Text="{l10n:Tr FDE9259BC25ABADD}" TextWrapping="Wrap"/>
+     </StackPanel>
+    </ScrollViewer>
+   </l10n:LocalizedExpander>
+  </Grid>
+   </l10n:LocalizedTabItem>
+   <l10n:LocalizedTabItem Header="{l10n:Tr E24F74D94C9F3AFD}" Padding="14,8"><ContentControl x:Name="NetworkCaptureHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/></l10n:LocalizedTabItem>
+   <l10n:LocalizedTabItem Header="{l10n:Tr DD986D8A64AD8385}" Padding="14,8"><ContentControl x:Name="NativeNetworkHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/></l10n:LocalizedTabItem>
+  </TabControl>
+   <l10n:LocalizedExpander Grid.Row="2" Header="{l10n:Tr 830F7C7903675D26}" Margin="0,12,0,0"><StackPanel>
+    <WrapPanel><l10n:LocalizedButton Content="{l10n:Tr 006842E0495979EC}" Style="{StaticResource NetworkAction}" Click="CopyJournal_Click"/><l10n:LocalizedTextBlock Text="{l10n:Tr 16D9A5F594A1C239}" VerticalAlignment="Center" Foreground="#64748B"/></WrapPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="120"><local:SelectableText x:Name="NetworkJournalText" Text="{l10n:Tr F7AAA947E1997126}" TextWrapping="Wrap" FontFamily="Consolas" FontSize="12"/></ScrollViewer>
+   </StackPanel></l10n:LocalizedExpander>
+  </Grid>
+ </Border>
+</UserControl>

@@ -1,0 +1,8 @@
+PASS UI readability: window centered at startup
+PASS UI readability: filters and counters on separate rows
+PASS UI readability: text wraps in process explanations
+PASS UI readability: process labels wrap
+PASS UI readability: technical identification section
+PASS UI readability: XML valido e nomi univoci
+PASS UI readability v0.19.16 R3: metric columns and technical tooltips.
+PASS UI readability R4: optional RAM guide, Windows API source and PID example.

@@ -7,7 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/ProcessLens.Core/ProcessLens.Core.csproj" />
-    <Compile Include="../../src/ProcessLens.App/ProcessDisplayFormatter.cs" Link="ProcessDisplayFormatter.cs" />
-    <Compile Include="../../src/ProcessLens.App/ProcessNetworkPresentation.cs" Link="ProcessNetworkPresentation.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/ProcessDisplayFormatter.g.cs" Link="ProcessDisplayFormatter.cs" />
+    <Compile Include="../../src/ProcessLens.App/Localized/ProcessNetworkPresentation.g.cs" Link="ProcessNetworkPresentation.cs" />
   </ItemGroup>
 </Project>

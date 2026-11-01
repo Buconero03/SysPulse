@@ -7,8 +7,8 @@ internal static class IdentityResolver
     public static IdentityAssessment Resolve(ProcessSnapshot p)
     {
         string exe = Path.GetFileNameWithoutExtension(p.Name);
-        string? product = Clean(p.ProductName);
-        string? description = Clean(p.FileDescription);
+        string? product = SysPulseLocalization.Raw(Clean(p.ProductName));
+        string? description = SysPulseLocalization.Raw(Clean(p.FileDescription));
         string cmd = p.CommandLine ?? string.Empty;
 
         string friendly;
@@ -95,6 +95,6 @@ internal static class IdentityResolver
     private static string Humanize(string value)
     {
         if (string.IsNullOrWhiteSpace(value)) return "Processo sconosciuto";
-        return value.Replace('_', ' ').Replace('-', ' ');
+        return SysPulseLocalization.Raw(value.Replace('_', ' ').Replace('-', ' '))!;
     }
 }

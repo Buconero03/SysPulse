@@ -6,4 +6,5 @@
     <InformationalVersion>0.19.16-R10-R11-R2-ux-writing-candidate</InformationalVersion>
     <ServerGarbageCollection>false</ServerGarbageCollection>
   </PropertyGroup>
+<ItemGroup><Compile Remove="*.cs"/></ItemGroup><ItemGroup><ProjectReference Include="../ProcessLens.Core/ProcessLens.Core.csproj"/></ItemGroup>
 </Project>

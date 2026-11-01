@@ -1,0 +1,34 @@
+PASS packet capture: local Npcap interface identifiers accepted
+PASS packet capture: remote pipe index or injected interface rejected: 1
+PASS packet capture: remote pipe index or injected interface rejected: -i anything
+PASS packet capture: remote pipe index or injected interface rejected: rpcap://host/interface
+PASS packet capture: remote pipe index or injected interface rejected: TCP@host:9
+PASS packet capture: remote pipe index or injected interface rejected: -
+PASS packet capture: remote pipe index or injected interface rejected: Wi-Fi
+PASS packet capture: remote pipe index or injected interface rejected: \Device\NPF_{not-a-guid}
+PASS packet capture: interface parser retains exact local identity and removes duplicates
+PASS packet capture: monitor check requires an actual declared 802.11 link type
+PASS packet capture: normal capture is explicitly selected bounded and not monitor mode
+PASS packet capture: monitor mode is an explicit separate argument
+PASS packet capture: unsafe or ambiguous capture destinations and interfaces fail closed
+PASS packet capture: beacon metadata is observed without inventing a phone hotspot [it-IT]
+PASS packet capture: missing radio values stay unavailable and broadcast MACs are not devices [it-IT]
+PASS packet capture: beacon metadata is observed without inventing a phone hotspot [en-US]
+PASS packet capture: missing radio values stay unavailable and broadcast MACs are not devices [en-US]
+PASS packet capture: no decoded Wi-Fi does not establish absence of wireless clients
+PASS packet capture: malformed output remains explicitly incomplete
+PASS packet capture: SSID control characters cannot create fake log lines
+PASS packet capture: probe request SSID does not become an advertised access point
+PASS packet capture: discovery only lists interfaces through the injected runner
+PASS packet capture: unverified monitor cannot create a file or launch capture
+PASS packet capture: monitor capability is tied to the selected tool and interface
+PASS packet capture: capture reserves a new file and applies explicit monitor arguments
+PASS packet capture: existing capture files cannot be overwritten
+PASS packet capture: analysis is offline bounded disables names and identifies the file hash
+PASS packet capture: failed decoder output cannot become a valid empty-network report
+PASS packet capture: oversized imported capture is rejected before a decoder is launched
+PASS packet capture: real runner passes arguments without a shell to its own fixture
+PASS packet capture: real runner stops only its own child at timeout
+PASS packet capture: real runner cancellation releases its own child
+PASS packet capture: real runner output budget cannot grow without bound
+Packet capture tests complete; synthetic data and owned test children only, no live capture or driver changes.

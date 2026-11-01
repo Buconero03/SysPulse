@@ -8,14 +8,27 @@
     ".NETCoreApp,Version=v8.0": {},
     ".NETCoreApp,Version=v8.0/win-x64": {
       "ProcessLens.RamMonitor/1.0.0": {
+        "dependencies": {
+          "ProcessLens.Core": "1.0.0"
+        },
         "runtime": {
           "ProcessLens.RamMonitor.dll": {}
+        }
+      },
+      "ProcessLens.Core/1.0.0": {
+        "runtime": {
+          "ProcessLens.Core.dll": {}
         }
       }
     }
   },
   "libraries": {
     "ProcessLens.RamMonitor/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ProcessLens.Core/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

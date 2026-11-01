@@ -1,0 +1,45 @@
+PASS RAM monitor: per-PID private bytes summed without using working set or commit
+PASS RAM monitor: three metrics remain distinct
+PASS RAM monitor: one missing private reading makes total partial, not a complete lower number
+PASS RAM monitor: EX-only fallback cannot turn total resident or commit into private RAM
+PASS RAM monitor: unresolved candidate prevents complete total
+PASS RAM monitor: failed enumeration cannot establish no processes or zero RAM
+PASS RAM monitor: successful empty scope snapshot establishes only zero observed members
+PASS RAM monitor: genuinely read zero remains valid
+PASS RAM monitor: monitor and other installations excluded from suite sum
+PASS RAM monitor: duplicate instance not double counted
+PASS RAM monitor: snapshot parent alone cannot prove descendant after a reuse race
+PASS RAM monitor: observed parent PID plus comparable creation times permits descendant edge
+PASS RAM monitor: child predating reused parent PID cannot be attributed
+PASS RAM monitor: missing creation time cannot prove descendant identity
+PASS RAM monitor: unverified parent or different parent PID does not establish suite membership
+PASS RAM monitor: same executable name at another path cannot prove membership
+PASS RAM monitor: unreadable executable path is not accepted
+NON ESEGUITO: native Windows sampler tests.
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Campione: 1
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Working Set privato totale: 0.0 MiB · contatori 1/1
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Ambito: PID inclusi=1; non identificati=0; esclusi=0
+[1970-01-01T00:00:00.0000000Z] [RAM Monitor] PID 1 · prova, "perché": stato=INCLUSO; WS privato=0.0 MiB; WS totale=0.0 MiB; commit=0.0 MiB
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] PID 1 · identità: origine=ExactExecutablePath; avvio UTC ticks=100; percorso=/tmp/test.exe
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Working Set totale sommato: 0.0 MiB · contatori 1/1; può contare più volte le pagine condivise
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Commit privato: 0.0 MiB · contatori 1/1; non RAM fisica
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Monitor escluso: PID=77; WS privato=0.0 MiB; WS totale=0.0 MiB
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Intervallo UTC: 1970-01-01T00:00:00.0000000Z -> 1970-01-01T00:00:01.0000000Z; letture non simultanee
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Copertura: PID identificati; memoria fisica condivisa complessiva non misurata
+
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Campione: 2
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Working Set privato totale: N/D · parziale · somma disponibile N/D · contatori 0/1
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Ambito: PID inclusi=1; non identificati=0; esclusi=0
+[1970-01-01T00:00:00.0000000Z] [RAM Monitor] PID 2 · test.exe: stato=INCLUSO; WS privato=N/D; WS totale=N/D; commit=N/D
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] PID 2 · identità: origine=ExactExecutablePath; avvio UTC ticks=100; percorso=/tmp/test.exe
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Working Set totale sommato: N/D · parziale · somma disponibile N/D · contatori 0/1; può contare più volte le pagine condivise
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Commit privato: N/D · parziale · somma disponibile N/D · contatori 0/1; non RAM fisica
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Monitor escluso: PID=77; WS privato=0.0 MiB; WS totale=0.0 MiB
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Intervallo UTC: 1970-01-01T00:00:00.0000000Z -> 1970-01-01T00:00:01.0000000Z; letture non simultanee
+[1970-01-01T00:00:01.0000000Z] [RAM Monitor] Copertura: PID identificati; memoria fisica condivisa complessiva non misurata
+
+PASS RAM monitor: R11 every monitor event has a timestamp and component
+PASS RAM monitor: R11 monitor logs retain partial totals and meter exclusion
+PASS RAM monitor: incomplete CSV total is empty, not a fabricated zero
+PASS RAM monitor: UTF-8 process CSV preserves commas and quoted text
+PASS RAM monitor: summary counts partial samples separately and never adds the monitor footprint

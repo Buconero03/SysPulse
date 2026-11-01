@@ -1,0 +1,3 @@
+PASS menu servizi: tasto destro, azione SCM e PID ospitante collegati.
+PASS XAML: nessun ContextMenu con handler dentro Style.Setter.Value.
+PASS menu contestuale: creazione e handlers in C#.

@@ -1,0 +1,7 @@
+PASS profiler isolation: Profilazione annullabile
+PASS profiler isolation: Dump temporaneo
+PASS profiler isolation: Binario profiler separato
+PASS profiler isolation: RAM gate all 85 percent
+PASS profiler isolation: GUI avvia solo il profiler esterno
+PASS profiler isolation: Nessun tool auto-installato
+PASS profiler isolation: GUI esplicita e consenso

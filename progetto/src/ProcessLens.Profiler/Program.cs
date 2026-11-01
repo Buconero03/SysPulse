@@ -171,7 +171,7 @@ internal static class ProfilerHost
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(output)!);
-            await File.WriteAllTextAsync(output, JsonSerializer.Serialize(result));
+            await File.WriteAllTextAsync(output, JsonSerializer.Serialize(result,SysPulseLocalization.ReportJsonOptions()));
             return result.Status == "ok" ? 0 : 1;
         }
         catch (Exception ex)

@@ -1,0 +1,14 @@
+{
+  "revision": "R35 R1",
+  "base_library_id": "libfile_4536220899e48191960b71b9a99371f4",
+  "base_version": 1,
+  "changed_english_values": 134,
+  "removed_italian_keys": 0,
+  "dictionary_keys": 5884,
+  "portable_suites_passed": 29,
+  "portable_checks_passed": 1679,
+  "localization_checks_passed": 372,
+  "static_gates_passed": 31,
+  "native_wpf_markup_and_runtime": "NOT RUN: Windows required",
+  "catalog_sha256": "ea98b8e8903032857b0f86bb142bcb870c2bdb566e45e39382a44b79570879b1"
+}

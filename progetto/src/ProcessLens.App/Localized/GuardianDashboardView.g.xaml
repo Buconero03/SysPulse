@@ -1,0 +1,349 @@
+<UserControl x:Class="ProcessLens.App.GuardianDashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:l10n="clr-namespace:ProcessLens.App"
+             xmlns:local="clr-namespace:ProcessLens.App"
+             Background="#F5F6F8" FontFamily="Segoe UI" Foreground="#202124">
+    <UserControl.Resources>
+        <Style x:Key="GuardianCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E2E5E9"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="12,9"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+        </Style>
+        <Style x:Key="GuardianTable" TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#E9EDF2"/>
+            <Setter Property="RowBackground" Value="White"/>
+            <Setter Property="AlternatingRowBackground" Value="#F8FAFC"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="EnableRowVirtualization" Value="True"/>
+            <Setter Property="EnableColumnVirtualization" Value="True"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="RowHeight" Value="32"/>
+            <Setter Property="ColumnHeaderHeight" Value="37"/>
+        </Style>
+        <Style x:Key="GuardianHeading" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#64748B"/>
+        </Style>
+        <Style x:Key="GuardianNumber" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#173F68"/>
+            <Setter Property="Margin" Value="0,6,0,2"/>
+        </Style>
+        <Style x:Key="SelectableGuardianNumber" TargetType="local:SelectableText">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#173F68"/>
+            <Setter Property="Margin" Value="0,6,0,2"/>
+        </Style>
+        <Style x:Key="GuardianTab" TargetType="TabItem">
+            <Setter Property="Padding" Value="13,9"/>
+            <Setter Property="Margin" Value="0,0,6,5"/>
+            <Setter Property="MinHeight" Value="38"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#475569"/>
+            <Setter Property="Background" Value="#F1F5F9"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="TabBorder" Background="{TemplateBinding Background}" BorderBrush="#D6DFEA"
+                                BorderThickness="1" CornerRadius="7" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" HorizontalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabBorder" Property="Background" Value="#DFEBFC"/>
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#7098CE"/>
+                                <Setter Property="Foreground" Value="#173F68"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#174E8F"/>
+                                <Setter TargetName="TabBorder" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <StackPanel>
+                <l10n:LocalizedTextBlock Text="{l10n:Tr 1DF9B13CAF76AD33}" FontSize="21" FontWeight="SemiBold"/>
+                <l10n:LocalizedTextBlock Text="{l10n:Tr 17055810F375DAD8}"
+                           FontSize="12" Foreground="#64748B" Margin="0,4,0,0"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <l10n:LocalizedTextBlock Text="{l10n:Tr B74EC82EEC75A186}" VerticalAlignment="Center" Foreground="#64748B" Margin="0,0,7,0"/>
+                <ComboBox x:Name="WindowSelector" Width="115" Height="32" SelectedIndex="2"
+                          SelectionChanged="WindowSelector_SelectionChanged" Margin="0,0,9,0">
+                    <l10n:LocalizedComboBoxItem Content="{l10n:Tr 192DBBB86F443043}" Tag="5"/>
+                    <l10n:LocalizedComboBoxItem Content="{l10n:Tr 4FDB406CEFAF0E96}" Tag="15"/>
+                    <l10n:LocalizedComboBoxItem Content="{l10n:Tr EA713BC71B055EE5}" Tag="30"/>
+                    <l10n:LocalizedComboBoxItem Content="{l10n:Tr D742C6337A698F38}" Tag="60"/>
+                </ComboBox>
+                <l10n:LocalizedButton Content="{l10n:Tr 86FAA2A23AEE1664}" Padding="15,7" Background="#DFEDFF"
+                        BorderBrush="#B9D1ED" Click="RefreshButton_Click"/>
+            </StackPanel>
+        </Grid>
+
+        <UniformGrid Grid.Row="1" Columns="5" Margin="0,0,-10,12">
+            <Border Style="{StaticResource GuardianCard}">
+                <StackPanel><l10n:LocalizedTextBlock Text="{l10n:Tr 67A0CD1997B13574}" Style="{StaticResource GuardianHeading}"/>
+                    <local:SelectableText x:Name="StartedValue" Text="{l10n:Tr BDA050585A00F0F6}" Style="{StaticResource SelectableGuardianNumber}"/>
+                    <l10n:LocalizedTextBlock Text="{l10n:Tr 9183DB490D7FEE26}" Foreground="#64748B" FontSize="10"/></StackPanel>
+            </Border>
+            <Border Style="{StaticResource GuardianCard}">
+                <StackPanel><l10n:LocalizedTextBlock Text="{l10n:Tr F9758266A6EA6669}" Style="{StaticResource GuardianHeading}"/>
+                    <local:SelectableText x:Name="ExitedValue" Text="{l10n:Tr BDA050585A00F0F6}" Style="{StaticResource SelectableGuardianNumber}"/>
+                    <l10n:LocalizedTextBlock Text="{l10n:Tr FBA67CEC39483F58}" Foreground="#64748B" FontSize="10"/></StackPanel>
+            </Border>
+            <Border Style="{StaticResource GuardianCard}">
+                <StackPanel><l10n:LocalizedTextBlock Text="{l10n:Tr 1BF2BD5D9CF42D9E}" Style="{StaticResource GuardianHeading}"/>
+                    <local:SelectableText x:Name="EtwValue" Text="{l10n:Tr BDA050585A00F0F6}" Style="{StaticResource SelectableGuardianNumber}"/>
+                    <l10n:LocalizedTextBlock Text="{l10n:Tr E030FF216426486F}" Foreground="#64748B" FontSize="10"/></StackPanel>
+            </Border>
+            <Border Style="{StaticResource GuardianCard}">
+                <StackPanel><l10n:LocalizedTextBlock Text="{l10n:Tr 6D4813F39C05AE46}" Style="{StaticResource GuardianHeading}"/>
+                    <local:SelectableText x:Name="TotalValue" Text="{l10n:Tr BDA050585A00F0F6}" Style="{StaticResource SelectableGuardianNumber}"/>
+                    <l10n:LocalizedTextBlock Text="{l10n:Tr 08B02F746F567C94}" Foreground="#64748B" FontSize="10"/></StackPanel>
+            </Border>
+            <Border Style="{StaticResource GuardianCard}">
+                <StackPanel><l10n:LocalizedTextBlock Text="{l10n:Tr D10A7890DC2E212C}" Style="{StaticResource GuardianHeading}"/>
+                    <local:SelectableText x:Name="StorageValue" Text="{l10n:Tr BDA050585A00F0F6}" Style="{StaticResource SelectableGuardianNumber}"/>
+                    <l10n:LocalizedTextBlock Text="{l10n:Tr 786B74673398D689}" Foreground="#64748B" FontSize="10"/></StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <Border Grid.Row="2" Background="#EEF4FB" CornerRadius="8" BorderBrush="#D8E4F2"
+                BorderThickness="1" Padding="11,9" Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <local:SelectableText x:Name="StatusText" Text="{l10n:Tr 6BB21E8E5F028DB8}"
+                           TextWrapping="Wrap" VerticalAlignment="Center" Foreground="#234970" FontSize="12"/>
+                <local:SelectableText x:Name="UpdatedText" Grid.Column="1" Text="{l10n:Tr BDA050585A00F0F6}"
+                           VerticalAlignment="Center" Foreground="#64748B" FontSize="11" Margin="14,0,0,0"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="3" Background="White" BorderBrush="#E2E5E9" BorderThickness="1" CornerRadius="10" Padding="10">
+            <TabControl x:Name="GuardianTabs" Background="White" BorderThickness="0" ItemContainerStyle="{StaticResource GuardianTab}">
+                <l10n:LocalizedTabItem Header="{l10n:Tr ABA0D61A2E2661FF}">
+                    <Grid Margin="6,12,6,6">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <DockPanel Margin="0,0,0,12">
+                            <l10n:LocalizedTextBlock Text="{l10n:Tr E70D032A78F5871B}" VerticalAlignment="Center" Foreground="#64748B" Margin="0,0,12,0"/>
+                            <l10n:LocalizedTextBox x:Name="EventSearchBox" Width="270" Height="30" VerticalContentAlignment="Center"
+                                     Padding="7,4" TextChanged="EventSearchBox_TextChanged"/>
+                            <local:SelectableText x:Name="EventCountText" VerticalAlignment="Center" Margin="16,0,0,0" Foreground="#64748B"/>
+                        </DockPanel>
+                        <DataGrid local:GridCopySupport.Enabled="True" x:Name="EventsTable" Grid.Row="1" Style="{StaticResource GuardianTable}" SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 4926B5A86FD65D5D}" Binding="{Binding LocalTime}" Width="170"/>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 2C6CF92BAF0E994C}" Binding="{Binding Name}" Width="*"/>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 43F6698CDD8189A3}" Binding="{Binding Kind}" Width="140"/>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 3F302A2A7158A024}" Binding="{Binding Pid}" Width="90"/>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 89AD67D16AB37DF0}" Binding="{Binding ParentPid}" Width="90"/>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr B348AF6C7FC06D6F}" Binding="{Binding Source}" Width="90"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <l10n:LocalizedTextBlock Grid.Row="2" Text="{l10n:Tr 66603AA010BD408F}"
+                                   Foreground="#64748B" FontSize="11" Margin="0,10,0,0"/>
+                    </Grid>
+                </l10n:LocalizedTabItem>
+                <l10n:LocalizedTabItem Header="{l10n:Tr 5E61760736C351F0}">
+                    <Grid Margin="6,12,6,6">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="1.6*"/></Grid.ColumnDefinitions>
+                        <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#F7FAFE" BorderBrush="#E1EAF5"
+                                BorderThickness="1" CornerRadius="7" Padding="10" Margin="0,0,0,12">
+                            <StackPanel>
+                                <l10n:LocalizedTextBlock Text="{l10n:Tr 1DF500FF7D2346D1}" FontSize="11" Foreground="#475569" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                                <ItemsControl x:Name="ActivityTrendList">
+                                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="0,0,12,6">
+                                                <DockPanel LastChildFill="True" Margin="0,0,0,3">
+                                                    <l10n:LocalizedTextBlock Text="{Binding TimeLocal}" FontSize="10" Foreground="#64748B"/>
+                                                    <l10n:LocalizedTextBlock Text="{Binding Starts}" HorizontalAlignment="Right" DockPanel.Dock="Right" FontSize="10" FontWeight="SemiBold"/>
+                                                </DockPanel>
+                                                <ProgressBar Value="{Binding PercentOfMax}" Maximum="100" Minimum="0"
+                                                             Height="9" Foreground="#5386CF" Background="#E4EAF3" BorderThickness="0"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <l10n:LocalizedTextBlock Text="{l10n:Tr 79340B48536899ED}"
+                                           FontSize="10" Foreground="#64748B"/>
+                            </StackPanel>
+                        </Border>
+                        <Grid Grid.Row="1" Grid.Column="0">
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <l10n:LocalizedTextBlock Text="{l10n:Tr 9CC728A391AB34EC}" FontWeight="SemiBold" Margin="4,0,0,10" Foreground="#475569"/>
+                            <DataGrid local:GridCopySupport.Enabled="True" x:Name="TopProcessesTable" Grid.Row="1" Style="{StaticResource GuardianTable}">
+                                <DataGrid.Columns>
+                                    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 5086900635FEC3EF}" Binding="{Binding Name}" Width="*"/>
+                                    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 23AC54F2A9422E4E}" Binding="{Binding Starts}" Width="75"/>
+                                    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 48B82DE27DCD71AB}" Binding="{Binding StartsPerMinute}" Width="83"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                        <Grid Grid.Row="1" Grid.Column="2">
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                            <l10n:LocalizedTextBlock Text="{l10n:Tr 69EC26ADDE77001D}" FontWeight="SemiBold" Margin="4,0,0,10" Foreground="#475569"/>
+                            <DataGrid local:GridCopySupport.Enabled="True" x:Name="ParentsTable" Grid.Row="1" Style="{StaticResource GuardianTable}" MouseDoubleClick="ParentsTable_MouseDoubleClick">
+                                <DataGrid.Columns>
+                                    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr D306E87B3E01542C}" Binding="{Binding ParentPid}" Width="83"/>
+                                    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 08B20916F65B5ACA}" Binding="{Binding CandidateParent}" Width="*"/>
+                                    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr B54BD55EFE78EAD7}" Binding="{Binding ChildName}" Width="*"/>
+                                    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 23AC54F2A9422E4E}" Binding="{Binding Starts}" Width="65"/>
+                                    <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 4F44EB26FB07B2C9}" Binding="{Binding Evidence}" Width="1.65*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <local:SelectableText Grid.Row="2" Text="{l10n:Tr 0310E457BEB664B6}"
+                                       Foreground="#64748B" FontSize="11" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                        </Grid>
+                    </Grid>
+                </l10n:LocalizedTabItem>
+                <l10n:LocalizedTabItem x:Name="LineageTab" Header="{l10n:Tr F9F4E9858E3E6E3C}">
+                    <Grid Margin="8,12,8,8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,9">
+                            <l10n:LocalizedTextBlock Text="{l10n:Tr C8FA7AA685F99A33}" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,9,0"/>
+                            <l10n:LocalizedTextBox x:Name="LineagePidBox" Width="110" Height="30" VerticalContentAlignment="Center"
+                                     Padding="7,3" Text="" Margin="0,0,8,0"/>
+                            <l10n:LocalizedButton Content="{l10n:Tr D45B90B257B907CE}" Padding="13,5" Margin="0,0,8,0"
+                                    Click="AnalyzeLineage_Click"/>
+                            <l10n:LocalizedButton Content="{l10n:Tr B258CFB6DE7AACA7}" Padding="13,5" Margin="0,0,8,0"
+                                    Click="UseParent_Click"/>
+                            <l10n:LocalizedButton Content="{l10n:Tr 2AB460B010062774}" Padding="13,5"
+                                    Click="ExploreChild_Click"/>
+                        </StackPanel>
+                        <Border Grid.Row="1" Background="#F0F6FC" BorderBrush="#D7E6F3"
+                                BorderThickness="1" CornerRadius="7" Padding="10" Margin="0,0,0,8">
+                            <StackPanel>
+                                <local:SelectableText x:Name="LineageRootText" FontSize="14" FontWeight="SemiBold"
+                                           Text="{l10n:Tr 69FB97864512E5F1}" TextWrapping="Wrap"/>
+                                <local:SelectableText x:Name="LineageStatusText" Foreground="#475569" FontSize="11"
+                                           Text="{l10n:Tr 3DC8FA6EF36C6ACD}" Margin="0,5,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                        <local:SelectableText Grid.Row="2" Text="{l10n:Tr 3068F3859E948BCA}"
+                                   Foreground="#8A520B" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                        <Grid Grid.Row="3">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="1.55*"/></Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0">
+                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                <l10n:LocalizedTextBlock Text="{l10n:Tr D7A37D3E7085C80E}" FontSize="11"
+                                           FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,8"/>
+                                <DataGrid local:GridCopySupport.Enabled="True" x:Name="LineageAncestorsTable" Grid.Row="1" Style="{StaticResource GuardianTable}">
+                                    <DataGrid.Columns>
+                                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 0E9DE086B15F1FCB}" Binding="{Binding Level}" Width="42"/>
+                                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 3F302A2A7158A024}" Binding="{Binding Pid}" Width="75"/>
+                                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 5086900635FEC3EF}" Binding="{Binding Name}" Width="*"/>
+                                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 5D788017BFE473FD}" Binding="{Binding LinkStatus}" Width="100"/>
+                                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr F5D5EE3EDADC1583}" Binding="{Binding Evidence}" Width="1.5*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                            <Grid Grid.Column="2">
+                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                <l10n:LocalizedTextBlock Text="{l10n:Tr 8308203A16DC2D4A}" FontSize="11"
+                                           FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,8"/>
+                                <DataGrid local:GridCopySupport.Enabled="True" x:Name="LineageChildrenTable" Grid.Row="1" Style="{StaticResource GuardianTable}"
+                                          MouseDoubleClick="LineageChildrenTable_MouseDoubleClick">
+                                    <DataGrid.Columns>
+                                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 050E87566E64C1B2}" Binding="{Binding StartLocal}" Width="148"/>
+                                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 3F302A2A7158A024}" Binding="{Binding Pid}" Width="64"/>
+                                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 2C6CF92BAF0E994C}" Binding="{Binding Name}" Width="*"/>
+                                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 5D788017BFE473FD}" Binding="{Binding LinkStatus}" Width="105"/>
+                                        <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr F5D5EE3EDADC1583}" Binding="{Binding Evidence}" Width="1.65*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </Grid>
+                        <local:SelectableText Grid.Row="4" x:Name="LineageCoverageText" Foreground="#64748B"
+                                   FontSize="11" Text="{l10n:Tr 2F7C12404D27026A}"
+                                   TextWrapping="Wrap" Margin="0,8,0,0"/>
+                    </Grid>
+                </l10n:LocalizedTabItem>
+                <l10n:LocalizedTabItem Header="{l10n:Tr 1E6C8132DF04E923}">
+                    <Grid Margin="6,12,6,6">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <l10n:LocalizedTextBlock Text="{l10n:Tr 9D18C7A31CD5E545}" FontWeight="SemiBold" Foreground="#475569" Margin="4,0,0,10"/>
+                        <DataGrid local:GridCopySupport.Enabled="True" x:Name="ResourcesTable" Grid.Row="1" Style="{StaticResource GuardianTable}">
+                            <DataGrid.Columns>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 2C6CF92BAF0E994C}" Binding="{Binding Name}" Width="*"/>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 96714DE0E67015A8}" Binding="{Binding AverageCpu}" Width="130"/>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 8D9331CAB97347C9}" Binding="{Binding PeakCpu}" Width="130"/>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 1256938BEA6F4746}" Binding="{Binding PeakResidentMiB}" Width="185"/>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 86F1F774809441D4}" Binding="{Binding Samples}" Width="115"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <local:SelectableText Grid.Row="2" Text="{l10n:Tr ED98EDC07E79B1B1}"
+                                   Foreground="#64748B" FontSize="11" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                    </Grid>
+                </l10n:LocalizedTabItem>
+                <l10n:LocalizedTabItem Header="{l10n:Tr 7F423FA440A3217D}">
+                    <Grid Margin="6,12,6,6">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*" MinHeight="45"/><RowDefinition Height="8"/><RowDefinition Height="1.3*" MinHeight="65"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <local:SelectableText x:Name="HealthSummaryText" FontWeight="SemiBold" FontSize="13"
+                                   Foreground="#234970" TextWrapping="Wrap" Margin="4,0,0,10"/>
+                        <local:SelectableText x:Name="LastEtwText" Grid.Row="1" Foreground="#475569" Margin="4,0,0,12" TextWrapping="Wrap"/>
+                        <DataGrid local:GridCopySupport.Enabled="True" x:Name="DiagnosticsTable" Grid.Row="2" Style="{StaticResource GuardianTable}">
+                            <DataGrid.Columns>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 4926B5A86FD65D5D}" Binding="{Binding LocalTime}" Width="170"/>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr B348AF6C7FC06D6F}" Binding="{Binding Source}" Width="110"/>
+                                <l10n:LocalizedDataGridTextColumn Header="{l10n:Tr 02B4EAB46F86935B}" Binding="{Binding Message}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <GridSplitter Grid.Row="3" Height="6" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                      ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" Background="#D8E1EC"
+                                      ShowsPreview="True" Focusable="True" ToolTip="{l10n:Tr 891751639B9C76CF}"/>
+                        <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Margin="4,10,4,8">
+                                <l10n:LocalizedTextBlock Text="{l10n:Tr 294134625D7A0A70}" FontSize="11" FontWeight="SemiBold" Foreground="#64748B" Margin="0,0,0,8"/>
+                                <local:SelectableText x:Name="DiagnosticDetailsText" Text="{Binding SelectedItem.DetailText, ElementName=DiagnosticsTable, Mode=OneWay}" FontSize="13"/>
+                                <l10n:LocalizedExpander Header="{l10n:Tr B8FF7A797287D394}" IsExpanded="False" Margin="0,12,0,8">
+                                    <local:SelectableText Text="{Binding SelectedItem.Limitations, ElementName=DiagnosticsTable, Mode=OneWay}" FontSize="12" Margin="0,8,0,0"/>
+                                </l10n:LocalizedExpander>
+                                <l10n:LocalizedExpander Header="{l10n:Tr 9A4CB701C629661C}" IsExpanded="False" Margin="0,4,0,0">
+                                    <local:SelectableText x:Name="DiagnosticOriginalText" Text="{Binding SelectedItem.OriginalMessage, ElementName=DiagnosticsTable, Mode=OneWay}"
+                                                          FontFamily="Consolas" FontSize="12" Margin="0,8,0,0"/>
+                                </l10n:LocalizedExpander>
+                            </StackPanel>
+                        </ScrollViewer>
+                        <local:SelectableText Grid.Row="5" Text="{l10n:Tr 3D8D7C89F1D9DC5C}"
+                                   Foreground="#64748B" FontSize="11" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                    </Grid>
+                </l10n:LocalizedTabItem>
+            </TabControl>
+        </Border>
+    </Grid>
+</UserControl>

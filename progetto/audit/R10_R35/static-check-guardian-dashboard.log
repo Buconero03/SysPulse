@@ -1,0 +1,1 @@
+PASS Guardian dashboard: valid XML, navigation, bindings, System.IO import, null guard and read-only SQLite access.

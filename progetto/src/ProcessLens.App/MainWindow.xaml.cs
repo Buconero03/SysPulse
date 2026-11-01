@@ -228,8 +228,8 @@ public partial class MainWindow : Window
         UiTreeLocalizer.Apply(_newTaskWindow, language);
         UiTreeLocalizer.Apply(_serviceDetailsWindow, language);
 
-        Title = isEn ? "SysPulse" : "ProcessLens";
-        AppTitleText.Text = isEn ? "SysPulse" : "ProcessLens";
+        Title = "SysPulse";
+        AppTitleText.Text = "SysPulse";
         AppSubtitleText.Text = isEn ? "Real-time system telemetry and process analysis" : "Dati Windows e analisi del processo";
         LanguageButton.Content = isEn ? "Language: EN" : "Lingua: IT";
 

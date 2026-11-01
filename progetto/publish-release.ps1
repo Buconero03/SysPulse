@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
 . (Join-Path $PSScriptRoot 'build-diagnostics.ps1')
 
@@ -21,6 +21,9 @@ Invoke-CheckedDotnet -Stage 'Publish.ProcessLens.App' -Project '.\src\ProcessLen
     '--self-contained', 'false', '-o', $out, '-p:PublishSingleFile=true',
     '-p:IncludeNativeLibrariesForSelfExtract=true', '-p:DebugType=None',
     '-p:DebugSymbols=false', '-p:PublishReadyToRun=false')
+if (Test-Path (Join-Path $out 'ProcessLens.exe')) {
+    Copy-Item (Join-Path $out 'ProcessLens.exe') (Join-Path $out 'SysPulse.exe') -Force
+}
 # Profile sidecar only starts on user request; publish in separate folder to isolate dependencies.
 $profOut = Join-Path $out 'Profiler'
 Invoke-CheckedDotnet -Stage 'Publish.ProcessLens.Profiler' -Project '.\src\ProcessLens.Profiler\ProcessLens.Profiler.csproj' -Arguments @(

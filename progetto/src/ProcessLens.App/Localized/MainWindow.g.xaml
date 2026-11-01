@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:l10n="clr-namespace:ProcessLens.App"
         xmlns:local="clr-namespace:ProcessLens.App"
-        Title="ProcessLens"
+        Title="SysPulse"
         Width="1180"
         Height="800"
         MinWidth="950"
@@ -314,7 +314,7 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel VerticalAlignment="Center">
-                <l10n:LocalizedTextBlock x:Name="AppTitleText" Text="{l10n:Tr DB95A94EC65A70DC}" FontSize="24" FontWeight="SemiBold"/>
+                <l10n:LocalizedTextBlock x:Name="AppTitleText" Text="{l10n:Tr B615C19E2770D434}" FontSize="24" FontWeight="SemiBold"/>
                 <local:SelectableText x:Name="AppSubtitleText" Text="{l10n:Tr 189B6A37EC6BEFCA}" ToolTip="{l10n:Tr FAA28AF86595E99B}"
                            TextWrapping="Wrap"
                            Margin="1,3,0,0"

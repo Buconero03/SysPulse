@@ -228,8 +228,8 @@ public partial class MainWindow : global::ProcessLens.App.LocalizedWindow
         UiTreeLocalizer.Apply(_newTaskWindow, language);
         UiTreeLocalizer.Apply(_serviceDetailsWindow, language);
 
-        Title = isEn ? global::ProcessLens.Core.SysPulseLocalization.Literal("SysPulse") : global::ProcessLens.Core.SysPulseLocalization.Literal("ProcessLens");
-        AppTitleText.Text = isEn ? global::ProcessLens.Core.SysPulseLocalization.Literal("SysPulse") : global::ProcessLens.Core.SysPulseLocalization.Literal("ProcessLens");
+        Title = global::ProcessLens.Core.SysPulseLocalization.Literal("SysPulse");
+        AppTitleText.Text = global::ProcessLens.Core.SysPulseLocalization.Literal("SysPulse");
         AppSubtitleText.Text = isEn ? global::ProcessLens.Core.SysPulseLocalization.Literal("Real-time system telemetry and process analysis") : global::ProcessLens.Core.SysPulseLocalization.Literal("Dati Windows e analisi del processo");
         LanguageButton.Content = isEn ? global::ProcessLens.Core.SysPulseLocalization.Literal("Language: EN") : global::ProcessLens.Core.SysPulseLocalization.Literal("Lingua: IT");
 

@@ -1,22 +1,29 @@
-> R35 R2: corretti CS0509 e CS0263 nella finestra WPF. Lingue IT/EN conservate. Rapporto: `progetto/audit/R10_R35_R2/REVISIONE_R35_R2.md`.
-
-> R35 R1: additional English terminology corrections and native-dialog localization. See `progetto/audit/R10_R35_R1/REVISIONE_R35_R1.md`.
-
-> R35: language selection now applies to the complete analysis, not a second bilingual panel. Start `AVVIA_PROCESSLENS.cmd`. See `PROCESS_ANALYSIS_IT_EN.md` and `progetto/audit/R10_R35/REVISIONE_R35.md` for the candidate’s implementation and validation limits.
-
-# SysPulse (ProcessLens R34) — Advanced Windows Process, Memory & Network Inspector
+# SysPulse (R35 R2) — Advanced Windows Process, Memory & Network Inspector
 
 [![Language](https://img.shields.io/badge/Language-English-blue.svg)](#) [![Italiano](https://img.shields.io/badge/Language-Italiano-green.svg)](README.it.md)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011%20(x64)-blue.svg)](#system-requirements)
 [![Runtime](https://img.shields.io/badge/.NET-8.0%20WPF%20%26%20Desktop-512BD4.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
-[![Architecture](https://img.shields.io/badge/Architecture-Read--Only%20%7C%20Zero--Intervention-success.svg)](#architectural-principles--safety)
-[![Tests](https://img.shields.io/badge/Verification-341%20Tests%20%26%2053%20Static%20Gates%20Passed-brightgreen.svg)](#compilation-pipeline-phases-1-6)
+[![Architecture](https://img.shields.io/badge/Architecture-Non--Invasive%20Telemetry%20%7C%20Explicit%20Admin%20Actions-blue.svg)](#architectural-principles--safety)
+[![Verification](https://img.shields.io/badge/Verification-55%20Static%20Gates%20%26%20All%20Test%20Suites%20Passed-brightgreen.svg)](#compilation-pipeline-phases-1-6)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-*Read this in other languages: [English](README.md) | [Italiano](README.it.md) | [Bilingual Process Analysis Encyclopedia (IT + EN)](PROCESS_ANALYSIS_IT_EN.md)*
+*Read this in other languages: [English](README.md) | [Italiano](README.it.md) | [Bilingual Process Analysis Reference (IT + EN)](PROCESS_ANALYSIS_IT_EN.md)*
 
-**SysPulse** is an advanced systems analysis dashboard and high-precision Task Manager & Network Inspector for 64-bit Windows environments. Engineered on the battle-tested ProcessLens R34 engine, SysPulse is purpose-built to deliver **absolute transparency**, **microsecond-accurate live telemetry**, and a **zero-intervention architecture**.
+---
 
-Unlike commercial task managers and aggressive observability tools, SysPulse operates in **strict read-only mode**: it never injects DLLs into user processes, never installs third-party filter drivers (such as WinPcap or Npcap), never hooks kernel system calls, and systematically differentiates between **direct Windows observations**, **probabilistic inferences**, and **heuristic estimates**.
+## Live Demonstration
+
+![SysPulse Live Dashboard and Deep Process Analysis](docs/images/syspulse-dashboard.png)
+*Figure 1: SysPulse R35 R2 running on Windows 11. Live telemetry displays per-process CPU %, Private Working Set RAM, and Network I/O throughput. The inspection panel presents deep behavioral insights and diagnostic options.*
+
+---
+
+**SysPulse** is an advanced system telemetry dashboard, process monitor, and network inspector for 64-bit Windows environments. Engineered for clarity, structural transparency, and reliability, SysPulse delivers **high-resolution live telemetry**, **in-depth behavioral process analysis**, and a **clean, non-invasive observation architecture**.
+
+SysPulse observes running workloads using standard, documented Windows operating system APIs. It never injects DLLs into user processes, never installs third-party filter drivers (such as WinPcap or Npcap), and never hooks kernel system calls. Furthermore, SysPulse strictly differentiates between **directly observed system telemetry**, **structural facts**, and **heuristic inferences**.
+
+> [!NOTE]
+> **Observation vs. Administrative Actions**: While all telemetry monitoring and deep process queries are strictly non-invasive and read-only, certain explicit user actions—specifically **Terminating a Process**, **Stopping a Service**, **Launching a New Task**, or executing an on-demand **Memory Heap Dump**—are designed to directly modify system state upon explicit confirmation by an elevated administrator.
 
 ---
 
@@ -31,7 +38,7 @@ Unlike commercial task managers and aggressive observability tools, SysPulse ope
 7. [Compilation & Startup Durations](#compilation--startup-durations)
 8. [Runtime Architecture: How SysPulse Operates](#runtime-architecture-how-syspulse-operates)
    - [Real-Time Network Monitoring & Sockets](#real-time-network-monitoring--sockets)
-   - [4-Tier Process Icon Resolution (Zero Ugly Default Icons)](#4-tier-process-icon-resolution-zero-ugly-default-icons)
+   - [4-Tier Process Icon Resolution (Zero Generic Placeholders)](#4-tier-process-icon-resolution-zero-generic-placeholders)
    - [Memory Analytics: Private Working Set vs Total](#memory-analytics-private-working-set-vs-total)
    - [Window Lifecycle & System Notification Tray](#window-lifecycle--system-notification-tray)
 9. [System Requirements](#system-requirements)
@@ -44,8 +51,10 @@ Unlike commercial task managers and aggressive observability tools, SysPulse ope
 
 SysPulse provides granular visibility into all running processes on Windows, consolidating live telemetry into a modern, responsive WPF desktop interface:
 
+- **Unified Bilingual Telemetry (English / Italian)**:
+  Full native bilingual engine. Launch directly into English (`START_SYSPULSE_EN.cmd`), Italian (`AVVIA_SYSPULSE_IT.cmd`), or choose at launch (`AVVIA_PROCESSLENS.cmd`). The language can also be toggled interactively in real time from the top bar (**Language: EN / Lingua: IT**).
 - **Live Network Monitoring per Process and Application Group**:
-  Real-time inbound and outbound throughput measurement (`KB/s`, `MB/s`), cumulative transferred bytes, and active socket enumeration (listening TCP ports, established TCP connections, open UDP endpoints). Built-in column sorting by bandwidth consumption (`Network` / `Rete`).
+  Per-process inbound and outbound throughput measurement (`KB/s`, `MB/s`), cumulative transferred bytes, and active socket enumeration (listening TCP ports, established TCP connections, open UDP endpoints). Built-in column sorting by bandwidth consumption (`Network` / `Rete`).
 - **Smart 4-Tier Icon Resolver (Zero Generic Default Placeholders)**:
   Eliminates default square or blocky pixel grids through an intelligent multi-stage resolver:
   1. High-resolution extraction from native Portable Executable (PE `.ico`) resources.
@@ -57,8 +66,8 @@ SysPulse provides granular visibility into all running processes on Windows, con
   Protects system responsiveness by strictly avoiding global heavy scans. Modules, DLLs, security tokens, package identities (AUMID), network sockets, and execution threads are inspected deeply only when a process is selected by the user.
 - **Accurate Physical Memory Metrics**:
   Rigorous distinction between process-exclusive physical memory (**Private Working Set**) and shared memory pages (**Working Set Total**), integrated with physical system memory pressure detection via `GlobalMemoryStatusEx`.
-- **Zero-Footprint Tray Minimization**:
-  Minimizes into the Windows Notification Area (system tray next to the clock), immediately halting high-frequency polling timers to guarantee zero background CPU overhead.
+- **Low-Overhead Notification Tray Minimization**:
+  Minimizes into the Windows Notification Area (system tray next to the clock), immediately suspending high-frequency polling timers to conserve background CPU and memory resources.
 
 ---
 
@@ -68,7 +77,7 @@ SysPulse provides granular visibility into all running processes on Windows, con
 ┌────────────────────────────────────────────────────────────────────────┐
 │                          GUIDING PRINCIPLES                            │
 ├──────────────────────────┬─────────────────────────────────────────────┤
-│ 1. Zero-Intervention     │ No third-party drivers or kernel hooks.     │
+│ 1. Non-Invasive Observe  │ No third-party drivers or kernel hooks.     │
 │                          │ No DLL injection into external processes.   │
 │                          │ Strictly documented Win32 & IP Helper APIs. │
 ├──────────────────────────┼─────────────────────────────────────────────┤
@@ -77,17 +86,23 @@ SysPulse provides granular visibility into all running processes on Windows, con
 │                          │ • Inferences (e.g., Web Server role)        │
 │                          │ • Estimates (e.g., CPU load %)              │
 ├──────────────────────────┼─────────────────────────────────────────────┤
-│ 3. Load Discipline       │ Global scan stays ultra-lightweight.        │
+│ 3. Explicit Admin Action │ Modifications (kill process, stop service,  │
+│                          │ new task, gcdump) require explicit user     │
+│                          │ intent and administrator elevation.         │
+├──────────────────────────┼─────────────────────────────────────────────┤
+│ 4. Load Discipline       │ Global scan stays lightweight.              │
 │                          │ Heavy deep inspection is strictly on-demand.│
-│                          │ Immediate polling pause when minimized.     │
+│                          │ Polling suspended when minimized to tray.   │
 └──────────────────────────┴─────────────────────────────────────────────┘
 ```
 
-1. **Non-Invasive Read-Only Execution**:
-   Process queries use minimal access rights (`PROCESS_QUERY_LIMITED_INFORMATION`, `GetExtendedTcpTable`, `GetExtendedUdpTable`, `GetProcessMemoryInfo`). No system parameters, firewall rules, or audit settings are modified.
+1. **Non-Invasive Observation Architecture**:
+   Process telemetry queries use minimal access rights (`PROCESS_QUERY_LIMITED_INFORMATION`, `GetExtendedTcpTable`, `GetExtendedUdpTable`, `GetProcessMemoryInfo`). No system parameters, firewall rules, or audit settings are modified during monitoring.
 2. **Explicit Administrative Elevation**:
    The native assembly manifest declares `requireAdministrator`, ensuring Windows presents an explicit UAC prompt at launch so all network sockets and cross-session process metrics can be queried without access denials.
-3. **Isolated Memory Profiler**:
+3. **Controlled System Modifications**:
+   Administrative actions such as process termination (`ProcessTerminator`), service stopping (`ServiceStopController`), and launching new tasks (`NewTaskLauncher`) are isolated behind explicit user confirmation dialogs.
+4. **Isolated Memory Profiler**:
    Heavy memory profiling and .NET GCDump inspection reside in completely decoupled standalone executables (`ProcessLens.Profiler.exe`). Profiling never starts automatically and incorporates safety gates that prevent execution if physical RAM usage exceeds 85%.
 
 ---
@@ -100,16 +115,24 @@ The solution is built on modern .NET 8 / C# 12 and WPF:
 SysPulse / ProcessLens-Leggero/
 ├── START_SYSPULSE_EN.cmd              # Instant-launch batch script in English
 ├── AVVIA_SYSPULSE_IT.cmd              # Instant-launch batch script in Italian
-├── AVVIA_PROCESSLENS.cmd              # Default instant-launch batch script
-├── LEGGIMI.txt                        # Concise Italian launch and release notes
+├── AVVIA_PROCESSLENS.cmd              # Default instant-launch batch script with language prompt
+├── LEGGIMI.txt                        # Concise launch and release notes
 ├── README.md                          # Full English documentation (GitHub root)
 ├── README.it.md                       # Full Italian documentation
+├── LICENSE                            # MIT Open Source License
+├── docs/
+│   └── images/
+│       └── syspulse-dashboard.png     # Demonstration screenshot of live UI
 ├── supporto/
 │   ├── avvia.ps1                      # Launch orchestrator with -Language support (en/it)
-│   └── build-r34.ok                   # Signed build receipt for verified instant launch
+│   └── build-r35r2.ok                 # Verified build receipt for instant startup
 └── progetto/
     ├── build-dashboard.ps1            # Master build, test, and audit script
     ├── publish-release.ps1            # Release compilation and artifact packager
+    ├── localization-manifest.json     # SHA-256 hashes of all canonical and generated sources
+    ├── tools/
+    │   ├── refresh-localization.ps1   # Automatic Roslyn localization generator runner
+    │   └── LocalizationGenerator/     # AST generator for bilingual models and XAML
     ├── src/
     │   ├── ProcessLens.Core/          # Immutable domain models, metrics, and contracts
     │   ├── ProcessLens.Windows/       # Win32 P/Invoke, IP Helper, and OS samplers
@@ -120,17 +143,17 @@ SysPulse / ProcessLens-Leggero/
     │   └── ProcessLens.RamMonitor/    # Dedicated lightweight RAM monitor
     ├── tests/                         # Full automated test suites across all layers
     ├── audit/                         # Static compliance, security & architectural gates
-    └── publish/win-x64/               # Published production release binaries
+    └── publish/win-x64/               # Published production release binaries (SysPulse.exe)
 ```
 
 ### Module Responsibilities
 
 - **`ProcessLens.Core`**:
-  Defines immutable state snapshots (`ProcessSnapshot`, `ProcessGroupUsage`), live telemetry samples (`LiveNetworkSample`, `LiveCpuSample`, `LiveMemorySample`), and culture-invariant formatters.
+  Defines immutable state snapshots (`ProcessSnapshot`, `ProcessGroupUsage`), live telemetry samples (`LiveNetworkSample`, `LiveCpuSample`, `LiveMemorySample`), and bilingual formatters.
 - **`ProcessLens.Windows`**:
   Interfaces directly with the Windows kernel:
   - `WindowsLiveNetworkSampler.cs`: Queries TCP/UDP extended connection tables and process I/O counters.
-  - `WindowsLiveCpuSampler.cs`: Derives high-precision CPU percentages from monotonic timestamps and `GetProcessTimes`.
+  - `WindowsLiveCpuSampler.cs`: Derives high-precision CPU percentages from monotonic performance counters and `GetProcessTimes`.
   - `WindowsProcessCollector.cs`: Performs rapid, low-overhead sweeps of running processes.
   - `WindowsDeepProcessInspector.cs`: Inspects selected PID modules, tokens, threads, and network bindings.
 - **`ProcessLens.Semantics`**:
@@ -144,21 +167,21 @@ SysPulse / ProcessLens-Leggero/
 
 ```mermaid
 flowchart TD
-    A["Double-click AVVIA_PROCESSLENS.cmd"] --> B["supporto/avvia.ps1"]
-    B --> C{"Is verified build present in<br/>publish/win-x64/ProcessLens.exe<br/>and build-r34.ok valid?"}
+    A["Double-click AVVIA_PROCESSLENS.cmd<br/>or START_SYSPULSE_EN.cmd"] --> B["supporto/avvia.ps1"]
+    B --> C{"Is verified build present in<br/>publish/win-x64/ProcessLens.exe<br/>and build-r35r2.ok valid?"}
     C -- "YES (Subsequent launches)" --> D{"Is current process elevated as Administrator?"}
     C -- "NO (First-time launch)" --> E["Invoke-ProcessLensBuild<br/>(build-dashboard.ps1)"]
-    E --> F["Execute Static Gates, Unit Tests, and Build"]
-    F --> G["Generate ProcessLens.exe and write build-r34.ok receipt"]
+    E --> F["Execute 55 Static Gates, Unit Tests, and Build"]
+    F --> G["Generate SysPulse.exe / ProcessLens.exe<br/>and write build-r35r2.ok receipt"]
     G --> D
     D -- "NO" --> H["Request UAC Elevation (RunAs Administrator)"]
     H --> I["Relaunch elevated PowerShell session"]
-    I --> J["Start native ProcessLens.exe"]
+    I --> J["Start native executable"]
     D -- "YES" --> J
     J --> K["SysPulse WPF UI opens on desktop"]
 ```
 
-### Quick Launch Options & Dual-Language Mode
+### Quick Launch Options & Bilingual Mode
 
 1. **English Mode Launch**:
    Double-click `START_SYSPULSE_EN.cmd` from the root folder, or run:
@@ -166,42 +189,35 @@ flowchart TD
    .\supporto\avvia.ps1 -Language en
    ```
 2. **Italian Mode Launch**:
-   Double-click `AVVIA_SYSPULSE_IT.cmd` (or `AVVIA_PROCESSLENS.cmd`) from the root folder, or run:
+   Double-click `AVVIA_SYSPULSE_IT.cmd` from the root folder, or run:
    ```powershell
    .\supporto\avvia.ps1 -Language it
    ```
-3. **Dynamic Interactive Switching**:
-   Click the **Language: EN / Lingua: IT** button situated directly in the top header bar of the application at any time to toggle between English and Italian on-the-fly. The selected language is automatically saved and remembered across sessions.
-4. **Direct CLI Argument**:
+3. **Interactive Launch with Language Selection Prompt**:
+   Double-click `AVVIA_PROCESSLENS.cmd` from the root folder to choose your preferred language before starting.
+4. **Dynamic In-App Switching**:
+   Click the **Language: EN / Lingua: IT** button situated directly in the top header bar of the application at any time to toggle between English and Italian on the fly. The selected language is saved and remembered across sessions.
+5. **Direct Binary Execution (when pre-built)**:
    ```cmd
-   .\progetto\publish\win-x64\ProcessLens.exe --lang en
-   ```
-3. **Manual Clean Build and Full Verification**:
-   ```powershell
-   cd .\progetto
-   .\build-dashboard.ps1
-   ```
-4. **Direct Binary Execution (when pre-built)**:
-   ```powershell
-   .\progetto\publish\win-x64\ProcessLens.exe
+   .\progetto\publish\win-x64\SysPulse.exe --lang en
    ```
 
 ---
 
 ## What Happens During Startup (Processes & Lifecycle)
 
-When `AVVIA_PROCESSLENS.cmd` is executed, the following coordinated steps take place:
+When the launch script is executed, the following coordinated steps take place:
 
 1. **Pre-Flight Environment Detection (`supporto\avvia.ps1`)**:
-   - `AVVIA_PROCESSLENS.cmd` executes Windows PowerShell with `-NoLogo -NoProfile -ExecutionPolicy Bypass`.
-   - `avvia.ps1` verifies the OS is `Windows_NT`.
+   - Executes Windows PowerShell with `-NoLogo -NoProfile -ExecutionPolicy Bypass`.
+   - Verifies the host OS is `Windows_NT`.
    - Scans for an available .NET 8 Desktop Runtime and SDK:
      - Checks system-wide SDK installations.
      - Checks local private runtimes (e.g. `Programs/ProcessLens/R20/dotnet`) to enable 100% offline standalone operation without external downloads.
-2. **Build Receipt Verification (`supporto/build-r34.ok`)**:
-   - Checks if `progetto/publish/win-x64/ProcessLens.exe` exists and matches the receipt signature `ProcessLens-R34-network-clarity`.
+2. **Build Receipt Verification (`supporto/build-r35r2.ok`)**:
+   - Checks if `progetto/publish/win-x64/ProcessLens.exe` exists and matches the receipt signature `ProcessLens-R35-R2-wpf-inheritance`.
    - **If valid**: Compilation is skipped entirely. Launch proceeds in **< 1 second**.
-   - **If missing or outdated**: Involves `build-dashboard.ps1` to re-verify and compile.
+   - **If missing or outdated**: Runs `build-dashboard.ps1` to re-verify and compile.
 3. **UAC Security Elevation**:
    - Checks user token role (`WindowsPrincipal.IsInRole(WindowsBuiltInRole.Administrator)`).
    - If unprivileged, requests elevation via Windows `RunAs`, spawning an elevated instance.
@@ -209,31 +225,35 @@ When `AVVIA_PROCESSLENS.cmd` is executed, the following coordinated steps take p
    - Initializes internal diagnostics journal (`AppDiagnostics`).
    - Obtains native window handle (`HWND`) and registers message hooks (`HwndSource.AddHook`).
    - Configures the notification area icon via `Shell_NotifyIconW`.
-   - Launches background polling timers for CPU, RAM, and Network metrics.
+   - Launches background polling timers for CPU, RAM, and Network metrics (1-2s intervals).
    - Collects initial snapshot and renders virtualized process cards.
 
 ---
 
 ## Compilation Pipeline (Phases 1-6)
 
-Running `build-dashboard.ps1` executes an exhaustive automated gate consisting of 53 static checks and over 340 test assertions:
+Running `build-dashboard.ps1` executes an exhaustive automated verification gate consisting of 55 static checks, Roslyn localization audits, and extensive unit/integration test suites:
 
 ```mermaid
 flowchart LR
-    F1["PHASE 1<br/>Static Checks & Audits<br/>(53 PS1 Scripts)"] --> F2["PHASE 2<br/>Unit & Shell Tests<br/>(RAM, Network, UI Smoke)"]
+    F1["PHASE 1<br/>55 Static Checks & Audits<br/>(PowerShell, R35 Localization, Safety)"] --> F2["PHASE 2<br/>Automated Test Suites<br/>(RAM, Sockets, R35 Localization, UI Smoke)"]
     F2 --> F3["PHASES 3 & 4<br/>Profiler & Fixture Build"]
-    F3 --> F5["PHASE 5<br/>WPF App Compilation<br/>(ProcessLens.App)"]
+    F3 --> F5["PHASE 5<br/>WPF App Compilation<br/>(SysPulse.App)"]
     F5 --> F6["PHASE 6<br/>Windows x64 Publication<br/>(publish/win-x64)"]
 ```
 
 ### Phase Breakdown
 
 - **PHASE 1: Static Code Audits & Safety Rules**:
-  - Validates AST syntax across all 106 PowerShell scripts in the repository.
+  - Validates AST syntax across all 113 PowerShell scripts in the repository.
+  - Verifies R35 localization manifest hashes across 143 generated files and canonical sources (`check-localization-r35.ps1`).
+  - Verifies inheritable XAML window roots and code-behind alignment (`check-localized-window-r35r2.ps1`).
   - Verifies XAML safety (no dynamic event handlers embedded inside Style setters).
   - Verifies profiler isolation (no unprompted memory dumps; 85% RAM guard rule).
-  - Validates historical revision conformance gates (R8 through R34).
+  - Validates historical revision conformance gates (R8 through R35 R2).
 - **PHASE 2: Automated Unit, Integration & UI Tests**:
+  - `LocalizationTests`: 372 comprehensive checks verifying dictionary coverage, technical identity preservation, and report formatting in English and Italian.
+  - `LocalizationUiTests`: Headless verification of localized WPF window types and titles.
   - `DiagnosticsTests`: JSONL event structure and privacy redactions.
   - `GuardianDashboardTests`: Read-only SQLite query verification.
   - `MemoryAlertTests`: Memory threshold hysteresis policy (85% alert, 80% clear).
@@ -241,14 +261,14 @@ flowchart LR
   - `LiveMetricsTests`: Working set calculations and socket counting.
   - `ProcessGroupsTests`: Group aggregation and identity filter matching.
   - `ProcessGroupsUiTests` & `MainWindowSmoke`: Real WPF `MainWindow` lifecycle, caption minimize, taskbar restoration, and Shell v4 notification packet routing.
-  - `IconResourceTests`: Multi-resolution PNG icon resource extraction and 61-entry symbol catalog validation.
+  - `IconResourceTests`: Multi-resolution PNG icon resource extraction and symbol catalog validation.
   - `NetworkUiTests` & `NativeNetworkTests`: Simulated socket state verification.
 - **PHASES 3 & 4: Profiler & Fixture Build**:
   - Builds synthetic test fixture and independent on-demand profiler (`ProcessLens.Profiler.exe`).
 - **PHASE 5: Main Application Build**:
   - Compiles `ProcessLens.App.csproj` in `Release` configuration and compiles XAML to BAML.
 - **PHASE 6: Windows x64 Publication**:
-  - Publishes ready-to-run binaries to `publish/win-x64/` and generates `supporto/build-r34.ok`.
+  - Publishes ready-to-run binaries to `publish/win-x64/` (generating both `SysPulse.exe` and `ProcessLens.exe`) and stamps the `supporto/build-r35r2.ok` receipt.
 
 ---
 
@@ -256,9 +276,9 @@ flowchart LR
 
 | Stage | Typical Duration | Description |
 | :--- | :--- | :--- |
-| **Instant Launch (Pre-Built)** | **< 1.0 second** | Immediate native launch of `ProcessLens.exe` via `AVVIA_PROCESSLENS.cmd`. |
+| **Instant Launch (Pre-Built)** | **< 1.0 second** | Immediate native launch of `SysPulse.exe` via `AVVIA_PROCESSLENS.cmd`. |
 | **Incremental Build (`dotnet build`)** | **~3 - 5 seconds** | Fast rebuild of modified assemblies during development. |
-| **Full Build & Verification Pipeline** | **~60 - 90 seconds** | Complete execution of 53 static audits, 341 test assertions, WPF shell fixture, and multi-project release publication. |
+| **Full Build & Verification Pipeline** | **~60 - 90 seconds** | Complete execution of 55 static audits, R35 localization checks, full test suites, WPF shell fixture, and multi-project release publication. |
 
 ---
 
@@ -285,9 +305,9 @@ sequenceDiagram
     User->>GUI: Select process row (PID)
     GUI->>Inspector: On-demand deep inspection (Modules, Sockets, UWP)
     Inspector-->>GUI: Enriched facts & semantic classification
-    User->>GUI: Click "Nascondi accanto all'orologio" (Hide to Tray)
+    User->>GUI: Click "Hide to tray" / "Nascondi accanto all'orologio"
     GUI->>Tray: HideToTray() -> _window.Hide()
-    GUI->>Timers: Stop all polling timers (0% CPU usage)
+    GUI->>Timers: Suspend polling timers (conserves background CPU)
     User->>Tray: Click notification tray icon (Message 0x8045)
     Tray->>GUI: Restore() -> _window.Show()
     GUI->>Timers: Resume background polling timers
@@ -309,7 +329,7 @@ Implemented in `WindowsLiveNetworkSampler.cs`, the network pipeline is non-invas
 
 ---
 
-### 4-Tier Process Icon Resolution (Zero Ugly Default Icons)
+### 4-Tier Process Icon Resolution (Zero Generic Placeholders)
 
 Implemented in `ProcessIconResolver.cs`, ensuring every single process has a clear visual identity:
 
@@ -358,7 +378,7 @@ Managed by `TrayWindowController.cs`:
 
 - **Standard Minimize**: Minimizes to the taskbar.
 - **Hide to Tray**:
-  Hides the window, clears taskbar presence, and immediately halts polling loops to guarantee zero CPU drain in background.
+  Hides the window, clears taskbar presence, and suspends polling loops to conserve CPU while running in background.
 - **Restore**:
   Single-click or context menu activation restores the window to its exact previous state (Normal/Maximized).
 - **Shell Recovery**:
@@ -403,4 +423,6 @@ Managed by `TrayWindowController.cs`:
 
 ## License & Disclaimers
 
-SysPulse is open source under the terms of its repository license. Windows, Win32, WPF, and UWP are trademarks of Microsoft Corporation. SysPulse interacts exclusively through documented Windows operating system APIs in strict adherence to platform security guidelines.
+SysPulse is open source under the terms of the [MIT License](LICENSE). 
+
+Windows, Win32, WPF, and UWP are trademarks of Microsoft Corporation. SysPulse interacts exclusively through documented Windows operating system APIs in strict adherence to platform security guidelines.

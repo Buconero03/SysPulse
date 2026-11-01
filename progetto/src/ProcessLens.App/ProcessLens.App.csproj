@@ -11,10 +11,10 @@
     <Version>0.19.16</Version>
     <InformationalVersion>0.19.16-R10-R35-R2-wpf-inheritance-candidate</InformationalVersion>
     <UseAppHost>true</UseAppHost>
-    <AssemblyTitle>ProcessLens</AssemblyTitle>
-    <Product>ProcessLens</Product>
-    <Description>ProcessLens</Description>
-    <Company>ProcessLens</Company>
+    <AssemblyTitle>SysPulse</AssemblyTitle>
+    <Product>SysPulse</Product>
+    <Description>SysPulse - Advanced Windows Process, Memory &amp; Network Inspector</Description>
+    <Company>SysPulse</Company>
     <ServerGarbageCollection>false</ServerGarbageCollection>
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
   </PropertyGroup>

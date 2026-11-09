@@ -13,8 +13,7 @@
 
 ## Live Demonstration
 
-![SysPulse Live Dashboard and Deep Process Analysis](docs/images/syspulse-dashboard.png)
-*Figure 1: SysPulse R35 R2 running on Windows 11. Live telemetry displays per-process CPU %, Private Working Set RAM, and Network I/O throughput. The inspection panel presents deep behavioral insights and diagnostic options.*
+![SysPulse Dashboard](docs/images/Screenshot%202026-11-09%20023852.png)*Figure 1: SysPulse R35 R2 running on Windows 11. Live telemetry displays per-process CPU %, Private Working Set RAM, and Network I/O throughput. The inspection panel presents deep behavioral insights and diagnostic options.*
 
 ---
 

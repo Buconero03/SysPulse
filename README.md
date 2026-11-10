@@ -5,6 +5,7 @@
 [![Runtime](https://img.shields.io/badge/.NET-8.0%20WPF%20%26%20Desktop-512BD4.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
 [![Architecture](https://img.shields.io/badge/Architecture-Non--Invasive%20Telemetry%20%7C%20Explicit%20Admin%20Actions-blue.svg)](#architectural-principles--safety)
 [![Verification](https://img.shields.io/badge/Verification-55%20Static%20Gates%20%26%20All%20Test%20Suites%20Passed-brightgreen.svg)](#compilation-pipeline-phases-1-6)
+[![Release](https://img.shields.io/badge/Release-v1.0.0-orange.svg)](https://github.com/Buconero03/SysPulse/releases/tag/v1.0.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 *Read this in other languages: [English](README.md) | [Italiano](README.it.md) | [Bilingual Process Analysis Reference (IT + EN)](PROCESS_ANALYSIS_IT_EN.md)*
@@ -13,7 +14,9 @@
 
 ## Live Demonstration
 
-![SysPulse Dashboard](docs/images/Screenshot%202026-11-09%20023852.png)*Figure 1: SysPulse R35 R2 running on Windows 11. Live telemetry displays per-process CPU %, Private Working Set RAM, and Network I/O throughput. The inspection panel presents deep behavioral insights and diagnostic options.*
+![SysPulse Dashboard](docs/images/Screenshot%202026-11-09%20023852.png)
+
+*Figure 1: SysPulse R35 R2 running on Windows 11. Live telemetry displays per-process CPU %, Private Working Set RAM, and Network I/O throughput. The inspection panel presents deep behavioral insights and diagnostic options.*
 
 ---
 

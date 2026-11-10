@@ -5,6 +5,7 @@
 [![Runtime](https://img.shields.io/badge/.NET-8.0%20WPF%20%26%20Desktop-512BD4.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
 [![Architecture](https://img.shields.io/badge/Architecture-Telemetria%20Non--Invasiva%20%7C%20Azioni%20Admin%20Esplicite-blue.svg)](#principi-architetturali-e-sicurezza)
 [![Verification](https://img.shields.io/badge/Verification-55%20Gate%20Statici%20%26%20Tutti%20i%20Test%20Superati-brightgreen.svg)](#pipeline-di-compilazione-dettagliata-fasi-1-6)
+[![Release](https://img.shields.io/badge/Release-v1.0.0-orange.svg)](https://github.com/Buconero03/SysPulse/releases/tag/v1.0.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 *Disponibile anche in: [English](README.md) | [Italiano](README.it.md) | [Enciclopedia Analisi dei Processi Bilingue (IT + EN)](PROCESS_ANALYSIS_IT_EN.md)*
@@ -13,7 +14,7 @@
 
 ## Dimostrazione Pratica dell'Applicazione
 
-![Dashboard Live SysPulse e Analisi Dettagliata dei Processi](docs/images/syspulse-dashboard.png)
+![Dashboard Live SysPulse](docs/images/Screenshot%202026-11-09%20023852.png)
 *Figura 1: SysPulse R35 R2 in esecuzione su Windows 11. La telemetria mostra in tempo reale la % CPU per processo, il Working Set Privato e la velocità I/O di Rete. Il pannello di ispezione offre approfondimenti comportamentali e opzioni diagnostiche strutturate.*
 
 ---
